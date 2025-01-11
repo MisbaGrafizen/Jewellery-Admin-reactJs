@@ -1,239 +1,15 @@
-// import React from "react";
-// import arrow from "../../../public/imges/arrow.png";
 
-// export default function LoginPage() {
-//   return (
-//     <>
-//       <section className=" flex w-[100%] ">
-//         <div className=" flex  w-[100%] justify-center items-center  h-[100vh] bg-white ">
-//           <div className=" flex flex-col mx-auto  max-w-[430px]   justify-between h-[520px] min-w-[430px] rounded-[10px]  items-center  ">
-//             <div className=" flex w-[100%] border-[1px] p-[20px] border-[#0099dd]   flex-col h-[85%] rounded-[10px]">
-//               <h1 className=" flex justify-center mt-[5px]  text-[40px] w-fit mx-auto font-Jersy font-[500] ">
-//                Login
-//               </h1>
-//               <div className="  mt-[30px]  flex w-[100%]">
-//                 <div className=" flex flex-col gap-[40px] w-[100%]">
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="text"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy  text-[1px] 
-//                   `}
-//                       >
-//                         Name
-//                       </span>
-//                     </div>
-//                   </div>
-
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="password"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy !font-[300] text-[1px] 
-//                   `}
-//                       >
-//                         Password
-//                       </span>
-//                     </div>
-//                   </div>
-//                   <div className=" flex items-center gap-[10px]">
-//                   <lavel className='flex items-center  gap-[10px]'>
-//                     <input type="radio" className="w-5 h-5 accent-[#009dd1]" />
-//                     <h2 className=" flex text-[24px] font-Jersy">
-//                     Remember me
-//                     </h2>
-//                     </lavel>
-//                   </div>
-//                   <div className=" flex font-Jersy text-[14px] underline font-[100]">
-//                     Register Now
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//             <div className=" flex w-[100%] ">
-//               <button className=" flex w-[100%] font-Jersy bg-[#009dd1] font-[500] fledx items-center gap-[15px]  text-white justify-center rounded-[10px] py-[10px] text-[26px]">
-//                 Go Ahead
-//                 <i className=" text-white fa-regular fa-arrow-up-to-arc fa-rotate-90"></i>
-//               </button>
-//             </div>
-//           </div>
-
-//           <div className=" flex flex-col mx-auto  max-w-[430px]   justify-between h-[520px] min-w-[430px] rounded-[10px]  items-center  ">
-//             <div className=" flex w-[100%] border-[1px] p-[20px] border-[#0099dd]   flex-col h-[85%] rounded-[10px]">
-//               <h1 className=" flex justify-center mt-[5px]  text-[40px] w-fit mx-auto font-Jersy font-[500] ">
-//                 Register Now
-//               </h1>
-//               <div className="  mt-[30px]  flex w-[100%]">
-//                 <div className=" flex flex-col gap-[40px] w-[100%]">
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="text"
-//                         name="lastName"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy  text-[1px] 
-//                   `}
-//                       >
-//                         Name
-//                       </span>
-//                     </div>
-//                   </div>
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="text"
-//                         name="lastName"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy font-[500] text-[1px] 
-//                   `}
-//                       >
-//                         E-mail
-//                       </span>
-//                     </div>
-//                   </div>
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="text"
-//                         name="lastName"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy !font-[300] text-[1px] 
-//                   `}
-//                       >
-//                         Phone number
-//                       </span>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//             <div className=" flex w-[100%] ">
-//               <button className=" flex w-[100%] font-Jersy bg-[#009dd1] font-[500] fledx items-center gap-[15px]  text-white justify-center rounded-[10px] py-[10px] text-[26px]">
-//                 Go Ahead
-//                 <i className=" text-white fa-regular fa-arrow-up-to-arc fa-rotate-90"></i>
-//               </button>
-//             </div>
-//           </div>
-//           <div className=" flex flex-col mx-auto  max-w-[430px]   justify-between h-[520px] min-w-[430px] rounded-[10px]  items-center  ">
-//             <div className=" flex w-[100%] border-[1px] p-[20px] border-[#0099dd]   flex-col h-[85%] rounded-[10px]">
-//               <h1 className=" flex justify-center mt-[5px]  text-[40px] w-fit mx-auto font-Jersy font-[500] ">
-//               VERIFICATION              </h1>
-//               <div className="  mt-[30px]  flex w-[100%]">
-//                 <div className=" flex flex-col gap-[40px] w-[100%]">
-//                   <div className="w-[100%] flex justify-between ">
-//                     <div className=" flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]">
-//                       <input
-//                         className=" flex justify-center h-[100%] text-[19px] w-[100%]  outline-none text-center"
-//                         type="number"
-//                       />
-//                     </div>
-//                     <div className=" flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]">
-//                       <input
-//                         className=" flex justify-center h-[100%] text-[19px] w-[100%]  outline-none text-center"
-//                         type="number"
-//                       />
-//                     </div>
-//                     <div className=" flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]">
-//                       <input
-//                         className=" flex justify-center h-[100%] text-[19px] w-[100%]  outline-none text-center"
-//                         type="number"
-//                       />
-//                     </div>
-//                     <div className=" flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]">
-//                       <input
-//                         className=" flex justify-center h-[100%] text-[19px] w-[100%]  outline-none text-center"
-//                         type="number"
-//                       />
-//                     </div>
-//                     <div className=" flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]">
-//                       <input
-//                         className=" flex justify-center h-[100%] text-[19px] w-[100%]  outline-none text-center"
-//                         type="number"
-//                       />
-//                     </div>
-//                     <div className=" flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]">
-//                       <input
-//                         className=" flex justify-center h-[100%] text-[19px] w-[100%]  outline-none text-center"
-//                         type="number"
-//                       />
-//                     </div>
-//                   </div>
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="text"
-//                         name="lastName"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy font-[500] text-[1px] 
-//                   `}
-//                       >
-//                         Create Password
-//                       </span>
-//                     </div>
-//                   </div>
-//                   <div className="w-[100%]">
-//                     <div className="input-box1">
-//                       <input
-//                         type="text"
-//                         name="lastName"
-//                         className={`font-Roboto h-[40px] pl-[10px] rounded-[0px] 
-//                       `}
-//                         required
-//                       />
-//                       <span
-//                         className={` font-Jersy !font-[300] text-[1px] 
-//                   `}
-//                       >
-//                        Confirm Password
-//                       </span>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//             <div className=" flex w-[100%] ">
-//               <button className=" flex w-[100%] font-Jersy bg-[#009dd1] font-[500] fledx items-center gap-[15px]  text-white justify-center rounded-[10px] py-[10px] text-[26px]">
-//                 Go Ahead
-//                 <i className=" text-white fa-regular fa-arrow-up-to-arc fa-rotate-90"></i>
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
 import React, { useState } from "react";
 import arrow from "../../../public/imges/arrow.png";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [currentStep, setCurrentStep] = useState("login");
+  const navigate = useNavigate();
+  
+  const handleCreateAccount =()=>{
+    navigate("/create-account")
+  }
 
   const handleNextStep = (step) => {
     setCurrentStep(step);
@@ -292,7 +68,7 @@ export default function LoginPage() {
                 </div>
               </div>
               <div className="flex w-[100%]">
-                <button className="flex w-[100%] font-Jersy bg-[#009dd1]  items-center  gap-[8px] font-[500] text-white justify-center rounded-[10px] py-[10px] text-[26px]">
+                <button className="flex w-[100%] font-Jersy bg-[#009dd1]  items-center  gap-[8px] font-[500] text-white justify-center rounded-[10px] py-[10px] text-[26px]" onClick={handleCreateAccount}>
                   Go AHEAD
                   <i className="text-white fa-regular fa-arrow-up-to-arc fa-rotate-90"></i>
                 </button>
@@ -409,7 +185,7 @@ export default function LoginPage() {
                 </div>
               </div>
               <div className="flex w-[100%]">
-                <button className="flex w-[100%] font-Jersy bg-[#009dd1]  items-center  gap-[8px] font-[500] text-white justify-center rounded-[10px] py-[10px] text-[26px]">
+                <button className="flex w-[100%] font-Jersy bg-[#009dd1]  items-center  gap-[8px] font-[500] text-white justify-center rounded-[10px] py-[10px] text-[26px]" onClick={handleCreateAccount}>
           GO AHEAD
                   <i className="text-white fa-regular fa-arrow-up-to-arc fa-rotate-90"></i>
                 </button>
