@@ -7,7 +7,7 @@ export default function Header() {
   return (
     <>
       <section className=" flex  w-[100%] ">
-        <div className=" w-[100%]  gap-[10px] flex items-center px-[0px] justify-between bg- rounded-[7px]  h-[42px]">
+        <div className=" w-[100%]  gap-[10px] flex items-center px-[0px] border-b-[1.5px] pb-[30px] pt-[20px] justify-between bg h-[42px]">
           <div className=" flex  w-fit  items-center gap-[10px]  ">
             <img className=" flex w-[35px] h-[35px]" src={backArrow} />
             <div className=" flex w-[6px] bg-[#ff8000] h-[40px]"></div>

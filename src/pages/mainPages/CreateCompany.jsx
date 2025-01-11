@@ -19,11 +19,11 @@ export default function CreateCompany() {
   return (
     <>
       <section className=" flex  w-[100%] h-[100%] overflow-hidden ">
-        <div className=" flex w-[100%] flex-col gap-[24px]  h-[96vh] ">
+        <div className=" flex w-[100%] flex-col gap-[14px]  h-[96vh] ">
           <Header />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className=" flex w-[100%] max-h-[93%] overflow-y-auto gap-[30px] rounded-[10px] ">
+            <div className=" flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px] ">
               <div className=" flex flex-col gap-[15px] w-[50%]  ">
                 <div className=" flex flex-col gap-[6px] w-[100%] ">
                   <h1 className=" flex  pl-[6px] font-Poppins text-[18px] text-[#427ae1]">
