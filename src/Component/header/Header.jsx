@@ -2,17 +2,22 @@ import React from "react";
 import backArrow from "../../../public/imges/main/back-arrow.png";
 import flag from "../../../public/imges/main/headerIndia.png";
 import avter from "../../../public/imges/main/avter.jpeg";
-
-export default function Header() {
+import { useNavigate } from "react-router-dom";
+ 
+export default function Header({pageName=""}) {
+ const navigate =useNavigate();
+ const handleBack =()=>{
+  navigate(-1)
+ }
   return (
     <>
       <section className=" flex  w-[100%] ">
         <div className=" w-[100%]  gap-[10px] flex items-center px-[0px] border-b-[1.5px] pb-[30px] pt-[20px] justify-between bg h-[42px]">
-          <div className=" flex  w-fit  items-center gap-[10px]  ">
-            <img className=" flex w-[35px] h-[35px]" src={backArrow} />
+          <div className=" flex  w-fit  cursor-pointer items-center gap-[10px]  " >
+            <img className=" flex w-[35px] h-[35px]" src={backArrow} onClick={handleBack} />
             <div className=" flex w-[6px] bg-[#ff8000] h-[40px]"></div>
-            <h1 className=" pl-[6px] text-[#3d3d3d] flex  font-Poppins text-[25px] font-[600]">
-              Create New Company
+            <h1 className=" pl-[6px] text-[#3d3d3d] flex  font-Poppins text-[25px] font-[600]" onClick={handleBack}>
+            {pageName}
             </h1>
           </div>
           <div className=" items-center   w-fit pr-[10px] flex gap-[30px]">

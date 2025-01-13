@@ -13,14 +13,24 @@ export default function CreateCompany() {
   const [bankaccountType, setbankAccountType] = useState("saving");
   const [billType, setbillType] = useState("only");
 
+  const [NameFocused, setNameFocused] = useState(false);
+  const [EmailFocused, setEmailFocused] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState(false);
+  const [firmFocused, setFirmFocused] = useState(false);
+  const [typeFocused, setTypeFocused] = useState(false);
+  const [addressFocused, setAddressFocused] = useState(false);
+  const [stateFocused, setStateFocused] = useState(false);
+  const [cityFocused, setCityFocused] = useState(false);
+  const [pinFocused, setPinFocused] = useState(false);
+
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
   return (
     <>
-      <section className=" flex  w-[100%] h-[100%] overflow-hidden ">
+      <section className=" flex  w-[100%] h-[100%] p-[15px] overflow-hidden ">
         <div className=" flex w-[100%] flex-col gap-[14px]  h-[96vh] ">
-          <Header />
+          <Header pageName=" Create New Company" />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
             <div className=" flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px] ">
@@ -35,7 +45,11 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            NameFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
                           Name
                         </label>
@@ -43,40 +57,54 @@ export default function CreateCompany() {
                           type="text"
                           name="name"
                           id="name"
-                          placeholder="Enter Your Name"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          placeholder={NameFocused ? "" : ""}
+                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setNameFocused(true)}
+                          onBlur={(e) => setNameFocused(e.target.value !== "")}
                         />
                       </div>
-                      <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]   text-[14px]  capitalize"
+                          htmlFor="email"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            EmailFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
-                          Email ID
+                        Email ID
                         </label>
                         <input
                           type="email"
                           name="email"
                           id="email"
-                          placeholder="Enter Your Email ID"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          placeholder={EmailFocused ? "" : ""}
+                className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setEmailFocused(true)}
+                          onBlur={(e) => setEmailFocused(e.target.value !== "")}
                         />
                       </div>
                     </div>
                     <div className=" flex w-[100%] flex-col gap-[20px]">
-                      <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
+                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          htmlFor="number"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            mobileNumber
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
-                          Mobile No
+                          Mobile Number
                         </label>
                         <input
                           type="number"
                           name="number"
                           id="number"
-                          placeholder="Enter Your Mobile Number"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          placeholder={mobileNumber ? "" : ""}
+                          className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setMobileNumber(true)}
+                          onBlur={(e) => setMobileNumber(e.target.value !== "")}
                         />
                       </div>
                     </div>
@@ -89,97 +117,133 @@ export default function CreateCompany() {
 
                   <div className=" w-[100%]  flex gap-[20px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] flex-col gap-[20px]">
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          htmlFor="firm"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            firmFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
                           Firm Name
                         </label>
                         <input
                           type="text"
-                          name="name"
-                          id="name"
-                          placeholder="Enter firm name"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          name="firm"
+                          id="firm"
+                          placeholder={firmFocused ? "" : ""}
+                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setFirmFocused(true)}
+                          onBlur={(e) => setFirmFocused(e.target.value !== "")}
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]   text-[14px]  capitalize"
+                      <label
+                          htmlFor="address"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            addressFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
-                          Business Address
+                      Buisness Address
                         </label>
                         <textarea
-                          type="email"
-                          name="email"
-                          id="email"
-                          placeholder="Enter Your Address"
+                          type="text"
+                          name="address"
+                          id="address"
+                          placeholder={addressFocused ? "" : ""}
+                          onFocus={() => setAddressFocused(true)}
+                          onBlur={(e) => setAddressFocused(e.target.value !== "")}
                           className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                         ></textarea>
                       </div>
 
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          htmlFor="state"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            stateFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
                           State
                         </label>
                         <input
                           type="text"
-                          name="name"
-                          id="name"
-                          placeholder="Enter Your State"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          name="state"
+                          id="state"
+                          placeholder={stateFocused ? "" : ""}
+                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setStateFocused(true)}
+                          onBlur={(e) => setStateFocused(e.target.value !== "")}
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          htmlFor="state"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            cityFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
                           City
                         </label>
                         <input
                           type="text"
-                          name="name"
-                          id="name"
-                          placeholder="Enter Your City"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          name="city"
+                          id="city"
+                          placeholder={cityFocused ? "" : ""}
+                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setCityFocused(true)}
+                          onBlur={(e) => setCityFocused(e.target.value !== "")}
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          htmlFor="pin"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            pinFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
-                          Pin-Code
+                        Pin-Code
                         </label>
                         <input
                           type="text"
-                          name="name"
-                          id="name"
-                          placeholder="Enter Pin-Code"
-                          className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
+                          name="pin"
+                          id="pin"
+                          placeholder={pinFocused ? "" : ""}
+                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setPinFocused(true)}
+                          onBlur={(e) => setPinFocused(e.target.value !== "")}
                         />
                       </div>
                     </div>
                     <div className=" flex w-[100%] flex-col gap-[20px]">
-                      <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
+                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          htmlFor="type"
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            typeFocused
+                              ? "-translate-y-[50%] text-primary text-xs"
+                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
                         >
                           Firm Type
                         </label>
                         <input
-                          type="number"
-                          name="number"
-                          id="number"
-                          placeholder="Enter firm type"
-                          className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
+                          type="text"
+                          name="type"
+                          id="type"
+                          placeholder={typeFocused ? "" : ""}
+                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setTypeFocused(true)}
+                          onBlur={(e) => setTypeFocused(e.target.value !== "")}
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
