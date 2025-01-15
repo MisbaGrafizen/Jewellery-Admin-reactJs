@@ -12,25 +12,27 @@ export default function Header({pageName=""}) {
   return (
     <>
       <section className=" flex  w-[100%] ">
-        <div className=" w-[100%]  gap-[10px] flex items-center px-[0px] border-b-[1.5px] pb-[30px] pt-[20px] justify-between bg h-[42px]">
-          <div className=" flex  w-fit  cursor-pointer items-center gap-[10px]  " >
-            <img className=" flex w-[35px] h-[35px]" src={backArrow} onClick={handleBack} />
-            <div className=" flex w-[6px] bg-[#ff8000] h-[40px]"></div>
-            <h1 className=" pl-[6px] text-[#3d3d3d] flex  font-Poppins text-[25px] font-[600]" onClick={handleBack}>
+        <div className=" w-[100%]  gap-[10px] flex items-center px-[0px] border-b-[1.5px] pb-[25px] pt-[20px] justify-between bg h-[42px]">
+          <div className=" flex  w-fit  cursor-pointer items-center gap-[5px]  " >
+            <img className=" flex w-[27px] h-[27px]" src={backArrow} onClick={handleBack} />
+            <div className=" flex w-[4px] bg-[#ff8000] h-[30px]"></div>
+            <h1 className=" pl-[6px] text-[#3d3d3d] flex  font-Poppins text-[20px] font-[600]" onClick={handleBack}>
             {pageName}
             </h1>
           </div>
-          <div className=" items-center   w-fit pr-[10px] flex gap-[30px]">
+          <div className=" flex gap-[20px]">
+          <div className=" flex font-Poppins ">
+          <p>
+        <span>    22 Carat </span>= 50,000
+          </p>
+
+          </div>
+
+          </div>
+          <div className=" items-center   w-fit pr-[10px] flex gap-[20px]">
             <div className=" flex gap-[13px] items-center w-fit">
-              <div className=" flex w-[31px]  rounded-[10px]">
-                <img
-                  className="w-[30px] h-[30px]  object-cover rounded-full"
-                  src={flag}
-                />
-              </div>
-              <div>
-                <i className="fa-regular text-[#3d3d3d] text-[20px] fa-bell"></i>
-              </div>
+         
+              
               <div>
                 <i className="fa-regular  text-[#3d3d3d] text-[20px] fa-gear"></i>
               </div>
@@ -42,7 +44,7 @@ export default function Header({pageName=""}) {
                   src={avter}
                 />
               </div>
-              <p className=" flex font-Poppins">Priyanshu</p>
+           
               <i className="fas fa-chevron-down"></i>
             </div>
           </div>

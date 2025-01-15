@@ -5,6 +5,7 @@ import alerT from "../../../public/imges/main/alert.png";
 import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
 import { Sidebar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function CreateCompany() {
   const [isChecked, setIsChecked] = useState(false);
@@ -22,13 +23,26 @@ export default function CreateCompany() {
   const [stateFocused, setStateFocused] = useState(false);
   const [cityFocused, setCityFocused] = useState(false);
   const [pinFocused, setPinFocused] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState("");
 
+  const firmTypes = [
+    "Sole Proprietorship",
+    "Partnership",
+    "LLC",
+    "Corporation",
+  ];
+
+  const handleSelect = (type) => {
+    setSelectedType(type);
+    setDropdownOpen(false);
+  };
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
   return (
     <>
-      <section className=" flex  w-[100%] h-[100%] p-[15px] overflow-hidden ">
+      <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
         <div className=" flex w-[100%] flex-col gap-[14px]  h-[96vh] ">
           <Header pageName=" Create New Company" />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
@@ -72,21 +86,21 @@ export default function CreateCompany() {
                               : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
                           }`}
                         >
-                        Email ID
+                          Email ID
                         </label>
                         <input
                           type="email"
                           name="email"
                           id="email"
                           placeholder={EmailFocused ? "" : ""}
-                className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                          className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setEmailFocused(true)}
                           onBlur={(e) => setEmailFocused(e.target.value !== "")}
                         />
                       </div>
                     </div>
                     <div className=" flex w-[100%] flex-col gap-[20px]">
-                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="number"
                           className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
@@ -117,7 +131,7 @@ export default function CreateCompany() {
 
                   <div className=" w-[100%]  flex gap-[20px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] flex-col gap-[20px]">
-                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="firm"
                           className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
@@ -139,7 +153,7 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <label
+                        <label
                           htmlFor="address"
                           className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
                             addressFocused
@@ -147,7 +161,7 @@ export default function CreateCompany() {
                               : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
                           }`}
                         >
-                      Buisness Address
+                          Buisness Address
                         </label>
                         <textarea
                           type="text"
@@ -155,7 +169,9 @@ export default function CreateCompany() {
                           id="address"
                           placeholder={addressFocused ? "" : ""}
                           onFocus={() => setAddressFocused(true)}
-                          onBlur={(e) => setAddressFocused(e.target.value !== "")}
+                          onBlur={(e) =>
+                            setAddressFocused(e.target.value !== "")
+                          }
                           className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                         ></textarea>
                       </div>
@@ -211,7 +227,7 @@ export default function CreateCompany() {
                               : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
                           }`}
                         >
-                        Pin-Code
+                          Pin-Code
                         </label>
                         <input
                           type="text"
@@ -225,13 +241,16 @@ export default function CreateCompany() {
                       </div>
                     </div>
                     <div className=" flex w-[100%] flex-col gap-[20px]">
-                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div
+                        className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                        onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
+                      >
                         <label
                           htmlFor="type"
                           className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            typeFocused
+                            typeFocused || selectedType
                               ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                              : "-translate-y-[-35%] cursor-text text-[#9f9e9e] text-xs"
                           }`}
                         >
                           Firm Type
@@ -240,12 +259,37 @@ export default function CreateCompany() {
                           type="text"
                           name="type"
                           id="type"
+                          value={selectedType}
                           placeholder={typeFocused ? "" : ""}
-                          className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
+                          className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                          readOnly
                           onFocus={() => setTypeFocused(true)}
-                          onBlur={(e) => setTypeFocused(e.target.value !== "")}
+                          onBlur={() => setTypeFocused(false)}
                         />
+                        <i className={dropdownOpen ? "fa-solid fa-chevron-up text-[14px] pr-[10px]" : "fa-solid fa-chevron-down text-[14px] pr-[10px]"}></i>
+                     
                       </div>
+
+                      <AnimatePresence>
+                        {dropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute  mt-1 bg-white w-[270px] border border-[#dedede] rounded-lg shadow-md z-10"
+                          >
+                            {firmTypes.map((type, index) => (
+                              <div
+                                key={index}
+                                className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                onClick={() => handleSelect(type)}
+                              >
+                                {type}
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="name"

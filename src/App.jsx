@@ -8,6 +8,7 @@ import LoginPage from "./pages/authPage/LoginPage";
 import CreateCompany from "./pages/mainPages/CreateCompany";
 import PurchesInvoice from "./pages/purches/PurchesInvoice";
 import Login from "./pages/authPage/Login";
+import InventoryCreate from "./pages/mainPages/InventoryCreate";
 
 
 
@@ -25,6 +26,7 @@ function App() {
          <Route path="/create-account" element={<CreateCompany />} />
          {/* purches screen */}
          <Route path="/purches-invoice" element={<PurchesInvoice />} />
+         <Route path="/inventory" element={<InventoryCreate />} />
 
 
         </Routes>
