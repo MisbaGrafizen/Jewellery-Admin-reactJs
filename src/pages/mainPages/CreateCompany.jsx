@@ -1,18 +1,14 @@
-import React, { useState } from "react";
-import backArrow from "../../../public/imges/main/back-arrow.png";
-import flag from "../../../public/imges/main/headerIndia.png";
-import alerT from "../../../public/imges/main/alert.png";
+import { useEffect, useState } from "react";
 import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
-import { Sidebar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import Cookies from 'js-cookie';
+import { getUserByIdAction } from "../../redux/action/userManagement";
+import { addCompanyInfoAction } from "../../redux/action/generalManagement";
 
 export default function CreateCompany() {
   const [isChecked, setIsChecked] = useState(false);
-  const [dealerType, setDealerType] = useState("regular");
-  const [accountType, setAccountType] = useState("jewellery");
-  const [bankaccountType, setbankAccountType] = useState("saving");
-  const [billType, setbillType] = useState("only");
 
   const [NameFocused, setNameFocused] = useState(false);
   const [EmailFocused, setEmailFocused] = useState(false);
@@ -25,21 +21,57 @@ export default function CreateCompany() {
   const [pinFocused, setPinFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
+  const userId = Cookies.get("user");
+  const [formData, setFormData] = useState({
+    firmName: '',
+    firmType: '',
+    address: '',
+    state: '',
+    city: '',
+    pinCode: '',
+    gstNumber: '',
+    panNumber: '',
+    holderName: '',
+    accountNo: '',
+    accountType: 'saving',
+    bankName: '',
+    IFSCCode: '',
+    bankAddress: '',
+    beginingFrom: '',
+    terms: '',
+    invoicePrefix: '',
+    invoiceNumber: '',
+    TCSApply: false,
+    dealerType: 'regular',
+    type: 'jewellery',
+    billType: 'only',
+  })
 
-  const firmTypes = [
-    "Sole Proprietorship",
-    "Partnership",
-    "LLC",
-    "Corporation",
-  ];
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.users.getUserById);
 
-  const handleSelect = (type) => {
-    setSelectedType(type);
-    setDropdownOpen(false);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(getUserByIdAction(userId));
+    }
+  }, [dispatch, userId]);
+
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(addCompanyInfoAction(formData));
+    alert("Data created Successfully.");
   };
+
   return (
     <>
       <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
@@ -59,11 +91,10 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="name"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            NameFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${NameFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Name
                         </label>
@@ -71,6 +102,7 @@ export default function CreateCompany() {
                           type="text"
                           name="name"
                           id="name"
+                          value={user?.name}
                           placeholder={NameFocused ? "" : ""}
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setNameFocused(true)}
@@ -80,11 +112,10 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="email"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            EmailFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${EmailFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Email ID
                         </label>
@@ -92,6 +123,7 @@ export default function CreateCompany() {
                           type="email"
                           name="email"
                           id="email"
+                          value={user?.email}
                           placeholder={EmailFocused ? "" : ""}
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setEmailFocused(true)}
@@ -103,11 +135,10 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="number"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            mobileNumber
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${mobileNumber
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Mobile Number
                         </label>
@@ -115,6 +146,7 @@ export default function CreateCompany() {
                           type="number"
                           name="number"
                           id="number"
+                          value={user?.mobileNumber}
                           placeholder={mobileNumber ? "" : ""}
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setMobileNumber(true)}
@@ -134,18 +166,19 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="firm"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            firmFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${firmFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Firm Name
                         </label>
                         <input
                           type="text"
-                          name="firm"
+                          name="firmName"
                           id="firm"
+                          value={formData?.firmName}
+                          onChange={handleChange}
                           placeholder={firmFocused ? "" : ""}
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setFirmFocused(true)}
@@ -155,11 +188,10 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="address"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            addressFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${addressFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Buisness Address
                         </label>
@@ -167,6 +199,8 @@ export default function CreateCompany() {
                           type="text"
                           name="address"
                           id="address"
+                          value={formData?.address}
+                          onChange={handleChange}
                           placeholder={addressFocused ? "" : ""}
                           onFocus={() => setAddressFocused(true)}
                           onBlur={(e) =>
@@ -179,11 +213,10 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="state"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            stateFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${stateFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           State
                         </label>
@@ -191,6 +224,8 @@ export default function CreateCompany() {
                           type="text"
                           name="state"
                           id="state"
+                          value={formData?.state}
+                          onChange={handleChange}
                           placeholder={stateFocused ? "" : ""}
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setStateFocused(true)}
@@ -200,11 +235,10 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="state"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            cityFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${cityFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           City
                         </label>
@@ -212,6 +246,8 @@ export default function CreateCompany() {
                           type="text"
                           name="city"
                           id="city"
+                          value={formData?.city}
+                          onChange={handleChange}
                           placeholder={cityFocused ? "" : ""}
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setCityFocused(true)}
@@ -221,18 +257,19 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="pin"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            pinFocused
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${pinFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Pin-Code
                         </label>
                         <input
                           type="text"
-                          name="pin"
+                          name="pinCode"
                           id="pin"
+                          value={formData?.pinCode}
+                          onChange={handleChange}
                           placeholder={pinFocused ? "" : ""}
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setPinFocused(true)}
@@ -247,17 +284,16 @@ export default function CreateCompany() {
                       >
                         <label
                           htmlFor="type"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            typeFocused || selectedType
-                              ? "-translate-y-[50%] text-primary text-xs"
-                              : "-translate-y-[-35%] cursor-text text-[#9f9e9e] text-xs"
-                          }`}
+                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${typeFocused || selectedType
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "-translate-y-[-35%] cursor-text text-[#9f9e9e] text-xs"
+                            }`}
                         >
                           Firm Type
                         </label>
                         <input
                           type="text"
-                          name="type"
+                          name="firmType"
                           id="type"
                           value={selectedType}
                           placeholder={typeFocused ? "" : ""}
@@ -267,7 +303,7 @@ export default function CreateCompany() {
                           onBlur={() => setTypeFocused(false)}
                         />
                         <i className={dropdownOpen ? "fa-solid fa-chevron-up text-[14px] pr-[10px]" : "fa-solid fa-chevron-down text-[14px] pr-[10px]"}></i>
-                     
+
                       </div>
 
                       <AnimatePresence>
@@ -278,11 +314,14 @@ export default function CreateCompany() {
                             exit={{ opacity: 0, y: -10 }}
                             className="absolute  mt-1 bg-white w-[270px] border border-[#dedede] rounded-lg shadow-md z-10"
                           >
-                            {firmTypes.map((type, index) => (
+                            {["Sole Proprietorship", "Partnership", "LLC", "Corporation"].map((type, index) => (
                               <div
                                 key={index}
                                 className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
-                                onClick={() => handleSelect(type)}
+                                onClick={() => {
+                                  setSelectedType(type);
+                                  setDropdownOpen(false);
+                                }}
                               >
                                 {type}
                               </div>
@@ -290,7 +329,7 @@ export default function CreateCompany() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                      <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="name"
                           className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -299,8 +338,10 @@ export default function CreateCompany() {
                         </label>
                         <input
                           type="number"
-                          name="number"
+                          name="gstNumber"
                           id="number"
+                          value={formData?.gstNumber}
+                          onChange={handleChange}
                           placeholder="Enter Your GST Number "
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
@@ -314,8 +355,10 @@ export default function CreateCompany() {
                         </label>
                         <input
                           type="number"
-                          name="number"
+                          name="panNumber"
                           id="number"
+                          value={formData?.panNumber}
+                          onChange={handleChange}
                           placeholder="Enter Your PAN Number "
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
@@ -331,14 +374,17 @@ export default function CreateCompany() {
                             <input
                               type="checkbox"
                               id="custom-checkbox"
+                              name="TCSApply"
                               style={{ display: "none" }}
-                              checked={isChecked} // Bind state to the checkbox
-                              onChange={handleCheckboxChange} // Update state on change
+                              checked={formData.TCSApply} // Bind state to the checkbox
+                              onChange={handleChange} // Update state on change
                             />
 
                             {/* Custom Checkbox */}
                             <span
-                              onClick={handleCheckboxChange} // Handle click
+                              onClick={() =>
+                                setFormData((prev) => ({ ...prev, TCSApply: !prev.TCSApply }))
+                              } // Handle click
                               style={{
                                 width: "20px",
                                 height: "20px",
@@ -351,7 +397,7 @@ export default function CreateCompany() {
                               }}
                             >
                               {/* Tick Mark */}
-                              {isChecked && (
+                              {formData.TCSApply && (
                                 <span
                                   style={{
                                     position: "absolute",
@@ -380,9 +426,12 @@ export default function CreateCompany() {
                                     type="radio"
                                     name="dealerType"
                                     value="regular"
-                                    checked={dealerType === "regular"}
+                                    checked={formData.dealerType === "regular"}
                                     onChange={(e) =>
-                                      setDealerType(e.target.value)
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        dealerType: e.target.value,
+                                      }))
                                     }
                                     className="sr-only peer"
                                   />
@@ -400,9 +449,12 @@ export default function CreateCompany() {
                                     type="radio"
                                     name="dealerType"
                                     value="composition"
-                                    checked={dealerType === "composition"}
+                                    checked={formData.dealerType === "composition"}
                                     onChange={(e) =>
-                                      setDealerType(e.target.value)
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        dealerType: e.target.value,
+                                      }))
                                     }
                                     className="sr-only peer"
                                   />
@@ -427,11 +479,14 @@ export default function CreateCompany() {
                                 <div className="relative flex items-center justify-center w-7 h-7">
                                   <input
                                     type="radio"
-                                    name="accountType"
+                                    name="type"
                                     value="jewellery"
-                                    checked={accountType === "jewellery"}
+                                    checked={formData.type === "jewellery"}
                                     onChange={(e) =>
-                                      setAccountType(e.target.value)
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        accountType: e.target.value,
+                                      }))
                                     }
                                     className="sr-only peer"
                                   />
@@ -447,11 +502,14 @@ export default function CreateCompany() {
                                 <div className="relative flex items-center justify-center w-7 h-7">
                                   <input
                                     type="radio"
-                                    name="accountType"
+                                    name="type"
                                     value="others"
-                                    checked={accountType === "others"}
+                                    checked={formData.type === "others"}
                                     onChange={(e) =>
-                                      setAccountType(e.target.value)
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        accountType: e.target.value,
+                                      }))
                                     }
                                     className="sr-only peer"
                                   />
@@ -488,8 +546,10 @@ export default function CreateCompany() {
                           </label>
                           <input
                             type="text"
-                            name="name"
+                            name="holderName"
                             id="name"
+                            value={formData?.holderName}
+                            onChange={handleChange}
                             placeholder="Enter Account Holder Name"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -505,8 +565,10 @@ export default function CreateCompany() {
                           </label>
                           <input
                             type="number"
-                            name="number"
+                            name="accountNo"
                             id="number"
+                            value={formData?.accountNo}
+                            onChange={handleChange}
                             placeholder="Enter Account No "
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -525,9 +587,12 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="bankType"
                                 value="saving"
-                                checked={bankaccountType === "saving"}
+                                checked={formData.bankType === "saving"}
                                 onChange={(e) =>
-                                  setbankAccountType(e.target.value)
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    bankType: e.target.value,
+                                  }))
                                 }
                                 className="sr-only peer"
                               />
@@ -545,9 +610,12 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="bankType"
                                 value="current"
-                                checked={bankaccountType === "current"}
+                                checked={formData.bankType === "current"}
                                 onChange={(e) =>
-                                  setbankAccountType(e.target.value)
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    bankType: e.target.value,
+                                  }))
                                 }
                                 className="sr-only peer"
                               />
@@ -564,9 +632,12 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="bankType"
                                 value="od"
-                                checked={bankaccountType === "od"}
+                                checked={formData.bankType === "od"}
                                 onChange={(e) =>
-                                  setbankAccountType(e.target.value)
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    bankType: e.target.value,
+                                  }))
                                 }
                                 className="sr-only peer"
                               />
@@ -583,9 +654,12 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="bankType"
                                 value="cc"
-                                checked={bankaccountType === "cc"}
+                                checked={formData.bankType === "cc"}
                                 onChange={(e) =>
-                                  setbankAccountType(e.target.value)
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    bankType: e.target.value,
+                                  }))
                                 }
                                 className="sr-only peer"
                               />
@@ -602,9 +676,12 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="bankType"
                                 value="others"
-                                checked={bankaccountType === "others"}
+                                checked={formData.bankType === "others"}
                                 onChange={(e) =>
-                                  setbankAccountType(e.target.value)
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    bankType: e.target.value,
+                                  }))
                                 }
                                 className="sr-only peer"
                               />
@@ -629,8 +706,10 @@ export default function CreateCompany() {
                           </label>
                           <input
                             type="text"
-                            name="name"
+                            name="bankName"
                             id="name"
+                            value={formData?.bankName}
+                            onChange={handleChange}
                             placeholder="Enter Bank Name"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -646,8 +725,10 @@ export default function CreateCompany() {
                           </label>
                           <input
                             type="number"
-                            name="number"
+                            name="IFSCCode"
                             id="number"
+                            value={formData?.IFSCCode}
+                            onChange={handleChange}
                             placeholder="Enter IFSC Code "
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -663,8 +744,10 @@ export default function CreateCompany() {
                       </label>
                       <textarea
                         type="email"
-                        name="email"
+                        name="bankAddress"
                         id="email"
+                        value={formData?.bankAddress}
+                        onChange={handleChange}
                         placeholder="Enter Your Bank address  "
                         className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                       ></textarea>
@@ -688,8 +771,10 @@ export default function CreateCompany() {
                           </label>
                           <input
                             type="text"
-                            name="name"
+                            name="beginingFrom"
                             id="name"
+                            value={formData?.beginingFrom}
+                            onChange={handleChange}
                             placeholder="Financial year Beginning From"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -705,8 +790,10 @@ export default function CreateCompany() {
                           </label>
                           <input
                             type="number"
-                            name="number"
+                            name="invoicePrefix"
                             id="number"
+                            value={formData?.invoicePrefix}
+                            onChange={handleChange}
                             placeholder="Enter Account No "
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -724,8 +811,10 @@ export default function CreateCompany() {
                         </label>
                         <textarea
                           type="email"
-                          name="email"
+                          name="terms"
                           id="email"
+                          value={formData?.terms}
+                          onChange={handleChange}
                           placeholder="Enter Term & Condition "
                           className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                         ></textarea>
@@ -742,8 +831,10 @@ export default function CreateCompany() {
                             </label>
                             <input
                               type="number"
-                              name="number"
+                              name="invoiceNumber"
                               id="number"
+                              value={formData?.invoiceNumber}
+                              onChange={handleChange}
                               placeholder="Enter Account No "
                               className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                             />
@@ -756,8 +847,13 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="billType"
                                 value="only"
-                                checked={billType === "only"}
-                                onChange={(e) => setbillType(e.target.value)}
+                                checked={formData?.billType === "only"}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    billType: e.target.value,
+                                  }))
+                                }
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
@@ -773,9 +869,12 @@ export default function CreateCompany() {
                                 type="radio"
                                 name="billType"
                                 value="inventory"
-                                checked={bankaccountType === "inventory"}
+                                checked={formData?.billType === "inventory"}
                                 onChange={(e) =>
-                                  setbankAccountType(e.target.value)
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    billType: e.target.value,
+                                  }))
                                 }
                                 className="sr-only peer"
                               />
@@ -793,7 +892,8 @@ export default function CreateCompany() {
                 </div>
 
                 <div className=" w-[100%] flex justify-end">
-                  <div className=" flex font-Poppins text-[17px] font-[400]  h-[45px]  rounded-[7px] items-center justify-center  w-[150px]  text-[#fff] bg-[#009dd1] ">
+                  <div className=" flex font-Poppins text-[17px] font-[400]  h-[45px]  rounded-[7px] items-center justify-center  w-[150px]  text-[#fff] bg-[#009dd1] "
+                  onClick={handleSubmit}>
                     <p>ADD COMPANY</p>
                   </div>
                 </div>

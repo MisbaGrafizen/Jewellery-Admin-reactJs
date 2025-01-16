@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
-import logo from "../../../public/imges/123.png";
-import mainpng from "../../../public/imges/loginPage.png";
+import axios from "axios";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 export default function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -17,7 +17,10 @@ export default function Login() {
   const [isOtpSent, setIsOtpSent] = useState(true);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const isOtpComplete = otp.every((digit) => digit !== "");
   const isPasswordValid = password === confirmPassword && password.length >= 6;
@@ -35,15 +38,56 @@ export default function Login() {
   const handleMobileChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value)) {
-      setMobileNumber(value); // Only accept numeric values up to 10 digits
+      setMobileNumber(value); 
     }
   };
-  const handleGetOtp = () => {
-    if (mobileNumber.length === 10) {
-      setIsOtpSent(true); // Enable OTP inputs
-      otpRefs.current[0]?.focus(); // Focus on the first OTP input
+
+  const handleGetOtp = async () => {
+    setLoading(true);
+    try {
+      const registerResponse = await axios.post("http://localhost:8000/api/v1/auth/user/register", {
+        name: userName,
+        email,
+        mobileNumber,
+      });
+      console.log("Register Response:", registerResponse.data);
+
+      // Step 2: Send OTP
+      const sendOtpResponse = await axios.post("http://localhost:8000/api/v1/auth/send-otp", {
+        mobileNumber,
+      });
+      console.log("Send OTP Response:", sendOtpResponse.data);
+
+      alert("User registered and OTP sent successfully!");
+      alert("User registered and OTP sent successfully!");
+    } catch (error) {
+      console.error("Error during registration and OTP:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Failed to register and send OTP.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleLogin = async () => {
+    if (!userName || !password) {
+      setErrorMessage("Username and password are required.");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/auth/user/login", {
+        name: userName,
+        password: password,
+      });
+      console.log("Login Success:", response.data);
+      Cookies.set("token", response.data.token);
+      Cookies.set("user", response.data.user._id);
+      navigate("/create-account"); 
+    } catch (error) {
+      console.error("Login Error:", error.response?.data?.message || error.message);
+      setErrorMessage("Invalid credentials. Please try again.");
+    }
+  };
+
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
@@ -51,7 +95,6 @@ export default function Login() {
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Move to the next input field if available
       if (value && index < otpRefs.current.length - 1) {
         otpRefs.current[index + 1]?.focus();
       }
@@ -61,49 +104,69 @@ export default function Login() {
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace") {
       const newOtp = [...otp];
-      newOtp[index] = ""; // Clear the current field
+      newOtp[index] = ""; 
       setOtp(newOtp);
 
-      // Move to the previous field if available
       if (index > 0) {
         otpRefs.current[index - 1]?.focus();
       }
     }
   };
 
-  const handleNextStep = () => {
-    if (registerStep === 1 && isOtpComplete) {
-      setRegisterStep(2); // Navigate to password creation step
-    } else if (registerStep === 2 && isPasswordValid) {
-      alert("Registration Complete!");
-      // You can navigate to a success page or login page here
-      navigate("/dashboard"); // Example navigation
+  const handleVerifyOtp = async () => {
+    const otpValue = otp.join(""); 
+    if (!mobileNumber || !otpValue) {
+      alert("Mobile number and OTP are required!");
+      return;
+    }
+  
+    try {
+      setLoading(true);
+      const response = await axios.post("http://localhost:8000/api/v1/auth/verify-otp", {
+        mobileNumber,
+        otp: otpValue,
+      });
+      alert(response.data.message);
+      setRegisterStep(2); 
+    } catch (error) {
+      alert(error.response?.data?.message || "OTP verification failed.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleSetPassword = async () => {
+    if (!mobileNumber || !password || !confirmPassword) {
+      alert("Mobile number, password, and confirm password are required!");
+      return;
+    }
+  
+    if (password !== confirmPassword) {
+      alert("Password and confirm password do not match!");
+      return;
+    }
+  
+    try {
+      setLoading(true);
+      const response = await axios.post("http://localhost:8000/api/v1/auth/set-password", {
+        mobileNumber,
+        password,
+        confirmPassword,
+      });
+      alert(response.data.message);
+      navigate("/create-account"); 
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to set password.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
 
   return (
     <div className="bg-white sm:bg-[#122f97] sm:py-11 select-none h-[100vh] sm:px-16 overflow-hidden">
       <div className="login-bg flex h-full gap-14 overflow-hidden justify-center">
-        {/* <div className="hidden lg:block">
-          <div className="mb-7">
-            {/* <img
-              src={logo}
-              alt="logo"
-              className="cursor-pointer"
-              style={{ maxWidth: "200px" }}
-            /> 
-          </div>
-          <div className="text-4xl text-white font-medium font-Poppins capitalize text-center mb-">
-            Welcome to SPJ Services
-          </div>
-          <div className="text-white capitalize font-Montserrat text-sm mt-[10px] mb-[18px]">
-            Enter your email and password to login into your account
-          </div>
-          <div className="text-center">
-            <img src={mainpng} alt="login" className="mx-auto" />
-          </div>
-        </div> */}
-
         <div className="flex items-center justify-center  relative font-medium text-sm md:min-w-[501px] max-w-[501px]">
           {isRegistering ? (
             <div className="bg-white w-full rounded-[7px]  relative   px-5 h-[580px] sm:p-[30px] shadow-main flex flex-col overflow-auto">
@@ -111,11 +174,6 @@ export default function Login() {
                 <h1 className="text-3xl sm:text-[40px] font-[400] font-Poppins text-[#163151]">
                   {registerStep === 1 ? "Register User" : "Create Password"}
                 </h1>
-                {/* <p className="font-light text-sm sm:text-lg font-Poppins text-[#124077] text-opacity-[0.64]">
-                  {registerStep === 1
-                    ? "Enter your Mobile, Email, and Name to Register"
-                    : "Create a secure password for your account"}
-                </p> */}
               </div>
 
               <form>
@@ -125,11 +183,10 @@ export default function Login() {
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="name"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                          nameFocused
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${nameFocused
                             ? "-translate-y-[50%] text-primary text-xs"
                             : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                        }`}
+                          }`}
                       >
                         User Name
                       </label>
@@ -139,6 +196,8 @@ export default function Login() {
                         name="name"
                         id="name"
                         placeholder={nameFocused ? "" : ""}
+                        value= {userName}
+                        onChange={(e) => setUserName(e.target.value)}
                         className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
                         onFocus={() => setNameFocused(true)}
                         onBlur={(e) => setNameFocused(e.target.value !== "")}
@@ -149,11 +208,10 @@ export default function Login() {
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="email"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                          emailFocused
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${emailFocused
                             ? "-translate-y-[50%] text-primary text-xs"
                             : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                        }`}
+                          }`}
                       >
                         Email
                       </label>
@@ -162,6 +220,8 @@ export default function Login() {
                         name="email"
                         id="email"
                         placeholder={emailFocused ? "" : ""}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
                         onFocus={() => setEmailFocused(true)}
                         onBlur={(e) => setEmailFocused(e.target.value !== "")}
@@ -173,11 +233,10 @@ export default function Login() {
                       <div className="relative w-full border border-[#BCBCBC] py-4 px-1 rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="number"
-                          className={`bg-white px-1 absolute top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                            mobileFocused
+                          className={`bg-white px-1 absolute top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${mobileFocused
                               ? "-translate-y-[50%] left-[20px] text-primary text-xs"
                               : " -translate-y-[-55%] cursor-text left-[50px] text-[#9f9e9e] text-xs"
-                          }`}
+                            }`}
                         >
                           Mobile Number
                         </label>
@@ -199,11 +258,10 @@ export default function Login() {
                         />
                       </div>
                       <div
-                        className={`flex w-[150px] justify-center items-center text-[18px] rounded-[8px] font-[500] font-Poppins ${
-                          mobileNumber.length === 10
+                        className={`flex w-[150px] justify-center items-center text-[18px] rounded-[8px] font-[500] font-Poppins ${mobileNumber.length === 10
                             ? "bg-[#fff] text-primary border-primary select-none active:bg-[#122f97] active:text-[#fff]  active:border-[0px] border-[1.5px] cursor-pointer"
                             : "bg-[#fb0a0a] text-[#fff] cursor-not-allowed"
-                        }`}
+                          }`}
                         onClick={handleGetOtp}
                       >
                         <p>Get OTP</p>
@@ -215,9 +273,8 @@ export default function Login() {
                         {otp.map((digit, index) => (
                           <div
                             key={index}
-                            className={`relative w-[60px] h-[60px] rounded-lg flex items-center justify-center ${
-                              isOtpSent ? "" : "border-gray-300"
-                            } border-[1.5px]`}
+                            className={`relative w-[60px] h-[60px] rounded-lg flex items-center justify-center ${isOtpSent ? "" : "border-gray-300"
+                              } border-[1.5px]`}
                           >
                             <input
                               key={index}
@@ -238,77 +295,15 @@ export default function Login() {
                         ))}
                       </div>
                     )}
-                  </div>
-                )}
-
-                {registerStep === 2 && (
-                  <div className="mt-14 space-y-8">
-                    <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <label
-                        htmlFor="name"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                          newpasswordFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                        }`}
-                      >
-                        New Password
-                      </label>
-
-                      <input
-                        type="text"
-                        name="password"
-                        id="password"
-                        value={password}
-                        placeholder={newpasswordFocused ? "" : ""}
-                        className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
-                        onFocus={() => setNewpasswordFocused(true)}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onBlur={(e) =>
-                          setNewpasswordFocused(e.target.value !== "")
-                        }
-                      />
-                    </div>
-                    <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <label
-                        htmlFor="name"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                          confirmpasswordFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                        }`}
-                      >
-                        Confirmed password
-                      </label>
-
-                      <input
-                        type="text"
-                        name="confirmPassword"
-                        id="confirmPassword"
-                        value={confirmPassword}
-                   
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder={confirmpasswordFocused ? "" : ""}
-                        className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
-                        onFocus={() => setConfirmpasswordFocused(true)}
-                        onBlur={(e) =>
-                          setConfirmpasswordFocused(e.target.value !== "")
-                        }
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <div className="text-center  w-[90%] bottom-[33px] absolute  ">
-                <button
+                           <div className="text-center  w-[90%] bottom-[33px] absolute  ">
+                  <button
                     type="button"
-                    onClick={handleNextStep}
-                    className={`w-full px-3 py-4 rounded-md font-Poppins text-white text-xl font-medium ${
-                      (registerStep === 1 && isOtpComplete) ||
-                      (registerStep === 2 && isPasswordValid)
+                    onClick={handleVerifyOtp}
+                    className={`w-full px-3 py-4 rounded-md font-Poppins text-white text-xl font-medium ${(registerStep === 1 && isOtpComplete) ||
+                        (registerStep === 2 && isPasswordValid)
                         ? "bg-[#122f97] shadow-blue"
                         : "bg-gray-400 cursor-not-allowed"
-                    }`}
+                      }`}
                     disabled={
                       (registerStep === 1 && !isOtpComplete) ||
                       (registerStep === 2 && !isPasswordValid)
@@ -337,6 +332,94 @@ export default function Login() {
                     </a>
                   </p>
                 </div>
+                  </div>
+                )}
+
+                {registerStep === 2 && (
+                  <div className="mt-14 space-y-8">
+                    <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
+                      <label
+                        htmlFor="password"
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${newpasswordFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
+                      >
+                        New Password
+                      </label>
+
+                      <input
+                        type="text"
+                        name="password"
+                        id="password"
+                        value={password}
+                        placeholder={newpasswordFocused ? "" : ""}
+                        className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
+                        onFocus={() => setNewpasswordFocused(true)}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onBlur={(e) =>
+                          setNewpasswordFocused(e.target.value !== "")
+                        }
+                      />
+                    </div>
+                    <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
+                      <label
+                        htmlFor="confirmPassword"
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${confirmpasswordFocused
+                            ? "-translate-y-[50%] text-primary text-xs"
+                            : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
+                          }`}
+                      >
+                        Confirmed password
+                      </label>
+
+                      <input
+                        type="text"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder={confirmpasswordFocused ? "" : ""}
+                        className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
+                        onFocus={() => setConfirmpasswordFocused(true)}
+                        onBlur={(e) =>
+                          setConfirmpasswordFocused(e.target.value !== "")
+                        }
+                      />
+                    </div>
+                    <div className="text-center  w-[90%] bottom-[33px] absolute  ">
+                  <button
+                    type="button"
+                    onClick={handleSetPassword}
+                    className={`w-full px-3 py-4 rounded-md font-Poppins text-white bg-[#122f97] shadow-blue text-xl font-medium `}
+                  >
+                   Register Now
+                  </button>
+                  <p className="text-sm sm:text-[12px]  pl-[4px]  font-Poppins w-[90%] text-[#00000099]  mx-auto font-light mt-auto lg:mt-[10px]">
+                    By Logging in, I agree with all
+                    <a
+                      href="https://billwale.com/privacypolicy?navigate=policy"
+                      target="_blank"
+                      className=" pl-[5px] pr-[5px] text-[#F7941D]"
+                      rel="noreferrer"
+                    >
+                      Privacy Policy
+                    </a>
+                    and
+                    <a
+                      href="https://billwale.com/privacypolicy?navigate=terms"
+                      target="_blank"
+                      className="text-[#F7941D] pl-[5px]"
+                      rel="noreferrer"
+                    >
+                      Terms of Service
+                    </a>
+                  </p>
+                </div>
+                  </div>
+                )}
+
+        
               </form>
             </div>
           ) : (
@@ -345,9 +428,6 @@ export default function Login() {
                 <h1 className="text-3xl sm:text-[40px] font-[500] font-Poppins text-[#163151]">
                   Log In
                 </h1>
-                {/* <p className="font-light text-sm sm:text-lg font-Poppins text-[#124077] text-opacity-[0.64]">
-                  Enter your Mobile or Email and Password to log in
-                </p> */}
               </div>
 
               <form>
@@ -356,11 +436,10 @@ export default function Login() {
                   <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                     <label
                       htmlFor="name"
-                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                        nameFocused
+                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${nameFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                      }`}
+                        }`}
                     >
                       User Name
                     </label>
@@ -369,6 +448,8 @@ export default function Login() {
                       type="text"
                       name="name"
                       id="name"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
                       placeholder={nameFocused ? "" : ""}
                       className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
                       onFocus={() => setNameFocused(true)}
@@ -378,11 +459,10 @@ export default function Login() {
                   <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                     <label
                       htmlFor="name"
-                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                        passwordFocused
+                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${passwordFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                      }`}
+                        }`}
                     >
                       Password
                     </label>
@@ -391,6 +471,8 @@ export default function Login() {
                       type="text"
                       name="name"
                       id="name"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder={passwordFocused ? "" : ""}
                       className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
                       onFocus={() => setPasswordFocused(true)}
@@ -409,6 +491,7 @@ export default function Login() {
 
                   <div className="text-center  w-[90%]  mt-5">
                     <button
+                    onClick={handleLogin}
                       type="button"
                       className="w-full bg-bill shadow-blue px-3 bg-[#122f97] py-4 rounded-md font-Poppins text-white text-xl font-medium"
                     >
@@ -416,7 +499,7 @@ export default function Login() {
                     </button>
                   </div>
                   <p className="text-sm sm:text-[14px] font-Poppins w-[90%] text-[#00000099] text-center font-light mt-auto lg:mt-[10px]">
-                    By Logging in, I agree with Billwale’s
+                    By Logging in, I agree with all
                     <a
                       href="https://billwale.com/privacypolicy?navigate=policy"
                       target="_blank"
