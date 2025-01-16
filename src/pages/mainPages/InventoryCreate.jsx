@@ -19,10 +19,13 @@ export default function InventoryCreate() {
   const [caratIdToDelete, setCaratIdToDelete] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
+  
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
   const [deleteContext, setDeleteContext] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [dropdownOpenMetal, setDropdownOpenMetal] = useState(false);
+  const [selectedTypeMetal, setSelectedTypeMetal] = useState("");
 
 
 
@@ -814,7 +817,7 @@ export default function InventoryCreate() {
                                       autoFocus
                                     />
                                     <p
-                                      className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto"
+                                      className="text-red-500 hover:bg-red-100 !bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         handleOpenDeleteModal(
@@ -841,8 +844,8 @@ export default function InventoryCreate() {
                 </div>
 
                 <div className=" flex">
-                  <div className="w-full h-full mx-auto rounded-[10px] border border-[#427ae1]   relative">
-                    <div className="box-border border-[#427ae1]  w-full">
+                  <div className="w-full h-full  mx-auto rounded-[10px] border border-[#427ae1]   relative">
+                    <div className="box-border border-[#427ae1] relative  w-full">
                       <div className="sticky top-0 flex  bs-mix-green border-[#427ae1] w-full">
                         <div className="flex justify-center text-center gap-[7px] py-[10px] border-r border-b border-[#427ae1]  items-center px-3 min-w-[6%] max-w-[6%]">
                           <input
@@ -910,7 +913,7 @@ export default function InventoryCreate() {
                               name="type"
                               id="type"
                               value={selectedType}
-                              placeholder="select category"
+                              placeholder="Select Carat"
                               className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               readOnly
                             />
@@ -928,7 +931,7 @@ export default function InventoryCreate() {
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                className="absolute top-[90%]  mt-1 bg-white w-[220px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                className="absolute top-[90%]  mt-1 bg-white w-[200px] border border-[#dedede] rounded-lg shadow-md z-10"
                               >
                                 {firmTypes.map((type, index) => (
                                   <div
@@ -952,28 +955,28 @@ export default function InventoryCreate() {
                               type="text"
                               name="type"
                               id="type"
-                              value={selectedType}
-                              placeholder="select category"
+                              value={selectedTypeMetal}
+                              placeholder="Select Metal"
                               className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               readOnly
                             />
                             <i
                               className={
-                                dropdownOpen
+                                dropdownOpenMetal
                                   ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                   : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                               }
                             ></i>
                           </div>
                           <AnimatePresence>
-                            {dropdownOpen && (
+                            {dropdownOpenMetal && (
                               <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 className="absolute top-[90%]  mt-1 bg-white w-[220px] border border-[#dedede] rounded-lg shadow-md z-10"
                               >
-                                {firmTypes.map((type, index) => (
+                                {metalType.map((type, index) => (
                                   <div
                                     key={index}
                                     className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -1006,7 +1009,7 @@ export default function InventoryCreate() {
       </section>
 
       <NextUIModal isOpen={selectedmodalopen} onOpenChange={handleModalclose}>
-        <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px] shadow-delete ">
+        <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px]  ">
           {(handleModalclose) => (
             <>
               <div className="relative w-[100%] h-[100%] ">

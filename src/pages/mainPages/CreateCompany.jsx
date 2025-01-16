@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,7 @@ export default function CreateCompany() {
   const [cityFocused, setCityFocused] = useState(false);
   const [pinFocused, setPinFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [selectedType, setSelectedType] = useState("");
   const userId = Cookies.get("user");
   const [formData, setFormData] = useState({
@@ -72,6 +73,19 @@ export default function CreateCompany() {
     alert("Data created Successfully.");
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false); // Close dropdown if clicked outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <>
       <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
@@ -79,22 +93,20 @@ export default function CreateCompany() {
           <Header pageName=" Create New Company" />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className=" flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px] ">
-              <div className=" flex flex-col gap-[15px] w-[50%]  ">
+            <div className=" flex w-[100%] max-h-[100%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px] ">
+              <div className=" flex flex-col gap-[10px] w-[50%]  ">
                 <div className=" flex flex-col gap-[6px] w-[100%] ">
-                  <h1 className=" flex  pl-[6px] font-Poppins text-[18px] text-[#427ae1]">
+                  <h1 className=" flex  pl-[6px] font-Poppins text-[16px] text-[#427ae1]">
                     Personal Details
                   </h1>
 
-                  <div className=" w-[100%]  flex gap-[20px] border-[1px] bg-white shadow1-blue py-[29px]  px-[20px] rounded-[10px] h-fit">
-                    <div className=" flex w-[100%] flex-col gap-[20px]">
+                  <div className=" w-[100%]  flex gap-[16px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
+                    <div className=" flex w-[100%] flex-col gap-[16px]">
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="name"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${NameFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                       className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                       
                         >
                           Name
                         </label>
@@ -102,20 +114,19 @@ export default function CreateCompany() {
                           type="text"
                           name="name"
                           id="name"
+                        
                           value={user?.name}
-                          placeholder={NameFocused ? "" : ""}
+                          placeholder="Your Name"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setNameFocused(true)}
                           onBlur={(e) => setNameFocused(e.target.value !== "")}
+                            autocomplete="nasme"
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="email"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${EmailFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className='bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize'
                         >
                           Email ID
                         </label>
@@ -124,21 +135,19 @@ export default function CreateCompany() {
                           name="email"
                           id="email"
                           value={user?.email}
-                          placeholder={EmailFocused ? "" : ""}
+                             placeholder="Enter Email"
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setEmailFocused(true)}
                           onBlur={(e) => setEmailFocused(e.target.value !== "")}
+                             autocomplete="naqsme"
                         />
                       </div>
                     </div>
-                    <div className=" flex w-[100%] flex-col gap-[20px]">
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                    <div className=" flex w-[100%] flex-col gap-[16px]">
+                      <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="number"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${mobileNumber
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           Mobile Number
                         </label>
@@ -147,29 +156,27 @@ export default function CreateCompany() {
                           name="number"
                           id="number"
                           value={user?.mobileNumber}
-                          placeholder={mobileNumber ? "" : ""}
+                          placeholder="Mobile Number"
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setMobileNumber(true)}
                           onBlur={(e) => setMobileNumber(e.target.value !== "")}
+                              autocomplete="nasme"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className=" flex flex-col gap-[6px] w-[100%] ">
-                  <h1 className=" flex  pl-[6px] font-Poppins text-[18px] text-[#427ae1]">
+                  <h1 className=" flex  pl-[6px] font-Poppins text-[16px] text-[#427ae1]">
                     Company Details
                   </h1>
 
-                  <div className=" w-[100%]  flex gap-[20px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
-                    <div className=" flex w-[100%] flex-col gap-[20px]">
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                  <div className=" w-[100%]  relative flex gap-[16px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
+                    <div className=" flex w-[100%] flex-col gap-[16px]">
+                      <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="firm"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${firmFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           Firm Name
                         </label>
@@ -179,19 +186,17 @@ export default function CreateCompany() {
                           id="firm"
                           value={formData?.firmName}
                           onChange={handleChange}
-                          placeholder={firmFocused ? "" : ""}
+                          placeholder=" Enter Your Firm Name"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setFirmFocused(true)}
                           onBlur={(e) => setFirmFocused(e.target.value !== "")}
+                              autocomplete="nasme"
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="address"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${addressFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           Buisness Address
                         </label>
@@ -201,11 +206,12 @@ export default function CreateCompany() {
                           id="address"
                           value={formData?.address}
                           onChange={handleChange}
-                          placeholder={addressFocused ? "" : ""}
+                          placeholder=" Enter Your Buisness Address"
                           onFocus={() => setAddressFocused(true)}
                           onBlur={(e) =>
                             setAddressFocused(e.target.value !== "")
                           }
+                              autocomplete="nasme"
                           className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                         ></textarea>
                       </div>
@@ -213,10 +219,7 @@ export default function CreateCompany() {
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="state"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${stateFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           State
                         </label>
@@ -226,19 +229,17 @@ export default function CreateCompany() {
                           id="state"
                           value={formData?.state}
                           onChange={handleChange}
-                          placeholder={stateFocused ? "" : ""}
+                        placeholder="Enter Your State"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setStateFocused(true)}
                           onBlur={(e) => setStateFocused(e.target.value !== "")}
+                              autocomplete="nasme"
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="state"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${cityFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           City
                         </label>
@@ -248,19 +249,17 @@ export default function CreateCompany() {
                           id="city"
                           value={formData?.city}
                           onChange={handleChange}
-                          placeholder={cityFocused ? "" : ""}
+                          placeholder="Enter Your City"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setCityFocused(true)}
                           onBlur={(e) => setCityFocused(e.target.value !== "")}
+                              autocomplete="nasme"
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="pin"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${pinFocused
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "  -translate-y-[-35%] cursor-text  text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           Pin-Code
                         </label>
@@ -270,24 +269,23 @@ export default function CreateCompany() {
                           id="pin"
                           value={formData?.pinCode}
                           onChange={handleChange}
-                          placeholder={pinFocused ? "" : ""}
+                          placeholder="Enter Pin-Code"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setPinFocused(true)}
                           onBlur={(e) => setPinFocused(e.target.value !== "")}
+                              autocomplete="nasme"
                         />
                       </div>
                     </div>
-                    <div className=" flex w-[100%] flex-col gap-[20px]">
+                    <div className=" flex w-[100%] flex-col gap-[16px]">
                       <div
+                       ref={dropdownRef}
                         className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                         onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                       >
                         <label
                           htmlFor="type"
-                          className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${typeFocused || selectedType
-                            ? "-translate-y-[50%] text-primary text-xs"
-                            : "-translate-y-[-35%] cursor-text text-[#9f9e9e] text-xs"
-                            }`}
+                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                         >
                           Firm Type
                         </label>
@@ -296,7 +294,7 @@ export default function CreateCompany() {
                           name="firmType"
                           id="type"
                           value={selectedType}
-                          placeholder={typeFocused ? "" : ""}
+                          placeholder="Select Firm Type"
                           className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                           readOnly
                           onFocus={() => setTypeFocused(true)}
@@ -312,7 +310,7 @@ export default function CreateCompany() {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute  mt-1 bg-white w-[270px] border border-[#dedede] rounded-lg shadow-md z-10"
+                            className="absolute  mt-[50px] bg-white w-[270px] border border-[#dedede] rounded-lg shadow-md z-10"
                           >
                             {["Sole Proprietorship", "Partnership", "LLC", "Corporation"].map((type, index) => (
                               <div
@@ -342,6 +340,7 @@ export default function CreateCompany() {
                           id="number"
                           value={formData?.gstNumber}
                           onChange={handleChange}
+                              autocomplete="nasme"
                           placeholder="Enter Your GST Number "
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
@@ -359,6 +358,7 @@ export default function CreateCompany() {
                           id="number"
                           value={formData?.panNumber}
                           onChange={handleChange}
+                              autocomplete="nasme"
                           placeholder="Enter Your PAN Number "
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
@@ -528,14 +528,14 @@ export default function CreateCompany() {
                   </div>
                 </div>
               </div>
-              <div className=" flex w-[50%] flex-col gap-[20px] h-fit ">
+              <div className=" flex w-[50%] flex-col gap-[16px] h-fit ">
                 <div className=" flex flex-col gap-[6px] w-[100%] ">
-                  <h1 className=" flex  pl-[6px] font-Poppins text-[18px] text-[#427ae1]">
+                  <h1 className=" flex  pl-[6px] font-Poppins text-[16px] text-[#427ae1]">
                     Bank Details
                   </h1>
 
-                  <div className=" w-[100%]  flex  flex-col gap-[20px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
-                    <div className=" flex w-[100%] gap-[20px]">
+                  <div className=" w-[100%]  flex  flex-col gap-[14px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
+                    <div className=" flex w-[100%] gap-[16px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                           <label
@@ -550,6 +550,7 @@ export default function CreateCompany() {
                             id="name"
                             value={formData?.holderName}
                             onChange={handleChange}
+                              autocomplete="nasme"
                             placeholder="Enter Account Holder Name"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -570,6 +571,7 @@ export default function CreateCompany() {
                             value={formData?.accountNo}
                             onChange={handleChange}
                             placeholder="Enter Account No "
+                              autocomplete="nasme"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
                         </div>
@@ -711,6 +713,7 @@ export default function CreateCompany() {
                             value={formData?.bankName}
                             onChange={handleChange}
                             placeholder="Enter Bank Name"
+                              autocomplete="nasme"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
                         </div>
@@ -726,6 +729,7 @@ export default function CreateCompany() {
                           <input
                             type="number"
                             name="IFSCCode"
+                              autocomplete="nasme"
                             id="number"
                             value={formData?.IFSCCode}
                             onChange={handleChange}
@@ -755,7 +759,7 @@ export default function CreateCompany() {
                   </div>
                 </div>
                 <div className=" flex flex-col gap-[6px] w-[100%] ">
-                  <h1 className=" flex  pl-[6px] font-Poppins text-[18px] text-[#427ae1]">
+                  <h1 className=" flex  pl-[6px] font-Poppins text-[16px] text-[#427ae1]">
                     General Details
                   </h1>
 
