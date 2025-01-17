@@ -1295,18 +1295,18 @@ export default function InventoryCreate() {
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                             >
-                              N .Weight
+                              Wastage
                             </label>
                             <input
                               type="Number"
-                              placeholder="Enter Net Weight"
+                              placeholder="Enter Wastage"
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
                           </div>
                         </div>
-                        <div className=" flex w-[100%]  gap-[30px]">
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                        <div className=" flex w-[48%]  gap-[30px]">
+                          {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1319,7 +1319,7 @@ export default function InventoryCreate() {
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
-                          </div>
+                          </div> */}
 
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
