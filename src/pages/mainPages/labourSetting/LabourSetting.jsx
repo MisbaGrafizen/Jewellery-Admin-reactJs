@@ -122,7 +122,7 @@ export default function LabourSetting() {
                         <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Uchak
                         </h2>
-                        <div className=" flex gap-[15px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                        <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
                           <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
@@ -805,7 +805,1255 @@ export default function LabourSetting() {
                         </div>
                       </div>
 
+                      <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
+                        <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
+                          Weight
+                        </h2>
+                        <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                            <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div
+                                ref={dropdownRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Carat
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpen((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                  <input
+                                    type="text"
+                                    name="type"
+                                    id="type"
+                                    value={selectedType}
+                                    placeholder="Select Carat"
+                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                  />
+                                  <i
+                                    className={
+                                      dropdownOpen
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                    }
+                                  ></i>
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypes.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => handleSelect(type)}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
 
+                              <div
+                                ref={dropdownMetalRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Metal
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpenMetal((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                  <input
+                                    type="text"
+                                    name="type1"
+                                    id="type1"
+                                    value={selectedTypeMetal}
+                                    placeholder="Select Metal"
+                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                  />
+                                  <i
+                                    className={
+                                      dropdownOpenMetal
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                    }
+                                  ></i>
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpenMetal && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypesMetal.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => {
+                                            handleSelectMetal(type);
+                                            setDropdownOpenMetal(false);
+                                          }}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                              </div>
+                              <div
+                                ref={dropdownCategoryRef}
+                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Category
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpenCategory((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                  <input
+                                    type="text"
+                                    name="type1"
+                                    id="type1"
+                                    value={selectedTypeCategory}
+                                    placeholder="Select Category"
+                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                  />
+                                  <i
+                                    className={
+                                      dropdownOpenCategory
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                    }
+                                  ></i>
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpenCategory && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypesCategory.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => {
+                                            handleSelectCategory(type);
+                                            setDropdownOpenCategory(false);
+                                          }}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                          
+                            <div className=" flex gap-[20px] w-[100%]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Min-Weight
+                                </label>
+                                <input
+                                  type="Number"
+                                  placeholder="Enter Min-Weight"
+                                  className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                  autocomplete="naqsme"
+                                />
+                              </div>
+                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Max-weight
+                                </label>
+                                <input
+                                  type="Number"
+                                  placeholder="Enter Max-Weight"
+                                  className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                  autocomplete="naqsme"
+                                />
+                              </div>
+                            </div>
+                            <div className=" flex-col flex gap-[20px] ">
+                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Weight
+                                </label>
+                                <input
+                                  type="Number"
+                                  placeholder="Enter Rate"
+                                  className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                  autocomplete="naqsme"
+                                />
+                              </div>
+                            </div>
+                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins">
+                              Save
+                            </button>
+                          </div>
+                          {/* <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+
+                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                          <i class="fa-solid cursor-pointer fa-pen-to-square"></i>
+                          <i class="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                          </div>
+                            <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div
+                                ref={dropdownRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Carat
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpen((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                      
+                                </div>
+                           
+                              </div>
+
+                              <div
+                                ref={dropdownMetalRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Metal
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpenMetal((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                
+                                  
+                                </div>
+             
+                              </div>
+                              <div
+                                ref={dropdownCategoryRef}
+                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Category
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpenCategory((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                 
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpenCategory && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypesCategory.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => {
+                                            handleSelectCategory(type);
+                                            setDropdownOpenCategory(false);
+                                          }}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            </div>
+                            <div className=" flex gap-[20px] w-[100%]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Min-Weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins"></p>
+                              </div>
+                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Max-weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins"></p>
+                              </div>
+                            </div>
+                            <div className=" flex-c ol flex gap-[20px] ">
+                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Rate
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins"></p>
+                              </div>
+                            </div>
+                          </div> */}
+
+                          {isEditing ? (
+                            // Editable Fields
+                            <>
+                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex w-[100%] fle  gap-[5px]">
+                                <div
+                                  ref={dropdownRef}
+                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                >
+                                  <label
+                                    htmlFor="name"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Carat
+                                  </label>
+                                  <div
+                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                    onClick={() =>
+                                      setDropdownOpen((prev) => !prev)
+                                    } // Toggle dropdown on click
+                                  >
+                                    <input
+                                      type="text"
+                                      name="type"
+                                      id="type"
+                                      value={selectedType}
+                                      placeholder="Select Carat"
+                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                    />
+                                    <i
+                                      className={
+                                        dropdownOpen
+                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                      }
+                                    ></i>
+                                  </div>
+                                  <AnimatePresence>
+                                    {dropdownOpen && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      >
+                                        {firmTypes.map((type, index) => (
+                                          <div
+                                            key={index}
+                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                            onClick={() => handleSelect(type)}
+                                          >
+                                            {type}
+                                          </div>
+                                        ))}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+
+                                <div
+                                  ref={dropdownMetalRef}
+                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                >
+                                  <label
+                                    htmlFor="name"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Metal
+                                  </label>
+                                  <div
+                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                    onClick={() =>
+                                      setDropdownOpenMetal((prev) => !prev)
+                                    } // Toggle dropdown on click
+                                  >
+                                    <input
+                                      type="text"
+                                      name="type1"
+                                      id="type1"
+                                      value={selectedTypeMetal}
+                                      placeholder="Select Metal"
+                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                    />
+                                    <i
+                                      className={
+                                        dropdownOpenMetal
+                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                      }
+                                    ></i>
+                                  </div>
+                                  <AnimatePresence>
+                                    {dropdownOpenMetal && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      >
+                                        {firmTypesMetal.map((type, index) => (
+                                          <div
+                                            key={index}
+                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                            onClick={() => {
+                                              handleSelectMetal(type);
+                                              setDropdownOpenMetal(false);
+                                            }}
+                                          >
+                                            {type}
+                                          </div>
+                                        ))}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                                </div>
+                                <div
+                                  ref={dropdownCategoryRef}
+                                  className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                >
+                                  <label
+                                    htmlFor="name"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Category
+                                  </label>
+                                  <div
+                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                    onClick={() =>
+                                      setDropdownOpenCategory((prev) => !prev)
+                                    } // Toggle dropdown on click
+                                  >
+                                    <input
+                                      type="text"
+                                      name="type1"
+                                      id="type1"
+                                      value={selectedTypeCategory}
+                                      placeholder="Select Category"
+                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                    />
+                                    <i
+                                      className={
+                                        dropdownOpenCategory
+                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                      }
+                                    ></i>
+                                  </div>
+                                  <AnimatePresence>
+                                    {dropdownOpenCategory && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      >
+                                        {firmTypesCategory.map(
+                                          (type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => {
+                                                handleSelectCategory(type);
+                                                setDropdownOpenCategory(false);
+                                              }}
+                                            >
+                                              {type}
+                                            </div>
+                                          )
+                                        )}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                           
+                              <div className=" flex gap-[20px] w-[100%]">
+                                <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <label
+                                    htmlFor="email"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Min-Weight
+                                  </label>
+                                  <input
+                                    type="Number"
+                                    placeholder="Enter Min-Weight"
+                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                    autocomplete="naqsme"
+                                  />
+                                </div>
+                                <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <label
+                                    htmlFor="email"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Max-weight
+                                  </label>
+                                  <input
+                                    type="Number"
+                                    placeholder="Enter Max-Weight"
+                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                    autocomplete="naqsme"
+                                  />
+                                </div>
+                              </div>
+                              <div className=" flex-col flex gap-[20px] ">
+                                <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <label
+                                    htmlFor="email"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Weight
+                                  </label>
+                                  <input
+                                    type="Number"
+                                    placeholder="Enter Rate"
+                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                    autocomplete="naqsme"
+                                  />
+                                </div>
+                              </div>
+                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     onClick={handleSave}>
+                                Save
+                              </button>
+                              </div>
+                            </>
+                          ) : (
+                            // Static Fields
+                            <>
+                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+
+                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                          <i class="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
+                          <i class="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                          </div>
+                            <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div
+                                ref={dropdownRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Carat
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                        
+                                >
+                                          <p className=" text-[15px]    py-[9px] font-Poppins"> {formData.carat}</p>
+                                </div>
+                           
+                              </div>
+
+                              <div
+                                ref={dropdownMetalRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Metal
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                            
+                                >
+                                               <p className=" text-[15px]    py-[9px] font-Poppins"> {formData.metal}</p>
+                                  
+                                </div>
+             
+                              </div>
+                              </div>
+                              <div
+                                ref={dropdownCategoryRef}
+                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Category
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                             
+                                >
+                                                <p className=" text-[15px]    py-[9px] font-Poppins"> {formData.carat}</p>
+                                </div>
+                          
+                              </div>
+                 
+                            <div className=" flex gap-[20px] w-[100%]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Min-Weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins">{formData.minWeight}    </p>
+                              </div>
+                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Max-weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins">{formData.maxWeight}</p>
+                              </div>
+                            </div>
+                            <div className=" flex-c ol flex gap-[20px] ">
+                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                 <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins"> {formData.rate}</p>
+                              </div>
+                            </div>
+                          </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
+                        <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
+                          Percentege
+                        </h2>
+                        <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                            <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div
+                                ref={dropdownRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Carat
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpen((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                  <input
+                                    type="text"
+                                    name="type"
+                                    id="type"
+                                    value={selectedType}
+                                    placeholder="Select Carat"
+                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                  />
+                                  <i
+                                    className={
+                                      dropdownOpen
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                    }
+                                  ></i>
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypes.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => handleSelect(type)}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+
+                              <div
+                                ref={dropdownMetalRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Metal
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpenMetal((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                  <input
+                                    type="text"
+                                    name="type1"
+                                    id="type1"
+                                    value={selectedTypeMetal}
+                                    placeholder="Select Metal"
+                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                  />
+                                  <i
+                                    className={
+                                      dropdownOpenMetal
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                    }
+                                  ></i>
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpenMetal && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypesMetal.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => {
+                                            handleSelectMetal(type);
+                                            setDropdownOpenMetal(false);
+                                          }}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                              </div>
+                              <div
+                                ref={dropdownCategoryRef}
+                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Category
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                  onClick={() =>
+                                    setDropdownOpenCategory((prev) => !prev)
+                                  } // Toggle dropdown on click
+                                >
+                                  <input
+                                    type="text"
+                                    name="type1"
+                                    id="type1"
+                                    value={selectedTypeCategory}
+                                    placeholder="Select Category"
+                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                  />
+                                  <i
+                                    className={
+                                      dropdownOpenCategory
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                    }
+                                  ></i>
+                                </div>
+                                <AnimatePresence>
+                                  {dropdownOpenCategory && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    >
+                                      {firmTypesCategory.map((type, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => {
+                                            handleSelectCategory(type);
+                                            setDropdownOpenCategory(false);
+                                          }}
+                                        >
+                                          {type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                          
+                            <div className=" flex gap-[20px] w-[100%]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Min-Weight
+                                </label>
+                                <input
+                                  type="Number"
+                                  placeholder="Enter Min-Weight"
+                                  className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                  autocomplete="naqsme"
+                                />
+                              </div>
+                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Max-weight
+                                </label>
+                                <input
+                                  type="Number"
+                                  placeholder="Enter Max-Weight"
+                                  className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                  autocomplete="naqsme"
+                                />
+                              </div>
+                            </div>
+                            <div className=" flex-col flex gap-[20px] ">
+                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Percentege
+                                </label>
+                                <input
+                                  type="Number"
+                                  placeholder="Enter Rate"
+                                  className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                  autocomplete="naqsme"
+                                />
+                              </div>
+                            </div>
+                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins">
+                              Save
+                            </button>
+                          </div>
+            
+
+                          {isEditing ? (
+                            // Editable Fields
+                            <>
+                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex w-[100%] fle  gap-[5px]">
+                                <div
+                                  ref={dropdownRef}
+                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                >
+                                  <label
+                                    htmlFor="name"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Carat
+                                  </label>
+                                  <div
+                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                    onClick={() =>
+                                      setDropdownOpen((prev) => !prev)
+                                    } // Toggle dropdown on click
+                                  >
+                                    <input
+                                      type="text"
+                                      name="type"
+                                      id="type"
+                                      value={selectedType}
+                                      placeholder="Select Carat"
+                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                    />
+                                    <i
+                                      className={
+                                        dropdownOpen
+                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                      }
+                                    ></i>
+                                  </div>
+                                  <AnimatePresence>
+                                    {dropdownOpen && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      >
+                                        {firmTypes.map((type, index) => (
+                                          <div
+                                            key={index}
+                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                            onClick={() => handleSelect(type)}
+                                          >
+                                            {type}
+                                          </div>
+                                        ))}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+
+                                <div
+                                  ref={dropdownMetalRef}
+                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                >
+                                  <label
+                                    htmlFor="name"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Metal
+                                  </label>
+                                  <div
+                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                    onClick={() =>
+                                      setDropdownOpenMetal((prev) => !prev)
+                                    } // Toggle dropdown on click
+                                  >
+                                    <input
+                                      type="text"
+                                      name="type1"
+                                      id="type1"
+                                      value={selectedTypeMetal}
+                                      placeholder="Select Metal"
+                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                    />
+                                    <i
+                                      className={
+                                        dropdownOpenMetal
+                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                      }
+                                    ></i>
+                                  </div>
+                                  <AnimatePresence>
+                                    {dropdownOpenMetal && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      >
+                                        {firmTypesMetal.map((type, index) => (
+                                          <div
+                                            key={index}
+                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                            onClick={() => {
+                                              handleSelectMetal(type);
+                                              setDropdownOpenMetal(false);
+                                            }}
+                                          >
+                                            {type}
+                                          </div>
+                                        ))}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                                </div>
+                                <div
+                                  ref={dropdownCategoryRef}
+                                  className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                >
+                                  <label
+                                    htmlFor="name"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Category
+                                  </label>
+                                  <div
+                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                    onClick={() =>
+                                      setDropdownOpenCategory((prev) => !prev)
+                                    } // Toggle dropdown on click
+                                  >
+                                    <input
+                                      type="text"
+                                      name="type1"
+                                      id="type1"
+                                      value={selectedTypeCategory}
+                                      placeholder="Select Category"
+                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                    />
+                                    <i
+                                      className={
+                                        dropdownOpenCategory
+                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                      }
+                                    ></i>
+                                  </div>
+                                  <AnimatePresence>
+                                    {dropdownOpenCategory && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      >
+                                        {firmTypesCategory.map(
+                                          (type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => {
+                                                handleSelectCategory(type);
+                                                setDropdownOpenCategory(false);
+                                              }}
+                                            >
+                                              {type}
+                                            </div>
+                                          )
+                                        )}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                           
+                              <div className=" flex gap-[20px] w-[100%]">
+                                <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <label
+                                    htmlFor="email"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Min-Weight
+                                  </label>
+                                  <input
+                                    type="Number"
+                                    placeholder="Enter Min-Weight"
+                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                    autocomplete="naqsme"
+                                  />
+                                </div>
+                                <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <label
+                                    htmlFor="email"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Max-weight
+                                  </label>
+                                  <input
+                                    type="Number"
+                                    placeholder="Enter Max-Weight"
+                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                    autocomplete="naqsme"
+                                  />
+                                </div>
+                              </div>
+                              <div className=" flex-col flex gap-[20px] ">
+                                <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <label
+                                    htmlFor="email"
+                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  >
+                                    Percentege
+                                  </label>
+                                  <input
+                                    type="Number"
+                                    placeholder="Enter Rate"
+                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                    autocomplete="naqsme"
+                                  />
+                                </div>
+                              </div>
+                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     onClick={handleSave}>
+                                Save
+                              </button>
+                              </div>
+                            </>
+                          ) : (
+                            // Static Fields
+                            <>
+                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+
+                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                          <i class="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
+                          <i class="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                          </div>
+                            <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div
+                                ref={dropdownRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Carat
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                        
+                                >
+                                          <p className=" text-[15px]    py-[9px] font-Poppins"> {formData.carat}</p>
+                                </div>
+                           
+                              </div>
+
+                              <div
+                                ref={dropdownMetalRef}
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Metal
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                            
+                                >
+                                               <p className=" text-[15px]    py-[9px] font-Poppins"> {formData.metal}</p>
+                                  
+                                </div>
+             
+                              </div>
+                              </div>
+                              <div
+                                ref={dropdownCategoryRef}
+                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              >
+                                <label
+                                  htmlFor="name"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Category
+                                </label>
+                                <div
+                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                             
+                                >
+                                                <p className=" text-[15px]    py-[9px] font-Poppins"> {formData.carat}</p>
+                                </div>
+                          
+                              </div>
+                 
+                            <div className=" flex gap-[20px] w-[100%]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Min-Weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins">{formData.minWeight}    </p>
+                              </div>
+                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Max-weight
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins">{formData.maxWeight}</p>
+                              </div>
+                            </div>
+                            <div className=" flex-c ol flex gap-[20px] ">
+                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                <label
+                                  htmlFor="email"
+                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                >
+                                  Percentege
+                                </label>
+                                <p className=" text-[15px]   py-[9px] font-Poppins"> {formData.rate}</p>
+                              </div>
+                            </div>
+                          </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
 
                       {/* <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
                         <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
