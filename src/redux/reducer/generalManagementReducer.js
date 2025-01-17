@@ -1,48 +1,48 @@
-import { RESET_GLOBAL_STATE, GET_PRODUCT_STATUS, ADD_PRODUCT_STATUS, UPDATE_PRODUCT_STATUS, DELETE_PRODUCT_STATUS,  GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PRODUCT_COLLECTION, ADD_PRODUCT_COLLECTION, UPDATE_PRODUCT_COLLECTION, DELETE_PRODUCT_COLLECTION, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_ATTRIBUTE, ADD_ATTRIBUTE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_LABEL, ADD_LABEL, UPDATE_LABEL, DELETE_LABEL } from '../type';
+import { RESET_GLOBAL_STATE, GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK,  GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_ATTRIBUTE, ADD_ATTRIBUTE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
 
 const initialState = {
-    getProductStatus: [],
+    getUchak: [],
     getTag: [],
-    getProductCollection: [],
+    getPercentage: [],
     getBrand: [],
     getAttribute: [],
-    getLabel: [],
-    addProductStatus : [],
-    updateProductStatus: [],
-    deleteProductStatus: [],
+    getPergram: [],
+    addUchak : [],
+    updateUchak: [],
+    deleteUchak: [],
     addTag: [],
     updateTag: [],
     deleteTag: [],
-    addProductCollection: [],
-    updateProductCollection: [],
-    deleteProductCollection: [],
+    addPercentage: [],
+    updatePercentage: [],
+    deletePercentage: [],
     addCompanyInfo: [],
     updateBrand: [],
     deleteBrand: [],
     addAttribute: [],
     updateAttribute: [],
     deleteAttribute: [],
-    addLabel: [],
-    updateLabel: [],
-    deleteLabel: []
+    addPergram: [],
+    updatePergram: [],
+    deletePergram: []
 };
 
 const generalManagementReducer = (state = initialState, action) => {
     switch(action.type) {
-        case GET_PRODUCT_STATUS: 
+        case GET_UCHAK: 
         return {
             ...state,
-            getProductStatus: action.payload,
+            getUchak: action.payload,
         };
         case GET_TAG: 
         return {
             ...state,
             getTag: action.payload,
         };
-        case GET_PRODUCT_COLLECTION:
+        case GET_PERCENTAGE:
             return {
                 ...state,
-                getProductCollection: action.payload,
+                getPercentage: action.payload,
             };
         case GET_BRAND:
             return {
@@ -54,26 +54,25 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             getAttribute: action.payload,
         };
-        case GET_LABEL: 
-        console.log('action.payload', action.payload)
+        case GET_PERGRAM: 
         return {
             ...state,
-            getLabel: action.payload,
+            getPergram: action.payload,
         };
-        case ADD_PRODUCT_STATUS: 
+        case ADD_UCHAK: 
         return {
             ...state,
-            addProductStatus: action.payload,
+            addUchak: action.payload,
         };
         case ADD_TAG: 
         return {
             ...state,
             addTag: action.payload,
         };
-        case ADD_PRODUCT_COLLECTION:
+        case ADD_PERCENTAGE:
             return {
                 ...state,
-                addProductCollection: action.payload,
+                addPercentage: action.payload,
             };
         case ADD_COMPANY_INFO:
             return {
@@ -85,26 +84,25 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             addAttribute: action.payload,
         };
-        case ADD_LABEL: 
-        console.log('action.payload', action.payload)
+        case ADD_PERGRAM: 
         return {
             ...state,
-            addLabel: action.payload,
+            addPergram: action.payload,
         };
-        case UPDATE_PRODUCT_STATUS: 
+        case UPDATE_UCHAK: 
         return {
             ...state,
-            updateProductStatus: action.payload,
+            updateUchak: action.payload,
         };
         case UPDATE_TAG: 
         return {
             ...state,
             updateTag: action.payload,
         };
-        case UPDATE_PRODUCT_COLLECTION:
+        case UPDATE_PERCENTAGE:
             return {
                 ...state,
-                updateProductCollection: action.payload,
+                updatePercentage: action.payload,
             };
         case UPDATE_BRAND:
             return {
@@ -116,26 +114,25 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             updateAttribute: action.payload,
         };
-        case UPDATE_LABEL: 
-        console.log('action.payload', action.payload)
+        case UPDATE_PERGRAM: 
         return {
             ...state,
-            updateLabel: action.payload,
+            updatePergram: action.payload,
         };
-        case DELETE_PRODUCT_STATUS: 
+        case DELETE_UCHAK: 
         return {
             ...state,
-            deleteProductStatus: action.payload,
+            deleteUchak: action.payload,
         };
         case DELETE_TAG: 
         return {
             ...state,
             deleteTag: action.payload,
         };
-        case DELETE_PRODUCT_COLLECTION:
+        case DELETE_PERCENTAGE:
             return {
                 ...state,
-                deleteProductCollection: action.payload,
+                deletePercentage: action.payload,
             };
         case DELETE_BRAND:
             return {
@@ -147,10 +144,10 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             deleteAttribute: action.payload,
         };
-        case DELETE_LABEL: 
+        case DELETE_PERGRAM: 
         return {
             ...state,
-            deleteLabel: action.payload,
+            deletePergram: action.payload,
         };
         case RESET_GLOBAL_STATE:
             return initialState;

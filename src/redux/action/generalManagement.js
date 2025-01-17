@@ -9,25 +9,25 @@ import {
     ApiPut,
     ApiPutWithId,
 } from '../../helper/axios';
-import { GET_PRODUCT_STATUS, ADD_PRODUCT_STATUS, UPDATE_PRODUCT_STATUS, DELETE_PRODUCT_STATUS, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PRODUCT_COLLECTION, ADD_PRODUCT_COLLECTION, UPDATE_PRODUCT_COLLECTION, DELETE_PRODUCT_COLLECTION, GET_LABEL,ADD_LABEL,UPDATE_LABEL,DELETE_LABEL, GET_ATTRIBUTE, ADD_ATTRIBUTE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
+import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_ATTRIBUTE, ADD_ATTRIBUTE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
 
 
-export const getAllProductStatusAction = () => {
+export const getAllUchakAction = () => {
     return (dispatch) => {
-        return ApiGet(`/admin/product-status`)
+        return ApiGet(`/admin/uchak`)
       .then((res) => {
         console.log('res', res);
-        if (res.statusData) {
+        if (res.uchak) {
           dispatch({
-            type: GET_PRODUCT_STATUS,
-            payload: res.statusData,
+            type: GET_UCHAK,
+            payload: res.uchak,
           });
-          return res.statusData;
+          return res.uchak;
         }
       })
       .catch((error) => {
         dispatch({
-          type: GET_PRODUCT_STATUS,
+          type: GET_UCHAK,
           payload: error,
         });
       });
@@ -35,66 +35,66 @@ export const getAllProductStatusAction = () => {
 };
 
 
-export const addProductStatusAction = (formData) => {
+export const addUchakAction = (formData) => {
   return (dispatch) => {
-      return ApiPost(`/admin/product-status`, formData)
+      return ApiPost(`/admin/uchak`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.statusData) {
+      if (res.uchak) {
         dispatch({
-          type: ADD_PRODUCT_STATUS,
-          payload: res.statusData,
+          type: ADD_UCHAK,
+          payload: res.uchak,
         });
-        return res.statusData;
+        return res.uchak;
       }
     })
     .catch((error) => {
       dispatch({
-        type: ADD_PRODUCT_STATUS,
+        type: ADD_UCHAK,
         payload: error,
       });
     });
 };
 };
 
-export const updateProductStatusAction = (id, formData) => {
+export const updateUchakAction = (id, formData) => {
   return (dispatch) => {
-      return ApiPut(`/admin/product-status/${id}`, formData)
+      return ApiPut(`/admin/uchak/${id}`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.statusData) {
+      if (res.uchak) {
         dispatch({
-          type: UPDATE_PRODUCT_STATUS,
-          payload: res.statusData,
+          type: UPDATE_UCHAK,
+          payload: res.uchak,
         });
-        return res.statusData;
+        return res.uchak;
       }
     })
     .catch((error) => {
       dispatch({
-        type: UPDATE_PRODUCT_STATUS,
+        type: UPDATE_UCHAK,
         payload: error,
       });
     });
 };
 };
 
-export const deleteProductStatusAction = (id) => {
+export const deleteUchakAction = (id) => {
   return (dispatch) => {
-      return ApiDelete(`/admin/product-status/${id}`)
+      return ApiDelete(`/admin/uchak/${id}`)
     .then((res) => {
       console.log('res', res);
-      if (res.statusData) {
+      if (res.uchak) {
         dispatch({
-          type: DELETE_PRODUCT_STATUS,
-          payload: res.statusData,
+          type: DELETE_UCHAK,
+          payload: res.uchak,
         });
-        return res.statusData;
+        return res.uchak;
       }
     })
     .catch((error) => {
       dispatch({
-        type: DELETE_PRODUCT_STATUS,
+        type: DELETE_UCHAK,
         payload: error,
       });
     });
@@ -141,7 +141,7 @@ export const addCompanyInfoAction = (formData) => {
       dispatch({
         type: ADD_COMPANY_INFO,
         payload: error,
-      });
+      }); 
     });
 };
 };
@@ -190,88 +190,88 @@ export const deleteBrandAction = (id) => {
 };
 };
 
-export const getAllProductCollectionAction = () => {
+export const getPercentageAction = () => {
     return (dispatch) => {
-        return ApiGet(`/admin/collection`)
+        return ApiGet(`/admin/percentage`)
       .then((res) => {
         console.log('res', res);
-        if (res.category) {
+        if (res.percentage) {
           dispatch({
-            type: GET_PRODUCT_COLLECTION,
-            payload: res.category,
+            type: GET_PERCENTAGE,
+            payload: res.percentage,
           });
-          return res.category;
+          return res.percentage;
         }
       })
       .catch((error) => {
         dispatch({
-          type: GET_PRODUCT_COLLECTION,
+          type: GET_PERCENTAGE,
           payload: error,
         });
       });
   };
 };
 
-export const addProductCollectionAction = (formData) => {
+export const addPercentageAction = (formData) => {
   return (dispatch) => {
-      return ApiPost(`/admin/collection`, formData)
+      return ApiPost(`/admin/percentage`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.category) {
+      if (res.percentage) {
         dispatch({
-          type: ADD_PRODUCT_COLLECTION,
-          payload: res.category,
+          type: ADD_PERCENTAGE,
+          payload: res.percentage,
         });
-        return res.category;
+        return res.percentage;
       }
     })
     .catch((error) => {
       dispatch({
-        type: ADD_PRODUCT_COLLECTION,
+        type: ADD_PERCENTAGE,
         payload: error,
       });
     });
 };
 };
 
-export const updateProductCollectionAction = (id, formData) => {
+export const updatePercentageAction = (id, formData) => {
   return (dispatch) => {
-      return ApiPut(`/admin/collection/${id}`, formData)
+      return ApiPut(`/admin/percentage/${id}`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.category) {
+      if (res.percentage) {
         dispatch({
-          type: UPDATE_PRODUCT_COLLECTION,
-          payload: res.category,
+          type: UPDATE_PERCENTAGE,
+          payload: res.percentage,
         });
-        return res.category;
+        return res.percentage;
       }
     })
     .catch((error) => {
       dispatch({
-        type: UPDATE_PRODUCT_COLLECTION,
+        type: UPDATE_PERCENTAGE,
         payload: error,
       });
     });
 };
 };
 
-export const deleteProductCollectionAction = (id) => {
+export const deletePercentageAction = (id) => {
   return (dispatch) => {
-      return ApiDelete(`/admin/collection/${id}`)
+      return ApiDelete(`/admin/percentage/${id}`)
     .then((res) => {
       console.log('res', res);
-      if (res.category) {
+      if (res.percentage) {
         dispatch({
-          type: DELETE_PRODUCT_COLLECTION,
-          payload: res.category,
+          type: DELETE_PERCENTAGE,
+          payload: res.percentage,
         });
-        return res.category;
+        return res.percentage;
       }
     })
     .catch((error) => {
       dispatch({
-        type: DELETE_PRODUCT_COLLECTION,
+        type: DELETE_PERCENTAGE,
         payload: error,
       });
     });
@@ -300,88 +300,88 @@ export const deleteProductCollectionAction = (id) => {
 //   };
 // };
 
-export const getAllLabelsAction = () => {
+export const getPerGramAction = () => {
     return (dispatch) => {
-        return ApiGet(`/admin/label`)
+        return ApiGet(`/admin/pergram`)
       .then((res) => {
         console.log('res', res);
-        if (res.label) {
+        if (res.pergram) {
           dispatch({
-            type: GET_LABEL,
-            payload: res.label,
+            type: GET_PERGRAM,
+            payload: res.pergram,
           });
-          return res.label;
+          return res.pergram;
         }
       })
       .catch((error) => {
         dispatch({
-          type: GET_LABEL,
+          type: GET_PERGRAM,
           payload: error,
         });
       });
   };
 };
 
-export const addLabelAction = (formData) => {
+export const addPerGramAction = (formData) => {
   return (dispatch) => {
-      return ApiPost(`/admin/label`, formData)
+      return ApiPost(`/admin/pergram`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.label) {
+      if (res.pergram) {
         dispatch({
-          type: ADD_LABEL,
-          payload: res.label,
+          type: ADD_PERGRAM,
+          payload: res.pergram,
         });
-        return res.label;
+        return res.pergram;
       }
     })
     .catch((error) => {
       dispatch({
-        type: ADD_LABEL,
+        type: ADD_PERGRAM,
         payload: error,
       });
     });
 };
 };
 
-export const updateLabelAction = (id, formData) => {
+export const updatePerGramAction = (id, formData) => {
   return (dispatch) => {
-      return ApiPut(`/admin/label/${id}`, formData)
+      return ApiPut(`/admin/pergram/${id}`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.label) {
+      if (res.pergram) {
         dispatch({
-          type: UPDATE_LABEL,
-          payload: res.label,
+          type: UPDATE_PERGRAM,
+          payload: res.pergram,
         });
-        return res.label;
+        return res.pergram;
       }
     })
     .catch((error) => {
       dispatch({
-        type: UPDATE_LABEL,
+        type: UPDATE_PERGRAM,
         payload: error,
       });
     });
 };
 };
 
-export const deleteLabelAction = (id) => {
+export const deletePerGramAction = (id) => {
   return (dispatch) => {
-      return ApiDelete(`/admin/label/${id}`)
+      return ApiDelete(`/admin/pergram/${id}`)
     .then((res) => {
       console.log('res', res);
-      if (res.label) {
+      if (res.pergram) {
         dispatch({
-          type: DELETE_LABEL,
-          payload: res.label,
+          type: DELETE_PERGRAM,
+          payload: res.pergram,
         });
-        return res.label;
+        return res.pergram;
       }
     })
     .catch((error) => {
       dispatch({
-        type: DELETE_LABEL,
+        type: DELETE_PERGRAM,
         payload: error,
       });
     });
