@@ -255,6 +255,20 @@ color: #0f92e9; border:  2px solid #0f92e9 ;
  background-color: var(--bs-bluee) !important;
 
 }
+
+
+.ts-spj {
+  color: var(--bs-bluee) !important;
+}
+
+.bor-spj {
+  border: var(--bs-bluee) !important;
+}
+
+
+
+
+
 #root {
   width: 100%;
   overflow-x: hidden;

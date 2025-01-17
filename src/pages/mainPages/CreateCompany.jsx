@@ -84,6 +84,13 @@ export default function CreateCompany() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+
+
+
+
+
+  
   return (
     <>
       <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
