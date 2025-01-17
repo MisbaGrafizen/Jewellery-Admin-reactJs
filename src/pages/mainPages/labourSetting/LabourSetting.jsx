@@ -3,6 +3,8 @@ import SideBar from "../../../Component/sidebar/SideBar";
 import Header from "../../../Component/header/Header";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategroyAction, getGroupItemAction, getMetalAction } from "../../../redux/action/landingManagement";
 
 export default function LabourSetting() {
   const [labourModalopen, setlabourModalOpen] = useState(false);
@@ -15,7 +17,7 @@ export default function LabourSetting() {
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
-  const [isEditing, setIsEditing] = useState(false); // State to track editing mode
+  const [isEditing, setIsEditing] = useState(false); 
   const [formData, setFormData] = useState({
     carat: "Default Carat",
     metal: "Default Metal",
@@ -25,14 +27,18 @@ export default function LabourSetting() {
     rate: 50,
   });
 
-  const firmTypes = [
-    "Sole Proprietorship",
-    "Partnership",
-    "LLC",
-    "Corporation",
-  ];
-  const firmTypesMetal = ["Gold", "Silver", "Platinum", "Other"];
-  const firmTypesCategory = ["Gold", "Silver", "Platinum", "Other"];
+  const dispatch = useDispatch();
+
+  const categories = useSelector((state) => state.landing.getAllCategory);
+  const metals = useSelector((state) => state.landing.getMetal);
+  const item = useSelector((state) => state.landing.getGroupItem);
+
+  useEffect(() => {
+    dispatch(getCategroyAction());
+    dispatch(getMetalAction());
+    dispatch(getGroupItemAction());
+  }, [dispatch]);
+
   const handleSelect = (type) => {
     setSelectedType(type);
     setDropdownOpen(false);
@@ -46,9 +52,6 @@ export default function LabourSetting() {
   const handleSelectCategory = (type) => {
     setSelectedTypecategory(type);
     setDropdownOpenCategory(false);
-  };
-  const addLabour = () => {
-    setlabourModalOpen(true);
   };
 
   const handleModalclose = () => {
@@ -78,16 +81,12 @@ export default function LabourSetting() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   
-
-
-
   const handleEdit = () => {
-    setIsEditing(true); // Enable editing mode
+    setIsEditing(true);
   };
 
   const handleSave = () => {
-    setIsEditing(false); // Disable editing mode
-    // Save the updated data (e.g., send it to the server)
+    setIsEditing(false); 
     console.log("Saved Data:", formData);
   };
 
@@ -108,13 +107,6 @@ export default function LabourSetting() {
             <SideBar />
             <div className="flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
               <div className="flex flex-col gap-[15px] w-[100%]">
-                {/* <div className=" flex justify-end " onClick={addLabour}>
-                  <button className="text-[#fff] bs-spj gap-[8px] font-Poppins flex justify-center items-center h-[35px] rounded-[5px] px-[10px]">
-                    <i class="fa-solid fa-plus"></i>
-                    Add New Labour Rate
-                  </button>
-                </div> */}
-
                 <div className="  flex  flex-col gap-[20px]  w-[100%] ">
                   <div className=" flex  gap-[15px]  relative px-[15px] j rounded-[10px] py-[0px]  w-[100%]">
                     <div className=" flex  gap-[20px] ">
@@ -346,131 +338,6 @@ export default function LabourSetting() {
                               Save
                             </button>
                           </div>
-                          {/* <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-
-                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                          <i class="fa-solid cursor-pointer fa-pen-to-square"></i>
-                          <i class="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
-                          </div>
-                            <div className=" flex w-[100%] fle  gap-[5px]">
-                              <div
-                                ref={dropdownRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Carat
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                  onClick={() =>
-                                    setDropdownOpen((prev) => !prev)
-                                  } // Toggle dropdown on click
-                                >
-                      
-                                </div>
-                           
-                              </div>
-
-                              <div
-                                ref={dropdownMetalRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Metal
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                  onClick={() =>
-                                    setDropdownOpenMetal((prev) => !prev)
-                                  } // Toggle dropdown on click
-                                >
-                                
-                                  
-                                </div>
-             
-                              </div>
-                              <div
-                                ref={dropdownCategoryRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                  onClick={() =>
-                                    setDropdownOpenCategory((prev) => !prev)
-                                  } // Toggle dropdown on click
-                                >
-                                 
-                                </div>
-                                <AnimatePresence>
-                                  {dropdownOpenCategory && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                    >
-                                      {firmTypesCategory.map((type, index) => (
-                                        <div
-                                          key={index}
-                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => {
-                                            handleSelectCategory(type);
-                                            setDropdownOpenCategory(false);
-                                          }}
-                                        >
-                                          {type}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-                              </div>
-                            </div>
-                            <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Min-Weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                              </div>
-                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Max-weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                              </div>
-                            </div>
-                            <div className=" flex-c ol flex gap-[20px] ">
-                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Rate
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                              </div>
-                            </div>
-                          </div> */}
-
                           {isEditing ? (
                             // Editable Fields
                             <>
@@ -706,8 +573,8 @@ export default function LabourSetting() {
                             <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
 
                           <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                          <i class="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
-                          <i class="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                          <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
+                          <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
                           </div>
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
@@ -807,8 +674,8 @@ export default function LabourSetting() {
 
                       <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
                         <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
-                          Weight
-                        </h2>
+                          PerGram
+                        </h2> 
                         <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
                           <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
                             <div className=" flex w-[100%] fle  gap-[5px]">

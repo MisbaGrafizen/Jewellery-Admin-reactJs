@@ -8,15 +8,19 @@ import {
   addCategoryAction,
   addGroupItemAction,
   addMetalAction,
+  addStockAction,
   deleteCategoryAction,
   deleteGroupItemAction,
   deleteMetalAction,
+  deleteStockAction,
+  getAllStockAction,
   getCategroyAction,
   getGroupItemAction,
   getMetalAction,
   updateCategoryAction,
   updateGroupItemAction,
   updateMetalAction,
+  updateStockAction,
 } from "../../redux/action/landingManagement";
 
 export default function InventoryCreate() {
@@ -29,6 +33,7 @@ export default function InventoryCreate() {
   const [caratIdToDelete, setCaratIdToDelete] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
+  const [percentages, setPercentages] = useState({});
 
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
@@ -58,6 +63,12 @@ export default function InventoryCreate() {
   const [inputItemValue, setInputItemValue] = useState("");
   const [apiTrigger, setApiTrigger] = useState(null);
 
+  const [grossWeight, setGrossWeight] = useState("");
+  const [lessWeight, setLessWeight] = useState("");
+  const [westage, setWestage] = useState("");
+  const [selectedStock, setSelectedStock] = useState(null);
+
+
   const [popupVisible, setPopupVisible] = useState(null);
   const [popupMetalVisible, setPopupMetalVisible] = useState(null);
   const [popupItemVisible, setPopupItemVisible] = useState(null);
@@ -70,6 +81,7 @@ export default function InventoryCreate() {
   const categories = useSelector((state) => state.landing.getAllCategory);
   const metals = useSelector((state) => state.landing.getMetal);
   const item = useSelector((state) => state.landing.getGroupItem);
+  const stocks = useSelector((state) => state.landing.getProduct);
 
   useEffect(() => {
     setCarat(categories || []);
@@ -81,22 +93,24 @@ export default function InventoryCreate() {
     dispatch(getCategroyAction());
     dispatch(getMetalAction());
     dispatch(getGroupItemAction());
+    dispatch(getAllStockAction());
   }, [dispatch]);
 
-  console.log("categories", categories);
+  useEffect(() => {
+    if (selectedStock) {
+      setSelectedType(selectedStock.caratName || "");
+      setSelectedTypeMetal(selectedStock.metalName || "");
+      setSelectedTypecategory(selectedStock.categoryName || "");
+      setGrossWeight(selectedStock.toWeight || "");
+      setLessWeight(selectedStock.lessWeight || "");
+      setWestage(selectedStock.wastage || "");
+    }
+  }, [selectedStock]);
 
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
 
-  const firmTypes = [
-    "Sole Proprietorship",
-    "Partnership",
-    "LLC",
-    "Corporation",
-  ];
-  const firmTypesMetal = ["Gold", "Silver", "Platinum", "Other"];
-  const firmTypesCategory = ["Gold", "Silver", "Platinum", "Other"];
 
   const handleSelect = (type) => {
     setSelectedType(type);
@@ -117,6 +131,10 @@ export default function InventoryCreate() {
     setStockModalOpen(true);
   };
 
+  const handleStockModalEdit = (item) => {
+    setSelectedStock(item || null);
+    setStockModalOpen(true);
+  };
   const handleStockModalClose = () => {
     setStockModalOpen(false);
   };
@@ -151,6 +169,11 @@ export default function InventoryCreate() {
           );
         }
         window.location.reload();
+      } else if (deleteContext === "stock") {
+        success = await dispatch(deleteStockAction(caratIdToDelete));
+        if (success) {
+          dispatch(getAllStockAction());
+        }
       }
 
       if (success) {
@@ -165,352 +188,210 @@ export default function InventoryCreate() {
     }
   };
 
-  // useEffect(() => {
-  //   const callApiForContext = async () => {
-  //     if (!apiTrigger) return; // Exit if no trigger
-
-  //     const { context, data } = apiTrigger; // Destructure context and data
-  //     try {
-  //       console.log(`Calling API for context: ${context}`, data);
-
-  //       switch (context) {
-  //         case "category":
-  //           await dispatch(addCategoryAction(data));
-  //           dispatch(getCategroyAction()); // Refresh categories
-  //           break;
-
-  //         case "metal":
-  //           await dispatch(addMetalAction(data));
-  //           dispatch(getMetalAction()); // Refresh metals
-  //           break;
-
-  //         case "item":
-  //           await dispatch(addGroupItemAction(data));
-  //           dispatch(getGroupItemAction()); // Refresh items
-  //           break;
-
-  //         default:
-  //           console.warn("Invalid context:", context);
-  //       }
-
-  //       console.log(`${context} added successfully!`);
-  //     } catch (error) {
-  //       console.error(`Error adding ${context}:`, error);
-  //       alert(`Failed to add ${context}.`);
-  //     } finally {
-  //       setApiTrigger(null); // Reset trigger
-  //     }
-  //   };
-
-  //   callApiForContext();
-  // }, [apiTrigger, dispatch]); // Run only when apiTrigger changes
-
-  // const handleKeyPress = (e, context) => {
-  //   if (e?.key === "Enter") {
-
-  //     e.preventDefault();
-
-  //     console.log(`Key pressed: ${e.key}, Context: ${context}`);
-
-  //     if (context === "category") {
-  //       console.log("Calling handleAddCategory");
-  //       editingCaratId ? handleSaveEditCategory() : handleAddCategory();
-  //     } else if (context === "metal") {
-  //       editingMetalId
-  //         ? handleSaveEditMetal()
-  //         : handleAddMetal();
-  //     } else if (context === "item") {
-  //       editingItemId
-  //         ? handleSaveEditItem()
-  //         : handleAddItem();
-  //     }
-  //   }
-  // };
-
-  const handleKeyPress = (e, context) => {
+  const handleKeyPress = async (e, context, action = "add", id = null) => {
     if (e?.key === "Enter") {
       e.preventDefault();
-      console.log(`Key pressed: ${e.key}, Context: ${context}`);
 
-      const inputValue =
-        context === "category"
-          ? name.trim()
-          : context === "metal"
-          ? metalName.trim()
-          : context === "item"
-          ? itemName.trim()
-          : "";
+      let inputValue = "";
+      if (context === "category") {
+        inputValue = action === "edit" ? editCaratName.trim() : name.trim();
+      } else if (context === "metal") {
+        inputValue = action === "edit" ? editMetalName.trim() : metalName.trim();
+      } else if (context === "item") {
+        inputValue = action === "edit" ? editItemName.trim() : itemName.trim();
+      }
 
       if (!inputValue) {
         alert(`${context} name cannot be empty.`);
         return;
       }
 
-      triggerAPICall(context, inputValue);
+      try {
+        if (action === "add") {
+          await triggerAPICall(context, inputValue, action);
+        } else if (action === "edit") {
+          await triggerAPICall(context, inputValue, action, id);
+        }
+
+        if (context === "category") {
+          action === "edit" ? setEditCaratName("") : setName("");
+        } else if (context === "metal") {
+          action === "edit" ? setEditMetalName("") : setMetalName("");
+        } else if (context === "item") {
+          action === "edit" ? setEditItemName("") : setItemName("");
+        }
+
+        if (action === "edit") {
+          if (context === "category") setEditingCarat(null);
+          if (context === "metal") setEditingMetal(null);
+          if (context === "item") setEditingItem(null);
+        }
+      } catch (error) {
+        console.error(`Failed to ${action} ${context}:`, error);
+        alert(`Failed to ${action} ${context}. Please try again.`);
+      }
     }
   };
 
-  const triggerAPICall = async (context, inputValue) => {
+  const triggerAPICall = async (context, inputValue, action, id = null) => {
+    // eslint-disable-next-line no-useless-catch
     try {
-      console.log(
-        `Triggering API for context: ${context} with value: ${inputValue}`
-      );
-
-      let successMessage = "";
-      switch (context) {
-        case "category":
+      if (action === "add") {
+        if (context === "category") {
           await dispatch(addCategoryAction(inputValue));
           await dispatch(getCategroyAction());
-          successMessage = "Category added successfully!";
-          setName("");
-          break;
-
-        case "metal":
+        } else if (context === "metal") {
           await dispatch(addMetalAction({ metalName: inputValue }));
           await dispatch(getMetalAction());
-          successMessage = "Metal added successfully!";
-          setMetalName("");
-          break;
-
-        case "item":
+        } else if (context === "item") {
           await dispatch(addGroupItemAction({ itemName: inputValue }));
           await dispatch(getGroupItemAction());
-          successMessage = "Item added successfully!";
-          setItemName("");
-          break;
-
-        default:
-          console.warn("Unknown context:", context);
-          return;
+        }
+      } else if (action === "edit" && id) {
+        if (context === "category") {
+          await dispatch(updateCategoryAction(id, { name: inputValue }));
+          await dispatch(getCategroyAction());
+        } else if (context === "metal") {
+          await dispatch(updateMetalAction(id, { metalName: inputValue }));
+          await dispatch(getMetalAction());
+        } else if (context === "item") {
+          await dispatch(updateGroupItemAction(id, { itemName: inputValue }));
+          await dispatch(getGroupItemAction());
+        }
       }
-
-      alert(successMessage);
     } catch (error) {
-      console.error(`Failed to add ${context}:`, error);
-      alert(`Failed to add ${context}. Please try again.`);
+      throw error;
     }
   };
 
-  // const handleKeyPress = (e, context) => {
-  //   if (e?.key === "Enter") {
-  //     e.preventDefault();
-  //     console.log(`Key pressed: ${e.key}, Context: ${context}`);
-
-  //     if (context === "category") {
-  //       console.log("Calling handleAddCategory");
-  //       handleAddCategory(); // Ensure this is being called
-  //     } else if (context === "metal") {
-  //       console.log("Calling handleAddMetal");
-  //       handleAddMetal();
-  //     } else if (context === "item") {
-  //       console.log("Calling handleAddItem");
-  //       handleAddItem();
-  //     } else {
-  //       console.warn("Unknown context:", context);
-  //     }
-  //   }
-  // };
-
-  const handleSaveEditCategory = async (index, id) => {
-    if (!id) {
-      console.error("Error: No ID provided for editing.");
-      return;
-    }
-
-    if (!editCaratName.trim()) {
-      alert("Carat name cannot be empty.");
-      return;
-    }
-    console.log("Payload being sent:", { name: editCaratName.trim() });
-
-    try {
-      const success = await dispatch(
-        updateCategoryAction(id, { name: editCaratName.trim() })
-      );
-
-      if (success) {
-        setCarat((preCarat) =>
-          preCarat.map((category, idx) =>
-            idx === index
-              ? { ...category, name: editCaratName.trim() }
-              : category
-          )
-        );
-        alert("Carat updated successfully!");
-        setEditingCarat(null);
-        setEditCaratName("");
-      } else {
-        alert("Failed to update carat.");
-      }
-    } catch (error) {
-      console.error("Error updating carat:", error);
-      alert("An error occurred while updating the carat.");
+  const handleDoubleClick = (context, item, index) => {
+    if (context === "category") {
+      setEditingCarat(index);
+      setEditCaratName(item.name);
+      setEditingCaratId(item._id);
+    } else if (context === "metal") {
+      setEditingMetal(index);
+      setEditMetalName(item.metalName);
+      setEditingMetalId(item._id);
+    } else if (context === "item") {
+      setEditingItem(index);
+      setEditItemName(item.itemName);
+      setEditingItemId(item._id);
     }
   };
 
-  const handleSaveEditMetal = async (index, id) => {
-    if (!id) {
-      console.error("Error: No ID provided for editing.");
-      return;
-    }
-
-    if (!editMetalName.trim()) {
-      alert("Metal name cannot be empty.");
-      return;
-    }
-    console.log("Payload being sent:", { metalName: editMetalName.trim() });
-
-    try {
-      const success = await dispatch(
-        updateMetalAction(id, { metalName: editMetalName.trim() })
-      );
-
-      if (success) {
-        setMetal((preMetal) =>
-          preMetal.map((metal, idx) =>
-            idx === index
-              ? { ...metal, metalName: editMetalName.trim() }
-              : metal
-          )
-        );
-        alert("Metal updated successfully!");
-        setEditingMetal(null); // Exit editing mode
-        setEditMetalName(""); // Clear input
-      } else {
-        alert("Failed to update metal.");
-      }
-    } catch (error) {
-      console.error("Error updating metal:", error);
-      alert("An error occurred while updating the metal.");
-    }
-  };
-
-  const handleSaveEditItem = async (index, id) => {
-    if (!id) {
-      console.error("Error: No ID provided for editing.");
-      return;
-    }
-
-    if (!editItemName.trim()) {
-      alert("Group Item name cannot be empty.");
-      return;
-    }
-    console.log("Payload being sent:", { itemName: editItemName.trim() });
-
-    try {
-      const success = await dispatch(
-        updateGroupItemAction(id, { itemName: editItemName.trim() })
-      );
-
-      if (success) {
-        setItems((preItems) =>
-          preItems.map((item, idx) =>
-            idx === index ? { ...item, itemName: editItemName.trim() } : item
-          )
-        );
-        alert("Group Item updated successfully!");
-        setEditingItem(null);
-        setEditItemName("");
-      } else {
-        alert("Failed to update group item.");
-      }
-    } catch (error) {
-      console.error("Error updating group item:", error);
-      alert("An error occurred while updating the group item.");
-    }
-  };
-
-  const handleAddCategory = async (event) => {
-    if (event?.key !== "Enter") return;
-
-    if (!name.trim()) {
-      alert("Category name cannot be empty.");
-      return;
-    }
-
-    try {
-      console.log("Dispatching addCategoryAction with:", name);
-      const success = await dispatch(addCategoryAction(name.trim()));
-      console.log("success", success);
-      if (success) {
-        setName("");
-        dispatch(getCategroyAction());
-      }
-    } catch (error) {
-      console.error("Error adding category:", error);
-      alert("An error occurred while adding the category.");
-    }
-  };
-
-  const handleAddMetal = async (event) => {
-    if (event?.key !== "Enter") return;
-
-    if (!metalName.trim()) {
-      alert("Metal name cannot be empty.");
-      return;
-    }
-
-    try {
-      const success = await dispatch(addMetalAction(metalName.trim()));
-      console.log("success", success);
-      if (success) {
-        setMetalName("");
-        dispatch(getMetalAction());
-      }
-    } catch (error) {
-      console.error("Error adding metal:", error);
-      alert("An error occurred while adding the metal.");
-    }
-  };
-
-  const handleAddItem = async (event) => {
-    if (event?.key !== "Enter") return;
-
-    if (!itemName.trim()) {
-      alert("Goup Item name cannot be empty.");
-      return;
-    }
-
-    try {
-      const success = await dispatch(addGroupItemAction(itemName.trim()));
-      console.log("success", success);
-      if (success) {
-        setItemName("");
-        dispatch(getGroupItemAction());
-      }
-    } catch (error) {
-      console.error("Error adding group item:", error);
-      alert("An error occurred while adding the group item.");
-    }
-  };
-
-  // Handle double-click for editing a category
   const handleCategoryClick = (index) => {
     setSelectedCaratIndex(index);
-  };
-
-  const handleCategoryDoubleClick = (category, index) => {
-    setEditingCarat(index);
-    setInputValue(category.name);
   };
 
   const handleMetalClick = (index) => {
     setSelectedMetalIndex(index);
   };
 
-  const handleMetalDoubleClick = (metal, index) => {
-    setEditingMetal(index);
-    setInputMetalValue(metal.name);
-  };
-
   const handleItemClick = (index) => {
     setSelectedItemIndex(index);
   };
 
-  const handleItemDoubleClick = (item, index) => {
-    setEditingItem(index);
-    setInputItemValue(item.name);
+  const handlePercentageChange = (id, value) => {
+    setPercentages((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
   };
+
+  const handleSavePercentage = async (id) => {
+    const percentage = percentages[id];
+
+    if (!percentage || isNaN(percentage)) {
+      alert("Please enter a valid percentage.");
+      return;
+    }
+
+    try {
+      const success = await dispatch(
+        updateCategoryAction(id, { percentage: parseFloat(percentage) })
+      );
+
+      if (success) {
+        alert("Percentage updated successfully!");
+        setPercentages((prev) => ({
+          ...prev,
+          [id]: "",
+        }));
+
+        dispatch(getCategroyAction());
+      } else {
+        alert("Failed to update percentage.");
+      }
+    } catch (error) {
+      console.error("Error updating percentage:", error);
+      alert("An error occurred while updating the percentage.");
+    }
+  };
+
+  useEffect(() => {
+    if (grossWeight && lessWeight && selectedType) {
+      const selectedCarat = categories.find((carat) => carat.name === selectedType);
+      if (selectedCarat && selectedCarat.percentage) {
+        const netWeight = parseFloat(grossWeight) - parseFloat(lessWeight || 0);
+        const fineWeight = (netWeight * (selectedCarat.percentage / 100)).toFixed(3);
+        console.log("Calculated Fine Weight:", fineWeight);
+      }
+    }
+  }, [grossWeight, lessWeight, selectedType, categories]);
+
+
+
+  const handleAddStock = async () => {
+    if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
+      alert("Please select Carat, Metal, and Category.");
+      return;
+    }
+
+    const selectedCarat = categories.find((carat) => carat.name === selectedType);
+    const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetal);
+    const selectedCategory = items.find((data) => data.itemName === selectedTypeCategory);
+
+    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+      alert("Invalid selection. Please select valid Carat, Metal, and Category.");
+      return;
+    }
+
+    const stockData = {};
+
+    if (selectedCarat) stockData.groupId = selectedCarat._id;
+    if (selectedMetal) stockData.metalId = selectedMetal._id;
+    if (selectedCategory) stockData.groupItemId = selectedCategory._id;
+    if (grossWeight) stockData.toWeight = parseFloat(grossWeight);
+    if (lessWeight) stockData.lessWeight = parseFloat(lessWeight);
+    if (westage) stockData.wastage = parseFloat(westage);
+
+    try {
+      if (selectedStock) {
+        const response = await dispatch(updateStockAction(selectedStock?._id, stockData));
+        if (response) {
+          alert("Stock updated successfully!");
+          dispatch(getAllStockAction());
+        } else {
+          alert("Failed to update stock.");
+        }
+      } else {
+        const response = await dispatch(addStockAction(stockData));
+        if (response) {
+          alert("Stock added successfully!");
+          dispatch(getAllStockAction());
+        } else {
+          alert("Failed to add stock.");
+        }
+      }
+
+      setStockModalOpen(false); // Close modal
+    } catch (error) {
+      console.error("Error saving stock:", error);
+      alert("An error occurred while saving stock.");
+    }
+  };
+
 
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
@@ -523,9 +404,7 @@ export default function InventoryCreate() {
     setCaratIdToDelete(null);
   };
 
-  const handleModalopen = () => {
-    setModalOpen(true);
-  };
+
 
   const handleClickOutside = (event) => {
     if (
@@ -597,14 +476,13 @@ export default function InventoryCreate() {
         setEditingCarat(false);
         setEditingItem(false);
         setEditingMetal(false);
+
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -643,7 +521,7 @@ export default function InventoryCreate() {
                   </h1>
                   <div className="w-[100%] flex flex-col gap-[15px]">
                     <div className="flex gap-[20px]">
-                      <div className="flex gap-[15px]  flex-wrap">
+                      <div ref={inputRef} className="flex gap-[15px]  flex-wrap">
                         {!isInputVisible ? (
                           <div className="flex">
                             <div
@@ -677,9 +555,7 @@ export default function InventoryCreate() {
                                   key={item?.id}
                                   className="border-[1px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                                   onClick={() => handleCategoryClick(item?.id)}
-                                  onDoubleClick={() =>
-                                    handleCategoryDoubleClick(item, index)
-                                  }
+                                  onDoubleClick={() => handleDoubleClick("category", item, index)}
                                 >
                                   {editingCarat === index ? (
                                     <>
@@ -692,17 +568,14 @@ export default function InventoryCreate() {
                                             setEditCaratName(e.target.value)
                                           }
                                           onKeyDown={(e) =>
-                                            e.key === "Enter" &&
-                                            handleSaveEditCategory(
-                                              index,
-                                              item?._id
-                                            )
+                                            handleKeyPress(e, "category", "edit", editingCaratId)
                                           }
                                           className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                           autoFocus
                                         />
                                         <p
-                                          className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto"
+                                          ref={popupRef}
+                                          className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px]  z-10 font-Montserrat cursor-pointer mx-auto"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             handleOpenDeleteModal(
@@ -725,9 +598,14 @@ export default function InventoryCreate() {
                                       className=" flex w-[100%] outline-none h-[100%] text-[12px] "
                                       placeholder="Enter Fine Weight"
                                       type="number"
+                                      name="percentage"
+                                      value={percentages[item._id] || ""}
+                                      onChange={(e) => handlePercentageChange(item._id, e.target.value)}
                                     />
                                   </div>
-                                  <button className=" mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]">
+                                  <button className=" mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
+                                    onClick={() => handleSavePercentage(item._id)}
+                                  >
                                     <i className="fa-duotone fa-solid fa-check"></i>
                                   </button>
                                 </div>
@@ -772,16 +650,14 @@ export default function InventoryCreate() {
                           </div>
                         )}
                       </div>
-                      <div className="flex-wrap flex relative gap-[10px]">
+                      <div ref={inputRef} className="flex-wrap flex relative gap-[10px] ">
                         {Array.isArray(metal) ? (
                           metal.map((item, index) => (
                             <div
                               key={item?.id}
                               className="border-[1px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                               onClick={() => handleMetalClick(item?.id)}
-                              onDoubleClick={() =>
-                                handleMetalDoubleClick(item, index)
-                              }
+                              onDoubleClick={() => handleDoubleClick("metal", item, index)}
                             >
                               {editingMetal === index ? (
                                 <>
@@ -791,11 +667,10 @@ export default function InventoryCreate() {
                                       name="metalName"
                                       value={editMetalName}
                                       onChange={(e) =>
-                                        setMetalName(e.target.value)
+                                        setEditMetalName(e.target.value)
                                       }
                                       onKeyDown={(e) =>
-                                        e.key === "Enter" &&
-                                        handleSaveEditMetal(index, item?._id)
+                                        handleKeyPress(e, "metal", "edit", editingMetalId)
                                       }
                                       className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                       autoFocus
@@ -864,9 +739,7 @@ export default function InventoryCreate() {
                               key={data?.id}
                               className="border-[1px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                               onClick={() => handleItemClick(data?.id)}
-                              onDoubleClick={() =>
-                                handleItemDoubleClick(data, index)
-                              }
+                              onDoubleClick={() => handleDoubleClick("item", data, index)}
                             >
                               {editingItem === index ? (
                                 <>
@@ -879,8 +752,7 @@ export default function InventoryCreate() {
                                         setEditItemName(e.target.value)
                                       }
                                       onKeyDown={(e) =>
-                                        e.key === "Enter" &&
-                                        handleSaveEditItem(index, data?._id)
+                                        handleKeyPress(e, "item", "edit", editingItemId)
                                       }
                                       className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                       autoFocus
@@ -916,7 +788,7 @@ export default function InventoryCreate() {
                     className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
                     onClick={handleStockModal}
                   >
-                    <i class="fa-solid fa-plus"></i>
+                    <i className="fa-solid fa-plus"></i>
                     Add Stock
                   </button>
                 </div>
@@ -935,12 +807,12 @@ export default function InventoryCreate() {
                           </p>
                         </div>
 
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[15%] max-w-[88%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[14%] max-w-[88%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Carat
                           </p>
                         </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[15%] max-w-[88%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[14%] max-w-[88%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Metal
                           </p>
@@ -956,17 +828,17 @@ export default function InventoryCreate() {
                           </p>
                         </div>
 
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[11%] max-w-[14%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[10%] max-w-[14%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             L.Weight
                           </p>
                         </div>
-                        <div className="flex justify-center text-center py-2 border-b border-[#0099dd]  px-3 min-w-[10%] max-w-[10%]">
+                        <div className="flex justify-center text-center py-2 border-b border-[#0099dd]  px-3 min-w-[9%] max-w-[10%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             N.Weight
                           </p>
                         </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#0099dd]  px-3 min-w-[10%] max-w-[10%]">
+                        <div className="flex justify-center text-center py-2 border-l border-b border-[#0099dd]  px-3 min-w-[9%] max-w-[10%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Fine Weight
                           </p>
@@ -976,42 +848,67 @@ export default function InventoryCreate() {
                             Wastage
                           </p>
                         </div>
-                      </div>
-
-                      <div className="flex justify-between overflow-hidden">
-                        <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#0099dd]  gap-[7px] px-3 min-w-[4%] max-w-[4%]">
-                          <input
-                            type="checkbox"
-                            style={{ width: "15px", height: "15px" }}
-                            className="ml-[-25%]"
-                          />
-                          <p className="font-[600] md11:text-[15px] md150:text-[17px] md11:mt-[5%] md150:mt-[2%]">
-                            1
+                        <div className="flex justify-center text-center py-2 border-l border-b border-[#0099dd]  px-3 min-w-[5%] max-w-[10%]">
+                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                            Action
                           </p>
                         </div>
-
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[15%] max-w-[88%]"></div>
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[15%] max-w-[88%]"></div>
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
-                          <p className="md11:text-[14px] md150:text-[18px] font-[300]  font-Poppins"></p>
-                        </div>
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[11%] max-w-[15%]">
-                          <p className="md11:text-[14px] md150:text-[18px] font-[300]  font-Poppins "></p>
-                        </div>
-
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[11%] max-w-[14%]">
-                          <p className="md11:text-[14px] md150:text-[18px] font-[300]  font-Poppins "></p>
-                        </div>
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[10.1%] max-w-[14%]">
-                          <p className="md11:text-[14px] md150:text-[18px] font-[300]  font-Poppins "></p>
-                        </div>
-                        <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[10%] max-w-[14%]">
-                          <p className="md11:text-[14px] md150:text-[18px] font-[300]  font-Poppins "></p>
-                        </div>
-                        <div className="flex justify-start md11:items-center text-center py-[10px]  border-b border-[#0099dd] px-3 min-w-[10%] max-w-[14%]">
-                          <p className="md11:text-[14px] md150:text-[18px] font-[300]  font-Poppins "></p>
-                        </div>
                       </div>
+                      {stocks?.map((item, index) => {
+                        const netWeight = (Number(item?.toWeight || 0) - Number(item?.lessWeight || 0)).toFixed(3);
+                        const percentage = item?.groupId?.percentage || 0;
+                        const updatedFineWeight = (netWeight * (percentage / 100)).toFixed(3);
+
+                        return (
+                          <div key={index} className="flex justify-between overflow-hidden">
+                            <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#0099dd] gap-[7px] px-3 min-w-[4%] max-w-[4%]">
+                              <input
+                                type="checkbox"
+                                style={{ width: "15px", height: "15px" }}
+                                className="ml-[-25%]"
+                              />
+                              <p className="font-[600] md11:text-[15px] md150:text-[17px] md11:mt-[5%] md150:mt-[2%]">
+                                {index + 1}
+                              </p>
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                              {item?.groupId?.name || "-"}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                              {item?.metalId?.metalName || "-"}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                              {item?.groupItemId?.itemName || "-"}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[11%] max-w-[15%]">
+                              {item?.toWeight || 0}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[10%] max-w-[14%]">
+                              {item?.lessWeight || 0}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[9%] max-w-[14%]">
+                              {netWeight}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[9.1%] max-w-[14%]">
+                              {updatedFineWeight}
+                            </div>
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[10%] max-w-[14%]">
+                              {item?.westage || 0}
+                            </div>
+                            <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#0099dd] px-3 min-w-[5%] max-w-[14%]">
+                              <i
+                                className="fa-solid text-[19px] cursor-pointer text-[#0099dd] fa-pen-to-square"
+                                onClick={() => handleStockModalEdit(item)}
+                              ></i>
+                              <i
+                                className="fa-solid text-[19px] cursor-pointer text-[#ff0c0c] fa-trash"
+                                onClick={() => handleOpenDeleteModal("stock", item?._id)}
+                              ></i>
+                            </div>
+                          </div>
+                        );
+                      })}
+
                     </div>
                   </div>
                 </div>
@@ -1057,7 +954,7 @@ export default function InventoryCreate() {
       </NextUIModal>
 
       <NextUIModal isOpen={stockModalopen}>
-        <ModalContent className="md:max-w-[760px] max-w-[760px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[460px]  ">
+        <ModalContent className="md:max-w-[760px] max-w-[760px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[410px]  ">
           {(handleModalclose) => (
             <>
               <div className="relative w-[100%] h-[100%] ">
@@ -1080,7 +977,7 @@ export default function InventoryCreate() {
                           <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
                         </div>
 
-                        <i class="fa-solid fa-xmark text-[#0099dd] mx-[10px]"></i>
+                        <i className="fa-solid fa-xmark text-[#0099dd] mx-[10px]"></i>
                         {/* Right Side */}
                         <div className="flex items-center gap-3">
                           <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
@@ -1104,11 +1001,11 @@ export default function InventoryCreate() {
                             </label>
                             <div
                               className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
+                              onClick={() => setDropdownOpen((prev) => !prev)}
                             >
                               <input
                                 type="text"
-                                name="type"
+                                name="groupId"
                                 id="type"
                                 value={selectedType}
                                 placeholder="Select Carat"
@@ -1131,13 +1028,13 @@ export default function InventoryCreate() {
                                   exit={{ opacity: 0, y: -10 }}
                                   className="absolute top-[90%]  mt-1 bg-white w-[290px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {firmTypes.map((type, index) => (
+                                  {categories.map((type, index) => (
                                     <div
                                       key={index}
                                       className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => handleSelect(type)}
+                                      onClick={() => handleSelect(type?.name)}
                                     >
-                                      {type}
+                                      {type?.name}
                                     </div>
                                   ))}
                                 </motion.div>
@@ -1163,7 +1060,7 @@ export default function InventoryCreate() {
                             >
                               <input
                                 type="text"
-                                name="type1"
+                                name="metalId"
                                 id="type1"
                                 value={selectedTypeMetal}
                                 placeholder="Select Metal"
@@ -1186,16 +1083,16 @@ export default function InventoryCreate() {
                                   exit={{ opacity: 0, y: -10 }}
                                   className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {firmTypesMetal.map((type, index) => (
+                                  {metals.map((type, index) => (
                                     <div
                                       key={index}
                                       className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                       onClick={() => {
-                                        handleSelectMetal(type);
+                                        handleSelectMetal(type?.metalName);
                                         setDropdownOpenMetal(false);
                                       }}
                                     >
-                                      {type}
+                                      {type?.metalName}
                                     </div>
                                   ))}
                                 </motion.div>
@@ -1222,7 +1119,7 @@ export default function InventoryCreate() {
                             >
                               <input
                                 type="text"
-                                name="type1"
+                                name="groupItemId"
                                 id="type1"
                                 value={selectedTypeCategory}
                                 placeholder="Select Category"
@@ -1245,16 +1142,16 @@ export default function InventoryCreate() {
                                   exit={{ opacity: 0, y: -10 }}
                                   className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {firmTypesCategory.map((type, index) => (
+                                  {item.map((type, index) => (
                                     <div
                                       key={index}
                                       className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                       onClick={() => {
-                                        handleSelectCategory(type);
+                                        handleSelectCategory(type?.itemName);
                                         setDropdownOpenCategory(false);
                                       }}
                                     >
-                                      {type}
+                                      {type?.itemName}
                                     </div>
                                   ))}
                                 </motion.div>
@@ -1269,9 +1166,12 @@ export default function InventoryCreate() {
                               G .Weight
                             </label>
                             <input
-                              type="Number"
+                              type="text"
+                              name="toWeight"
                               placeholder="Enter Gross Weight"
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                              value={grossWeight}
+                              onChange={(e) => setGrossWeight(e.target.value)}
                               autocomplete="naqsme"
                             />
                           </div>
@@ -1285,8 +1185,11 @@ export default function InventoryCreate() {
                               L .Weight
                             </label>
                             <input
-                              type="Number"
+                              type="text"
                               placeholder="Enter Less Weight"
+                              name="lessWeight"
+                              value={lessWeight}
+                              onChange={(e) => setLessWeight(e.target.value)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -1300,8 +1203,11 @@ export default function InventoryCreate() {
                               Wastage
                             </label>
                             <input
-                              type="Number"
+                              type="text"
+                              name="westage"
                               placeholder="Enter Wastage"
+                              value={westage}
+                              onChange={(e) => setWestage(e.target.value)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -1323,7 +1229,7 @@ export default function InventoryCreate() {
                             />
                           </div> */}
 
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                          {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1336,13 +1242,14 @@ export default function InventoryCreate() {
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <button className=" flex justify-center mt-[40px] items-center text-[#fff] py-[5px] text-[23px]  rounded-md font-Poppins w-[93%] mx-auto bs-spj">
-                    Add Stock
+                  <button className=" flex justify-center mt-[40px] items-center text-[#fff] py-[5px] text-[23px]  rounded-md font-Poppins w-[93%] mx-auto bs-spj"
+                    onClick={handleAddStock}>
+                    {selectedStock ? "Update Stock" : "Add Stock"}
                   </button>
                 </div>
               </div>
