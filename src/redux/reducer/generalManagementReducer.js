@@ -1,11 +1,11 @@
-import { RESET_GLOBAL_STATE, GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK,  GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_ATTRIBUTE, ADD_ATTRIBUTE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
+import { RESET_GLOBAL_STATE, GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK,  GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
 
 const initialState = {
     getUchak: [],
     getTag: [],
     getPercentage: [],
     getBrand: [],
-    getAttribute: [],
+    getMarketRate: [],
     getPergram: [],
     addUchak : [],
     updateUchak: [],
@@ -19,7 +19,7 @@ const initialState = {
     addCompanyInfo: [],
     updateBrand: [],
     deleteBrand: [],
-    addAttribute: [],
+    addMarketRate: [],
     updateAttribute: [],
     deleteAttribute: [],
     addPergram: [],
@@ -49,10 +49,10 @@ const generalManagementReducer = (state = initialState, action) => {
                 ...state,
                 getBrand: action.payload,
             };
-        case GET_ATTRIBUTE: 
+        case GET_MARKET_RATE: 
         return {
             ...state,
-            getAttribute: action.payload,
+            getMarketRate: action.payload,
         };
         case GET_PERGRAM: 
         return {
@@ -79,10 +79,10 @@ const generalManagementReducer = (state = initialState, action) => {
                 ...state,
                 addCompanyInfo: action.payload,
             };
-        case ADD_ATTRIBUTE: 
+        case ADD_MARKET_RATE: 
         return {
             ...state,
-            addAttribute: action.payload,
+            addMarketRate: action.payload,
         };
         case ADD_PERGRAM: 
         return {

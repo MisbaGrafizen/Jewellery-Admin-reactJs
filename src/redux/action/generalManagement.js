@@ -9,7 +9,7 @@ import {
     ApiPut,
     ApiPutWithId,
 } from '../../helper/axios';
-import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_ATTRIBUTE, ADD_ATTRIBUTE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
+import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
 
 
 export const getAllUchakAction = () => {
@@ -40,12 +40,12 @@ export const addUchakAction = (formData) => {
       return ApiPost(`/admin/uchak`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.uchak) {
+      if (res.data.uchak) {
         dispatch({
           type: ADD_UCHAK,
-          payload: res.uchak,
+          payload: res.data.uchak,
         });
-        return res.uchak;
+        return res.data.uchak;
       }
     })
     .catch((error) => {
@@ -217,12 +217,12 @@ export const addPercentageAction = (formData) => {
       return ApiPost(`/admin/percentage`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.percentage) {
+      if (res.data.percentage) {
         dispatch({
           type: ADD_PERCENTAGE,
-          payload: res.percentage,
+          payload: res.data.percentage,
         });
-        return res.percentage;
+        return res.data.percentage;
       }
     })
     .catch((error) => {
@@ -327,12 +327,12 @@ export const addPerGramAction = (formData) => {
       return ApiPost(`/admin/pergram`, formData)
     .then((res) => {
       console.log('res', res);
-      if (res.pergram) {
+      if (res.data.pergram) {
         dispatch({
           type: ADD_PERGRAM,
-          payload: res.pergram,
+          payload: res.data.pergram,
         });
-        return res.pergram;
+        return res.data.pergram;
       }
     })
     .catch((error) => {
@@ -391,44 +391,44 @@ export const deletePerGramAction = (id) => {
 
 
 
-export const getAllAttributeAction = () => {
+export const getMarketRateAction = () => {
     return (dispatch) => {
-        return ApiGet(`/admin/attribute`)
+        return ApiGet(`/admin/market-rate`)
       .then((res) => {
-        console.log('res', res);
-        if (res.category) {
+        console.log('ressadfgh', res);
+        if (res.marketRate) {
           dispatch({
-            type: GET_ATTRIBUTE,
-            payload: res.category,
+            type: GET_MARKET_RATE,
+            payload: res.marketRate,
           });
-          return res.category;
+          return res.marketRate;
         }
       })
       .catch((error) => {
         dispatch({
-          type: GET_ATTRIBUTE,
+          type: GET_MARKET_RATE,
           payload: error,
         });
       });
   };
 };
 
-export const addAttributeAction = (formData) => {
+export const addMarketRateAction = (rates) => {
   return (dispatch) => {
-      return ApiPost(`/admin/attribute`, formData )
+      return ApiPost(`/admin/market-rate`, { rates } )
     .then((res) => {
       console.log('res', res);
-      if (res.category) {
+      if (res.data.marketRate) {
         dispatch({
-          type: ADD_ATTRIBUTE,
-          payload: res.category,
+          type: ADD_MARKET_RATE,
+          payload: res.data.marketRate,
         });
-        return res.category;
+        return res.data.marketRate;
       }
     })
     .catch((error) => {
       dispatch({
-        type: ADD_ATTRIBUTE,
+        type: ADD_MARKET_RATE,
         payload: error,
       });
     });

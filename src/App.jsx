@@ -9,6 +9,7 @@ import PurchesInvoice from "./pages/purches/PurchesInvoice";
 import Login from "./pages/authPage/Login";
 import InventoryCreate from "./pages/mainPages/InventoryCreate";
 import LabourSetting from "./pages/mainPages/labourSetting/LabourSetting";
+import Scan from "./pages/scan";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/purches-invoice" element={<PurchesInvoice />} />
           <Route path="/inventory" element={<InventoryCreate />} />
           <Route path="/labour" element={<LabourSetting />} />
+          <Route path="/scan" element={<Scan />}/>
         </Routes>
       </div>
     </>
