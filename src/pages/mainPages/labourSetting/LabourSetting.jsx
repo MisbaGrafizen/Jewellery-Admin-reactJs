@@ -5,6 +5,7 @@ import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategroyAction, getGroupItemAction, getMetalAction } from "../../../redux/action/landingManagement";
+import { addUchakAction, getAllUchakAction, updateUchakAction } from "../../../redux/action/generalManagement";
 
 export default function LabourSetting() {
   const [labourModalopen, setlabourModalOpen] = useState(false);
@@ -26,6 +27,7 @@ export default function LabourSetting() {
     maxWeight: 100,
     rate: 50,
   });
+  const [selectedUchak, setSelectedUchak] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -38,6 +40,7 @@ export default function LabourSetting() {
     dispatch(getMetalAction());
     dispatch(getGroupItemAction());
   }, [dispatch]);
+  
 
   const handleSelect = (type) => {
     setSelectedType(type);
@@ -98,6 +101,69 @@ export default function LabourSetting() {
     }));
   };
 
+  const handleAddUchak = async () => {
+    // Validation for required fields
+    if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
+      alert("Please select Carat, Metal, and Category.");
+      return;
+    }
+  
+    // Find selected IDs from dropdown options
+    const selectedCarat = categories.find((carat) => carat.name === selectedType);
+    const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetal);
+    const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
+  
+    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+      alert("Invalid selection. Please select valid Carat, Metal, and Category.");
+      return;
+    }
+  
+    // Prepare Uchak data
+    const uchakData = {
+      group: selectedCarat?._id,
+      metal: selectedMetal?._id,
+      item: selectedCategory?._id,
+      from: parseFloat(formData.minWeight) || 0,
+      to: parseFloat(formData.maxWeight) || 0,
+      value: parseFloat(formData.rate) || 0,
+    };
+  
+    try {
+      if (isEditing) {
+        const response = await dispatch(updateUchakAction(selectedUchak?._id, uchakData));
+        if (response) {
+          alert("Uchak updated successfully!");
+          dispatch(getAllUchakAction()); // Refresh Uchak list
+        } else {
+          alert("Failed to update Uchak.");
+        }
+      } else {
+        // Add new Uchak
+        const response = await dispatch(addUchakAction(uchakData));
+        if (response) {
+          alert("Uchak added successfully!");
+          dispatch(getAllUchakAction()); // Refresh Uchak list
+        } else {
+          alert("Failed to add Uchak.");
+        }
+      }
+  
+      setIsEditing(false); // Reset editing state
+      setFormData({
+        carat: "",
+        metal: "",
+        category: "",
+        minWeight: 0,
+        maxWeight: 100,
+        rate: 50,
+      });
+    } catch (error) {
+      console.error("Error saving Uchak:", error);
+      alert("An error occurred while saving Uchak.");
+    }
+  };
+  
+
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
@@ -135,7 +201,7 @@ export default function LabourSetting() {
                                 >
                                   <input
                                     type="text"
-                                    name="type"
+                                    name="group"
                                     id="type"
                                     value={selectedType}
                                     placeholder="Select Carat"
@@ -158,13 +224,13 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypes.map((type, index) => (
+                                      {categories.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => handleSelect(type)}
+                                          onClick={() => handleSelect(type?.name)}
                                         >
-                                          {type}
+                                          {type?.name}
                                         </div>
                                       ))}
                                     </motion.div>
@@ -190,7 +256,7 @@ export default function LabourSetting() {
                                 >
                                   <input
                                     type="text"
-                                    name="type1"
+                                    name="metal"
                                     id="type1"
                                     value={selectedTypeMetal}
                                     placeholder="Select Metal"
@@ -213,16 +279,16 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypesMetal.map((type, index) => (
+                                      {metals.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                           onClick={() => {
-                                            handleSelectMetal(type);
+                                            handleSelectMetal(type?.metalName);
                                             setDropdownOpenMetal(false);
                                           }}
                                         >
-                                          {type}
+                                          {type?.metalName}
                                         </div>
                                       ))}
                                     </motion.div>
@@ -248,7 +314,7 @@ export default function LabourSetting() {
                                 >
                                   <input
                                     type="text"
-                                    name="type1"
+                                    name="item"
                                     id="type1"
                                     value={selectedTypeCategory}
                                     placeholder="Select Category"
@@ -271,16 +337,16 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypesCategory.map((type, index) => (
+                                      {item.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                           onClick={() => {
-                                            handleSelectCategory(type);
+                                            handleSelectCategory(type?.itemName);
                                             setDropdownOpenCategory(false);
                                           }}
                                         >
-                                          {type}
+                                          {type?.itemName}
                                         </div>
                                       ))}
                                     </motion.div>
@@ -298,7 +364,10 @@ export default function LabourSetting() {
                                 </label>
                                 <input
                                   type="Number"
+                                  name="from"
                                   placeholder="Enter Min-Weight"
+                                  value={formData?.minWeight}
+                                  onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
@@ -313,6 +382,9 @@ export default function LabourSetting() {
                                 <input
                                   type="Number"
                                   placeholder="Enter Max-Weight"
+                                  name="to"
+                                  value={formData?.maxWeight}
+                                  onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
@@ -328,13 +400,17 @@ export default function LabourSetting() {
                                 </label>
                                 <input
                                   type="Number"
+                                  name="value"
                                   placeholder="Enter Rate"
+                                  value={formData?.rate}
+                                  onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
                               </div>
                             </div>
-                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins">
+                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                            onClick={handleAddUchak}>
                               Save
                             </button>
                           </div>
@@ -384,7 +460,7 @@ export default function LabourSetting() {
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypes.map((type, index) => (
+                                        {categories.map((type, index) => (
                                           <div
                                             key={index}
                                             className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -439,7 +515,7 @@ export default function LabourSetting() {
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypesMetal.map((type, index) => (
+                                        {metals.map((type, index) => (
                                           <div
                                             key={index}
                                             className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -497,7 +573,7 @@ export default function LabourSetting() {
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypesCategory.map(
+                                        {item.map(
                                           (type, index) => (
                                             <div
                                               key={index}
@@ -720,7 +796,7 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypes.map((type, index) => (
+                                      {categories.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -775,7 +851,7 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypesMetal.map((type, index) => (
+                                      {metals.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -833,7 +909,7 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypesCategory.map((type, index) => (
+                                      {item.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -1406,7 +1482,7 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypes.map((type, index) => (
+                                      {categories.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -1461,7 +1537,7 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypesMetal.map((type, index) => (
+                                      {metals.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
@@ -1519,7 +1595,7 @@ export default function LabourSetting() {
                                       exit={{ opacity: 0, y: -10 }}
                                       className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
-                                      {firmTypesCategory.map((type, index) => (
+                                      {item.map((type, index) => (
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
