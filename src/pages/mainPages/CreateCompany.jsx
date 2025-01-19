@@ -19,6 +19,18 @@ export default function CreateCompany() {
   const [stateFocused, setStateFocused] = useState(false);
   const [cityFocused, setCityFocused] = useState(false);
   const [pinFocused, setPinFocused] = useState(false);
+  const [gstFocused, setGstFocused] = useState(false);
+  const [panFocused, setPanFocused] = useState(false);
+  const [holderFocused, setHolderFocused] = useState(false);
+  const [accountFocused, setAccountFocused] = useState(false);
+  const [bankFocused, setBankFocused] = useState(false);
+  const [ifscFocused, setIfscFocused] = useState(false);
+  const [bankAddressFocused, setBankAddressFocused] = useState(false);
+  const [financialFocused, setFinancialFocused] = useState(false);
+  const [invoiceFocused, setInvoiceFocused] = useState(false);
+  const [invoiceNumberFocused, setInvoiceNumberFocused] = useState(false);
+  const [termsFocused, setTermsFocused] = useState(false);
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [selectedType, setSelectedType] = useState("");
@@ -85,12 +97,6 @@ export default function CreateCompany() {
     };
   }, []);
 
-
-
-
-
-
-  
   return (
     <>
       <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
@@ -107,32 +113,56 @@ export default function CreateCompany() {
 
                   <div className=" w-[100%]  flex gap-[16px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] flex-col gap-[16px]">
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                      {/* <div className="relative w-full  input-box12 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <span
+                          className={`font-Roboto font-[500] text-[15px] }`}
                         >
-                          Name
-                        </label>
+                          First Name
+                        </span>
                         <input
                           type="text"
                           name="name"
                           id="name"
                           value={user?.name}
-                          placeholder="Your Name"
+                          // placeholder="Your Name"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setNameFocused(true)}
                           onBlur={(e) => setNameFocused(e.target.value !== "")}
                           autocomplete="nasme"
                         />
+                      </div> */}
+
+                      <div className="relative w-full input-box12 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                        <span
+                          className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.name || NameFocused
+                              ? "text-[#000] -translate-y-[21px]"
+                              : "text-[#8f8f8f]"
+                          }`}
+                        >
+                          Name
+                        </span>
+                        <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          value={user?.name}
+                          className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent"
+                          onFocus={() => setNameFocused(true)}
+                          onBlur={(e) => setNameFocused(e.target.value !== "")}
+                          autoComplete="name"
+                        />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="email"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.email || EmailFocused
+                              ? "text-[#000] -translate-y-[21px]"
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
-                          Email ID
-                        </label>
+                          Email Id
+                        </span>
                         <input
                           type="email"
                           name="email"
@@ -148,18 +178,20 @@ export default function CreateCompany() {
                     </div>
                     <div className=" flex w-[100%] flex-col gap-[16px]">
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="number"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.mobileNumber || mobileNumber
+                              ? "text-[#000] -translate-y-[21px]"
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           Mobile Number
-                        </label>
+                        </span>
                         <input
                           type="number"
                           name="number"
                           id="number"
                           value={user?.mobileNumber}
-                          placeholder="Mobile Number"
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setMobileNumber(true)}
                           onBlur={(e) => setMobileNumber(e.target.value !== "")}
@@ -177,19 +209,21 @@ export default function CreateCompany() {
                   <div className=" w-[100%]  relative flex gap-[16px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] flex-col gap-[16px]">
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="firm"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.firmName || firmFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           Firm Name
-                        </label>
+                        </span>
                         <input
                           type="text"
                           name="firmName"
                           id="firm"
                           value={formData?.firmName}
                           onChange={handleChange}
-                          placeholder=" Enter Your Firm Name"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setFirmFocused(true)}
                           onBlur={(e) => setFirmFocused(e.target.value !== "")}
@@ -197,19 +231,21 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="address"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.address || addressFocused
+                              ? "text-[#000] -translate-y-[45px] font-[]"
+                              : "  -translate-y-[27px] "
+                          }`}
                         >
                           Buisness Address
-                        </label>
+                        </span>
                         <textarea
                           type="text"
                           name="address"
                           id="address"
                           value={formData?.address}
                           onChange={handleChange}
-                          placeholder=" Enter Your Buisness Address"
                           onFocus={() => setAddressFocused(true)}
                           onBlur={(e) =>
                             setAddressFocused(e.target.value !== "")
@@ -220,19 +256,22 @@ export default function CreateCompany() {
                       </div>
 
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="state"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          html="state"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.state || stateFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           State
-                        </label>
+                        </span>
                         <input
                           type="text"
                           name="state"
                           id="state"
                           value={formData?.state}
                           onChange={handleChange}
-                          placeholder="Enter Your State"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setStateFocused(true)}
                           onBlur={(e) => setStateFocused(e.target.value !== "")}
@@ -240,19 +279,21 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="state"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.city || cityFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           City
-                        </label>
+                        </span>
                         <input
                           type="text"
                           name="city"
                           id="city"
                           value={formData?.city}
                           onChange={handleChange}
-                          placeholder="Enter Your City"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setCityFocused(true)}
                           onBlur={(e) => setCityFocused(e.target.value !== "")}
@@ -260,19 +301,21 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="pin"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.pinCode || pinFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           Pin-Code
-                        </label>
+                        </span>
                         <input
                           type="text"
                           name="pinCode"
                           id="pin"
                           value={formData?.pinCode}
                           onChange={handleChange}
-                          placeholder="Enter Pin-Code"
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
                           onFocus={() => setPinFocused(true)}
                           onBlur={(e) => setPinFocused(e.target.value !== "")}
@@ -286,18 +329,20 @@ export default function CreateCompany() {
                         className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                         onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                       >
-                        <label
-                          htmlFor="type"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            selectedType || typeFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           Firm Type
-                        </label>
+                        </span>
                         <input
                           type="text"
                           name="firmType"
                           id="type"
                           value={selectedType}
-                          placeholder="Select Firm Type"
                           className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                           readOnly
                           onFocus={() => setTypeFocused(true)}
@@ -341,38 +386,49 @@ export default function CreateCompany() {
                         )}
                       </AnimatePresence>
                       <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.gstNumber || gstFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
                         >
                           GST Number
-                        </label>
+                        </span>
                         <input
                           type="number"
                           name="gstNumber"
                           id="number"
                           value={formData?.gstNumber}
                           onChange={handleChange}
+                          onFocus={() => setGstFocused(true)}
+                          onBlur={() => setGstFocused(false)}
                           autocomplete="nasme"
-                          placeholder="Enter Your GST Number "
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                        <span
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            user?.panNumber || panFocused
+                              ? "text-[#000] -translate-y-[21px] "
+                              : "text-[#8f8f8f]"
+                          }`}
+                          onClick={() =>
+                            document.getElementById("number").setPanFocused()
+                          }
                         >
                           PAN Number
-                        </label>
+                        </span>
                         <input
                           type="number"
                           name="panNumber"
                           id="number"
                           value={formData?.panNumber}
                           onChange={handleChange}
+                          onFocus={() => setPanFocused(true)}
+                          onBlur={() => setPanFocused(false)}
                           autocomplete="nasme"
-                          placeholder="Enter Your PAN Number "
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
                       </div>
@@ -556,39 +612,47 @@ export default function CreateCompany() {
                     <div className=" flex w-[100%] gap-[16px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                          <label
-                            htmlFor="name"
-                            className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              user?.holderName || holderFocused
+                                ? "text-[#000] -translate-y-[21px] "
+                                : "text-[#8f8f8f]"
+                            }`}
                           >
                             Account Holder Name
-                          </label>
+                          </span>
                           <input
                             type="text"
                             name="holderName"
                             id="name"
                             value={formData?.holderName}
                             onChange={handleChange}
+                            onFocus={() => setHolderFocused(true)}
+                            onBlur={() => setHolderFocused(false)}
                             autocomplete="nasme"
-                            placeholder="Enter Account Holder Name"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
                         </div>
                       </div>
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                          <label
-                            htmlFor="name"
-                            className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.accountNo || accountFocused
+                                ? "text-[#000] -translate-y-[21px] "
+                                : "text-[#8f8f8f]"
+                            }`}
                           >
                             Account No
-                          </label>
+                          </span>
                           <input
                             type="number"
                             name="accountNo"
                             id="number"
                             value={formData?.accountNo}
                             onChange={handleChange}
-                            placeholder="Enter Account No "
+                            onFocus={() => setAccountFocused(true)}
+                            onBlur={() => setAccountFocused(false)}
                             autocomplete="nasme"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -718,19 +782,23 @@ export default function CreateCompany() {
                     <div className=" flex w-[100%] gap-[20px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                          <label
-                            htmlFor="name"
-                            className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.bankName || bankFocused
+                                ? "text-[#000] -translate-y-[21px] "
+                                : "text-[#8f8f8f]"
+                            }`}
                           >
                             Bank Name
-                          </label>
+                          </span>
                           <input
                             type="text"
                             name="bankName"
                             id="name"
                             value={formData?.bankName}
                             onChange={handleChange}
-                            placeholder="Enter Bank Name"
+                            onFocus={() => setBankFocused(true)}
+                            onBlur={() => setBankFocused(false)}
                             autocomplete="nasme"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
@@ -738,12 +806,15 @@ export default function CreateCompany() {
                       </div>
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                          <label
-                            htmlFor="name"
-                            className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.IFSCCode || ifscFocused
+                                ? "text-[#000] -translate-y-[21px] "
+                                : "text-[#8f8f8f]"
+                            }`}
                           >
                             IFSC Code
-                          </label>
+                          </span>
                           <input
                             type="number"
                             name="IFSCCode"
@@ -751,26 +822,32 @@ export default function CreateCompany() {
                             id="number"
                             value={formData?.IFSCCode}
                             onChange={handleChange}
-                            placeholder="Enter IFSC Code "
+                            onFocus={() => setIfscFocused(true)}
+                            onBlur={() => setIfscFocused(false)}
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
                         </div>
                       </div>
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <label
-                        htmlFor="name"
-                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]   text-[14px]  capitalize"
+                      <span
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          formData?.bankAddress || bankAddressFocused
+                            ? "text-[#000] -translate-y-[45px] "
+                            : "text-[#8f8f8f] -translate-y-[26px]"
+                        }`}
                       >
-                        Bank Address
-                      </label>
+                        Bank address
+                      </span>
                       <textarea
                         type="email"
                         name="bankAddress"
                         id="email"
                         value={formData?.bankAddress}
                         onChange={handleChange}
-                        placeholder="Enter Your Bank address  "
+                        onFocus={() => setBankAddressFocused(true)}
+                        onBlur={() => setBankAddressFocused(false)}
+                        autoComplete="hkj"
                         className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                       ></textarea>
                     </div>
@@ -785,38 +862,48 @@ export default function CreateCompany() {
                     <div className=" flex w-[100%] gap-[20px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                          <label
-                            htmlFor="name"
-                            className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                          <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.beginingFrom || financialFocused
+                                ? "text-[#000] -translate-y-[20px] "
+                                : "text-[#8f8f8f]"
+                            }`}
                           >
                             Financial year Beginning From
-                          </label>
+                          </span>
                           <input
                             type="text"
                             name="beginingFrom"
                             id="name"
                             value={formData?.beginingFrom}
                             onChange={handleChange}
-                            placeholder="Financial year Beginning From"
+                            onFocus={() => setFinancialFocused(true)}
+                            onBlur={() => setFinancialFocused(false)}
+                            autoComplete="hkj"
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
                         </div>
                       </div>
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                          <label
-                            htmlFor="name"
-                            className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+         
+                          <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.invoicePrefix || invoiceFocused
+                                ? "text-[#000] -translate-y-[20px] "
+                                : "text-[#8f8f8f]"
+                            }`}
                           >
-                            Invoice Prefix
-                          </label>
+                                                  Invoice Prefix
+                          </span>
                           <input
                             type="number"
                             name="invoicePrefix"
                             id="number"
                             value={formData?.invoicePrefix}
                             onChange={handleChange}
-                            placeholder="Enter Account No "
+                            onFocus={() => setInvoiceFocused(true)}
+                            onBlur={() => setInvoiceFocused(false)}
                             className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                           />
                         </div>
@@ -825,19 +912,24 @@ export default function CreateCompany() {
 
                     <div className=" flex  w-[100%] gap-[20px]">
                       <div className="relative w-[50%]  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <label
-                          htmlFor="name"
-                          className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]   text-[14px]  capitalize"
-                        >
-                          Term & Condition
-                        </label>
+                      <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.terms || termsFocused
+                                ? "text-[#000] -translate-y-[44px] "
+                                : "text-[#8f8f8f] -translate-y-[26px]"
+                            }`}
+                          >
+                                          Term & Condition 
+                          </span>
                         <textarea
                           type="email"
                           name="terms"
                           id="email"
                           value={formData?.terms}
                           onChange={handleChange}
-                          placeholder="Enter Term & Condition "
+                          onFocus={() => setTermsFocused(true)}
+                          onBlur={() => setTermsFocused(false)}
+   
                           className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                         ></textarea>
                       </div>
@@ -845,19 +937,24 @@ export default function CreateCompany() {
                       <div className=" flex flex-col gap-[20px] w-[50%]">
                         <div className=" flex w-[100%] flex-col gap-[20px]">
                           <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Invoice Number
-                            </label>
+                      
+                            <span
+                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                              formData?.invoiceNumber || invoiceNumberFocused
+                                ? "text-[#000] -translate-y-[20px] "
+                                : "text-[#8f8f8f] "
+                            }`}
+                          >
+                                                   Invoice Number
+                          </span>
                             <input
                               type="number"
                               name="invoiceNumber"
                               id="number"
                               value={formData?.invoiceNumber}
                               onChange={handleChange}
-                              placeholder="Enter Account No "
+                              onFocus={() => setInvoiceNumberFocused(true)}
+                              onBlur={() => setInvoiceNumberFocused(false)}
                               className="w-full outline-none text-[12px]  py-[9px] font-Poppins font-[400] bg-transparent"
                             />
                           </div>
