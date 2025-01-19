@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ApiGet } from '../helper/axios';
 
 const scan = () => {
   const [barcode, setBarcode] = useState('');
@@ -9,8 +10,9 @@ const scan = () => {
   const handleScan = async (event) => {
     if (event.key === 'Enter') { // Scanner typically sends Enter key after the barcode
       try {
-        const response = await axios.get(`/admin/product/${barcode}`); // Replace with your API endpoint
-        setProduct(response.data); // Store the fetched product details
+        const response = await ApiGet(`/admin/product/${barcode}`);
+        console.log("response", response)
+        setProduct(response.product); // Store the fetched product details
         setError('');
       } catch (err) {
         console.error('Error fetching product:', err);
@@ -46,13 +48,12 @@ const scan = () => {
           <h2 className="text-xl font-bold mb-4">Product Details</h2>
           <p><strong>Barcode:</strong> {product.barCode}</p>
           <p><strong>Group:</strong> {product.groupId?.name}</p>
-          <p><strong>Item:</strong> {product.groupItemId?.name}</p>
-          <p><strong>Metal:</strong> {product.metalId?.name}</p>
+          <p><strong>Item:</strong> {product.groupItemId?.itemName}</p>
+          <p><strong>Metal:</strong> {product.metalId?.metalName}</p>
           <p><strong>Weight:</strong> {product.toWeight}</p>
           <p><strong>Net Weight:</strong> {product.netWeight}</p>
           <p><strong>Fine Weight:</strong> {product.fineWeight}</p>
-          <p><strong>Gold Rate:</strong> {product.goldRate}</p>
-          <p><strong>Silver Rate:</strong> {product.silverRate}</p>
+          <p><strong>Total Price:</strong> {product.totalPrice}</p>
           {product.barcodeImage && (
             <img src={product.barcodeImage} alt="Barcode" className="mt-4" />
           )}

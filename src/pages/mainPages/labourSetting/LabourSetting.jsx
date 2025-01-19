@@ -226,7 +226,8 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleEdit = () => {
+  const handleEdit = (id) => {
+    setSelectedUchak(id);
     setIsEditing(true); // Enable editing mode
   };
 
@@ -716,7 +717,7 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   >
                                     <input
                                       type="text"
-                                      name="type"
+                                      name="group"
                                       id="type"
                                       value={selectedType}
                                       placeholder="Select Carat"
@@ -739,13 +740,13 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypes.map((type, index) => (
+                                        {categories.map((type, index) => (
                                           <div
                                             key={index}
                                             className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => handleSelect(type)}
+                                            onClick={() => handleSelect(type?.name)}
                                           >
-                                            {type}
+                                            {type?.name}
                                           </div>
                                         ))}
                                       </motion.div>
@@ -771,7 +772,7 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   >
                                     <input
                                       type="text"
-                                      name="type1"
+                                      name="metal"
                                       id="type1"
                                       value={selectedTypeMetal}
                                       placeholder="Select Metal"
@@ -794,16 +795,16 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypesMetal.map((type, index) => (
+                                        {metals.map((type, index) => (
                                           <div
                                             key={index}
                                             className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                             onClick={() => {
-                                              handleSelectMetal(type);
+                                              handleSelectMetal(type?.metalName);
                                               setDropdownOpenMetal(false);
                                             }}
                                           >
-                                            {type}
+                                            {type?.metalName}
                                           </div>
                                         ))}
                                       </motion.div>
@@ -829,7 +830,7 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   >
                                     <input
                                       type="text"
-                                      name="type1"
+                                      name="item"
                                       id="type1"
                                       value={selectedTypeCategory}
                                       placeholder="Select Category"
@@ -852,17 +853,17 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypesCategory.map(
+                                        {item.map(
                                           (type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectCategory(type);
+                                                handleSelectCategory(type?.itemName);
                                                 setDropdownOpenCategory(false);
                                               }}
                                             >
-                                              {type}
+                                              {type?.itemName}
                                             </div>
                                           )
                                         )}
@@ -882,6 +883,9 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   <input
                                     type="Number"
                                     placeholder="Enter Min-Weight"
+                                    name="minWeight"
+                                    value={formData?.minWeight}
+                                    onChange={handleChange}
                                     className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                     autocomplete="naqsme"
                                   />
@@ -895,6 +899,9 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   </label>
                                   <input
                                     type="Number"
+                                    name="maxWeight"
+                                    value={formData?.maxWeight}
+                                    onChange={handleChange}
                                     placeholder="Enter Max-Weight"
                                     className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                     autocomplete="naqsme"
@@ -911,13 +918,17 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   </label>
                                   <input
                                     type="Number"
+                                    name="rate"
                                     placeholder="Enter Rate"
+                                    value={formData?.rate}
+                                    onChange={handleChange}
                                     className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                     autocomplete="naqsme"
                                   />
                                 </div>
                               </div>
-                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     onClick={handleSave}>
+                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     
+                              onClick={handleAddUchak}>
                                 Save
                               </button>
                               </div>
@@ -929,7 +940,7 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                             <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
 
                           <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                          <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
+                          <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={() => handleEdit(item?._id)}></i>
                           <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
                           </div>
                             <div className=" flex w-[100%] fle  gap-[5px]">
