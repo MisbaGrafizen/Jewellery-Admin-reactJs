@@ -19,7 +19,7 @@ export default function LabourSetting() {
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
-  
+
   const dropdownWeightRef = useRef(null);
   const dropdownMetalWeightRef = useRef(null);
   const dropdownCategoryWeightRef = useRef(null);
@@ -29,10 +29,28 @@ export default function LabourSetting() {
   const dropdownMetalPercentageRef = useRef(null);
   const dropdownCategoryPercentageRef = useRef(null);
 
+  //place holder text 
+  const [caratFocused, setCaratFocused] = useState(false);
+  const [metalFocused, setMetalFocused] = useState(false);
+  const [categoryFocused, setCategoryFocused] = useState(false);
+  const [maxFocused, setMaxFocused] = useState(false);
+  const [minFocused, setMinFocused] = useState(false);
+  const [rateFocused, setRateFocused] = useState(false);
+  const [editcaratFocused, setEditCaratFocused] = useState(false);
+  const [editmetalFocused, setEditMetalFocused] = useState(false);
+  const [editcategoryFocused, setEditCategoryFocused] = useState(false);
+  const [editmaxFocused, setEditMaxFocused] = useState(false);
+  const [editminFocused, setEditMinFocused] = useState(false);
+  const [editrateFocused, setEditRateFocused] = useState(false);
 
 
 
-  const [isEditing, setIsEditing] = useState(false); 
+
+
+
+
+
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     carat: "Default Carat",
     metal: "Default Metal",
@@ -43,7 +61,7 @@ export default function LabourSetting() {
   });
   const [selectedUchak, setSelectedUchak] = useState("");
 
-  const [isEditingWeight, setIsEditingWeight] = useState(false); 
+  const [isEditingWeight, setIsEditingWeight] = useState(false);
   const [formDataWeight, setFormDataWeight] = useState({
     carat: "Default Carat",
     metal: "Default Metal",
@@ -67,22 +85,32 @@ export default function LabourSetting() {
 
 
 
-// Weight dropDown
-const [dropdownOpenWeight, setDropdownOpenWeight] = useState(false);
-const [selectedTypeWeight, setSelectedTypeWeight] = useState("");
-const [dropdownOpenMetalWeight, setDropdownOpenMetalWeight] = useState(false);
-const [selectedTypeMetalWeight, setSelectedTypeMetalWeight] = useState("");
-const [dropdownOpenCategoryWeight, setDropdownOpenCategoryWeight] = useState(false);
-const [selectedTypeCategoryWeight, setSelectedTypecategoryWeight] = useState("");
+
+//edit uchak
+const [editdropdownOpen, setEditDropdownOpen] = useState(false);
+const [editselectedType, setEditSelectedType] = useState("");
+const [editdropdownOpenMetal, setEditDropdownOpenMetal] = useState(false);
+const [editselectedTypeMetal, setEditSelectedTypeMetal] = useState("");
+const [editdropdownOpenCategory, setEditDropdownOpenCategory] = useState(false);
+const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
 
-// Percentage dropDown
-const [dropdownOpenPercentage, setDropdownOpenPercentage] = useState(false);
-const [selectedTypePercentage, setSelectedTypePercentage] = useState("");
-const [dropdownOpenMetalPercentage, setDropdownOpenMetalPercentage] = useState(false);
-const [selectedTypeMetalPercentage, setSelectedTypeMetalPercentage] = useState("");
-const [dropdownOpenCategoryPercentage, setDropdownOpenCategoryPercentage] = useState(false);
-const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useState("");
+  // Weight dropDown
+  const [dropdownOpenWeight, setDropdownOpenWeight] = useState(false);
+  const [selectedTypeWeight, setSelectedTypeWeight] = useState("");
+  const [dropdownOpenMetalWeight, setDropdownOpenMetalWeight] = useState(false);
+  const [selectedTypeMetalWeight, setSelectedTypeMetalWeight] = useState("");
+  const [dropdownOpenCategoryWeight, setDropdownOpenCategoryWeight] = useState(false);
+  const [selectedTypeCategoryWeight, setSelectedTypecategoryWeight] = useState("");
+
+
+  // Percentage dropDown
+  const [dropdownOpenPercentage, setDropdownOpenPercentage] = useState(false);
+  const [selectedTypePercentage, setSelectedTypePercentage] = useState("");
+  const [dropdownOpenMetalPercentage, setDropdownOpenMetalPercentage] = useState(false);
+  const [selectedTypeMetalPercentage, setSelectedTypeMetalPercentage] = useState("");
+  const [dropdownOpenCategoryPercentage, setDropdownOpenCategoryPercentage] = useState(false);
+  const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useState("");
 
   const dispatch = useDispatch();
 
@@ -93,16 +121,16 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
   const weight = useSelector((state) => state.general.getPergram);
   const percentage = useSelector((state) => state.general.getPercentage);
 
-    useEffect(() => {
-      dispatch(getCategroyAction());
-      dispatch(getMetalAction());
-      dispatch(getGroupItemAction());
-      dispatch(getAllUchakAction());
-      dispatch(getPerGramAction());
-      dispatch(getPercentageAction());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(getCategroyAction());
+    dispatch(getMetalAction());
+    dispatch(getGroupItemAction());
+    dispatch(getAllUchakAction());
+    dispatch(getPerGramAction());
+    dispatch(getPercentageAction());
+  }, [dispatch]);
 
-  
+
 
   const firmTypes = [
     "Sole Proprietorship",
@@ -231,6 +259,19 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
     setIsEditing(true); // Enable editing mode
   };
 
+  const handleEditWeight = (id) => {
+    setSelectedWeight(id);
+    setIsEditingWeight(true); // Enable editing mode
+  };
+
+  const handleEditPercentage = (id) => {
+    setSelectedPercentage(id);
+    setIsEditingPercentage(true); // Enable editing mode
+  };
+
+
+
+
   const handleSave = () => {
     setIsEditing(false); // Disable editing mode
     console.log("Saved Data:", formData);
@@ -265,16 +306,16 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
       alert("Please select Carat, Metal, and Category.");
       return;
     }
-  
+
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetal);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-  
+
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
       alert("Invalid selection. Please select valid Carat, Metal, and Category.");
       return;
     }
-  
+
     const uchakData = {
       group: selectedCarat?._id,
       metal: selectedMetal?._id,
@@ -283,13 +324,13 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
       maxWeight: parseFloat(formData.maxWeight) || 0,
       rate: parseFloat(formData.rate) || 0,
     };
-  
+
     try {
       if (isEditing) {
         const response = await dispatch(updateUchakAction(selectedUchak?._id, uchakData));
         if (response) {
           alert("Uchak updated successfully!");
-          dispatch(getAllUchakAction()); 
+          dispatch(getAllUchakAction());
         } else {
           alert("Failed to update Uchak.");
         }
@@ -303,8 +344,8 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
           alert("Failed to add Uchak.");
         }
       }
-  
-      setIsEditing(false); 
+
+      setIsEditing(false);
       setFormData({
         carat: "",
         metal: "",
@@ -324,16 +365,16 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
       alert("Please select Carat, Metal, and Category.");
       return;
     }
-  
+
     const selectedCarat = categories.find((carat) => carat.name === selectedTypeWeight);
     const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetalWeight);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategoryWeight);
-  
+
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
       alert("Invalid selection. Please select valid Carat, Metal, and Category.");
       return;
     }
-  
+
     const weightData = {
       group: selectedCarat?._id,
       metal: selectedMetal?._id,
@@ -342,13 +383,13 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
       maxWeight: parseFloat(formDataWeight.maxWeight) || 0,
       rate: parseFloat(formDataWeight.rate) || 0,
     };
-  
+
     try {
       if (isEditingWeight) {
         const response = await dispatch(updatePerGramAction(selectedWeight?._id, weightData));
         if (response) {
           alert("Weight updated successfully!");
-          dispatch(getPerGramAction()); 
+          dispatch(getPerGramAction());
         } else {
           alert("Failed to update Weight.");
         }
@@ -362,8 +403,8 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
           alert("Failed to add Weight.");
         }
       }
-  
-      setIsEditingWeight(false); 
+
+      setIsEditingWeight(false);
       setFormDataWeight({
         carat: "",
         metal: "",
@@ -383,16 +424,16 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
       alert("Please select Carat, Metal, and Category.");
       return;
     }
-  
+
     const selectedCarat = categories.find((carat) => carat.name === selectedTypePercentage);
     const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetalPercentage);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategoryPercentage);
-  
+
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
       alert("Invalid selection. Please select valid Carat, Metal, and Category.");
       return;
     }
-  
+
     const percentageData = {
       group: selectedCarat?._id,
       metal: selectedMetal?._id,
@@ -401,13 +442,13 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
       maxWeight: parseFloat(formDataPercentage.maxWeight) || 0,
       rate: parseFloat(formDataPercentage.rate) || 0,
     };
-  
+
     try {
       if (isEditingPercentage) {
         const response = await dispatch(updatePercentageAction(selectedPercentage?._id, percentageData));
         if (response) {
           alert("Percentage updated successfully!");
-          dispatch(getPercentageAction()); 
+          dispatch(getPercentageAction());
         } else {
           alert("Failed to update Percentage.");
         }
@@ -421,8 +462,8 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
           alert("Failed to add Percentage.");
         }
       }
-  
-      setIsEditingPercentage(false); 
+
+      setIsEditingPercentage(false);
       setFormDataPercentage({
         carat: "",
         metal: "",
@@ -467,12 +508,14 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                 ref={dropdownRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
                                   Carat
-                                </label>
+                                </span>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
@@ -484,7 +527,8 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                     name="group"
                                     id="type"
                                     value={selectedType}
-                                    placeholder="Select Carat"
+                                    onFocus={() => setCaratFocused(true)}
+                                    onBlur={(e) => setCaratFocused(e.target.value !== "")}
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -502,7 +546,7 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      className="absolute top-[90%] left-[-17px] mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
                                       {categories.map((type, index) => (
                                         <div
@@ -522,12 +566,14 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                 ref={dropdownMetalRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
                                   Metal
-                                </label>
+                                </span>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
@@ -539,7 +585,9 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                     name="metal"
                                     id="type1"
                                     value={selectedTypeMetal}
-                                    placeholder="Select Metal"
+                                    onFocus={() => setMetalFocused(true)}
+                                    onBlur={(e) => setMetalFocused(e.target.value !== "")}
+
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -557,7 +605,7 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      className="absolute top-[90%] left-[-17px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
                                       {metals.map((type, index) => (
                                         <div
@@ -575,77 +623,85 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   )}
                                 </AnimatePresence>
                               </div>
-                              </div>
-                              <div
-                                ref={dropdownCategoryRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            </div>
+                            <div
+                              ref={dropdownCategoryRef}
+                              className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            >
+                              <span
+                                className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
+                                  ? "text-[#000] -translate-y-[21px]"
+                                  : "text-[#8f8f8f]"
+                                  }`}
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                  onClick={() =>
-                                    setDropdownOpenCategory((prev) => !prev)
-                                  } // Toggle dropdown on click
-                                >
-                                  <input
-                                    type="text"
-                                    name="item"
-                                    id="type1"
-                                    value={selectedTypeCategory}
-                                    placeholder="Select Category"
-                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                    readOnly
-                                  />
-                                  <i
-                                    className={
-                                      dropdownOpenCategory
-                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                    }
-                                  ></i>
-                                </div>
-                                <AnimatePresence>
-                                  {dropdownOpenCategory && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                    >
-                                      {item.map((type, index) => (
-                                        <div
-                                          key={index}
-                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => {
-                                            handleSelectCategory(type?.itemName);
-                                            setDropdownOpenCategory(false);
-                                          }}
-                                        >
-                                          {type?.itemName}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
+                                Category
+                              </span>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() =>
+                                  setDropdownOpenCategory((prev) => !prev)
+                                } // Toggle dropdown on click
+                              >
+                                <input
+                                  type="text"
+                                  name="item"
+                                  id="type1"
+                                  onFocus={() => setCategoryFocused(true)}
+                                  onBlur={(e) => setCategoryFocused(e.target.value !== "")}
+                                  value={selectedTypeCategory}
+
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpenCategory
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                  }
+                                ></i>
                               </div>
-                          
+                              <AnimatePresence>
+                                {dropdownOpenCategory && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-2 bg-white left-[-15px] w-[325px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {item.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          handleSelectCategory(type?.itemName);
+                                          setDropdownOpenCategory(false);
+                                        }}
+                                      >
+                                        {type?.itemName}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+
+                                <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData?.minWeight || minFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
                                   Min-Weight
-                                </label>
+                                </span>
                                 <input
                                   type="Number"
                                   name="minWeight"
-                                  placeholder="Enter Min-Weight"
+                                  onFocus={() => setMinFocused(true)}
+                                  onBlur={(e) => setMinFocused(e.target.value !== "")}
                                   value={formData?.minWeight}
                                   onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -653,16 +709,19 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                 />
                               </div>
                               <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData?.maxWeight || maxFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
-                                  Max-weight
-                                </label>
+                                  Max-Weight
+                                </span>
                                 <input
                                   type="Number"
                                   name="maxWeight"
-                                  placeholder="Enter Max-Weight"
+                                  onFocus={() => setMaxFocused(true)}
+                                  onBlur={(e) => setMaxFocused(e.target.value !== "")}
                                   value={formData?.maxWeight}
                                   onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -672,145 +731,153 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                             </div>
                             <div className=" flex-col flex gap-[20px] ">
                               <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData?.rate || rateFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
                                   Rate
-                                </label>
+                                </span>
                                 <input
                                   type="Number"
                                   name="rate"
-                                  placeholder="Enter Rate"
+
                                   value={formData?.rate}
                                   onChange={handleChange}
+                                  onFocus={() => setRateFocused(true)}
+                                  onBlur={(e) => setMaxFocused(e.target.value !== "")}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
                               </div>
                             </div>
                             <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                            onClick={handleAddUchak}>
+                              onClick={handleAddUchak}>
                               Save
                             </button>
                           </div>
                           {isEditing ? (
                             // Editable Fields
                             <>
-                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-                              <div className=" flex w-[100%] fle  gap-[5px]">
-                                <div
-                                  ref={dropdownRef}
-                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Carat
-                                  </label>
+                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                                <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setDropdownOpen((prev) => !prev)
-                                    } // Toggle dropdown on click
+                                    ref={dropdownRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <input
-                                      type="text"
-                                      name="group"
-                                      id="type"
-                                      value={selectedType}
-                                      placeholder="Select Carat"
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        dropdownOpen
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
-                                  </div>
-                                  <AnimatePresence>
-                                    {dropdownOpen && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {categories.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => handleSelect(type?.name)}
-                                          >
-                                            {type?.name}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
+                                    <span
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
+                                        ? "text-[#000] -translate-y-[21px]"
+                                        : "text-[#8f8f8f]"
+                                        }`}
+                                    >
+                                      Carat
+                                    </span>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setEditDropdownOpen((prev) => !prev)
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="group"
+                                        id="type"
+                                        value={selectedType}
+                                        onFocus={() => setEditCaratFocused(true)}
+                                        onBlur={(e) => setEditCaratFocused(e.target.value !== "")}
 
-                                <div
-                                  ref={dropdownMetalRef}
-                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Metal
-                                  </label>
-                                  <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setDropdownOpenMetal((prev) => !prev)
-                                    } // Toggle dropdown on click
-                                  >
-                                    <input
-                                      type="text"
-                                      name="metal"
-                                      id="type1"
-                                      value={selectedTypeMetal}
-                                      placeholder="Select Metal"
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        dropdownOpenMetal
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          dropdownOpen
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {dropdownOpen && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {categories.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => handleSelect(type?.name)}
+                                            >
+                                              {type?.name}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
-                                  <AnimatePresence>
-                                    {dropdownOpenMetal && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {metals.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => {
-                                              handleSelectMetal(type?.metalName);
-                                              setDropdownOpenMetal(false);
-                                            }}
-                                          >
-                                            {type?.metalName}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
+
+                                  <div
+                                    ref={dropdownMetalRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                  >
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Metal
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setDropdownOpenMetal((prev) => !prev)
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="metal"
+                                        id="type1"
+                                        value={selectedTypeMetal}
+                                        placeholder="Select Metal"
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          dropdownOpenMetal
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {dropdownOpenMetal && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {metals.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => {
+                                                handleSelectMetal(type?.metalName);
+                                                setDropdownOpenMetal(false);
+                                              }}
+                                            >
+                                              {type?.metalName}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div>
                                 </div>
                                 <div
                                   ref={dropdownCategoryRef}
@@ -871,170 +938,170 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                     )}
                                   </AnimatePresence>
                                 </div>
-                           
-                              <div className=" flex gap-[20px] w-[100%]">
-                                <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Min-Weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Min-Weight"
-                                    name="minWeight"
-                                    value={formData?.minWeight}
-                                    onChange={handleChange}
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
+
+                                <div className=" flex gap-[20px] w-[100%]">
+                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Min-Weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Min-Weight"
+                                      name="minWeight"
+                                      value={formData?.minWeight}
+                                      onChange={handleChange}
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
+                                  <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Max-weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      name="maxWeight"
+                                      value={formData?.maxWeight}
+                                      onChange={handleChange}
+                                      placeholder="Enter Max-Weight"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
                                 </div>
-                                <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Max-weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    name="maxWeight"
-                                    value={formData?.maxWeight}
-                                    onChange={handleChange}
-                                    placeholder="Enter Max-Weight"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
+                                <div className=" flex-col flex gap-[20px] ">
+                                  <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Rate
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      name="rate"
+                                      placeholder="Enter Rate"
+                                      value={formData?.rate}
+                                      onChange={handleChange}
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className=" flex-col flex gap-[20px] ">
-                                <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Rate
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    name="rate"
-                                    placeholder="Enter Rate"
-                                    value={formData?.rate}
-                                    onChange={handleChange}
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
-                                </div>
-                              </div>
-                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     
-                              onClick={handleAddUchak}>
-                                Save
-                              </button>
+                                <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                                  onClick={handleAddUchak}>
+                                  Save
+                                </button>
                               </div>
                             </>
                           ) : (
                             // Static Fields
                             <>
-                            {uchak?.map((item, index) => (
-                            <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              {uchak?.map((item, index) => (
+                                <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
 
-                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                          <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={() => handleEdit(item?._id)}></i>
-                          <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
-                          </div>
-                            <div className=" flex w-[100%] fle  gap-[5px]">
-                              <div
-                                ref={dropdownRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Carat
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                        
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
-                                </div>
-                           
-                              </div>
+                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                                    <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={() => handleEdit(item?._id)}></i>
+                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                                  </div>
+                                  <div className=" flex w-[100%] fle  gap-[5px]">
+                                    <div
+                                      ref={dropdownRef}
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    >
+                                      <label
+                                        htmlFor="name"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Carat
+                                      </label>
+                                      <div
+                                        className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
 
-                              <div
-                                ref={dropdownMetalRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Metal
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                            
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
-                                  
+                                      >
+                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
+                                      </div>
+
+                                    </div>
+
+                                    <div
+                                      ref={dropdownMetalRef}
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    >
+                                      <label
+                                        htmlFor="name"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Metal
+                                      </label>
+                                      <div
+                                        className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+
+                                      >
+                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
+
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                  <div
+                                    ref={dropdownCategoryRef}
+                                    className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                  >
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Category
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
+
+                                    >
+                                      <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
+                                    </div>
+
+                                  </div>
+
+                                  <div className=" flex gap-[20px] w-[100%]">
+                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Min-Weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}</p>
+                                    </div>
+                                    <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Max-weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
+                                    </div>
+                                  </div>
+                                  <div className=" flex-c ol flex gap-[20px] ">
+                                    <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Rate
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
+                                    </div>
+                                  </div>
                                 </div>
-             
-                              </div>
-                              </div>
-                              <div
-                                ref={dropdownCategoryRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                             
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
-                                </div>
-                          
-                              </div>
-                 
-                            <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Min-Weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}</p>
-                              </div>
-                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Max-weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
-                              </div>
-                            </div>
-                            <div className=" flex-c ol flex gap-[20px] ">
-                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Rate
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
-                              </div>
-                            </div>
-                          </div>
-                            ))}
+                              ))}
                             </>
                           )}
                         </div>
@@ -1159,65 +1226,65 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   )}
                                 </AnimatePresence>
                               </div>
-                              </div>
-                              <div
-                                ref={dropdownCategoryWeightRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            </div>
+                            <div
+                              ref={dropdownCategoryWeightRef}
+                              className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            >
+                              <label
+                                htmlFor="name"
+                                className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                  onClick={() =>
-                                    setDropdownOpenCategoryWeight((prev) => !prev)
-                                  } // Toggle dropdown on click
-                                >
-                                  <input
-                                    type="text"
-                                    name="item"
-                                    id="type1"
-                                    value={selectedTypeCategoryWeight}
-                                    placeholder="Select Category"
-                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                    readOnly
-                                  />
-                                  <i
-                                    className={
-                                      dropdownOpenCategoryWeight
-                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                    }
-                                  ></i>
-                                </div>
-                                <AnimatePresence>
-                                  {dropdownOpenCategoryWeight&& (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                    >
-                                      {item.map((type, index) => (
-                                        <div
-                                          key={index}
-                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => {
-                                            handleSelectCategoryWeight(type?.itemName);
-                                            setDropdownOpenCategoryWeight(false);
-                                          }}
-                                        >
-                                          {type?.itemName}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
+                                Category
+                              </label>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() =>
+                                  setDropdownOpenCategoryWeight((prev) => !prev)
+                                } // Toggle dropdown on click
+                              >
+                                <input
+                                  type="text"
+                                  name="item"
+                                  id="type1"
+                                  value={selectedTypeCategoryWeight}
+                                  placeholder="Select Category"
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpenCategoryWeight
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                  }
+                                ></i>
                               </div>
-                          
+                              <AnimatePresence>
+                                {dropdownOpenCategoryWeight && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {item.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          handleSelectCategoryWeight(type?.itemName);
+                                          setDropdownOpenCategoryWeight(false);
+                                        }}
+                                      >
+                                        {type?.itemName}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
@@ -1274,127 +1341,127 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                               </div>
                             </div>
                             <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                            onClick={handleAddWeight}>
+                              onClick={handleAddWeight}>
                               Save
                             </button>
                           </div>
                           {isEditingWeight ? (
                             // Editable Fields
                             <>
-                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-                              <div className=" flex w-[100%] fle  gap-[5px]">
-                                <div
-                                  ref={dropdownWeightRef}
-                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Carat
-                                  </label>
+                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                                <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setDropdownOpenWeight((prev) => !prev)
-                                    } // Toggle dropdown on click
+                                    ref={dropdownWeightRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <input
-                                      type="text"
-                                      name="type"
-                                      id="type"
-                                      value={selectedTypeWeight}
-                                      placeholder="Select Carat"
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        dropdownOpenWeight
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Carat
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setDropdownOpenWeight((prev) => !prev)
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="type"
+                                        id="type"
+                                        value={selectedTypeWeight}
+                                        placeholder="Select Carat"
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          dropdownOpenWeight
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {dropdownOpenWeight && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {firmTypes.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => handleSelectWeight(type)}
+                                            >
+                                              {type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
-                                  <AnimatePresence>
-                                    {dropdownOpenWeight && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {firmTypes.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => handleSelectWeight(type)}
-                                          >
-                                            {type}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
 
-                                <div
-                                  ref={dropdownMetalWeightRef}
-                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Metal
-                                  </label>
                                   <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setDropdownOpenMetalWeight((prev) => !prev)
-                                    } // Toggle dropdown on click
+                                    ref={dropdownMetalWeightRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <input
-                                      type="text"
-                                      name="type1"
-                                      id="type1"
-                                      value={selectedTypeMetalWeight}
-                                      placeholder="Select Metal"
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        dropdownOpenMetalWeight
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Metal
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setDropdownOpenMetalWeight((prev) => !prev)
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="type1"
+                                        id="type1"
+                                        value={selectedTypeMetalWeight}
+                                        placeholder="Select Metal"
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          dropdownOpenMetalWeight
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {dropdownOpenMetalWeight && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {firmTypesMetal.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => {
+                                                handleSelectMetalWeight(type);
+                                                setDropdownOpenMetalWeight(false);
+                                              }}
+                                            >
+                                              {type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
-                                  <AnimatePresence>
-                                    {dropdownOpenMetalWeight && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {firmTypesMetal.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => {
-                                              handleSelectMetalWeight(type);
-                                              setDropdownOpenMetalWeight(false);
-                                            }}
-                                          >
-                                            {type}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
                                 </div>
                                 <div
                                   ref={dropdownCategoryWeightRef}
@@ -1455,160 +1522,160 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                     )}
                                   </AnimatePresence>
                                 </div>
-                           
-                              <div className=" flex gap-[20px] w-[100%]">
-                                <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Min-Weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Min-Weight"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
+
+                                <div className=" flex gap-[20px] w-[100%]">
+                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Min-Weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Min-Weight"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
+                                  <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Max-weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Max-Weight"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
                                 </div>
-                                <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Max-weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Max-Weight"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
+                                <div className=" flex-col flex gap-[20px] ">
+                                  <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Rate"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className=" flex-col flex gap-[20px] ">
-                                <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Rate"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
-                                </div>
-                              </div>
-                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     onClick={handleSave}>
-                                Save
-                              </button>
+                                <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins" onClick={handleSave}>
+                                  Save
+                                </button>
                               </div>
                             </>
                           ) : (
                             // Static Fields
                             <>
-                            {weight?.map((item, index) => (
-                            <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              {weight?.map((item, index) => (
+                                <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
 
-                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                          <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
-                          <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
-                          </div>
-                            <div className=" flex w-[100%] fle  gap-[5px]">
-                              <div
-                                ref={dropdownWeightRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Carat
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                        
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
-                                </div>
-                           
-                              </div>
+                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                                    <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEditWeight}></i>
+                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                                  </div>
+                                  <div className=" flex w-[100%] fle  gap-[5px]">
+                                    <div
+                                      ref={dropdownWeightRef}
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    >
+                                      <label
+                                        htmlFor="name"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Carat
+                                      </label>
+                                      <div
+                                        className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
 
-                              <div
-                                ref={dropdownMetalWeightRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Metal
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                            
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
-                                  
+                                      >
+                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
+                                      </div>
+
+                                    </div>
+
+                                    <div
+                                      ref={dropdownMetalWeightRef}
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    >
+                                      <label
+                                        htmlFor="name"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Metal
+                                      </label>
+                                      <div
+                                        className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+
+                                      >
+                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
+
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                  <div
+                                    ref={dropdownCategoryWeightRef}
+                                    className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                  >
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Category
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
+
+                                    >
+                                      <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
+                                    </div>
+
+                                  </div>
+
+                                  <div className=" flex gap-[20px] w-[100%]">
+                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Min-Weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}    </p>
+                                    </div>
+                                    <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Max-weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
+                                    </div>
+                                  </div>
+                                  <div className=" flex-c ol flex gap-[20px] ">
+                                    <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
+                                    </div>
+                                  </div>
                                 </div>
-             
-                              </div>
-                              </div>
-                              <div
-                                ref={dropdownCategoryWeightRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                             
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
-                                </div>
-                          
-                              </div>
-                 
-                            <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Min-Weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}    </p>
-                              </div>
-                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Max-weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
-                              </div>
-                            </div>
-                            <div className=" flex-c ol flex gap-[20px] ">
-                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                 <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
-                              </div>
-                            </div>
-                          </div>
-                          ))}
+                              ))}
                             </>
                           )}
                         </div>
@@ -1732,65 +1799,65 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                   )}
                                 </AnimatePresence>
                               </div>
-                              </div>
-                              <div
-                                ref={dropdownCategoryPercentageRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            </div>
+                            <div
+                              ref={dropdownCategoryPercentageRef}
+                              className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            >
+                              <label
+                                htmlFor="name"
+                                className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                  onClick={() =>
-                                    setDropdownOpenCategoryPercentage((prev) => !prev)
-                                  } // Toggle dropdown on click
-                                >
-                                  <input
-                                    type="text"
-                                    name="item"
-                                    id="type1"
-                                    value={selectedTypeCategoryPercentage}
-                                    placeholder="Select Category"
-                                    className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                    readOnly
-                                  />
-                                  <i
-                                    className={
-                                      dropdownOpenCategoryPercentage
-                                        ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                        : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                    }
-                                  ></i>
-                                </div>
-                                <AnimatePresence>
-                                  {dropdownOpenCategoryPercentage && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                    >
-                                      {item.map((type, index) => (
-                                        <div
-                                          key={index}
-                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => {
-                                            handleSelectCategoryPercentage(type?.itemName);
-                                            setDropdownOpenCategoryPercentage(false);
-                                          }}
-                                        >
-                                          {type?.itemName}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
+                                Category
+                              </label>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() =>
+                                  setDropdownOpenCategoryPercentage((prev) => !prev)
+                                } // Toggle dropdown on click
+                              >
+                                <input
+                                  type="text"
+                                  name="item"
+                                  id="type1"
+                                  value={selectedTypeCategoryPercentage}
+                                  placeholder="Select Category"
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpenCategoryPercentage
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                  }
+                                ></i>
                               </div>
-                          
+                              <AnimatePresence>
+                                {dropdownOpenCategoryPercentage && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {item.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          handleSelectCategoryPercentage(type?.itemName);
+                                          setDropdownOpenCategoryPercentage(false);
+                                        }}
+                                      >
+                                        {type?.itemName}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
@@ -1847,129 +1914,129 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                               </div>
                             </div>
                             <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                            onClick={handleAddPercentage}>
+                              onClick={handleAddPercentage}>
                               Save
                             </button>
                           </div>
-            
+
 
                           {isEditingPercentage ? (
                             // Editable Fields
                             <>
-                            <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-                              <div className=" flex w-[100%] fle  gap-[5px]">
-                                <div
-                                  ref={dropdownPercentageRef}
-                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Carat
-                                  </label>
+                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                                <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setDropdownOpenPercentage((prev) => !prev)
-                                    } // Toggle dropdown on click
+                                    ref={dropdownPercentageRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <input
-                                      type="text"
-                                      name="type"
-                                      id="type"
-                                      value={selectedTypePercentage}
-                                      placeholder="Select Carat"
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        dropdownOpenPercentage
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Carat
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setDropdownOpenPercentage((prev) => !prev)
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="type"
+                                        id="type"
+                                        value={selectedTypePercentage}
+                                        placeholder="Select Carat"
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          dropdownOpenPercentage
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {dropdownOpenPercentage && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {firmTypes.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => handleSelectPercentage(type)}
+                                            >
+                                              {type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
-                                  <AnimatePresence>
-                                    {dropdownOpenPercentage && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {firmTypes.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => handleSelectPercentage(type)}
-                                          >
-                                            {type}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
 
-                                <div
-                                  ref={dropdownMetalPercentageRef}
-                                  className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Metal
-                                  </label>
                                   <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setDropdownOpenMetalPercentage((prev) => !prev)
-                                    } // Toggle dropdown on click
+                                    ref={dropdownMetalPercentageRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <input
-                                      type="text"
-                                      name="type1"
-                                      id="type1"
-                                      value={selectedTypeMetalPercentage}
-                                      placeholder="Select Metal"
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        dropdownOpenMetalPercentage
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Metal
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setDropdownOpenMetalPercentage((prev) => !prev)
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="type1"
+                                        id="type1"
+                                        value={selectedTypeMetalPercentage}
+                                        placeholder="Select Metal"
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          dropdownOpenMetalPercentage
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {dropdownOpenMetalPercentage && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {firmTypesMetal.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => {
+                                                handleSelectMetalPercentage(type);
+                                                setDropdownOpenMetalPercentage(false);
+                                              }}
+                                            >
+                                              {type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
-                                  <AnimatePresence>
-                                    {dropdownOpenMetalPercentage && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {firmTypesMetal.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => {
-                                              handleSelectMetalPercentage(type);
-                                              setDropdownOpenMetalPercentage(false);
-                                            }}
-                                          >
-                                            {type}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
                                 </div>
                                 <div
                                   ref={dropdownCategoryPercentageRef}
@@ -2030,160 +2097,160 @@ const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useS
                                     )}
                                   </AnimatePresence>
                                 </div>
-                           
-                              <div className=" flex gap-[20px] w-[100%]">
-                                <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Min-Weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Min-Weight"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
+
+                                <div className=" flex gap-[20px] w-[100%]">
+                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Min-Weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Min-Weight"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
+                                  <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Max-weight
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Max-Weight"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
                                 </div>
-                                <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Max-weight
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Max-Weight"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
+                                <div className=" flex-col flex gap-[20px] ">
+                                  <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <label
+                                      htmlFor="email"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Percentege
+                                    </label>
+                                    <input
+                                      type="Number"
+                                      placeholder="Enter Rate"
+                                      className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                      autocomplete="naqsme"
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className=" flex-col flex gap-[20px] ">
-                                <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                  <label
-                                    htmlFor="email"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                  >
-                                    Percentege
-                                  </label>
-                                  <input
-                                    type="Number"
-                                    placeholder="Enter Rate"
-                                    className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                    autocomplete="naqsme"
-                                  />
-                                </div>
-                              </div>
-                              <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"     onClick={handleSave}>
-                                Save
-                              </button>
+                                <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins" onClick={handleSave}>
+                                  Save
+                                </button>
                               </div>
                             </>
                           ) : (
                             // Static Fields
                             <>
-                            {percentage?.map((item, index) => (
-                            <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              {percentage?.map((item, index) => (
+                                <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
 
-                          <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                          <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEdit}></i>
-                          <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
-                          </div>
-                            <div className=" flex w-[100%] fle  gap-[5px]">
-                              <div
-                                ref={dropdownPercentageRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Carat
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                        
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
-                                </div>
-                           
-                              </div>
+                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                                    <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEditPercentage}></i>
+                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                                  </div>
+                                  <div className=" flex w-[100%] fle  gap-[5px]">
+                                    <div
+                                      ref={dropdownPercentageRef}
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    >
+                                      <label
+                                        htmlFor="name"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Carat
+                                      </label>
+                                      <div
+                                        className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
 
-                              <div
-                                ref={dropdownMetalPercentageRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Metal
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                            
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
-                                  
+                                      >
+                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
+                                      </div>
+
+                                    </div>
+
+                                    <div
+                                      ref={dropdownMetalPercentageRef}
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    >
+                                      <label
+                                        htmlFor="name"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Metal
+                                      </label>
+                                      <div
+                                        className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+
+                                      >
+                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
+
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                  <div
+                                    ref={dropdownCategoryPercentageRef}
+                                    className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                  >
+                                    <label
+                                      htmlFor="name"
+                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    >
+                                      Category
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
+
+                                    >
+                                      <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
+                                    </div>
+
+                                  </div>
+
+                                  <div className=" flex gap-[20px] w-[100%]">
+                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Min-Weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}    </p>
+                                    </div>
+                                    <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Max-weight
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
+                                    </div>
+                                  </div>
+                                  <div className=" flex-c ol flex gap-[20px] ">
+                                    <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                      <label
+                                        htmlFor="email"
+                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      >
+                                        Percentege
+                                      </label>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
+                                    </div>
+                                  </div>
                                 </div>
-             
-                              </div>
-                              </div>
-                              <div
-                                ref={dropdownCategoryPercentageRef}
-                                className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                              >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Category
-                                </label>
-                                <div
-                                  className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                             
-                                >
-                                <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
-                                </div>
-                          
-                              </div>
-                 
-                            <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Min-Weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}    </p>
-                              </div>
-                              <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Max-weight
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
-                              </div>
-                            </div>
-                            <div className=" flex-c ol flex gap-[20px] ">
-                              <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                >
-                                  Percentege
-                                </label>
-                                <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
-                              </div>
-                            </div>
-                          </div>
-                          ))}
+                              ))}
                             </>
                           )}
                         </div>
