@@ -54,6 +54,8 @@ export const GET_CONTACT_US = "GET_CONTACT_US";
 export const LOGIN_ADMIN = "LOGIN_ADMIN";
 export const UPDATE_USER = "UPDATE_USER";
 export const GET_USER_BY_ID = "GET_USER_BY_ID";
+export const GET_CUSTOMERS = "GET_CUSTOMERS";
+export const GET_COMPANY_INFO = "GET_COMPANY_INFO";
 
 //Support Management
 export const GET_WARRANTIES = "GET_WARRANTIES";

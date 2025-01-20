@@ -1,4 +1,4 @@
-import { RESET_GLOBAL_STATE, GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK,  GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
+import { RESET_GLOBAL_STATE, GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_COMPANY_INFO, GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
 
 const initialState = {
     getUchak: [],
@@ -24,7 +24,8 @@ const initialState = {
     deleteAttribute: [],
     addPergram: [],
     updatePergram: [],
-    deletePergram: []
+    deletePergram: [],
+    getCompanyInfo: [],
 };
 
 const generalManagementReducer = (state = initialState, action) => {
@@ -59,6 +60,11 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             getPergram: action.payload,
         };
+        case GET_COMPANY_INFO:
+            return {
+                ...state,
+                getCompanyInfo: action.payload,
+            };
         case ADD_UCHAK: 
         return {
             ...state,

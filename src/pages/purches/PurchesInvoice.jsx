@@ -6,6 +6,10 @@ import { DatePicker, Space } from "antd";
 import { Check } from "lucide-react";
 import { Plus, Scan, Pencil } from "lucide-react";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCustomerAction } from "../../redux/action/userManagement";
+import { ApiGet } from "../../helper/axios";
+import { getCompanyInfoAction } from "../../redux/action/generalManagement";
 
 export default function PurchesInvoice() {
   const [products, setProducts] = useState([]);
@@ -30,11 +34,33 @@ export default function PurchesInvoice() {
   const [partyGstFocused, setPartyGstFocused] = useState(false);
   const [partyPanFocused, setPartyPanFocused] = useState(false);
   const [partyNumberFocused, setPartyNumberFocused] = useState(false);
-
-  const [isOpen, setIsOpen] = useState(false);
-
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const [address, setAddress] = useState("");
+  const [gstNumber, setGstNumber] = useState("");
+  const [panNumber, setPanNumber] = useState("");
+  const [userState, setUserState] = useState("");
+
+  const [barcode, setBarcode] = useState("");
+  const [totals, setTotals] = useState({
+    grossQty: 0,
+    netQty: 0,
+    amount: 0,
+  });
+
+  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const customers = useSelector((state) => state?.users?.getCustomer);
+  const companyInfo = useSelector((state) => state?.general?.getCompanyInfo);
+
+
+  useEffect(() => {
+    dispatch(getAllCustomerAction());
+    dispatch(getCompanyInfoAction());
+  }, [dispatch])
+
+  console.log('companyInfo', companyInfo);
   const handlePartyModal = () => {
     setPartyModalOpen(true);
   };
@@ -46,7 +72,7 @@ export default function PurchesInvoice() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false); // Close dropdown if clicked outside
+        setDropdownOpen(false);
       }
     };
 
@@ -70,11 +96,7 @@ export default function PurchesInvoice() {
       [name]: !prev[name],
     }));
   };
-  const [totals, setTotals] = useState({
-    grossQty: 0,
-    netQty: 0,
-    amount: 0,
-  });
+
 
   const handleAddProduct = () => {
     const newProduct = {
@@ -118,6 +140,84 @@ export default function PurchesInvoice() {
     ]);
   };
 
+  const fetchUserDetails = async (userName) => {
+    try {
+      const response = await ApiGet(`/admin/customer-by-name/${userName}`);
+      console.log('response', response)
+      const userData = response.data?.data || response.data;
+
+      setAddress(userData.address || "");
+      setGstNumber(userData.GST || "");
+      setPanNumber(userData.panNo || "");
+      setUserState(userData.state || "");
+
+      setAddressFocused(Boolean(userData.address));
+      setGstFocused(Boolean(userData.GST));
+      setPanFocused(Boolean(userData.panNo));
+      setStateFocused(Boolean(userData.state));
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
+  const handleSelectUser = (user) => {
+    setSelectedType(user.name);
+    setDropdownOpen(false);
+    fetchUserDetails(user.name);
+  };
+
+  const fetchProductByBarcode = async (barcode) => {
+    try {
+      const response = await ApiGet(`/admin/product/${barcode}`);
+      console.log('response', response)
+
+      if (response.product) {
+        addProduct(response.product);
+      } else {
+        alert(response.message || "Product not found");
+      }
+    } catch (error) {
+      console.error("Error fetching product by barcode:", error);
+      alert("An error occurred while fetching product details.");
+    }
+  };
+
+  const addProduct = (product) => {
+    setProducts((prevProducts) => [
+      ...prevProducts,
+      { ...product, barcodeVisible: false },
+    ]);
+
+    setTotals((prevTotals) => ({
+      grossQty: prevTotals.grossQty + product.grossQty,
+      netQty: prevTotals.netQty + product.netQty,
+      amount: prevTotals.amount + product.amount,
+    }));
+  };
+
+  const handleBarcodeInput = (e) => {
+    if (e.key === "Enter" && barcode.trim()) {
+      fetchProductByBarcode(barcode.trim()); // Call API
+      setBarcode(""); // Clear input field
+    }
+  };
+
+  const [totalPrice, setTotalPrice] = useState(0); 
+  const [cgst, setCgst] = useState(0); 
+  const [sgst, setSgst] = useState(0); 
+  const [totalTaxAmount, setTotalTaxAmount] = useState(0);
+
+  useEffect(() => {
+    const total = products.reduce((acc, product) => acc + (product.price || 0), 0); 
+    setTotalPrice(total);
+
+    const calculatedCgst = (total * 1.5) / 100; 
+    const calculatedSgst = (total * 1.5) / 100;
+    setCgst(calculatedCgst);
+    setSgst(calculatedSgst);
+    setTotalTaxAmount(calculatedCgst + calculatedSgst); 
+  }, [products]);
+
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
@@ -139,7 +239,7 @@ export default function PurchesInvoice() {
                       <p className=" flex font-Poppins w-[50px]">Date :</p>
                       <div className=" flex  items-center">
                         <DatePicker
-                          selected={selectedDate} // Set today's date as default
+                          selected={selectedDate}
                           onChange={(date) => setSelectedDate(date)}
                           className=" flex  w-[100px] border"
                         />
@@ -153,14 +253,13 @@ export default function PurchesInvoice() {
                       <div
                         ref={dropdownRef}
                         className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                        onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
+                        onClick={() => setDropdownOpen((prev) => !prev)}
                       >
                         <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            selectedType || nameFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                            }`}
                         >
                           Name
                         </span>
@@ -191,22 +290,14 @@ export default function PurchesInvoice() {
                             exit={{ opacity: 0, y: -10 }}
                             className="absolute  mt-[50px] bg-white w-[230px] border border-[#dedede] rounded-lg shadow-md z-10"
                           >
-                            {[
-                              "Sole Proprietorship",
-                              "Partnership",
-                              "LLC",
-                              "Corporation",
-                            ].map((type, index) => (
+                            {customers.map((type, index) => (
                               <>
                                 <div
                                   key={index}
                                   className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
-                                  onClick={() => {
-                                    setSelectedType(type);
-                                    setDropdownOpen(false);
-                                  }}
+                                  onClick={() => handleSelectUser(type)}
                                 >
-                                  {type}
+                                  {type?.name}
                                 </div>
                               </>
                             ))}
@@ -223,18 +314,19 @@ export default function PurchesInvoice() {
                       </AnimatePresence>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                         <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            addressFocused
-                              ? "text-[#000] -translate-y-[45px] font-[]"
-                              : "  -translate-y-[27px] "
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
+                            ? "text-[#000] -translate-y-[45px] font-[]"
+                            : "  -translate-y-[27px] "
+                            }`}
                         >
-                          Buisness Address
+                          Address
                         </span>
                         <textarea
                           type="text"
                           name="address"
                           id="address"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
                           onFocus={() => setAddressFocused(true)}
                           onBlur={(e) =>
                             setAddressFocused(e.target.value !== "")
@@ -248,18 +340,19 @@ export default function PurchesInvoice() {
                     <div className=" flex w-[90%] gap-[15px] flex-col ">
                       <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            gstFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                            }`}
                         >
                           GST Number
                         </span>
                         <input
                           type="number"
-                          name="gstNumber"
+                          name="GST"
                           id="number"
+                          value={gstNumber}
+                          onChange={(e) => setGstNumber(e.target.value)}
                           onFocus={() => setGstFocused(true)}
                           onBlur={() => setGstFocused(false)}
                           autocomplete="nasme"
@@ -268,11 +361,10 @@ export default function PurchesInvoice() {
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            panFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                            }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
@@ -281,8 +373,10 @@ export default function PurchesInvoice() {
                         </span>
                         <input
                           type="number"
-                          name="panNumber"
+                          name="panNo"
                           id="number"
+                          value={panNumber}
+                          onChange={(e) => setPanNumber(e.target.value)}
                           onFocus={() => setPanFocused(true)}
                           onBlur={() => setPanFocused(false)}
                           autocomplete="nasme"
@@ -291,11 +385,10 @@ export default function PurchesInvoice() {
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            stateFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                            }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
@@ -303,9 +396,11 @@ export default function PurchesInvoice() {
                           State
                         </span>
                         <input
-                          type="number"
-                          name="State"
+                          type="text"
+                          name="state"
                           id="number"
+                          value={userState}
+                          onChange={(e) => setUserState(e.target.value)}
                           onFocus={() => setStateFocused(true)}
                           onBlur={() => setStateFocused(false)}
                           autocomplete="nasme"
@@ -451,58 +546,77 @@ export default function PurchesInvoice() {
                                 {index + 1}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                <input
-                                  type="text"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="Enter product description"
-                                />
+                                {product.barcodeVisible ? (
+                                  <input
+                                    type="text"
+                                    value={barcode}
+                                    onChange={(e) => setBarcode(e.target.value)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        fetchProductByBarcode(e.target.value);
+                                      }
+                                    }}
+                                    className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
+                                    autoFocus
+                                  />
+                                ) : (
+                                  product?.groupItemId?.itemName
+                                )}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                <input
-                                  type="text"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="HSN/SAC"
-                                />
+                                {product.hsn}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                <input
-                                  type="text"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="GST rate"
-                                />
+                                {product.gstRate}%
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                <input
+                                {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                />
+                                /> */}
+                                {product?.toWeight}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                <input
+                                {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                />
+                                /> */}
+                                {product?.netWeight}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                <input
+                                {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                />
+                                /> */}
+                                {product?.extraRate}
                               </td>
                               <td className="py-2 px-4">
-                                <input
+                                {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                />
+                                /> */}
+                                {product?.totalPrice}
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+
+                      <div className="px-4 py-3 w-[100%] relative flex justify-between items-center">
+                        <input
+                          type="text"
+                          value={barcode}
+                          onChange={(e) => setBarcode(e.target.value)}
+                          onKeyDown={handleBarcodeInput}
+                          placeholder="Enter Barcode"
+                          className="w-[70%] mr-4 py-2 px-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-Poppins"
+                        />
+                      </div>
+
 
                       <div className="px-4 py-3  w-[100%] relative flex  justify-between items-center">
                         <button
@@ -641,90 +755,92 @@ export default function PurchesInvoice() {
                           </table>
                         </div>
                       </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {/* Bank Details Card */}
-                        <div className="bg-white rounded-lg shadow1-blue p-[20px] relative">
-                          <div className="flex justify-between items-start mb-2">
-                            <h2 className="text-[#FF6B35] font-Poppins text-[16px] font-[400]">
-                              Bank Details
-                            </h2>
-                            <button className="text-gray-400 hover:text-gray-600">
-                              <Pencil className="w-4 h-4" />
-                            </button>
-                          </div>
-                          <div className="space-y-[6px]">
-                            <div className="flex  items-center  gap-[20px] justify-between">
-                              <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                Account Name :
-                              </span>
-                              <span className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
-                                ABC Jewellers
-                              </span>
+                      {companyInfo?.map((item, index) => (
+                        <div className="grid md:grid-cols-2 gap-4">
+                          {/* Bank Details Card */}
+                          <div className="bg-white rounded-lg shadow1-blue p-[20px] relative">
+                            <div className="flex justify-between items-start mb-2">
+                              <h2 className="text-[#FF6B35] font-Poppins text-[16px] font-[400]">
+                                Bank Details
+                              </h2>
+                              <button className="text-gray-400 hover:text-gray-600">
+                                <Pencil className="w-4 h-4" />
+                              </button>
                             </div>
-                            <div className="flex gap-[20px] justify-between items-center">
-                              <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                Account No :
-                              </span>
-                              <span className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
-                                1234567890
-                              </span>
-                            </div>
-                            <div className="flex  items-center  gap-[20px] justify-between">
-                              <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                For RTGS/NEFT :
-                              </span>
-                              <span className="text-[#5d5b5b] text-[12px]  gap-[4px] flex fnt-[300] font-Poppins">
-                                <b className=" flex font-[500]">IFSC Code:</b>{" "}
-                                ICIC0006248
-                              </span>
-                            </div>
-                            <div className="flex gap-[20px] justify-between">
-                              <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                Bank Name:
-                              </span>
-                              <div className="flex items-center gap-1">
-                                {/* <img
+
+                            <div className="space-y-[6px]">
+                              <div className="flex  items-center  gap-[20px] justify-between">
+                                <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
+                                  Account Name :
+                                </span>
+                                <span className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
+                                  {item?.holderName}
+                                </span>
+                              </div>
+                              <div className="flex gap-[20px] justify-between items-center">
+                                <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
+                                  Account No :
+                                </span>
+                                <span className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
+                                  {item?.accountNo}
+                                </span>
+                              </div>
+                              <div className="flex  items-center  gap-[20px] justify-between">
+                                <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
+                                  For RTGS/NEFT :
+                                </span>
+                                <span className="text-[#5d5b5b] text-[12px]  gap-[4px] flex fnt-[300] font-Poppins">
+                                  <b className=" flex font-[500]">IFSC Code:</b>{" "}
+                                  {item?.IFSCCode}
+                                </span>
+                              </div>
+                              <div className="flex gap-[20px] justify-between">
+                                <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
+                                  Bank Name:
+                                </span>
+                                <div className="flex items-center gap-1">
+                                  {/* <img
                                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-20%20at%209.49.54%E2%80%AFAM-bp4n5M7G0uw5Cl2JjhtVKuMn5vn970.png"
                                   alt="ICICI Bank"
                                   className="h-5 object-contain"
                                 /> */}
-                                <span className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
-                                  ICICI Bank
+                                  <span className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
+                                    {item?.bankName}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex  i  gap-[20px] justify-between">
+                                <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
+                                  Address:
+                                </span>
+                                <span className="text-[#5d5b5b] text-right text-[12px] fnt-[300] font-Poppins">
+                                  {item?.bankAddress}
                                 </span>
                               </div>
                             </div>
-                            <div className="flex  i  gap-[20px] justify-between">
-                              <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                Address:
-                              </span>
-                              <span className="text-[#5d5b5b] text-right text-[12px] fnt-[300] font-Poppins">
-                                ICICI Bank Limited, palace Road, Rajkot
-                              </span>
-                            </div>
                           </div>
-                        </div>
 
-                        {/* Terms & Conditions Card */}
-                        <div className="bg-white rounded-lg shadow1-blue p-[20px] relative">
-                          <div className="flex justify-between items-start mb-[10px]">
-                            <h2 className="text-[#FF6B35] font-Poppins text-[16px] font-[400]">
-                              Term & Condition
-                            </h2>
-                            <button className="text-gray-400 hover:text-gray-600">
-                              <Pencil className="w-4 h-4" />
-                            </button>
+                          {/* Terms & Conditions Card */}
+                          <div className="bg-white rounded-lg shadow1-blue p-[20px] relative">
+                            <div className="flex justify-between items-start mb-[10px]">
+                              <h2 className="text-[#FF6B35] font-Poppins text-[16px] font-[400]">
+                                Term & Condition
+                              </h2>
+                              <button className="text-gray-400 hover:text-gray-600">
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <ol className="list-decimal list-outside ml-4 space-y-2">
+                              <li className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
+                                {item?.terms}
+                              </li>
+                              {/* <li className="text-[#5d5b5b]  text-[12px] fnt-[300] font-Poppins">
+                                Payment due in 7 days from invoice date.
+                              </li> */}
+                            </ol>
                           </div>
-                          <ol className="list-decimal list-outside ml-4 space-y-2">
-                            <li className="text-[#5d5b5b] text-[12px] fnt-[300] font-Poppins">
-                              Goods once sold will not be taken back or
-                              exchanged.
-                            </li>
-                            <li className="text-[#5d5b5b]  text-[12px] fnt-[300] font-Poppins">
-                              Payment due in 7 days from invoice date.
-                            </li>
-                          </ol>
                         </div>
-                      </div>
+                      ))}
                     </div>
                     <div className=" flex w-[48%]">
                       <div className="bg-white  w-[100%] rounded-lg shadow-sm p-6">
@@ -785,11 +901,10 @@ export default function PurchesInvoice() {
                             <div className="flex-1 max-w-[320px] grid grid-cols-2 gap-4">
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${
-                                    gstFocused
-                                      ? "text-[#000] -translate-y-[19px] "
-                                      : "text-[#8f8f8f]"
-                                  }`}
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
+                                    ? "text-[#000] -translate-y-[19px] "
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
                                   Discount- in %
                                 </span>
@@ -805,11 +920,10 @@ export default function PurchesInvoice() {
                               </div>
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${
-                                    gstFocused
-                                      ? "text-[#000] -translate-y-[19px] "
-                                      : "text-[#8f8f8f]"
-                                  }`}
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
+                                    ? "text-[#000] -translate-y-[19px] "
+                                    : "text-[#8f8f8f]"
+                                    }`}
                                 >
                                   Discount- Out ₹
                                 </span>
@@ -916,11 +1030,10 @@ export default function PurchesInvoice() {
                       onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          selectedType || nameFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Party Group
                       </span>
@@ -983,11 +1096,10 @@ export default function PurchesInvoice() {
                     </AnimatePresence>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          gstFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Party Name
                       </span>
@@ -1003,11 +1115,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          addressFocused
-                            ? "text-[#000] -translate-y-[48px] font-[]"
-                            : "  -translate-y-[27px] "
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
+                          ? "text-[#000] -translate-y-[48px] font-[]"
+                          : "  -translate-y-[27px] "
+                          }`}
                       >
                         Buisness Address
                       </span>
@@ -1023,11 +1134,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          gstFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         GST Number
                       </span>
@@ -1043,11 +1153,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          gstFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         PAN Number
                       </span>
@@ -1070,11 +1179,10 @@ export default function PurchesInvoice() {
                       onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          selectedType || nameFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Firm Type
                       </span>
@@ -1129,11 +1237,10 @@ export default function PurchesInvoice() {
                     </AnimatePresence>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          panFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                         onClick={() =>
                           document.getElementById("number").setPanFocused()
                         }
@@ -1152,11 +1259,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          stateFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                         onClick={() =>
                           document.getElementById("number").setPanFocused()
                         }
@@ -1175,11 +1281,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          gstFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Pin Code
                       </span>
@@ -1195,11 +1300,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          panFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                         onClick={() =>
                           document.getElementById("number").setPanFocused()
                         }
@@ -1218,11 +1322,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          stateFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                         onClick={() =>
                           document.getElementById("number").setPanFocused()
                         }
@@ -1242,7 +1345,7 @@ export default function PurchesInvoice() {
                   </div>
                 </div>
                 <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]">
-                Save
+                  Save
                 </button>
               </div>
             </div>

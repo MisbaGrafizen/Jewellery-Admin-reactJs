@@ -9,7 +9,7 @@ import {
     ApiPut,
     ApiPutWithId,
 } from '../../helper/axios';
-import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
+import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
 
 
 export const getAllUchakAction = () => {
@@ -102,27 +102,27 @@ export const deleteUchakAction = (id) => {
 };
 
 
-// export const getAllBrandAction = () => {
-//     return (dispatch) => {
-//         return ApiGet(`/admin/brand`)
-//       .then((res) => {
-//         console.log('res', res);
-//         if (res.brand) {
-//           dispatch({
-//             type: GET_BRAND,
-//             payload: res.brand,
-//           });
-//           return res.brand;
-//         }
-//       })
-//       .catch((error) => {
-//         dispatch({
-//           type: GET_BRAND,
-//           payload: error,
-//         });
-//       });
-//   };
-// };
+export const getCompanyInfoAction = () => {
+    return (dispatch) => {
+        return ApiGet(`/admin/info`)
+      .then((res) => {
+        console.log('res', res);
+        if (res.data) {
+          dispatch({
+            type: GET_COMPANY_INFO,
+            payload: res.data,
+          });
+          return res.data;
+        }
+      })
+      .catch((error) => {
+        dispatch({
+          type: GET_COMPANY_INFO,
+          payload: error,
+        });
+      });
+  };
+};
 
 export const addCompanyInfoAction = (formData) => {
   return (dispatch) => {

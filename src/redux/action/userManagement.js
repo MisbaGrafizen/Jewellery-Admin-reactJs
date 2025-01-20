@@ -3,7 +3,7 @@ import {
     ApiPostData,
     ApiPut,
 } from '../../helper/axios';
-import { GET_USERS,  GET_CONTACT_US, LOGIN_ADMIN, GET_USER_BY_ID,  } from '../type';
+import { GET_USERS,  GET_CONTACT_US, LOGIN_ADMIN, GET_USER_BY_ID, GET_CUSTOMERS, } from '../type';
 
 
 export const getAllUserAction = () => {
@@ -103,6 +103,28 @@ export const getUserByIdAction = (userId) => {
     .catch((error) => {
       dispatch({
         type: GET_USER_BY_ID,
+        payload: error,
+      });
+    });
+};
+};
+
+export const getAllCustomerAction = () => {
+  return (dispatch) => {
+      return ApiGet(`/admin/customer`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.customer) {
+        dispatch({
+          type: GET_CUSTOMERS,
+          payload: res.customer,
+        });
+        return res.customer;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_CUSTOMERS,
         payload: error,
       });
     });
