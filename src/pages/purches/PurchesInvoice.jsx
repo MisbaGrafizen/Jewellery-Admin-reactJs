@@ -35,12 +35,12 @@ export default function PurchesInvoice() {
   const [partyPanFocused, setPartyPanFocused] = useState(false);
   const [partyNumberFocused, setPartyNumberFocused] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-
+  
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
   const [panNumber, setPanNumber] = useState("");
   const [userState, setUserState] = useState("");
-
+  
   const [barcode, setBarcode] = useState("");
   const [totals, setTotals] = useState({
     grossQty: 0,
@@ -48,6 +48,10 @@ export default function PurchesInvoice() {
     amount: 0,
   });
 
+  const [cgst, setCgst] = useState(0); 
+  const [sgst, setSgst] = useState(0); 
+  const [totalTaxAmount, setTotalTaxAmount] = useState(0);
+  
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -173,6 +177,8 @@ export default function PurchesInvoice() {
 
       if (response.product) {
         addProduct(response.product);
+        calculateTax(response.product.totalPrice);
+        setBarcode("");
       } else {
         alert(response.message || "Product not found");
       }
@@ -202,21 +208,14 @@ export default function PurchesInvoice() {
     }
   };
 
-  const [totalPrice, setTotalPrice] = useState(0); 
-  const [cgst, setCgst] = useState(0); 
-  const [sgst, setSgst] = useState(0); 
-  const [totalTaxAmount, setTotalTaxAmount] = useState(0);
-
-  useEffect(() => {
-    const total = products.reduce((acc, product) => acc + (product.price || 0), 0); 
-    setTotalPrice(total);
-
-    const calculatedCgst = (total * 1.5) / 100; 
-    const calculatedSgst = (total * 1.5) / 100;
+  const calculateTax = (totalPrice) => {
+    const calculatedCgst = (totalPrice * 1.5) / 100; // CGST (1.5%)
+    const calculatedSgst = (totalPrice * 1.5) / 100;
     setCgst(calculatedCgst);
     setSgst(calculatedSgst);
-    setTotalTaxAmount(calculatedCgst + calculatedSgst); 
-  }, [products]);
+    setTotalTaxAmount(calculatedCgst + calculatedSgst);
+
+  }
 
   return (
     <>
@@ -852,7 +851,8 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                                <p>{cgst.toFixed(2)}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -864,7 +864,7 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                                <p>{sgst.toFixed(2)}</p>
                               </div>
                             </div>
                           </div>
@@ -888,7 +888,7 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                                <p>{totalTaxAmount.toFixed(2)}</p>
                               </div>
                             </div>
                           </div>
