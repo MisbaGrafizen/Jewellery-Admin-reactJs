@@ -100,7 +100,7 @@ export default function CreateCompany() {
   return (
     <>
       <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
-        <div className=" flex w-[100%] flex-col gap-[14px]  h-[96vh] ">
+        <div className=" flex w-[100%] flex-col gap-[14px]  h-[100vh] ">
           <Header pageName=" Create New Company" />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />

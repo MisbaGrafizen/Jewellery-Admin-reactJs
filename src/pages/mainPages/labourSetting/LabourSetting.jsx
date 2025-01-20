@@ -4,9 +4,22 @@ import Header from "../../../Component/header/Header";
 // import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategroyAction, getGroupItemAction, getMetalAction } from "../../../redux/action/landingManagement";
-import { addPercentageAction, addPerGramAction, addUchakAction, getAllUchakAction, getPercentageAction, getPerGramAction, updatePercentageAction, updatePerGramAction, updateUchakAction } from "../../../redux/action/generalManagement";
-
+import {
+  getCategroyAction,
+  getGroupItemAction,
+  getMetalAction,
+} from "../../../redux/action/landingManagement";
+import {
+  addPercentageAction,
+  addPerGramAction,
+  addUchakAction,
+  getAllUchakAction,
+  getPercentageAction,
+  getPerGramAction,
+  updatePercentageAction,
+  updatePerGramAction,
+  updateUchakAction,
+} from "../../../redux/action/generalManagement";
 
 export default function LabourSetting() {
   // const [labourModalopen, setlabourModalOpen] = useState(false);
@@ -16,6 +29,7 @@ export default function LabourSetting() {
   const [selectedTypeMetal, setSelectedTypeMetal] = useState("");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
+
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
@@ -24,12 +38,23 @@ export default function LabourSetting() {
   const dropdownMetalWeightRef = useRef(null);
   const dropdownCategoryWeightRef = useRef(null);
 
-
   const dropdownPercentageRef = useRef(null);
   const dropdownMetalPercentageRef = useRef(null);
   const dropdownCategoryPercentageRef = useRef(null);
 
-  //place holder text 
+  const dropdownEditRef = useRef(null);
+  const dropdownEditMetalRef = useRef(null);
+  const dropdownEditCategoryRef = useRef(null);
+
+  const dropdownEditWeightRef = useRef(null);
+  const dropdownEditMetalWeightRef = useRef(null);
+  const dropdownEditCategoryWeightRef = useRef(null);
+
+  const dropdownEditPercentageRef = useRef(null);
+  const dropdownEditMetalPercentageRef = useRef(null);
+  const dropdownEditCategoryPercentageRef = useRef(null);
+
+  //place holder text
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
   const [categoryFocused, setCategoryFocused] = useState(false);
@@ -48,16 +73,15 @@ export default function LabourSetting() {
 
 
 
-
-
+  
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     carat: "Default Carat",
     metal: "Default Metal",
     category: "Default Category",
-    minWeight: '',
-    maxWeight: '',
-    rate: '',
+    minWeight: "",
+    maxWeight: "",
+    rate: "",
   });
   const [selectedUchak, setSelectedUchak] = useState("");
 
@@ -66,9 +90,9 @@ export default function LabourSetting() {
     carat: "Default Carat",
     metal: "Default Metal",
     category: "Default Category",
-    minWeight: '',
-    maxWeight: '',
-    rate: '',
+    minWeight: "",
+    maxWeight: "",
+    rate: "",
   });
   const [selectedWeight, setSelectedWeight] = useState("");
 
@@ -77,40 +101,61 @@ export default function LabourSetting() {
     carat: "Default Carat",
     metal: "Default Metal",
     category: "Default Category",
-    minWeight: '',
-    maxWeight: '',
-    rate: '',
+    minWeight: "",
+    maxWeight: "",
+    rate: "",
   });
   const [selectedPercentage, setSelectedPercentage] = useState("");
 
-
-
-
-//edit uchak
-const [editdropdownOpen, setEditDropdownOpen] = useState(false);
-const [editselectedType, setEditSelectedType] = useState("");
-const [editdropdownOpenMetal, setEditDropdownOpenMetal] = useState(false);
-const [editselectedTypeMetal, setEditSelectedTypeMetal] = useState("");
-const [editdropdownOpenCategory, setEditDropdownOpenCategory] = useState(false);
-const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
-
+  //edit uchak
+  const [editdropdownOpen, setEditDropdownOpen] = useState(false);
+  const [editselectedType, setEditSelectedType] = useState("");
+  const [editdropdownOpenMetal, setEditDropdownOpenMetal] = useState(false);
+  const [editselectedTypeMetal, setEditSelectedTypeMetal] = useState("");
+  const [editdropdownOpenCategory, setEditDropdownOpenCategory] =
+    useState(false);
+  const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
   // Weight dropDown
   const [dropdownOpenWeight, setDropdownOpenWeight] = useState(false);
   const [selectedTypeWeight, setSelectedTypeWeight] = useState("");
   const [dropdownOpenMetalWeight, setDropdownOpenMetalWeight] = useState(false);
   const [selectedTypeMetalWeight, setSelectedTypeMetalWeight] = useState("");
-  const [dropdownOpenCategoryWeight, setDropdownOpenCategoryWeight] = useState(false);
-  const [selectedTypeCategoryWeight, setSelectedTypecategoryWeight] = useState("");
+  const [dropdownOpenCategoryWeight, setDropdownOpenCategoryWeight] =
+    useState(false);
+  const [selectedTypeCategoryWeight, setSelectedTypecategoryWeight] =
+    useState("");
 
 
-  // Percentage dropDown
+
+
+    
+  // edit weight
+  const [editdropdownOpenWeight, setEditDropdownOpenWeight] = useState(false);
+  const [editselectedTypeWeight, setEditSelectedTypeWeight] = useState("");
+  const [editdropdownOpenMetalWeight, setEditDropdownOpenMetalWeight] =
+    useState(false);
+  const [editselectedTypeMetalWeight, setEditSelectedTypeMetalWeight] =
+    useState("");
+  const [editdropdownOpenCategoryWeight, setEditDropdownOpenCategoryWeight] =
+    useState(false);
+  const [editselectedTypeCategoryWeight, setEditSelectedTypecategoryWeight] =
+    useState("");
+
+
+
+
+    // Percentage dropDown
   const [dropdownOpenPercentage, setDropdownOpenPercentage] = useState(false);
   const [selectedTypePercentage, setSelectedTypePercentage] = useState("");
-  const [dropdownOpenMetalPercentage, setDropdownOpenMetalPercentage] = useState(false);
-  const [selectedTypeMetalPercentage, setSelectedTypeMetalPercentage] = useState("");
-  const [dropdownOpenCategoryPercentage, setDropdownOpenCategoryPercentage] = useState(false);
-  const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] = useState("");
+  const [dropdownOpenMetalPercentage, setDropdownOpenMetalPercentage] =
+    useState(false);
+  const [selectedTypeMetalPercentage, setSelectedTypeMetalPercentage] =
+    useState("");
+  const [dropdownOpenCategoryPercentage, setDropdownOpenCategoryPercentage] =
+    useState(false);
+  const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] =
+    useState("");
 
   const dispatch = useDispatch();
 
@@ -130,8 +175,6 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
     dispatch(getPercentageAction());
   }, [dispatch]);
 
-
-
   const firmTypes = [
     "Sole Proprietorship",
     "Partnership",
@@ -144,11 +187,19 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
     setSelectedType(type);
     setDropdownOpen(false);
   };
-
+  const handleEditSelect = (type) => {
+    setEditSelectedType(type);
+    setEditDropdownOpen(false);
+  };
 
   const handleSelectMetal = (type) => {
     setSelectedTypeMetal(type);
     setDropdownOpenMetal(false);
+  };
+
+  const handleEditSelectMetal = (type) => {
+    setEditSelectedTypeMetal(type);
+    setEditDropdownOpenMetal(false);
   };
 
   const handleSelectCategory = (type) => {
@@ -156,6 +207,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
     setDropdownOpenCategory(false);
   };
 
+  const handleEditSelectCategory = (type) => {
+    setEditSelectedTypecategory(type);
+    setEditDropdownOpenCategory(false);
+  };
 
   const handleSelectWeight = (type) => {
     setSelectedTypeWeight(type);
@@ -171,8 +226,6 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
     setSelectedTypecategoryWeight(type);
     setDropdownOpenCategoryWeight(false);
   };
-
-
 
   const handleSelectPercentage = (type) => {
     setSelectedTypePercentage(type);
@@ -215,7 +268,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
         setDropdownOpenCategory(false);
       }
 
-      if (dropdownWeightRef.current && !dropdownWeightRef.current.contains(event.target)) {
+      if (
+        dropdownWeightRef.current &&
+        !dropdownWeightRef.current.contains(event.target)
+      ) {
         setDropdownOpenWeight(false);
       }
       if (
@@ -231,8 +287,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
         setDropdownOpenCategoryWeight(false);
       }
 
-
-      if (dropdownPercentageRef.current && !dropdownPercentageRef.current.contains(event.target)) {
+      if (
+        dropdownPercentageRef.current &&
+        !dropdownPercentageRef.current.contains(event.target)
+      ) {
         setDropdownOpenPercentage(false);
       }
       if (
@@ -248,6 +306,62 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
         setDropdownOpenCategoryPercentage(false);
       }
 
+      if (
+        dropdownEditRef.current &&
+        !dropdownEditRef.current.contains(event.target)
+      ) {
+        setEditDropdownOpen(false);
+      }
+      if (
+        dropdownEditMetalRef.current &&
+        !dropdownEditMetalRef.current.contains(event.target)
+      ) {
+        setDropdownOpenMetal(false);
+      }
+      if (
+        dropdownEditCategoryRef.current &&
+        !dropdownEditCategoryRef.current.contains(event.target)
+      ) {
+        setDropdownOpenCategory(false);
+      }
+
+      if (
+        dropdownEditWeightRef.current &&
+        !dropdownEditWeightRef.current.contains(event.target)
+      ) {
+        setDropdownOpenWeight(false);
+      }
+      if (
+        dropdownEditMetalWeightRef.current &&
+        !dropdownEditMetalWeightRef.current.contains(event.target)
+      ) {
+        setDropdownOpenMetalWeight(false);
+      }
+      if (
+        dropdownEditCategoryWeightRef.current &&
+        !dropdownEditCategoryWeightRef.current.contains(event.target)
+      ) {
+        setDropdownOpenCategoryWeight(false);
+      }
+
+      if (
+        dropdownEditPercentageRef.current &&
+        !dropdownEditPercentageRef.current.contains(event.target)
+      ) {
+        setDropdownOpenPercentage(false);
+      }
+      if (
+        dropdownEditMetalPercentageRef.current &&
+        !dropdownEditMetalPercentageRef.current.contains(event.target)
+      ) {
+        setDropdownOpenMetalPercentage(false);
+      }
+      if (
+        dropdownEditCategoryPercentageRef.current &&
+        !dropdownEditCategoryPercentageRef.current.contains(event.target)
+      ) {
+        setEditDropdownOpenCategory(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -268,9 +382,6 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
     setSelectedPercentage(id);
     setIsEditingPercentage(true); // Enable editing mode
   };
-
-
-
 
   const handleSave = () => {
     setIsEditing(false); // Disable editing mode
@@ -307,12 +418,20 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
       return;
     }
 
-    const selectedCarat = categories.find((carat) => carat.name === selectedType);
-    const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetal);
-    const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
+    const selectedCarat = categories.find(
+      (carat) => carat.name === selectedType
+    );
+    const selectedMetal = metals.find(
+      (metal) => metal.metalName === selectedTypeMetal
+    );
+    const selectedCategory = item.find(
+      (data) => data.itemName === selectedTypeCategory
+    );
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
-      alert("Invalid selection. Please select valid Carat, Metal, and Category.");
+      alert(
+        "Invalid selection. Please select valid Carat, Metal, and Category."
+      );
       return;
     }
 
@@ -327,7 +446,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
     try {
       if (isEditing) {
-        const response = await dispatch(updateUchakAction(selectedUchak?._id, uchakData));
+        const response = await dispatch(
+          updateUchakAction(selectedUchak?._id, uchakData)
+        );
         if (response) {
           alert("Uchak updated successfully!");
           dispatch(getAllUchakAction());
@@ -336,7 +457,7 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
         }
       } else {
         const response = await dispatch(addUchakAction(uchakData));
-        console.log('response', response)
+        console.log("response", response);
         if (response) {
           alert("Uchak added successfully!");
           dispatch(getAllUchakAction());
@@ -361,17 +482,29 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
   };
 
   const handleAddWeight = async () => {
-    if (!selectedTypeWeight || !selectedTypeMetalWeight || !selectedTypeCategoryWeight) {
+    if (
+      !selectedTypeWeight ||
+      !selectedTypeMetalWeight ||
+      !selectedTypeCategoryWeight
+    ) {
       alert("Please select Carat, Metal, and Category.");
       return;
     }
 
-    const selectedCarat = categories.find((carat) => carat.name === selectedTypeWeight);
-    const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetalWeight);
-    const selectedCategory = item.find((data) => data.itemName === selectedTypeCategoryWeight);
+    const selectedCarat = categories.find(
+      (carat) => carat.name === selectedTypeWeight
+    );
+    const selectedMetal = metals.find(
+      (metal) => metal.metalName === selectedTypeMetalWeight
+    );
+    const selectedCategory = item.find(
+      (data) => data.itemName === selectedTypeCategoryWeight
+    );
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
-      alert("Invalid selection. Please select valid Carat, Metal, and Category.");
+      alert(
+        "Invalid selection. Please select valid Carat, Metal, and Category."
+      );
       return;
     }
 
@@ -386,7 +519,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
     try {
       if (isEditingWeight) {
-        const response = await dispatch(updatePerGramAction(selectedWeight?._id, weightData));
+        const response = await dispatch(
+          updatePerGramAction(selectedWeight?._id, weightData)
+        );
         if (response) {
           alert("Weight updated successfully!");
           dispatch(getPerGramAction());
@@ -395,7 +530,7 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
         }
       } else {
         const response = await dispatch(addPerGramAction(weightData));
-        console.log('response', response)
+        console.log("response", response);
         if (response) {
           alert("Weight added successfully!");
           dispatch(getPerGramAction());
@@ -420,17 +555,29 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
   };
 
   const handleAddPercentage = async () => {
-    if (!selectedTypePercentage || !selectedTypeMetalPercentage || !selectedTypeCategoryPercentage) {
+    if (
+      !selectedTypePercentage ||
+      !selectedTypeMetalPercentage ||
+      !selectedTypeCategoryPercentage
+    ) {
       alert("Please select Carat, Metal, and Category.");
       return;
     }
 
-    const selectedCarat = categories.find((carat) => carat.name === selectedTypePercentage);
-    const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetalPercentage);
-    const selectedCategory = item.find((data) => data.itemName === selectedTypeCategoryPercentage);
+    const selectedCarat = categories.find(
+      (carat) => carat.name === selectedTypePercentage
+    );
+    const selectedMetal = metals.find(
+      (metal) => metal.metalName === selectedTypeMetalPercentage
+    );
+    const selectedCategory = item.find(
+      (data) => data.itemName === selectedTypeCategoryPercentage
+    );
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
-      alert("Invalid selection. Please select valid Carat, Metal, and Category.");
+      alert(
+        "Invalid selection. Please select valid Carat, Metal, and Category."
+      );
       return;
     }
 
@@ -445,7 +592,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
     try {
       if (isEditingPercentage) {
-        const response = await dispatch(updatePercentageAction(selectedPercentage?._id, percentageData));
+        const response = await dispatch(
+          updatePercentageAction(selectedPercentage?._id, percentageData)
+        );
         if (response) {
           alert("Percentage updated successfully!");
           dispatch(getPercentageAction());
@@ -454,7 +603,7 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
         }
       } else {
         const response = await dispatch(addPercentageAction(percentageData));
-        console.log('response', response)
+        console.log("response", response);
         if (response) {
           alert("Percentage added successfully!");
           dispatch(getPercentageAction());
@@ -509,10 +658,11 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
                                 <span
-                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
-                                    }`}
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    selectedType || caratFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
                                 >
                                   Carat
                                 </span>
@@ -528,7 +678,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     id="type"
                                     value={selectedType}
                                     onFocus={() => setCaratFocused(true)}
-                                    onBlur={(e) => setCaratFocused(e.target.value !== "")}
+                                    onBlur={(e) =>
+                                      setCaratFocused(e.target.value !== "")
+                                    }
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -552,7 +704,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => handleSelect(type?.name)}
+                                          onClick={() =>
+                                            handleSelect(type?.name)
+                                          }
                                         >
                                           {type?.name}
                                         </div>
@@ -567,10 +721,11 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
                                 <span
-                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
-                                    }`}
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    selectedTypeMetal || metalFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
                                 >
                                   Metal
                                 </span>
@@ -586,8 +741,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     id="type1"
                                     value={selectedTypeMetal}
                                     onFocus={() => setMetalFocused(true)}
-                                    onBlur={(e) => setMetalFocused(e.target.value !== "")}
-
+                                    onBlur={(e) =>
+                                      setMetalFocused(e.target.value !== "")
+                                    }
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -629,10 +785,11 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
                               <span
-                                className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
-                                  ? "text-[#000] -translate-y-[21px]"
-                                  : "text-[#8f8f8f]"
-                                  }`}
+                                className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedTypeCategory || categoryFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                }`}
                               >
                                 Category
                               </span>
@@ -647,9 +804,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   name="item"
                                   id="type1"
                                   onFocus={() => setCategoryFocused(true)}
-                                  onBlur={(e) => setCategoryFocused(e.target.value !== "")}
+                                  onBlur={(e) =>
+                                    setCategoryFocused(e.target.value !== "")
+                                  }
                                   value={selectedTypeCategory}
-
                                   className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                   readOnly
                                 />
@@ -688,12 +846,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-
                                 <span
-                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData?.minWeight || minFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
-                                    }`}
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formData?.minWeight || minFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
                                 >
                                   Min-Weight
                                 </span>
@@ -701,7 +859,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   type="Number"
                                   name="minWeight"
                                   onFocus={() => setMinFocused(true)}
-                                  onBlur={(e) => setMinFocused(e.target.value !== "")}
+                                  onBlur={(e) =>
+                                    setMinFocused(e.target.value !== "")
+                                  }
                                   value={formData?.minWeight}
                                   onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -710,10 +870,11 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                               </div>
                               <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData?.maxWeight || maxFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
-                                    }`}
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formData?.maxWeight || maxFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
                                 >
                                   Max-Weight
                                 </span>
@@ -721,7 +882,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   type="Number"
                                   name="maxWeight"
                                   onFocus={() => setMaxFocused(true)}
-                                  onBlur={(e) => setMaxFocused(e.target.value !== "")}
+                                  onBlur={(e) =>
+                                    setMaxFocused(e.target.value !== "")
+                                  }
                                   value={formData?.maxWeight}
                                   onChange={handleChange}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -732,28 +895,32 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                             <div className=" flex-col flex gap-[20px] ">
                               <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData?.rate || rateFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
-                                    }`}
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formData?.rate || rateFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
                                 >
                                   Rate
                                 </span>
                                 <input
                                   type="Number"
                                   name="rate"
-
                                   value={formData?.rate}
                                   onChange={handleChange}
                                   onFocus={() => setRateFocused(true)}
-                                  onBlur={(e) => setMaxFocused(e.target.value !== "")}
+                                  onBlur={(e) =>
+                                    setMaxFocused(e.target.value !== "")
+                                  }
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
                               </div>
                             </div>
-                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                              onClick={handleAddUchak}>
+                            <button
+                              className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                              onClick={handleAddUchak}
+                            >
                               Save
                             </button>
                           </div>
@@ -763,14 +930,15 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                               <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
-                                    ref={dropdownRef}
+                                    ref={dropdownEditRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
                                     <span
-                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
-                                        ? "text-[#000] -translate-y-[21px]"
-                                        : "text-[#8f8f8f]"
-                                        }`}
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editselectedType || editcaratFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f]"
+                                      }`}
                                     >
                                       Carat
                                     </span>
@@ -784,34 +952,41 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                         type="text"
                                         name="group"
                                         id="type"
-                                        value={selectedType}
-                                        onFocus={() => setEditCaratFocused(true)}
-                                        onBlur={(e) => setEditCaratFocused(e.target.value !== "")}
-
+                                        value={editselectedType}
+                                        onFocus={() =>
+                                          setEditCaratFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditCaratFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
                                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                         readOnly
                                       />
                                       <i
                                         className={
-                                          dropdownOpen
+                                          editdropdownOpen
                                             ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                             : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                         }
                                       ></i>
                                     </div>
                                     <AnimatePresence>
-                                      {dropdownOpen && (
+                                      {editdropdownOpen && (
                                         <motion.div
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
                                           exit={{ opacity: 0, y: -10 }}
-                                          className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                          className="absolute top-[90%] left-[-16px] mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
                                           {categories.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => handleSelect(type?.name)}
+                                              onClick={() =>
+                                                handleEditSelect(type?.name)
+                                              }
                                             >
                                               {type?.name}
                                             </div>
@@ -822,53 +997,68 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   </div>
 
                                   <div
-                                    ref={dropdownMetalRef}
+                                    ref={dropdownEditMetalRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <label
-                                      htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    <span
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editselectedTypeMetal ||
+                                        editmetalFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f]"
+                                      }`}
                                     >
                                       Metal
-                                    </label>
+                                    </span>
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenMetal((prev) => !prev)
+                                        setEditDropdownOpenMetal(
+                                          (prev) => !prev
+                                        )
                                       } // Toggle dropdown on click
                                     >
                                       <input
                                         type="text"
                                         name="metal"
                                         id="type1"
-                                        value={selectedTypeMetal}
-                                        placeholder="Select Metal"
+                                        value={editselectedTypeMetal}
+                                        onFocus={() =>
+                                          setEditMetalFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditMetalFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
                                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                         readOnly
                                       />
                                       <i
                                         className={
-                                          dropdownOpenMetal
+                                          editdropdownOpenMetal
                                             ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                             : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                         }
                                       ></i>
                                     </div>
                                     <AnimatePresence>
-                                      {dropdownOpenMetal && (
+                                      {editdropdownOpenMetal && (
                                         <motion.div
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
                                           exit={{ opacity: 0, y: -10 }}
-                                          className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                          className="absolute top-[90%]  mt-2 left-[-16px] bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
                                           {metals.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectMetal(type?.metalName);
-                                                setDropdownOpenMetal(false);
+                                                handleEditSelectMetal(
+                                                  type?.metalName
+                                                );
+                                                setEditDropdownOpenMetal(false);
                                               }}
                                             >
                                               {type?.metalName}
@@ -883,57 +1073,70 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   ref={dropdownCategoryRef}
                                   className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                 >
-                                  <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  <span
+                                    className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                      editselectedTypeCategory ||
+                                      editcategoryFocused
+                                        ? "text-[#000] -translate-y-[21px]"
+                                        : "text-[#8f8f8f]"
+                                    }`}
                                   >
                                     Category
-                                  </label>
+                                  </span>
                                   <div
                                     className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                     onClick={() =>
-                                      setDropdownOpenCategory((prev) => !prev)
+                                      setEditDropdownOpenCategory(
+                                        (prev) => !prev
+                                      )
                                     } // Toggle dropdown on click
                                   >
                                     <input
                                       type="text"
                                       name="item"
                                       id="type1"
-                                      value={selectedTypeCategory}
-                                      placeholder="Select Category"
+                                      value={editselectedTypeCategory}
+                                      onFocus={() =>
+                                        setEditCategoryFocused(true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditCategoryFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                       readOnly
                                     />
                                     <i
                                       className={
-                                        dropdownOpenCategory
+                                        editdropdownOpenCategory
                                           ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                           : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                       }
                                     ></i>
                                   </div>
                                   <AnimatePresence>
-                                    {dropdownOpenCategory && (
+                                    {editdropdownOpenCategory && (
                                       <motion.div
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        className="absolute top-[90%] left-[-16px] mt-2 bg-white w-[330px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {item.map(
-                                          (type, index) => (
-                                            <div
-                                              key={index}
-                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => {
-                                                handleSelectCategory(type?.itemName);
-                                                setDropdownOpenCategory(false);
-                                              }}
-                                            >
-                                              {type?.itemName}
-                                            </div>
-                                          )
-                                        )}
+                                        {item.map((type, index) => (
+                                          <div
+                                            key={index}
+                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                            onClick={() => {
+                                              handleEditSelectCategory(
+                                                type?.itemName
+                                              );
+                                              setDropdownOpenCategory(false);
+                                            }}
+                                          >
+                                            {type?.itemName}
+                                          </div>
+                                        ))}
                                       </motion.div>
                                     )}
                                   </AnimatePresence>
@@ -941,35 +1144,47 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
 
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    <span
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        formData?.minWeight || editminFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f]"
+                                      }`}
                                     >
                                       Min-Weight
-                                    </label>
+                                    </span>
                                     <input
                                       type="Number"
-                                      placeholder="Enter Min-Weight"
                                       name="minWeight"
                                       value={formData?.minWeight}
                                       onChange={handleChange}
+                                      onFocus={() => setEditMinFocused(true)}
+                                      onBlur={(e) =>
+                                        setEditMinFocused(e.target.value !== "")
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
                                   </div>
                                   <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    <span
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        formData?.maxWeight || editmaxFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f]"
+                                      }`}
                                     >
-                                      Max-weight
-                                    </label>
+                                      Max-Weight
+                                    </span>
                                     <input
                                       type="Number"
                                       name="maxWeight"
                                       value={formData?.maxWeight}
                                       onChange={handleChange}
-                                      placeholder="Enter Max-Weight"
+                                      onFocus={() => setEditMaxFocused(true)}
+                                      onBlur={(e) =>
+                                        setEditMaxFocused(e.target.value !== "")
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
@@ -977,16 +1192,24 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 </div>
                                 <div className=" flex-col flex gap-[20px] ">
                                   <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    <span
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        formData?.rate || editrateFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f]"
+                                      }`}
                                     >
                                       Rate
-                                    </label>
+                                    </span>
                                     <input
                                       type="Number"
                                       name="rate"
-                                      placeholder="Enter Rate"
+                                      onFocus={() => setEditRateFocused(true)}
+                                      onBlur={(e) =>
+                                        setEditRateFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       value={formData?.rate}
                                       onChange={handleChange}
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -994,20 +1217,26 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     />
                                   </div>
                                 </div>
-                                <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                                  onClick={handleAddUchak}>
+                                <button
+                                  className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                                  onClick={handleAddUchak}
+                                >
                                   Save
                                 </button>
                               </div>
                             </>
                           ) : (
-                            // Static Fields
                             <>
                               {uchak?.map((item, index) => (
-                                <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-
+                                <div
+                                  key={index}
+                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]"
+                                >
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                                    <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={() => handleEdit(item?._id)}></i>
+                                    <i
+                                      className="fa-solid cursor-pointer fa-pen-to-square"
+                                      onClick={() => handleEdit(item?._id)}
+                                    ></i>
                                     <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
                                   </div>
                                   <div className=" flex w-[100%] fle  gap-[5px]">
@@ -1021,13 +1250,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Carat
                                       </label>
-                                      <div
-                                        className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                      >
-                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
+                                      <div className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                        <p className=" text-[15px]    py-[9px] font-Poppins">
+                                          {" "}
+                                          {item?.group?.name}
+                                        </p>
                                       </div>
-
                                     </div>
 
                                     <div
@@ -1040,14 +1268,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Metal
                                       </label>
-                                      <div
-                                        className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                      >
-                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
-
+                                      <div className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                        <p className=" text-[15px]    py-[9px] font-Poppins">
+                                          {" "}
+                                          {item?.metal?.metalName}
+                                        </p>
                                       </div>
-
                                     </div>
                                   </div>
                                   <div
@@ -1060,13 +1286,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     >
                                       Category
                                     </label>
-                                    <div
-                                      className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                    >
-                                      <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
+                                    <div className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                      <p className=" text-[15px]    py-[9px] font-Poppins">
+                                        {" "}
+                                        {item?.item?.itemName}
+                                      </p>
                                     </div>
-
                                   </div>
 
                                   <div className=" flex gap-[20px] w-[100%]">
@@ -1077,7 +1302,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Min-Weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {item?.minWeight}
+                                      </p>
                                     </div>
                                     <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
@@ -1086,7 +1313,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Max-weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {item?.maxWeight}
+                                      </p>
                                     </div>
                                   </div>
                                   <div className=" flex-c ol flex gap-[20px] ">
@@ -1097,7 +1326,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Rate
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {" "}
+                                        {item?.rate}
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
@@ -1118,12 +1350,15 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 ref={dropdownWeightRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    editselectedType || editcaratFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
                                 >
                                   Carat
-                                </label>
+                                </span>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
@@ -1159,7 +1394,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => handleSelectWeight(type?.name)}
+                                          onClick={() =>
+                                            handleSelectWeight(type?.name)
+                                          }
                                         >
                                           {type?.name}
                                         </div>
@@ -1215,7 +1452,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                           onClick={() => {
-                                            handleSelectMetalWeight(type?.metalName);
+                                            handleSelectMetalWeight(
+                                              type?.metalName
+                                            );
                                             setDropdownOpenMetalWeight(false);
                                           }}
                                         >
@@ -1273,7 +1512,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                         key={index}
                                         className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                         onClick={() => {
-                                          handleSelectCategoryWeight(type?.itemName);
+                                          handleSelectCategoryWeight(
+                                            type?.itemName
+                                          );
                                           setDropdownOpenCategoryWeight(false);
                                         }}
                                       >
@@ -1340,8 +1581,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 />
                               </div>
                             </div>
-                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                              onClick={handleAddWeight}>
+                            <button
+                              className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                              onClick={handleAddWeight}
+                            >
                               Save
                             </button>
                           </div>
@@ -1395,7 +1638,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => handleSelectWeight(type)}
+                                              onClick={() =>
+                                                handleSelectWeight(type)
+                                              }
                                             >
                                               {type}
                                             </div>
@@ -1418,7 +1663,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenMetalWeight((prev) => !prev)
+                                        setDropdownOpenMetalWeight(
+                                          (prev) => !prev
+                                        )
                                       } // Toggle dropdown on click
                                     >
                                       <input
@@ -1452,7 +1699,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
                                                 handleSelectMetalWeight(type);
-                                                setDropdownOpenMetalWeight(false);
+                                                setDropdownOpenMetalWeight(
+                                                  false
+                                                );
                                               }}
                                             >
                                               {type}
@@ -1476,7 +1725,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   <div
                                     className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                     onClick={() =>
-                                      setDropdownOpenCategoryWeight((prev) => !prev)
+                                      setDropdownOpenCategoryWeight(
+                                        (prev) => !prev
+                                      )
                                     } // Toggle dropdown on click
                                   >
                                     <input
@@ -1510,8 +1761,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectCategoryWeight(type);
-                                                setDropdownOpenCategoryWeight(false);
+                                                handleSelectCategoryWeight(
+                                                  type
+                                                );
+                                                setDropdownOpenCategoryWeight(
+                                                  false
+                                                );
                                               }}
                                             >
                                               {type}
@@ -1569,7 +1824,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     />
                                   </div>
                                 </div>
-                                <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins" onClick={handleSave}>
+                                <button
+                                  className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                                  onClick={handleSave}
+                                >
                                   Save
                                 </button>
                               </div>
@@ -1578,10 +1836,15 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                             // Static Fields
                             <>
                               {weight?.map((item, index) => (
-                                <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-
+                                <div
+                                  key={index}
+                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]"
+                                >
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                                    <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEditWeight}></i>
+                                    <i
+                                      className="fa-solid cursor-pointer fa-pen-to-square"
+                                      onClick={handleEditWeight}
+                                    ></i>
                                     <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
                                   </div>
                                   <div className=" flex w-[100%] fle  gap-[5px]">
@@ -1595,13 +1858,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Carat
                                       </label>
-                                      <div
-                                        className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                      >
-                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
+                                      <div className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                        <p className=" text-[15px]    py-[9px] font-Poppins">
+                                          {" "}
+                                          {item?.group?.name}
+                                        </p>
                                       </div>
-
                                     </div>
 
                                     <div
@@ -1614,14 +1876,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Metal
                                       </label>
-                                      <div
-                                        className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                      >
-                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
-
+                                      <div className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                        <p className=" text-[15px]    py-[9px] font-Poppins">
+                                          {" "}
+                                          {item?.metal?.metalName}
+                                        </p>
                                       </div>
-
                                     </div>
                                   </div>
                                   <div
@@ -1634,13 +1894,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     >
                                       Category
                                     </label>
-                                    <div
-                                      className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                    >
-                                      <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
+                                    <div className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                      <p className=" text-[15px]    py-[9px] font-Poppins">
+                                        {" "}
+                                        {item?.item?.itemName}
+                                      </p>
                                     </div>
-
                                   </div>
 
                                   <div className=" flex gap-[20px] w-[100%]">
@@ -1651,7 +1910,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Min-Weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}    </p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {item?.minWeight}{" "}
+                                      </p>
                                     </div>
                                     <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
@@ -1660,7 +1921,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Max-weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {item?.maxWeight}
+                                      </p>
                                     </div>
                                   </div>
                                   <div className=" flex-c ol flex gap-[20px] ">
@@ -1671,7 +1934,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {" "}
+                                        {item?.rate}
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
@@ -1732,7 +1998,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                         <div
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => handleSelectPercentage(type?.name)}
+                                          onClick={() =>
+                                            handleSelectPercentage(type?.name)
+                                          }
                                         >
                                           {type?.name}
                                         </div>
@@ -1755,7 +2023,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
-                                    setDropdownOpenMetalPercentage((prev) => !prev)
+                                    setDropdownOpenMetalPercentage(
+                                      (prev) => !prev
+                                    )
                                   } // Toggle dropdown on click
                                 >
                                   <input
@@ -1788,8 +2058,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                           key={index}
                                           className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                           onClick={() => {
-                                            handleSelectMetalPercentage(type?.metalName);
-                                            setDropdownOpenMetalPercentage(false);
+                                            handleSelectMetalPercentage(
+                                              type?.metalName
+                                            );
+                                            setDropdownOpenMetalPercentage(
+                                              false
+                                            );
                                           }}
                                         >
                                           {type?.metalName}
@@ -1813,7 +2087,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                               <div
                                 className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                 onClick={() =>
-                                  setDropdownOpenCategoryPercentage((prev) => !prev)
+                                  setDropdownOpenCategoryPercentage(
+                                    (prev) => !prev
+                                  )
                                 } // Toggle dropdown on click
                               >
                                 <input
@@ -1846,8 +2122,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                         key={index}
                                         className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                         onClick={() => {
-                                          handleSelectCategoryPercentage(type?.itemName);
-                                          setDropdownOpenCategoryPercentage(false);
+                                          handleSelectCategoryPercentage(
+                                            type?.itemName
+                                          );
+                                          setDropdownOpenCategoryPercentage(
+                                            false
+                                          );
                                         }}
                                       >
                                         {type?.itemName}
@@ -1913,12 +2193,13 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                 />
                               </div>
                             </div>
-                            <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                              onClick={handleAddPercentage}>
+                            <button
+                              className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                              onClick={handleAddPercentage}
+                            >
                               Save
                             </button>
                           </div>
-
 
                           {isEditingPercentage ? (
                             // Editable Fields
@@ -1938,7 +2219,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenPercentage((prev) => !prev)
+                                        setDropdownOpenPercentage(
+                                          (prev) => !prev
+                                        )
                                       } // Toggle dropdown on click
                                     >
                                       <input
@@ -1970,7 +2253,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => handleSelectPercentage(type)}
+                                              onClick={() =>
+                                                handleSelectPercentage(type)
+                                              }
                                             >
                                               {type}
                                             </div>
@@ -1993,7 +2278,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenMetalPercentage((prev) => !prev)
+                                        setDropdownOpenMetalPercentage(
+                                          (prev) => !prev
+                                        )
                                       } // Toggle dropdown on click
                                     >
                                       <input
@@ -2026,8 +2313,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectMetalPercentage(type);
-                                                setDropdownOpenMetalPercentage(false);
+                                                handleSelectMetalPercentage(
+                                                  type
+                                                );
+                                                setDropdownOpenMetalPercentage(
+                                                  false
+                                                );
                                               }}
                                             >
                                               {type}
@@ -2051,7 +2342,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                   <div
                                     className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                     onClick={() =>
-                                      setDropdownOpenCategoryPercentage((prev) => !prev)
+                                      setDropdownOpenCategoryPercentage(
+                                        (prev) => !prev
+                                      )
                                     } // Toggle dropdown on click
                                   >
                                     <input
@@ -2085,8 +2378,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectCategoryPercentage(type);
-                                                setDropdownOpenCategoryPercentage(false);
+                                                handleSelectCategoryPercentage(
+                                                  type
+                                                );
+                                                setDropdownOpenCategoryPercentage(
+                                                  false
+                                                );
                                               }}
                                             >
                                               {type}
@@ -2144,7 +2441,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     />
                                   </div>
                                 </div>
-                                <button className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins" onClick={handleSave}>
+                                <button
+                                  className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
+                                  onClick={handleSave}
+                                >
                                   Save
                                 </button>
                               </div>
@@ -2153,10 +2453,15 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                             // Static Fields
                             <>
                               {percentage?.map((item, index) => (
-                                <div key={index} className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
-
+                                <div
+                                  key={index}
+                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]"
+                                >
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
-                                    <i className="fa-solid cursor-pointer fa-pen-to-square" onClick={handleEditPercentage}></i>
+                                    <i
+                                      className="fa-solid cursor-pointer fa-pen-to-square"
+                                      onClick={handleEditPercentage}
+                                    ></i>
                                     <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
                                   </div>
                                   <div className=" flex w-[100%] fle  gap-[5px]">
@@ -2170,13 +2475,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Carat
                                       </label>
-                                      <div
-                                        className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                      >
-                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.group?.name}</p>
+                                      <div className="relative w-full  rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                        <p className=" text-[15px]    py-[9px] font-Poppins">
+                                          {" "}
+                                          {item?.group?.name}
+                                        </p>
                                       </div>
-
                                     </div>
 
                                     <div
@@ -2189,14 +2493,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Metal
                                       </label>
-                                      <div
-                                        className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                      >
-                                        <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.metal?.metalName}</p>
-
+                                      <div className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                        <p className=" text-[15px]    py-[9px] font-Poppins">
+                                          {" "}
+                                          {item?.metal?.metalName}
+                                        </p>
                                       </div>
-
                                     </div>
                                   </div>
                                   <div
@@ -2209,13 +2511,12 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                     >
                                       Category
                                     </label>
-                                    <div
-                                      className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer"
-
-                                    >
-                                      <p className=" text-[15px]    py-[9px] font-Poppins"> {item?.item?.itemName}</p>
+                                    <div className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                      <p className=" text-[15px]    py-[9px] font-Poppins">
+                                        {" "}
+                                        {item?.item?.itemName}
+                                      </p>
                                     </div>
-
                                   </div>
 
                                   <div className=" flex gap-[20px] w-[100%]">
@@ -2226,7 +2527,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Min-Weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.minWeight}    </p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {item?.minWeight}{" "}
+                                      </p>
                                     </div>
                                     <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
@@ -2235,7 +2538,9 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Max-weight
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins">{item?.maxWeight}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {item?.maxWeight}
+                                      </p>
                                     </div>
                                   </div>
                                   <div className=" flex-c ol flex gap-[20px] ">
@@ -2246,7 +2551,10 @@ const [editselectedTypeCategory, setEditSelectedTypecategory] = useState("");
                                       >
                                         Percentege
                                       </label>
-                                      <p className=" text-[15px]   py-[9px] font-Poppins"> {item?.rate}</p>
+                                      <p className=" text-[15px]   py-[9px] font-Poppins">
+                                        {" "}
+                                        {item?.rate}
+                                      </p>
                                     </div>
                                   </div>
                                 </div>

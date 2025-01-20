@@ -10,12 +10,13 @@ import Login from "./pages/authPage/Login";
 import InventoryCreate from "./pages/mainPages/InventoryCreate";
 import LabourSetting from "./pages/mainPages/labourSetting/LabourSetting";
 import Scan from "./pages/scan";
+import InvoicePage from "./pages/purches/InvoicePage";
 
 function App() {
   return (
     <>
       <ScrollToTop />
-      <div className="w-100 ease-soft-spring h-[100%]  !bg-[#fbffff]  duration-1000 ">
+      <div className="w-100 ease-soft-spring h-[100%]  !bg-[#F6FAFB]  duration-1000 ">
         <Routes>
           {/* <Route path="/" element={<LoginPage />} /> */}
           <Route path="/" element={<Login />} />
@@ -24,6 +25,7 @@ function App() {
           <Route path="/purches-invoice" element={<PurchesInvoice />} />
           <Route path="/inventory" element={<InventoryCreate />} />
           <Route path="/labour" element={<LabourSetting />} />
+          <Route path="/invoice-bill" element={<InvoicePage />} />
           <Route path="/scan" element={<Scan />}/>
         </Routes>
       </div>
