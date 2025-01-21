@@ -8,8 +8,10 @@ import { Plus, Scan, Pencil } from "lucide-react";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCustomerAction } from "../../redux/action/userManagement";
-import { ApiGet } from "../../helper/axios";
+import { ApiGet, ApiPost } from "../../helper/axios";
 import { getCompanyInfoAction } from "../../redux/action/generalManagement";
+import jsPDF from "jspdf";
+
 
 export default function PurchesInvoice() {
   const [products, setProducts] = useState([]);
@@ -35,6 +37,7 @@ export default function PurchesInvoice() {
   const [partyPanFocused, setPartyPanFocused] = useState(false);
   const [partyNumberFocused, setPartyNumberFocused] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [createdInvoiceId, setCreatedInvoiceId] = useState(null);
 
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
@@ -51,16 +54,17 @@ export default function PurchesInvoice() {
   const [cgst, setCgst] = useState(0);
   const [sgst, setSgst] = useState(0);
   const [totalTaxAmount, setTotalTaxAmount] = useState(0);
-  // const [discountAmount, setDiscountAmount] = useState(0);
-  // const [finalTotal, setFinalTotal] = useState(0);
-  //   const [discountPercentage, setDiscountPercentage] = useState(0);
-
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [customerId, setCustomerId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
 
   const customers = useSelector((state) => state?.users?.getCustomer);
   const companyInfo = useSelector((state) => state?.general?.getCompanyInfo);
-
+  const productNameInputRefs = useRef([]);
 
   useEffect(() => {
     dispatch(getAllCustomerAction());
@@ -104,49 +108,11 @@ export default function PurchesInvoice() {
     }));
   };
 
-
-  const handleAddProduct = () => {
-    const newProduct = {
-      id: products.length + 1,
-      description: "",
-      hsn: "",
-      gstRate: "",
-      grossQty: "",
-      netQty: "",
-      rate: "",
-      amount: "",
-    };
-    setProducts([...products, newProduct]);
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Enter" && e.target.value.trim()) {
+      fetchProductByBarcode(e.target.value.trim(), index);
+    }
   };
-  const [entries, setEntries] = useState([
-    {
-      id: 1,
-      hsn: "",
-      taxableValue: "",
-      centralTaxRate: "",
-      centralTaxAmount: "",
-      stateTaxRate: "",
-      stateTaxAmount: "",
-      totalTaxAmount: "",
-    },
-  ]);
-
-  const handleAddEntry = () => {
-    setEntries([
-      ...entries,
-      {
-        id: entries.length + 1,
-        hsn: "",
-        taxableValue: "",
-        centralTaxRate: "",
-        centralTaxAmount: "",
-        stateTaxRate: "",
-        stateTaxAmount: "",
-        totalTaxAmount: "",
-      },
-    ]);
-  };
-
   const fetchUserDetails = async (userName) => {
     try {
       const response = await ApiGet(`/admin/customer-by-name/${userName}`);
@@ -167,65 +133,184 @@ export default function PurchesInvoice() {
     }
   };
 
+  const fetchInvoiceDetails = async (invoiceId) => {
+    try {
+      const response = await ApiGet(`/admin/bill/${invoiceId}`);
+      console.log('response', response)
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching invoice details:", error);
+      return null;
+    }
+  };
+
   const handleSelectUser = (user) => {
     setSelectedType(user.name);
+    setCustomerId(user._id);
     setDropdownOpen(false);
     fetchUserDetails(user.name);
   };
 
-  const fetchProductByBarcode = async (barcode) => {
-    try {
-      const response = await ApiGet(`/admin/product/${barcode}`);
-      console.log('response', response)
 
-      if (response.product) {
-        addProduct(response.product);
-        calculateTax(response.product.totalPrice);
-        setBarcode("");
-      } else {
-        alert(response.message || "Product not found");
-      }
+  const fetchProductByBarcode = async (barcodeValue, productIndex) => {
+    try {
+      const response = await ApiGet(`/admin/product/${barcodeValue}`);
+      const productData = response.product || {};
+      console.log("Fetched Product Data:", productData);
+
+      setProducts((prevProducts) =>
+        prevProducts.map((product, index) =>
+          index === productIndex
+            ? {
+              ...product,
+              ...productData,
+              barcodeVisible: false,
+              groupItemId: productData.groupItemId || { itemName: "N/A" },
+              toWeight: productData.toWeight || "0",
+              netWeight: productData.netWeight || "0",
+              totalPrice: productData.totalPrice || "0",
+            }
+            : product
+        )
+      );
+
+      // Update totals
+      setTotals((prevTotals) => ({
+        grossQty:
+          prevTotals.grossQty + parseFloat(productData.toWeight || 0),
+        netQty:
+          prevTotals.netQty + parseFloat(productData.netWeight || 0),
+        amount:
+          prevTotals.amount + parseFloat(productData.totalPrice || 0),
+      }));
     } catch (error) {
       console.error("Error fetching product by barcode:", error);
-      alert("An error occurred while fetching product details.");
     }
   };
 
-  const addProduct = (product) => {
-    setProducts((prevProducts) => [
-      ...prevProducts,
-      { ...product, barcodeVisible: false },
-    ]);
+  const handleAddProduct = () => {
+    const newProduct = {
+      id: products.length + 1,
+      barcodeVisible: true, // Show input for barcode
+      groupItemId: { itemName: "" }, // Placeholder for product name
+      toWeight: "",
+      netWeight: "",
+      totalPrice: "",
+    };
+    setProducts([...products, newProduct]);
 
-    setTotals((prevTotals) => ({
-      grossQty: prevTotals.grossQty + product.grossQty,
-      netQty: prevTotals.netQty + product.netQty,
-      amount: prevTotals.amount + product.amount,
-    }));
+    setTimeout(() => {
+      const inputRef = productNameInputRefs.current[products.length];
+      if (inputRef) {
+        inputRef.focus();
+      }
+    }, 0);
   };
 
-  const handleBarcodeInput = (e) => {
-    if (e.key === "Enter" && barcode.trim()) {
-      fetchProductByBarcode(barcode.trim());
-      setBarcode("");
+  const handleDiscountKeyPress = (event) => {
+    if (event.key === "Enter") {
+      console.log("Enter key pressed");
+      console.log("Current totals:", totals);
+      console.log("Discount Percentage:", discountPercentage);
+
+      const totalPrice = totals.amount || 0;
+      calculateTax(totalPrice, discountPercentage);
     }
   };
 
-  const calculateTax = (totalPrice) => {
-    // const discountAmount = (totalPrice * discountPercentage) / 100;
-    // const discountedPrice = totalPrice - discountAmount;
-    // const calculatedCgst = (discountedPrice  * 1.5) / 100;
-    // const calculatedSgst = (discountedPrice  * 1.5) / 100;
-    // const finalPrice = discountedPrice + totalTaxAmount;
-    const calculatedCgst = (totalPrice * 1.5) / 100; // CGST (1.5%)
-    const calculatedSgst = (totalPrice * 1.5) / 100;
+
+
+  const calculateTax = (totalPrice = 0, discountPercentage = 0) => {
+    console.log("totalPrice:", totalPrice);
+    console.log("discountPercentage:", discountPercentage);
+
+    const discountAmount = (totalPrice * discountPercentage) / 100;
+    const discountedPrice = totalPrice - discountAmount;
+    const calculatedCgst = (discountedPrice * 1.5) / 100;
+    const calculatedSgst = (discountedPrice * 1.5) / 100;
+    const finalPrice = discountedPrice + calculatedCgst + calculatedSgst;
+
     setCgst(calculatedCgst);
     setSgst(calculatedSgst);
     setTotalTaxAmount(calculatedCgst + calculatedSgst);
-    // setDiscountAmount(discountAmount);
-    // setFinalTotal(finalPrice);
+    setDiscountAmount(discountAmount);
+    setFinalTotal(finalPrice);
 
-  }
+    console.log("Discount Amount:", discountAmount);
+    console.log("Final Price:", finalPrice);
+  };
+
+  const handleSaveInvoice = async () => {
+    try {
+      const payload = {
+        customerId,// Pass the customer ID
+        products: products.map((product) => ({
+          productId: product?.groupItemId?._id, // Product ID
+          hsnCode: product?.hsn || 0, // HSN Code
+          gstRate: product?.gstRate || 0, // GST Rate
+          grossQty: product?.toWeight || 0, // Gross Quantity
+          netQty: product?.netWeight || 0, // Net Quantity
+          rate: product?.extraRate || 0, // Rate
+          totalPrice: product?.totalPrice || 0, // Total Price
+        })),
+        billType: "estimate", // or "wholesaler"
+        billNo: Date.now(), // Example bill number
+        date: selectedDate, // Selected date
+        discountPercentage: discountPercentage || 0, // Discount Percentage
+        totalPrice: totals.amount || 0, // Total Price
+        companyId: companyInfo?.[0]?._id, // Company ID
+        paymentType: "cash", // Example payment type
+      };
+
+      const response = await ApiPost('/admin/bill', payload);
+      console.log('response', response)
+      if (response.data.bill) {
+        setCreatedInvoiceId(response.data.bill._id);
+        alert("Invoice created successfully!");
+        setShowModal(true)
+      } else {
+        alert("Failed to create invoice!");
+      }
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      alert("An error occurred while creating the invoice.");
+    }
+  };
+
+
+  const generatePDF = async () => {
+    const invoiceData = await fetchInvoiceDetails(createdInvoiceId);
+    if (!invoiceData) {
+      alert("Failed to fetch invoice details!");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    doc.text("Invoice", 14, 20);
+    doc.text(`Invoice No: ${invoiceData.billNo}`, 14, 30);
+    doc.text(`Date: ${invoiceData.date}`, 14, 40);
+    doc.text(`Customer: ${invoiceData.customerId.name}`, 14, 50);
+
+    doc.autoTable({
+      head: [["Product Name", "HSN", "Quantity", "Rate", "Amount"]],
+      body: invoiceData.products.map((product) => [
+        product.productId.name,
+        product.hsnCode || "-",
+        product.grossQty || 0,
+        product.rate || 0,
+        product.totalPrice || 0,
+      ]),
+      startY: 60,
+    });
+
+    doc.text(`Total: ₹${invoiceData.finalAmount}`, 14, doc.lastAutoTable.finalY + 20);
+
+    doc.save(`Invoice_${invoiceData.billNo}.pdf`);
+    setShowModal(false); // Close modal after downloading
+  };
+
 
   return (
     <>
@@ -558,13 +643,8 @@ export default function PurchesInvoice() {
                                 {product.barcodeVisible ? (
                                   <input
                                     type="text"
-                                    value={barcode}
-                                    onChange={(e) => setBarcode(e.target.value)}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter") {
-                                        fetchProductByBarcode(e.target.value);
-                                      }
-                                    }}
+                                    ref={(el) => (productNameInputRefs.current[index] = el)}
+                                    onKeyDown={(e) => handleKeyDown(e, index)}
                                     className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                     autoFocus
                                   />
@@ -573,18 +653,10 @@ export default function PurchesInvoice() {
                                 )}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                {product.hsn}
+                                {product.hsn || 0}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
-                                {product.gstRate}%
-                              </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
-                                {/* <input
-                                  type="number"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                /> */}
-                                {product?.toWeight}
+                                {product.gstRate || 0}%
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
                                 {/* <input
@@ -592,7 +664,7 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.netWeight}
+                                {product?.toWeight || 0}
                               </td>
                               <td className="py-2 px-4 border-r border-gray-200">
                                 {/* <input
@@ -600,7 +672,15 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.extraRate}
+                                {product?.netWeight || 0}
+                              </td>
+                              <td className="py-2 px-4 border-r border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                {product?.extraRate || 0}
                               </td>
                               <td className="py-2 px-4">
                                 {/* <input
@@ -608,14 +688,14 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.totalPrice}
+                                {product?.totalPrice || 0}
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
 
-                      <div className="px-4 py-3 w-[100%] relative flex justify-between items-center">
+                      {/* <div className="px-4 py-3 w-[100%] relative flex justify-between items-center">
                         <input
                           type="text"
                           value={barcode}
@@ -624,7 +704,7 @@ export default function PurchesInvoice() {
                           placeholder="Enter Barcode"
                           className="w-[70%] mr-4 py-2 px-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-Poppins"
                         />
-                      </div>
+                      </div> */}
 
 
                       <div className="px-4 py-3  w-[100%] relative flex  justify-between items-center">
@@ -855,6 +935,56 @@ export default function PurchesInvoice() {
                       <div className="bg-white  w-[100%] rounded-lg shadow-sm p-6">
                         <div className="space-y-2">
                           {/* CGST */}
+                          {/* Discount */}
+                          <div className="flex items-center justify-between gap-4">
+                            <label className="text-gray-600 font-Poppins text-lg font-medium">
+                              Discount
+                            </label>
+                            <div className="flex-1 max-w-[320px] grid grid-cols-2 gap-4">
+                              <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
+                                <span
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
+                                    ? "text-[#000] -translate-y-[19px] "
+                                    : "text-[#8f8f8f]"
+                                    }`}
+                                >
+                                  Discount- in %
+                                </span>
+                                <input
+                                  type="number"
+                                  name="discount"
+                                  id="number"
+                                  value={discountPercentage}
+                                  onChange={(e) => setDiscountPercentage(e.target.value)}
+                                  onKeyDown={handleDiscountKeyPress}
+                                  onFocus={() => setGstFocused(true)}
+                                  onBlur={() => setGstFocused(false)}
+                                  autocomplete="nasme"
+                                  className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
+                                />
+                              </div>
+                              <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
+                                <span
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
+                                    ? "text-[#000] -translate-y-[19px] "
+                                    : "text-[#8f8f8f]"
+                                    }`}
+                                >
+                                  Discount- Out ₹
+                                </span>
+                                {/* <input
+                                  type="number"
+                                  name="gstNumber"
+                                  id="number"
+                                  onFocus={() => setGstFocused(true)}
+                                  onBlur={() => setGstFocused(false)}
+                                  autocomplete="nasme"
+                                  className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
+                                /> */}
+                                <p>{discountAmount.toFixed(2)}</p>
+                              </div>
+                            </div>
+                          </div>
                           <div className="flex items-center justify-between gap-4">
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
                               CGST
@@ -903,52 +1033,7 @@ export default function PurchesInvoice() {
                             </div>
                           </div>
 
-                          {/* Discount */}
-                          <div className="flex items-center justify-between gap-4">
-                            <label className="text-gray-600 font-Poppins text-lg font-medium">
-                              Discount
-                            </label>
-                            <div className="flex-1 max-w-[320px] grid grid-cols-2 gap-4">
-                              <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                                <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
-                                    ? "text-[#000] -translate-y-[19px] "
-                                    : "text-[#8f8f8f]"
-                                    }`}
-                                >
-                                  Discount- in %
-                                </span>
-                                <input
-                                  type="number"
-                                  name="discount"
-                                  id="number"
-                                  onFocus={() => setGstFocused(true)}
-                                  onBlur={() => setGstFocused(false)}
-                                  autocomplete="nasme"
-                                  className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
-                                />
-                              </div>
-                              <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                                <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
-                                    ? "text-[#000] -translate-y-[19px] "
-                                    : "text-[#8f8f8f]"
-                                    }`}
-                                >
-                                  Discount- Out ₹
-                                </span>
-                                <input
-                                  type="number"
-                                  name="gstNumber"
-                                  id="number"
-                                  onFocus={() => setGstFocused(true)}
-                                  onBlur={() => setGstFocused(false)}
-                                  autocomplete="nasme"
-                                  className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
-                                />
-                              </div>
-                            </div>
-                          </div>
+
 
                           {/* TCS Checkbox */}
                           <div className="flex items-center justify-between gap-4">
@@ -1001,11 +1086,36 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                                <p>{finalTotal.toFixed(2)}</p>
                               </div>
                             </div>
                           </div>
+                          <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]"
+                            onClick={handleSaveInvoice}>
+                            Save
+                          </button>
                         </div>
+                        {showModal && (
+                          <div className="modal-backdrop">
+                            <div className="modal">
+                              <p>Do you want to download this invoice?</p>
+                              <div className="modal-actions">
+                                <button
+                                  className="btn-cancel"
+                                  onClick={() => setShowModal(false)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="btn-confirm"
+                                  onClick={generatePDF}
+                                >
+                                  Confirm
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
