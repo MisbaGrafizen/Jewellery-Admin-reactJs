@@ -35,12 +35,12 @@ export default function PurchesInvoice() {
   const [partyPanFocused, setPartyPanFocused] = useState(false);
   const [partyNumberFocused, setPartyNumberFocused] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  
+
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
   const [panNumber, setPanNumber] = useState("");
   const [userState, setUserState] = useState("");
-  
+
   const [barcode, setBarcode] = useState("");
   const [totals, setTotals] = useState({
     grossQty: 0,
@@ -48,11 +48,14 @@ export default function PurchesInvoice() {
     amount: 0,
   });
 
-  const [cgst, setCgst] = useState(0); 
-  const [sgst, setSgst] = useState(0); 
+  const [cgst, setCgst] = useState(0);
+  const [sgst, setSgst] = useState(0);
   const [totalTaxAmount, setTotalTaxAmount] = useState(0);
-  
-  const [isOpen, setIsOpen] = useState(false);
+  // const [discountAmount, setDiscountAmount] = useState(0);
+  // const [finalTotal, setFinalTotal] = useState(0);
+  //   const [discountPercentage, setDiscountPercentage] = useState(0);
+
+
   const dispatch = useDispatch();
 
   const customers = useSelector((state) => state?.users?.getCustomer);
@@ -203,17 +206,24 @@ export default function PurchesInvoice() {
 
   const handleBarcodeInput = (e) => {
     if (e.key === "Enter" && barcode.trim()) {
-      fetchProductByBarcode(barcode.trim()); // Call API
-      setBarcode(""); // Clear input field
+      fetchProductByBarcode(barcode.trim());
+      setBarcode("");
     }
   };
 
   const calculateTax = (totalPrice) => {
+    // const discountAmount = (totalPrice * discountPercentage) / 100;
+    // const discountedPrice = totalPrice - discountAmount;
+    // const calculatedCgst = (discountedPrice  * 1.5) / 100;
+    // const calculatedSgst = (discountedPrice  * 1.5) / 100;
+    // const finalPrice = discountedPrice + totalTaxAmount;
     const calculatedCgst = (totalPrice * 1.5) / 100; // CGST (1.5%)
     const calculatedSgst = (totalPrice * 1.5) / 100;
     setCgst(calculatedCgst);
     setSgst(calculatedSgst);
     setTotalTaxAmount(calculatedCgst + calculatedSgst);
+    // setDiscountAmount(discountAmount);
+    // setFinalTotal(finalPrice);
 
   }
 
@@ -242,7 +252,7 @@ export default function PurchesInvoice() {
                           onChange={(date) => setSelectedDate(date)}
                           className=" flex  w-[100px] border"
                         />
-                        <i class="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
+                        <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
                       </div>
                     </div>
                   </div>
@@ -755,7 +765,7 @@ export default function PurchesInvoice() {
                         </div>
                       </div>
                       {companyInfo?.map((item, index) => (
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div key={index} className="grid md:grid-cols-2 gap-4">
                           {/* Bank Details Card */}
                           <div className="bg-white rounded-lg shadow1-blue p-[20px] relative">
                             <div className="flex justify-between items-start mb-2">
@@ -910,7 +920,7 @@ export default function PurchesInvoice() {
                                 </span>
                                 <input
                                   type="number"
-                                  name="gstNumber"
+                                  name="discount"
                                   id="number"
                                   onFocus={() => setGstFocused(true)}
                                   onBlur={() => setGstFocused(false)}
