@@ -83,17 +83,19 @@ export default function LabourSetting() {
   const [editweightminFocused, setEditWeightMinFocused] = useState(false);
   const [editweightrateFocused, setEditWeightRateFocused] = useState(false);
 
-
-//Per palceholder
-const [percaratFocused, setPerCaratFocused] = useState(false);
-const [permetalFocused, setPerMetalFocused] = useState(false);
-const [percategoryFocused, setPerCategoryFocused] = useState(false);
-const [permaxFocused, setPerMaxFocused] = useState(false);
-const [perminFocused, setPerMinFocused] = useState(false);
-const [perrateFocused, setPerRateFocused] = useState(false);
-
-
-
+  //Per palceholder
+  const [percaratFocused, setPerCaratFocused] = useState(false);
+  const [permetalFocused, setPerMetalFocused] = useState(false);
+  const [percategoryFocused, setPerCategoryFocused] = useState(false);
+  const [permaxFocused, setPerMaxFocused] = useState(false);
+  const [perminFocused, setPerMinFocused] = useState(false);
+  const [perrateFocused, setPerRateFocused] = useState(false);
+  const [editpercaratFocused, setEditPerCaratFocused] = useState(false);
+  const [editpermetalFocused, setEditPerMetalFocused] = useState(false);
+  const [editpercategoryFocused, setEditPerCategoryFocused] = useState(false);
+  const [editpermaxFocused, setEditPerMaxFocused] = useState(false);
+  const [editperminFocused, setEditPerMinFocused] = useState(false);
+  const [editperrateFocused, setEditPerRateFocused] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -171,6 +173,23 @@ const [perrateFocused, setPerRateFocused] = useState(false);
   const [selectedTypeCategoryPercentage, setSelectedTypecategoryPercentage] =
     useState("");
 
+  const [editdropdownOpenPercentage, setEditDropdownOpenPercentage] =
+    useState(false);
+  const [editselectedTypePercentage, setEditSelectedTypePercentage] =
+    useState("");
+  const [editdropdownOpenMetalPercentage, setEditDropdownOpenMetalPercentage] =
+    useState(false);
+  const [editselectedTypeMetalPercentage, setEditSelectedTypeMetalPercentage] =
+    useState("");
+  const [
+    editdropdownOpenCategoryPercentage,
+    setEditDropdownOpenCategoryPercentage,
+  ] = useState(false);
+  const [
+    editselectedTypeCategoryPercentage,
+    setEditSelectedTypecategoryPercentage,
+  ] = useState("");
+
   const dispatch = useDispatch();
 
   const categories = useSelector((state) => state.landing.getAllCategory);
@@ -231,9 +250,19 @@ const [perrateFocused, setPerRateFocused] = useState(false);
     setDropdownOpenWeight(false);
   };
 
+  const handleSelectEditWeight = (type) => {
+    setEditSelectedTypeWeight(type);
+    setEditDropdownOpenWeight(false);
+  };
+
   const handleSelectMetalWeight = (type) => {
     setSelectedTypeMetalWeight(type);
     setDropdownOpenMetalWeight(false);
+  };
+
+  const handleSelectEditMetalWeight = (type) => {
+    setEditSelectedTypeMetalWeight(type);
+    setEditDropdownOpenMetalWeight(false);
   };
 
   const handleSelectCategoryWeight = (type) => {
@@ -241,9 +270,14 @@ const [perrateFocused, setPerRateFocused] = useState(false);
     setDropdownOpenCategoryWeight(false);
   };
 
-  const handleSelectPercentage = (type) => {
-    setSelectedTypePercentage(type);
-    setDropdownOpenPercentage(false);
+  const handleSelectEditCategoryWeight = (type) => {
+    setEditSelectedTypecategoryWeight(type);
+    setEditDropdownOpenCategoryWeight(false);
+  };
+
+  const handleEditSelectPercentage = (type) => {
+    setEditSelectedTypePercentage(type);
+    setEditDropdownOpenPercentage(false);
   };
 
   const handleSelectMetalPercentage = (type) => {
@@ -251,6 +285,10 @@ const [perrateFocused, setPerRateFocused] = useState(false);
     setDropdownOpenMetalPercentage(false);
   };
 
+  const handleEditSelectMetalPercentage = (type) => {
+    setSelectedTypeMetalPercentage(type);
+    setDropdownOpenMetalPercentage(false);
+  };
   const handleSelectCategoryPercentage = (type) => {
     setSelectedTypecategoryPercentage(type);
     setDropdownOpenCategoryPercentage(false);
@@ -343,26 +381,26 @@ const [perrateFocused, setPerRateFocused] = useState(false);
         dropdownEditWeightRef.current &&
         !dropdownEditWeightRef.current.contains(event.target)
       ) {
-        setDropdownOpenWeight(false);
+        setEditDropdownOpenWeight(false);
       }
       if (
         dropdownEditMetalWeightRef.current &&
         !dropdownEditMetalWeightRef.current.contains(event.target)
       ) {
-        setDropdownOpenMetalWeight(false);
+        setEditDropdownOpenMetalWeight(false);
       }
       if (
         dropdownEditCategoryWeightRef.current &&
         !dropdownEditCategoryWeightRef.current.contains(event.target)
       ) {
-        setDropdownOpenCategoryWeight(false);
+        setEditDropdownOpenCategoryWeight(false);
       }
 
       if (
         dropdownEditPercentageRef.current &&
         !dropdownEditPercentageRef.current.contains(event.target)
       ) {
-        setDropdownOpenPercentage(false);
+        setEditDropdownOpenPercentage(false);
       }
       if (
         dropdownEditMetalPercentageRef.current &&
@@ -1635,26 +1673,25 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                             </div>
                             <div className=" flex-col flex gap-[20px] ">
                               <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                              <label
+                                <label
                                   htmlFor="weight1"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                    formDataWeight?.rate ||
-                                    weightrateFocused
+                                    formDataWeight?.rate || weightrateFocused
                                       ? "text-[#000] -translate-y-[21px]"
                                       : "text-[#8f8f8f] cursor-text"
                                   }`}
                                 >
-                                Weight
+                                  Weight
                                 </label>
                                 <input
                                   type="Number"
                                   name="rate"
-                      id="weight1"
+                                  id="weight1"
                                   value={formDataWeight?.rate}
                                   onChange={handleChangeWeight}
                                   onFocus={() => setWeightRateFocused(true)}
                                   onBlur={(e) =>
-                                    setWeightRateFocused  (e.target.value !== "")
+                                    setWeightRateFocused(e.target.value !== "")
                                   }
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
@@ -1671,55 +1708,69 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                           {isEditingWeight ? (
                             // Editable Fields
                             <>
-                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                              <div className=" bg-white flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
-                                    ref={dropdownWeightRef}
+                                    ref={dropdownEditWeightRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
                                     <label
-                                      htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="editcarat"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editselectedTypeWeight ||
+                                        editweightcaratFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
                                       Carat
                                     </label>
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenWeight((prev) => !prev)
+                                        setEditDropdownOpenWeight(
+                                          (prev) => !prev
+                                        )
                                       } // Toggle dropdown on click
                                     >
                                       <input
                                         type="text"
                                         name="type"
-                                        id="type"
-                                        value={selectedTypeWeight}
-                                        placeholder="Select Carat"
+                                        id="editcarat"
+                                        value={editselectedTypeWeight}
+                                        onFocus={() =>
+                                          setEditWeightCaratFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditWeightCaratFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
                                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                         readOnly
                                       />
                                       <i
                                         className={
-                                          dropdownOpenWeight
+                                          editdropdownOpenWeight
                                             ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                             : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                         }
                                       ></i>
                                     </div>
                                     <AnimatePresence>
-                                      {dropdownOpenWeight && (
+                                      {editdropdownOpenWeight && (
                                         <motion.div
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
                                           exit={{ opacity: 0, y: -10 }}
-                                          className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                          className="absolute top-[90%]  mt-2 bg-white left-[-17px] w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
                                           {firmTypes.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() =>
-                                                handleSelectWeight(type)
+                                                handleSelectEditWeight(type)
                                               }
                                             >
                                               {type}
@@ -1731,19 +1782,24 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                   </div>
 
                                   <div
-                                    ref={dropdownMetalWeightRef}
+                                    ref={dropdownEditMetalWeightRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
                                     <label
-                                      htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="metall"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editselectedTypeMetalWeight ||
+                                        editweightmetalFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
                                       Metal
                                     </label>
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenMetalWeight(
+                                        setEditDropdownOpenMetalWeight(
                                           (prev) => !prev
                                         )
                                       } // Toggle dropdown on click
@@ -1751,34 +1807,43 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                       <input
                                         type="text"
                                         name="type1"
-                                        id="type1"
-                                        value={selectedTypeMetalWeight}
-                                        placeholder="Select Metal"
+                                        id="metall"
+                                        value={editselectedTypeMetalWeight}
+                                        onFocus={() =>
+                                          setEditWeightMetalFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditWeightMetalFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
                                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                         readOnly
                                       />
                                       <i
                                         className={
-                                          dropdownOpenMetalWeight
+                                          editdropdownOpenMetalWeight
                                             ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                             : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                         }
                                       ></i>
                                     </div>
                                     <AnimatePresence>
-                                      {dropdownOpenMetalWeight && (
+                                      {editdropdownOpenMetalWeight && (
                                         <motion.div
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
                                           exit={{ opacity: 0, y: -10 }}
-                                          className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                          className="absolute top-[90%] left-[-16px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
                                           {firmTypesMetal.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectMetalWeight(type);
+                                                handleSelectEditMetalWeight(
+                                                  type
+                                                );
                                                 setDropdownOpenMetalWeight(
                                                   false
                                                 );
@@ -1793,19 +1858,24 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                   </div>
                                 </div>
                                 <div
-                                  ref={dropdownCategoryWeightRef}
+                                  ref={dropdownEditCategoryWeightRef}
                                   className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                 >
                                   <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    htmlFor="edicategory"
+                                    className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                      editselectedTypeCategoryWeight ||
+                                      editweightcategoryFocused
+                                        ? "text-[#000] -translate-y-[21px]"
+                                        : "text-[#8f8f8f] cursor-text"
+                                    }`}
                                   >
                                     Category
                                   </label>
                                   <div
                                     className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                     onClick={() =>
-                                      setDropdownOpenCategoryWeight(
+                                      setEditDropdownOpenCategoryWeight(
                                         (prev) => !prev
                                       )
                                     } // Toggle dropdown on click
@@ -1813,27 +1883,34 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                     <input
                                       type="text"
                                       name="type1"
-                                      id="type1"
-                                      value={selectedTypeCategoryWeight}
-                                      placeholder="Select Category"
+                                      id="edicategory"
+                                      value={editselectedTypeCategoryWeight}
+                                      onFocus={() =>
+                                        setEditWeightCategoryFocused(true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditWeightCategoryFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                       readOnly
                                     />
                                     <i
                                       className={
-                                        dropdownOpenCategoryWeight
+                                        editdropdownOpenCategoryWeight
                                           ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                           : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                       }
                                     ></i>
                                   </div>
                                   <AnimatePresence>
-                                    {dropdownOpenCategoryWeight && (
+                                    {editdropdownOpenCategoryWeight && (
                                       <motion.div
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        className="absolute top-[90%]  mt-2 left-[-16px] bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
                                         {firmTypesCategory.map(
                                           (type, index) => (
@@ -1841,10 +1918,10 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectCategoryWeight(
+                                                handleSelectEditCategoryWeight(
                                                   type
                                                 );
-                                                setDropdownOpenCategoryWeight(
+                                                setEditDropdownOpenCategoryWeight(
                                                   false
                                                 );
                                               }}
@@ -1861,28 +1938,52 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="editmax"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editweightminFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
                                       Min-Weight
                                     </label>
                                     <input
                                       type="Number"
-                                      placeholder="Enter Min-Weight"
+                                      id="editmax"
+                                      onFocus={() =>
+                                        setEditWeightMinFocused(true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditWeightMinFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
                                   </div>
                                   <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="editmin"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editweightmaxFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
-                                      Max-weight
+                                      Max-Weight
                                     </label>
                                     <input
+                                      id="editmin"
                                       type="Number"
-                                      placeholder="Enter Max-Weight"
+                                      onFocus={() =>
+                                        setEditWeightMaxFocused(true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditWeightMaxFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
@@ -1891,14 +1992,26 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                 <div className=" flex-col flex gap-[20px] ">
                                   <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="editrateweigth"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editweightrateFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
                                       Weight
                                     </label>
                                     <input
                                       type="Number"
-                                      placeholder="Enter Rate"
+                                      id="editrateweigth"
+                                      onFocus={() =>
+                                        setEditWeightRateFocused(true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditWeightRateFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
@@ -2037,16 +2150,15 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                 ref={dropdownPercentageRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                   <label
+                                <label
                                   htmlFor="weightmin"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                    selectedTypePercentage ||            percaratFocused
-                    
+                                    selectedTypePercentage || percaratFocused
                                       ? "text-[#000] -translate-y-[21px]"
                                       : "text-[#8f8f8f] cursor-text"
                                   }`}
                                 >
-                                Carat
+                                  Carat
                                 </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
@@ -2063,7 +2175,6 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                     onBlur={(e) =>
                                       setPerCaratFocused(e.target.value !== "")
                                     }
-                          
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -2103,16 +2214,16 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                 ref={dropdownMetalPercentageRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                   <label
+                                <label
                                   htmlFor="weightmin"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                    selectedTypeMetalPercentage ||            permetalFocused
-                    
+                                    selectedTypeMetalPercentage ||
+                                    permetalFocused
                                       ? "text-[#000] -translate-y-[21px]"
                                       : "text-[#8f8f8f] cursor-text"
                                   }`}
                                 >
-                                Metal
+                                  Metal
                                 </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
@@ -2175,15 +2286,16 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                               ref={dropdownCategoryPercentageRef}
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
-                        <span
-                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                    selectedTypeCategoryPercentage || percategoryFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
-                                  }`}
-                                >
-                       Category
-                                </span>
+                              <span
+                                className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedTypeCategoryPercentage ||
+                                  percategoryFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f]"
+                                }`}
+                              >
+                                Category
+                              </span>
                               <div
                                 className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                 onClick={() =>
@@ -2198,10 +2310,9 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                   id="type1"
                                   value={selectedTypeCategoryPercentage}
                                   onFocus={() => setPerCategoryFocused(true)}
-                                    onBlur={(e) =>
-                                      setPerCategoryFocused(e.target.value !== "")
-                                    }
-
+                                  onBlur={(e) =>
+                                    setPerCategoryFocused(e.target.value !== "")
+                                  }
                                   className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                   readOnly
                                 />
@@ -2245,34 +2356,52 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  htmlFor="permin"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formDataPercentage?.minWeight ||
+                                    perminFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
                                   Min-Weight
                                 </label>
                                 <input
                                   type="Number"
+                                  id="permin"
                                   name="minWeight"
-                                  placeholder="Enter Min-Weight"
                                   value={formDataPercentage?.minWeight}
                                   onChange={handleChangePercentage}
+                                  onFocus={() => setPerMinFocused(true)}
+                                  onBlur={(e) =>
+                                    setPerMinFocused(e.target.value !== "")
+                                  }
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
                               </div>
                               <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  htmlFor="permax"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formDataPercentage?.maxWeight ||
+                                    permaxFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
-                                  Max-weight
+                                  Max-Weight
                                 </label>
                                 <input
                                   type="Number"
                                   name="maxWeight"
-                                  placeholder="Enter Max-Weight"
+                                  id="permax"
                                   value={formDataPercentage?.maxWeight}
                                   onChange={handleChangePercentage}
+                                  onFocus={() => setPerMaxFocused(true)}
+                                  onBlur={(e) =>
+                                    setPerMaxFocused(e.target.value !== "")
+                                  }
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
@@ -2281,15 +2410,23 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                             <div className=" flex-col flex gap-[20px] ">
                               <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  htmlFor="perrate"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formDataPercentage?.rate || perrateFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
                                   Percentege
                                 </label>
                                 <input
                                   type="Number"
                                   name="rate"
-                                  placeholder="Enter Rate"
+                                  id="perrate"
+                                  onFocus={() => setPerRateFocused(true)}
+                                  onBlur={(e) =>
+                                    setPerRateFocused(e.target.value !== "")
+                                  }
                                   value={formDataPercentage?.rate}
                                   onChange={handleChangePercentage}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -2311,19 +2448,24 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                               <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
-                                    ref={dropdownPercentageRef}
+                                    ref={dropdownEditPercentageRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
                                     <label
-                                      htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="editpercarat"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editselectedTypePercentage ||
+                                        editpercaratFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
                                       Carat
                                     </label>
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenPercentage(
+                                        setEditDropdownOpenPercentage(
                                           (prev) => !prev
                                         )
                                       } // Toggle dropdown on click
@@ -2331,34 +2473,41 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                       <input
                                         type="text"
                                         name="type"
-                                        id="type"
-                                        value={selectedTypePercentage}
-                                        placeholder="Select Carat"
+                                        id="editpercarat"
+                                        onFocus={() =>
+                                          setEditPerCaratFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditPerCaratFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
+                                        value={editselectedTypePercentage}
                                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                         readOnly
                                       />
                                       <i
                                         className={
-                                          dropdownOpenPercentage
+                                          editdropdownOpenPercentage
                                             ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                             : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                         }
                                       ></i>
                                     </div>
                                     <AnimatePresence>
-                                      {dropdownOpenPercentage && (
+                                      {editdropdownOpenPercentage && (
                                         <motion.div
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
                                           exit={{ opacity: 0, y: -10 }}
-                                          className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                          className="absolute top-[90%] left-[16px] mt-2 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
                                           {firmTypes.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() =>
-                                                handleSelectPercentage(type)
+                                                handleEditSelectPercentage(type)
                                               }
                                             >
                                               {type}
@@ -2370,12 +2519,17 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                   </div>
 
                                   <div
-                                    ref={dropdownMetalPercentageRef}
+                                    ref={dropdownEditMetalPercentageRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
                                     <label
-                                      htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="editpermetal"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                        editselectedTypePercentage ||
+                                        editpermetalFocused
+                                          ? "text-[#000] -translate-y-[21px]"
+                                          : "text-[#8f8f8f] cursor-text"
+                                      }`}
                                     >
                                       Metal
                                     </label>
@@ -2385,27 +2539,35 @@ const [perrateFocused, setPerRateFocused] = useState(false);
                                         setDropdownOpenMetalPercentage(
                                           (prev) => !prev
                                         )
-                                      } // Toggle dropdown on click
+                                      } 
+                                      setEditDropdownOpenPercentage // Toggle dropdown on click
                                     >
                                       <input
                                         type="text"
                                         name="type1"
-                                        id="type1"
+                                        id="editpermetal"
                                         value={selectedTypeMetalPercentage}
-                                        placeholder="Select Metal"
+                                        onFocus={() =>
+                                          setEditPerMetalFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditPerMetalFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
                                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                         readOnly
                                       />
                                       <i
                                         className={
-                                          dropdownOpenMetalPercentage
+                                          editdropdownOpenMetalPercentage
                                             ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                             : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                         }
                                       ></i>
                                     </div>
                                     <AnimatePresence>
-                                      {dropdownOpenMetalPercentage && (
+                                      {editdropdownOpenMetalPercentage && (
                                         <motion.div
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
