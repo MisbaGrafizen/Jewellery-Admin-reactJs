@@ -44,6 +44,7 @@ export const DELETE_TAG = "DELETE_TAG";
 export const DELETE_ATTRIBUTE = "DELETE_ATTRIBUTE";
 export const DELETE_BRAND = "DELETE_BRAND";
 export const DELETE_PERGRAM = "DELETE_PERGRAM";
+export const GET_BILL_BY_ID = "GET_BILL_BY_ID";
 
 
 //User Management

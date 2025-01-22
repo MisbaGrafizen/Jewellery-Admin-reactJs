@@ -79,14 +79,20 @@ export default function CreateCompany() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addCompanyInfoAction(formData));
+  
+    const payload = {
+      ...formData,
+      userId,
+    };
+      dispatch(addCompanyInfoAction(payload));
+  
     alert("Data created Successfully.");
   };
-
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false); // Close dropdown if clicked outside
+        setDropdownOpen(false); 
       }
     };
 
@@ -396,7 +402,7 @@ export default function CreateCompany() {
                           GST Number
                         </span>
                         <input
-                          type="number"
+                          type="text"
                           name="gstNumber"
                           id="number"
                           value={formData?.gstNumber}
@@ -816,7 +822,7 @@ export default function CreateCompany() {
                             IFSC Code
                           </span>
                           <input
-                            type="number"
+                            type="text"
                             name="IFSCCode"
                             autocomplete="nasme"
                             id="number"

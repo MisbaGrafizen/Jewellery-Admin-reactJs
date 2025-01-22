@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SideBar from "../../Component/sidebar/SideBar";
 import Header from "../../Component/header/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import { DatePicker, Space } from "antd";
+import { DatePicker} from "antd";
 import { Check } from "lucide-react";
 import { Plus, Scan, Pencil } from "lucide-react";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
@@ -10,8 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCustomerAction } from "../../redux/action/userManagement";
 import { ApiGet, ApiPost } from "../../helper/axios";
 import { getCompanyInfoAction } from "../../redux/action/generalManagement";
-// import jsPDF from "jspdf";
-
+import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 
 export default function PurchesInvoice() {
   const [products, setProducts] = useState([]);
@@ -52,21 +52,36 @@ export default function PurchesInvoice() {
   const [panNumber, setPanNumber] = useState("");
   const [userState, setUserState] = useState("");
 
-  const [barcode, setBarcode] = useState("");
   const [totals, setTotals] = useState({
     grossQty: 0,
     netQty: 0,
     amount: 0,
   });
 
+  const navigate = useNavigate();
+
   const [cgst, setCgst] = useState(0);
   const [sgst, setSgst] = useState(0);
   const [totalTaxAmount, setTotalTaxAmount] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [discountPrice, setDiscountPrice] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [customerId, setCustomerId] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+
+  const [formData, setFormData] = useState({
+    partyGroup: "",
+    name: "",
+    address: "",
+    GST: "",
+    panNo: "",
+    firmType: "",
+    state: "",
+    city: "",
+    pinCode: "",
+    mobileNumber: "",
+    email: "",
+  });
 
   const dispatch = useDispatch();
 
@@ -144,18 +159,6 @@ export default function PurchesInvoice() {
       setStateFocused(Boolean(userData.state));
     } catch (error) {
       console.error("Error fetching user details:", error);
-    }
-  };
-
-  const fetchInvoiceDetails = async (invoiceId) => {
-    try {
-      const response = await ApiGet(`/admin/bill/${invoiceId}`);
-      console.log('response', response)
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching invoice details:", error);
-      return null;
     }
   };
 
@@ -240,49 +243,85 @@ export default function PurchesInvoice() {
     console.log("discountPercentage:", discountPercentage);
 
     const discountAmount = (totalPrice * discountPercentage) / 100;
-    const discountedPrice = totalPrice - discountAmount;
-    const calculatedCgst = (discountedPrice * 1.5) / 100;
-    const calculatedSgst = (discountedPrice * 1.5) / 100;
-    const finalPrice = discountedPrice + calculatedCgst + calculatedSgst;
+    const discountPrice = totalPrice - discountAmount;
+    const calculatedCgst = (discountPrice * 1.5) / 100;
+    const calculatedSgst = (discountPrice * 1.5) / 100;
+    const totalTax = calculatedCgst + calculatedSgst;
 
+    const finalPrice = discountPrice + totalTax;
+
+    
     setCgst(calculatedCgst);
     setSgst(calculatedSgst);
     setTotalTaxAmount(calculatedCgst + calculatedSgst);
-    setDiscountAmount(discountAmount);
+    setDiscountAmount(discountAmount);   
+    setDiscountPrice(discountPrice)                         
     setFinalTotal(finalPrice);
-
+    
+    console.log('discountPrice', discountPrice)
     console.log("Discount Amount:", discountAmount);
     console.log("Final Price:", finalPrice);
+
+    const invoiceData = {
+      totalPrice,
+      discountPercentage,
+      discountAmount,
+      discountPrice,
+      cgst: calculatedCgst,
+      sgst: calculatedSgst,
+      totalTax,
+      finalPrice,
+    };
+
+    console.log("Calculated Invoice Data:", invoiceData);
+    return invoiceData;
+
   };
 
   const handleSaveInvoice = async () => {
     try {
+
+      const {
+        discountAmount,
+        discountPrice,
+        calculatedCgst,
+        calculatedSgst,
+        totalTax,
+        finalPrice,
+      } = calculateTax(totals.amount || 0, discountPercentage || 0);
+  
       const payload = {
-        customerId,// Pass the customer ID
+        customerId,
         products: products.map((product) => ({
-          productId: product?.groupItemId?._id, // Product ID
-          hsnCode: product?.hsn || 0, // HSN Code
-          gstRate: product?.gstRate || 0, // GST Rate
-          grossQty: product?.toWeight || 0, // Gross Quantity
-          netQty: product?.netWeight || 0, // Net Quantity
-          rate: product?.extraRate || 0, // Rate
-          totalPrice: product?.totalPrice || 0, // Total Price
+          productId: product?.groupItemId?._id, 
+          hsnCode: product?.hsn || 0, 
+          gstRate: product?.gstRate || 0, 
+          grossQty: product?.toWeight || 0,
+          netQty: product?.netWeight || 0, 
+          rate: product?.extraRate || 0, 
+          totalPrice: product?.totalPrice || 0,
         })),
-        billType: "estimate", // or "wholesaler"
-        billNo: Date.now(), // Example bill number
-        date: selectedDate, // Selected date
-        discountPercentage: discountPercentage || 0, // Discount Percentage
-        totalPrice: totals.amount || 0, // Total Price
-        companyId: companyInfo?.[0]?._id, // Company ID
-        paymentType: "cash", // Example payment type
+        billType: "estimate", 
+        billNo: Date.now(),
+        date: selectedDate,
+        discount: discountPercentage || 0,
+        discountAmount: discountAmount,
+        discountPrice: discountPrice, 
+        cgstAmount: calculatedCgst, 
+        sgstAmount: calculatedSgst, 
+        gstAmount: totalTax, 
+        totalPrice: finalPrice, 
+        companyId: companyInfo?.[0]?._id, 
+        paymentType: "cash", 
       };
 
       const response = await ApiPost('/admin/bill', payload);
       console.log('response', response)
       if (response.data.bill) {
-        setCreatedInvoiceId(response.data.bill._id);
+        const createdInvoiceId = response.data.bill._id; 
+        setCreatedInvoiceId(createdInvoiceId);
         alert("Invoice created successfully!");
-        setShowModal(true)
+        navigate(`/invoice-bill/${createdInvoiceId}`);
       } else {
         alert("Failed to create invoice!");
       }
@@ -293,36 +332,39 @@ export default function PurchesInvoice() {
   };
 
 
-  const generatePDF = async () => {
-    const invoiceData = await fetchInvoiceDetails(createdInvoiceId);
-    if (!invoiceData) {
-      alert("Failed to fetch invoice details!");
-      return;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await ApiPost("/admin/customer", formData); 
+      console.log('response', response)
+      alert("Party created successfully!");
+
+      // Reset form and close modal
+      setFormData({
+        partyGroup: "",
+        name: "",
+        address: "",
+        GST: "",
+        panNo: "",
+        firmType: "",
+        state: "",
+        city: "",
+        pinCode: "",
+        mobileNumber: "",
+        email: "",
+      });
+      closePartyModal(); // Close the modal
+    } catch (error) {
+      console.error("Error creating party:", error);
+      alert("Failed to create party. Please try again.");
     }
-
-    const doc = new jsPDF();
-
-    doc.text("Invoice", 14, 20);
-    doc.text(`Invoice No: ${invoiceData.billNo}`, 14, 30);
-    doc.text(`Date: ${invoiceData.date}`, 14, 40);
-    doc.text(`Customer: ${invoiceData.customerId.name}`, 14, 50);
-
-    doc.autoTable({
-      head: [["Product Name", "HSN", "Quantity", "Rate", "Amount"]],
-      body: invoiceData.products.map((product) => [
-        product.productId.name,
-        product.hsnCode || "-",
-        product.grossQty || 0,
-        product.rate || 0,
-        product.totalPrice || 0,
-      ]),
-      startY: 60,
-    });
-
-    doc.text(`Total: ₹${invoiceData.finalAmount}`, 14, doc.lastAutoTable.finalY + 20);
-
-    doc.save(`Invoice_${invoiceData.billNo}.pdf`);
-    setShowModal(false); // Close modal after downloading
   };
 
 
@@ -1108,27 +1150,6 @@ export default function PurchesInvoice() {
                           </div>
               
                         </div>
-                        {showModal && (
-                          <div className="modal-backdrop">
-                            <div className="modal">
-                              <p>Do you want to download this invoice?</p>
-                              <div className="modal-actions">
-                                <button
-                                  className="btn-cancel"
-                                  onClick={() => setShowModal(false)}
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  className="btn-confirm"
-                                  onClick={generatePDF}
-                                >
-                                  Confirm
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                       
                     </div>
@@ -1137,7 +1158,7 @@ export default function PurchesInvoice() {
                   <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center  text-[18px] mx-auto mt-[10px] flex w-[120px]"
                             onClick={handleSaveInvoice}>
                             Save
-                          </button>
+                          </button> 
                 </div>
               </div>
             </div>
@@ -1237,9 +1258,11 @@ export default function PurchesInvoice() {
                         Party Name
                       </lavel>
                       <input
-                        type="number"
-                        // name="gstNumber"
+                        type="text"
+                        name="name"
                         id="partyName"
+                        value={formData.name}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyNameFocused(true)}
                         onBlur={() => setPartyNameFocused(false)}
                         autocomplete="nasme"
@@ -1259,6 +1282,8 @@ export default function PurchesInvoice() {
                         type="text"
                         name="address"
                         id="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyAddressFocused(true)}
                         onBlur={(e) => setPartyAddressFocused(e.target.value !== "")}
                         autocomplete="nasme"
@@ -1277,8 +1302,10 @@ export default function PurchesInvoice() {
                       </lavel>
                       <input
                         type="number"
-                        name="gstNumber"
+                        name="GST"
                         id="gstNumber"
+                        value={formData.GST}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyGstFocused(true)}
                         onBlur={() => setPartyGstFocused(false)}
                         autocomplete="nasme"
@@ -1297,8 +1324,10 @@ export default function PurchesInvoice() {
                       </label>
                       <input
                         type="number"
-                 
+                        name="panNo"
                         id="PanParty"
+                        value={formData.panNo}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyPanFocused(true)}
                         onBlur={() => setPartyPanFocused(false)}
                         autocomplete="nasme"
@@ -1383,9 +1412,11 @@ export default function PurchesInvoice() {
                         State Name
                       </label>
                       <input
-                        type="number"
-                        name="panNumber"
+                        type="text"
+                        name="state"
                         id="partyState"
+                        value={formData.state}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyStateNameFocused(true)}
                         onBlur={() => setPartyStateNameFocused(false)}
                         autocomplete="nasme"
@@ -1404,9 +1435,11 @@ export default function PurchesInvoice() {
                         City Name
                       </label>
                       <input
-                        type="number"
-                        name="State"
+                        type="text"
+                        name="city"
                         id="partycity"
+                        value={formData.city}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyCityFocused(true)}
                         onBlur={() => setPartyCityFocused(false)}
                         autocomplete="nasme"
@@ -1425,8 +1458,10 @@ export default function PurchesInvoice() {
                       </label>
                       <input
                         type="number"
-                        name="gstNumber"
+                        name="pinCode"
                         id="partyPin"
+                        value={formData.pinCode}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyPinFocused(true)}
                         onBlur={() => setPartyPinFocused(false)}
                         autocomplete="nasme"
@@ -1446,8 +1481,10 @@ export default function PurchesInvoice() {
                       </label>
                       <input
                         type="number"
-                        name="panNumber"
+                        name="mobileNumber"
                         id="partynumber"
+                        value={formData.mobileNumber}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyNumberFocused(true)}
                         onBlur={() => setPartyNumberFocused(false)}
                         autocomplete="nasme"
@@ -1466,9 +1503,11 @@ export default function PurchesInvoice() {
                         Email ID
                       </label>
                       <input
-                        type="number"
-                        name="State"
+                        type="text"
+                        name="email"
                         id="emailparty"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         onFocus={() => setPartyEmailFocused(true)}
                         onBlur={() => setPartyEmailFocused(false)}
                         autocomplete="nasme"
@@ -1477,7 +1516,8 @@ export default function PurchesInvoice() {
                     </div>
                   </div>
                 </div>
-                <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]">
+                <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]"
+                onClick={handleSubmit}>
                   Save
                 </button>
               </div>

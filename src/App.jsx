@@ -25,7 +25,7 @@ function App() {
           <Route path="/purches-invoice" element={<PurchesInvoice />} />
           <Route path="/inventory" element={<InventoryCreate />} />
           <Route path="/labour" element={<LabourSetting />} />
-          <Route path="/invoice-bill" element={<InvoicePage />} />
+          <Route path="/invoice-bill/:id" element={<InvoicePage />} />
           <Route path="/scan" element={<Scan />}/>
         </Routes>
       </div>

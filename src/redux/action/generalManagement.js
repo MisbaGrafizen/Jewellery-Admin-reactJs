@@ -9,7 +9,7 @@ import {
     ApiPut,
     ApiPutWithId,
 } from '../../helper/axios';
-import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
+import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_BILL_BY_ID, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
 
 
 export const getAllUchakAction = () => {
@@ -210,6 +210,28 @@ export const getPercentageAction = () => {
         });
       });
   };
+};
+
+export const getInvoiceByIdAction = (invoiceId) => {
+  return (dispatch) => {
+      return ApiGet(`/admin/bill/${invoiceId}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.bill) {
+        dispatch({
+          type: GET_BILL_BY_ID,
+          payload: res.bill,
+        });
+        return res.bill;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_BILL_BY_ID,
+        payload: error,
+      });
+    });
+};
 };
 
 export const addPercentageAction = (formData) => {

@@ -94,10 +94,12 @@ export default function InventoryCreate() {
   };
 
   const handleSaveClick = () => {
+    console.log("function triggered")
     if (percentages[item._id]) {
-      handleSavePercentage(item._id); // Save the percentage if it exists
+      console.log("find percentge")
+      handleSavePercentage(item._id); 
     }
-    setIsEditing(false); // Exit editing mode
+    setIsEditing(false); 
   };
   useEffect(() => {
     setCarat(categories || []);
@@ -637,10 +639,7 @@ export default function InventoryCreate() {
                                         name="percentage"
                                         value={percentages[item._id] || ""}
                                         onChange={(e) =>
-                                          handlePercentageChange(
-                                            item._id,
-                                            e.target.value
-                                          )
+                                          handlePercentageChange(item._id, e.target.value)
                                         }
                                       />
                                     ) : (
@@ -651,8 +650,7 @@ export default function InventoryCreate() {
                                   </div>
                                   <button
                                     className="mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
-                                    onClick={
-                                      isEditing
+                                    onClick={  isEditing
                                         ? handleSaveClick
                                         : handleEditClick
                                     }
