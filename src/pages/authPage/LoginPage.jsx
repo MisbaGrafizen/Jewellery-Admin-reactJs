@@ -21,7 +21,7 @@ export default function LoginPage() {
         <div className="flex w-[100%] justify-center items-center h-[100vh] bg-white">
           {currentStep === "login" && (
             <div className="flex flex-col mx-auto max-w-[430px] justify-between h-[550px] min-w-[430px] rounded-[10px] items-center">
-              <div className="flex w-[100%] border-[1px] p-[20px] border-[#0099dd] flex-col h-[470px] rounded-[10px]">
+              <div className="flex w-[100%] border-[1px] p-[20px] border-[#122f97] flex-col h-[470px] rounded-[10px]">
                 <h1 className="flex justify-center mt-[5px] text-[40px] w-fit mx-auto jersey-25-regular ">
                   LOGIN
                 </h1>
@@ -78,7 +78,7 @@ export default function LoginPage() {
 
           {currentStep === "register" && (
             <div className="flex flex-col mx-auto max-w-[430px] justify-between h-[550px] min-w-[430px] rounded-[10px] items-center">
-              <div className="flex w-[100%] border-[1px] p-[20px] border-[#0099dd] flex-col h-[470px] rounded-[10px]">
+              <div className="flex w-[100%] border-[1px] p-[20px] border-[#122f97] flex-col h-[470px] rounded-[10px]">
                 <h1 className="flex justify-center mt-[5px] text-[40px] w-fit mx-auto font-Jersy font-[500]">
                   REGISTER NOW
                 </h1>
@@ -133,7 +133,7 @@ export default function LoginPage() {
 
           {currentStep === "verification" && (
             <div className="flex flex-col mx-auto max-w-[430px] justify-between h-[550px] min-w-[430px] rounded-[10px] items-center">
-              <div className="flex w-[100%] border-[1px] p-[20px] border-[#0099dd] flex-col h-[470px] rounded-[10px]">
+              <div className="flex w-[100%] border-[1px] p-[20px] border-[#122f97] flex-col h-[470px] rounded-[10px]">
                 <h1 className="flex justify-center mt-[5px] text-[40px] w-fit mx-auto font-Jersy font-[500]">
              VERIFICATION
                 </h1>
@@ -148,7 +148,7 @@ export default function LoginPage() {
                         .map((_, i) => (
                           <div
                             key={i}
-                            className="flex w-[50px] border-b-[1px] border-[#0099dd] pb-[8px]"
+                            className="flex w-[50px] border-b-[1px] border-[#122f97] pb-[8px]"
                           >
                             <input
                               className="flex justify-center h-[100%] text-[19px] w-[100%] outline-none text-center"

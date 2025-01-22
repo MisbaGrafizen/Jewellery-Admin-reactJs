@@ -68,12 +68,33 @@ export default function LabourSetting() {
   const [editminFocused, setEditMinFocused] = useState(false);
   const [editrateFocused, setEditRateFocused] = useState(false);
 
+  //weight palceholder
+  const [weightcaratFocused, setWeightCaratFocused] = useState(false);
+  const [weightmetalFocused, setWeightMetalFocused] = useState(false);
+  const [weightcategoryFocused, setWeightCategoryFocused] = useState(false);
+  const [weightmaxFocused, setWeightMaxFocused] = useState(false);
+  const [weightminFocused, setWeightMinFocused] = useState(false);
+  const [weightrateFocused, setWeightRateFocused] = useState(false);
+  const [editweightcaratFocused, setEditWeightCaratFocused] = useState(false);
+  const [editweightmetalFocused, setEditWeightMetalFocused] = useState(false);
+  const [editweightcategoryFocused, setEditWeightCategoryFocused] =
+    useState(false);
+  const [editweightmaxFocused, setEditWeightMaxFocused] = useState(false);
+  const [editweightminFocused, setEditWeightMinFocused] = useState(false);
+  const [editweightrateFocused, setEditWeightRateFocused] = useState(false);
+
+
+//Per palceholder
+const [percaratFocused, setPerCaratFocused] = useState(false);
+const [permetalFocused, setPerMetalFocused] = useState(false);
+const [percategoryFocused, setPerCategoryFocused] = useState(false);
+const [permaxFocused, setPerMaxFocused] = useState(false);
+const [perminFocused, setPerMinFocused] = useState(false);
+const [perrateFocused, setPerRateFocused] = useState(false);
 
 
 
 
-
-  
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     carat: "Default Carat",
@@ -126,10 +147,6 @@ export default function LabourSetting() {
   const [selectedTypeCategoryWeight, setSelectedTypecategoryWeight] =
     useState("");
 
-
-
-
-    
   // edit weight
   const [editdropdownOpenWeight, setEditDropdownOpenWeight] = useState(false);
   const [editselectedTypeWeight, setEditSelectedTypeWeight] = useState("");
@@ -142,10 +159,7 @@ export default function LabourSetting() {
   const [editselectedTypeCategoryWeight, setEditSelectedTypecategoryWeight] =
     useState("");
 
-
-
-
-    // Percentage dropDown
+  // Percentage dropDown
   const [dropdownOpenPercentage, setDropdownOpenPercentage] = useState(false);
   const [selectedTypePercentage, setSelectedTypePercentage] = useState("");
   const [dropdownOpenMetalPercentage, setDropdownOpenMetalPercentage] =
@@ -647,11 +661,11 @@ export default function LabourSetting() {
                   <div className=" flex  gap-[15px]  relative px-[15px] j rounded-[10px] py-[0px]  w-[100%]">
                     <div className=" flex  gap-[20px] ">
                       <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
-                        <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
+                        <h2 className="  flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Uchak
                         </h2>
                         <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
-                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownRef}
@@ -846,7 +860,8 @@ export default function LabourSetting() {
 
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <span
+                                <label
+                                  htmlFor="name"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formData?.minWeight || minFocused
                                       ? "text-[#000] -translate-y-[21px]"
@@ -854,10 +869,11 @@ export default function LabourSetting() {
                                   }`}
                                 >
                                   Min-Weight
-                                </span>
+                                </label>
                                 <input
                                   type="Number"
                                   name="minWeight"
+                                  id="name"
                                   onFocus={() => setMinFocused(true)}
                                   onBlur={(e) =>
                                     setMinFocused(e.target.value !== "")
@@ -869,18 +885,20 @@ export default function LabourSetting() {
                                 />
                               </div>
                               <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <span
+                                <label
+                                  htmlFor="max"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formData?.maxWeight || maxFocused
                                       ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
+                                      : "text-[#8f8f8f] cursor-pointer"
                                   }`}
                                 >
                                   Max-Weight
-                                </span>
+                                </label>
                                 <input
                                   type="Number"
                                   name="maxWeight"
+                                  id="max"
                                   onFocus={() => setMaxFocused(true)}
                                   onBlur={(e) =>
                                     setMaxFocused(e.target.value !== "")
@@ -894,18 +912,20 @@ export default function LabourSetting() {
                             </div>
                             <div className=" flex-col flex gap-[20px] ">
                               <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <span
+                                <label
+                                  htmlFor="rate1"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formData?.rate || rateFocused
                                       ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
+                                      : "text-[#8f8f8f] cursor-text"
                                   }`}
                                 >
                                   Rate
-                                </span>
+                                </label>
                                 <input
                                   type="Number"
                                   name="rate"
+                                  id="rate1"
                                   value={formData?.rate}
                                   onChange={handleChange}
                                   onFocus={() => setRateFocused(true)}
@@ -927,21 +947,22 @@ export default function LabourSetting() {
                           {isEditing ? (
                             // Editable Fields
                             <>
-                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownEditRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <span
+                                    <label
+                                      htmlFor="type"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedType || editcaratFocused
                                           ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f]"
+                                          : "text-[#8f8f8f] cursor-text "
                                       }`}
                                     >
                                       Carat
-                                    </span>
+                                    </label>
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
@@ -1144,18 +1165,20 @@ export default function LabourSetting() {
 
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <span
+                                    <label
+                                      htmlFor="editmin"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         formData?.minWeight || editminFocused
                                           ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f]"
+                                          : "text-[#8f8f8f] cursor-text"
                                       }`}
                                     >
                                       Min-Weight
-                                    </span>
+                                    </label>
                                     <input
                                       type="Number"
                                       name="minWeight"
+                                      id="editmin"
                                       value={formData?.minWeight}
                                       onChange={handleChange}
                                       onFocus={() => setEditMinFocused(true)}
@@ -1167,18 +1190,20 @@ export default function LabourSetting() {
                                     />
                                   </div>
                                   <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <span
+                                    <label
+                                      htmlFor="editmax"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         formData?.maxWeight || editmaxFocused
                                           ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f]"
+                                          : "text-[#8f8f8f] cursor-text"
                                       }`}
                                     >
                                       Max-Weight
-                                    </span>
+                                    </label>
                                     <input
                                       type="Number"
                                       name="maxWeight"
+                                      id="editmax"
                                       value={formData?.maxWeight}
                                       onChange={handleChange}
                                       onFocus={() => setEditMaxFocused(true)}
@@ -1192,18 +1217,20 @@ export default function LabourSetting() {
                                 </div>
                                 <div className=" flex-col flex gap-[20px] ">
                                   <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <span
+                                    <label
+                                      htmlFor="editrate"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         formData?.rate || editrateFocused
                                           ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f]"
+                                          : "text-[#8f8f8f] cursor-text"
                                       }`}
                                     >
                                       Rate
-                                    </span>
+                                    </label>
                                     <input
                                       type="Number"
                                       name="rate"
+                                      id="editrate"
                                       onFocus={() => setEditRateFocused(true)}
                                       onBlur={(e) =>
                                         setEditRateFocused(
@@ -1230,9 +1257,9 @@ export default function LabourSetting() {
                               {uchak?.map((item, index) => (
                                 <div
                                   key={index}
-                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]"
+                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
                                 >
-                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
                                       className="fa-solid cursor-pointer fa-pen-to-square"
                                       onClick={() => handleEdit(item?._id)}
@@ -1340,25 +1367,26 @@ export default function LabourSetting() {
                       </div>
 
                       <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
-                        <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
+                        <h2 className=" text-[#122f97] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Weight
                         </h2>
                         <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
-                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownWeightRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <span
+                                <label
+                                  htmlFor="weightcarat"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                    editselectedType || editcaratFocused
+                                    selectedTypeWeight || weightcaratFocused
                                       ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
+                                      : "text-[#8f8f8f] cursor-text"
                                   }`}
                                 >
                                   Carat
-                                </span>
+                                </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
@@ -1368,9 +1396,14 @@ export default function LabourSetting() {
                                   <input
                                     type="text"
                                     name="group"
-                                    id="type"
+                                    id="weightcarat"
                                     value={selectedTypeWeight}
-                                    placeholder="Select Carat"
+                                    onFocus={() => setWeightCaratFocused(true)}
+                                    onBlur={(e) =>
+                                      setWeightCaratFocused(
+                                        e.target.value !== ""
+                                      )
+                                    }
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -1388,7 +1421,7 @@ export default function LabourSetting() {
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      className="absolute top-[90%] left-[-17px] mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
                                       {categories.map((type, index) => (
                                         <div
@@ -1411,8 +1444,13 @@ export default function LabourSetting() {
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
                                 <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  htmlFor="weightcarat"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    selectedTypeMetalWeight ||
+                                    weightmetalFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
                                   Metal
                                 </label>
@@ -1427,7 +1465,12 @@ export default function LabourSetting() {
                                     name="metal"
                                     id="type1"
                                     value={selectedTypeMetalWeight}
-                                    placeholder="Select Metal"
+                                    onFocus={() => setWeightMetalFocused(true)}
+                                    onBlur={(e) =>
+                                      setWeightMetalFocused(
+                                        e.target.value !== ""
+                                      )
+                                    }
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -1445,7 +1488,7 @@ export default function LabourSetting() {
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      className="absolute top-[90%] left-[-15px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
                                       {metals.map((type, index) => (
                                         <div
@@ -1471,8 +1514,13 @@ export default function LabourSetting() {
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
                               <label
-                                htmlFor="name"
-                                className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                htmlFor="weightcategory"
+                                className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedTypeCategoryWeight ||
+                                  weightcategoryFocused
+                                    ? "text-[#000] -translate-y-[21px]"
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
                               >
                                 Category
                               </label>
@@ -1485,9 +1533,14 @@ export default function LabourSetting() {
                                 <input
                                   type="text"
                                   name="item"
-                                  id="type1"
+                                  id="weightcategory"
                                   value={selectedTypeCategoryWeight}
-                                  placeholder="Select Category"
+                                  onFocus={() => setWeightCategoryFocused(true)}
+                                  onBlur={(e) =>
+                                    setWeightCategoryFocused(
+                                      e.target.value !== ""
+                                    )
+                                  }
                                   className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                   readOnly
                                 />
@@ -1505,7 +1558,7 @@ export default function LabourSetting() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    className="absolute top-[90%]  mt-2 left-[-14px] bg-white w-[324px] border border-[#dedede] rounded-lg shadow-md z-10"
                                   >
                                     {item.map((type, index) => (
                                       <div
@@ -1529,32 +1582,50 @@ export default function LabourSetting() {
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  htmlFor="weightmin"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formDataWeight?.minWeight ||
+                                    weightminFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
                                   Min-Weight
                                 </label>
                                 <input
                                   type="Number"
                                   name="minWeight"
-                                  placeholder="Enter Min-Weight"
+                                  id="weightmin"
                                   value={formDataWeight?.minWeight}
                                   onChange={handleChangeWeight}
+                                  onFocus={() => setWeightMinFocused(true)}
+                                  onBlur={(e) =>
+                                    setWeightMinFocused(e.target.value !== "")
+                                  }
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
                               </div>
                               <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  htmlFor="weightmax"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formDataWeight?.maxWeight ||
+                                    weightmaxFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
-                                  Max-weight
+                                  Max-Weight
                                 </label>
                                 <input
                                   type="Number"
                                   name="maxWeight"
-                                  placeholder="Enter Max-Weight"
+                                  id="weightmax"
+                                  onFocus={() => setWeightMaxFocused(true)}
+                                  onBlur={(e) =>
+                                    setWeightMaxFocused(e.target.value !== "")
+                                  }
                                   value={formDataWeight?.maxWeight}
                                   onChange={handleChangeWeight}
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -1564,18 +1635,27 @@ export default function LabourSetting() {
                             </div>
                             <div className=" flex-col flex gap-[20px] ">
                               <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                <label
-                                  htmlFor="email"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                              <label
+                                  htmlFor="weight1"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    formDataWeight?.rate ||
+                                    weightrateFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
-                                  Weight
+                                Weight
                                 </label>
                                 <input
                                   type="Number"
                                   name="rate"
-                                  placeholder="Enter Rate"
+                      id="weight1"
                                   value={formDataWeight?.rate}
                                   onChange={handleChangeWeight}
+                                  onFocus={() => setWeightRateFocused(true)}
+                                  onBlur={(e) =>
+                                    setWeightRateFocused  (e.target.value !== "")
+                                  }
                                   className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                   autocomplete="naqsme"
                                 />
@@ -1591,7 +1671,7 @@ export default function LabourSetting() {
                           {isEditingWeight ? (
                             // Editable Fields
                             <>
-                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownWeightRef}
@@ -1838,9 +1918,9 @@ export default function LabourSetting() {
                               {weight?.map((item, index) => (
                                 <div
                                   key={index}
-                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]"
+                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
                                 >
-                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
                                       className="fa-solid cursor-pointer fa-pen-to-square"
                                       onClick={handleEditWeight}
@@ -1947,21 +2027,26 @@ export default function LabourSetting() {
                         </div>
                       </div>
                       <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
-                        <h2 className=" text-[#0099dd] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
+                        <h2 className=" text-[#122f97] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Percentege
                         </h2>
                         <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
-                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownPercentageRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                   <label
+                                  htmlFor="weightmin"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    selectedTypePercentage ||            percaratFocused
+                    
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
-                                  Carat
+                                Carat
                                 </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
@@ -1974,7 +2059,11 @@ export default function LabourSetting() {
                                     name="group"
                                     id="type"
                                     value={selectedTypePercentage}
-                                    placeholder="Select Carat"
+                                    onFocus={() => setPerCaratFocused(true)}
+                                    onBlur={(e) =>
+                                      setPerCaratFocused(e.target.value !== "")
+                                    }
+                          
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -1992,7 +2081,7 @@ export default function LabourSetting() {
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%] left-0 mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      className="absolute top-[90%] left-[-17px] mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
                                       {categories.map((type, index) => (
                                         <div
@@ -2014,11 +2103,16 @@ export default function LabourSetting() {
                                 ref={dropdownMetalPercentageRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <label
-                                  htmlFor="name"
-                                  className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                   <label
+                                  htmlFor="weightmin"
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    selectedTypeMetalPercentage ||            permetalFocused
+                    
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f] cursor-text"
+                                  }`}
                                 >
-                                  Metal
+                                Metal
                                 </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
@@ -2033,7 +2127,10 @@ export default function LabourSetting() {
                                     name="metal"
                                     id="type1"
                                     value={selectedTypeMetalPercentage}
-                                    placeholder="Select Metal"
+                                    onFocus={() => setPerMetalFocused(true)}
+                                    onBlur={(e) =>
+                                      setPerMetalFocused(e.target.value !== "")
+                                    }
                                     className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                     readOnly
                                   />
@@ -2051,7 +2148,7 @@ export default function LabourSetting() {
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                      className="absolute top-[90%] left-[-16px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                     >
                                       {metals.map((type, index) => (
                                         <div
@@ -2078,12 +2175,15 @@ export default function LabourSetting() {
                               ref={dropdownCategoryPercentageRef}
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
-                              <label
-                                htmlFor="name"
-                                className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                              >
-                                Category
-                              </label>
+                        <span
+                                  className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                    selectedTypeCategoryPercentage || percategoryFocused
+                                      ? "text-[#000] -translate-y-[21px]"
+                                      : "text-[#8f8f8f]"
+                                  }`}
+                                >
+                       Category
+                                </span>
                               <div
                                 className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                 onClick={() =>
@@ -2097,7 +2197,11 @@ export default function LabourSetting() {
                                   name="item"
                                   id="type1"
                                   value={selectedTypeCategoryPercentage}
-                                  placeholder="Select Category"
+                                  onFocus={() => setPerCategoryFocused(true)}
+                                    onBlur={(e) =>
+                                      setPerCategoryFocused(e.target.value !== "")
+                                    }
+
                                   className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                   readOnly
                                 />
@@ -2115,7 +2219,7 @@ export default function LabourSetting() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                    className="absolute top-[90%] left-[-16px]  mt-2 bg-white w-[325px] border border-[#dedede] rounded-lg shadow-md z-10"
                                   >
                                     {item.map((type, index) => (
                                       <div
@@ -2204,7 +2308,7 @@ export default function LabourSetting() {
                           {isEditingPercentage ? (
                             // Editable Fields
                             <>
-                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownPercentageRef}
@@ -2455,9 +2559,9 @@ export default function LabourSetting() {
                               {percentage?.map((item, index) => (
                                 <div
                                   key={index}
-                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#0099dd]"
+                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
                                 >
-                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#009dd1]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
+                                  <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
                                       className="fa-solid cursor-pointer fa-pen-to-square"
                                       onClick={handleEditPercentage}
@@ -2592,14 +2696,14 @@ export default function LabourSetting() {
                       </div>
                       <div className=" flex mt-[0px] mx-auto j">
                         <div className="flex items-center gap-3">
-                          <div className="h-[2px] w-24 md:w-32 bg-[#0099dd]" />
-                          <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
+                          <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                          <div className="w-2 h-2 rounded-full bg-[#122f97]" />
                         </div>
 
-                        <i class="fa-solid fa-xmark text-[#0099dd] mx-[10px]"></i>
+                        <i class="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
-                          <div className="h-[2px] w-24 md:w-32 bg-[#0099dd]" />
+                          <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                          <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
                         </div>
                       </div>
                     </div>
@@ -2778,11 +2882,11 @@ export default function LabourSetting() {
 
                         <div className=" flex  justify-center mx-auto">
                           <div className=" w-[100%] flex flex-col">
-                            <h2 className=" text-[#0099dd] font-[500] text-[20px] font-Poppins pl-[6px]">
+                            <h2 className=" text-[#122f97] font-[500] text-[20px] font-Poppins pl-[6px]">
                               Uchak
                             </h2>
                             <div className=" flex flex-wrap gap-[25px]">
-                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
@@ -2833,7 +2937,7 @@ export default function LabourSetting() {
                                   Save
                                 </button>
                               </div>
-                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
@@ -2877,11 +2981,11 @@ export default function LabourSetting() {
                             </div>
                           </div>
                           <div className=" w-[100%] flex flex-col">
-                            <h2 className=" text-[#0099dd] font-[500] text-[20px] font-Poppins pl-[6px]">
+                            <h2 className=" text-[#122f97] font-[500] text-[20px] font-Poppins pl-[6px]">
                               Weight
                             </h2>
                             <div className=" flex flex-wrap gap-[25px]">
-                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
@@ -2932,7 +3036,7 @@ export default function LabourSetting() {
                                   Save
                                 </button>
                               </div>
-                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
@@ -2976,11 +3080,11 @@ export default function LabourSetting() {
                             </div>
                           </div>
                           <div className=" w-[100%] flex flex-col">
-                            <h2 className=" text-[#0099dd] font-[500] text-[20px] font-Poppins pl-[6px]">
+                            <h2 className=" text-[#122f97] font-[500] text-[20px] font-Poppins pl-[6px]">
                               Percentege
                             </h2>
                             <div className=" flex flex-wrap gap-[25px]">
-                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
@@ -3031,7 +3135,7 @@ export default function LabourSetting() {
                                   Save
                                 </button>
                               </div>
-                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#0099dd]">
+                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label

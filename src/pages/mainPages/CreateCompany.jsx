@@ -104,7 +104,7 @@ export default function CreateCompany() {
           <Header pageName=" Create New Company" />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className=" flex w-[100%] max-h-[100%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px] ">
+            <div className=" flex w-[100%] max-h-[90%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px] ">
               <div className=" flex flex-col gap-[10px] w-[50%]  ">
                 <div className=" flex flex-col gap-[6px] w-[100%] ">
                   <h1 className=" flex  pl-[6px] font-Poppins text-[16px] text-[#427ae1]">
@@ -460,7 +460,7 @@ export default function CreateCompany() {
                               style={{
                                 width: "20px",
                                 height: "20px",
-                                backgroundColor: isChecked ? "#009dd1" : "#fff", // Change background on state
+                                backgroundColor: isChecked ? "#ff8000" : "#fff", // Change background on state
                                 borderRadius: "28%",
                                 border: "1px solid #ccc",
                                 display: "inline-block",
@@ -508,7 +508,7 @@ export default function CreateCompany() {
                                     className="sr-only peer"
                                   />
                                   <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                                 </div>
                                 <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                                   Regular
@@ -533,7 +533,7 @@ export default function CreateCompany() {
                                     className="sr-only peer"
                                   />
                                   <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                                 </div>
                                 <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                                   Composition
@@ -565,7 +565,7 @@ export default function CreateCompany() {
                                     className="sr-only peer"
                                   />
                                   <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                                 </div>
                                 <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                                   jewellery
@@ -588,7 +588,7 @@ export default function CreateCompany() {
                                     className="sr-only peer"
                                   />
                                   <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                                  <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                                 </div>
                                 <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                                   others jewellery
@@ -681,7 +681,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               Saving
@@ -704,7 +704,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               Current
@@ -726,7 +726,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               OD
@@ -748,7 +748,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               CC
@@ -770,7 +770,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               Others
@@ -976,7 +976,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               Only Bill
@@ -998,7 +998,7 @@ export default function CreateCompany() {
                                 className="sr-only peer"
                               />
                               <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#009dd1] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                              <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
                             </div>
                             <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
                               Bill with Inventory
@@ -1012,7 +1012,7 @@ export default function CreateCompany() {
 
                 <div className=" w-[100%] flex justify-end">
                   <div
-                    className=" flex font-Poppins text-[17px] font-[400]  h-[45px]  rounded-[7px] items-center justify-center  w-[150px]  text-[#fff] bg-[#009dd1] "
+                    className=" flex font-Poppins text-[17px] font-[400]  h-[45px]  rounded-[7px] items-center justify-center  w-[150px]  text-[#fff] bs-spj "
                     onClick={handleSubmit}
                   >
                     <p>ADD COMPANY</p>

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCustomerAction } from "../../redux/action/userManagement";
 import { ApiGet, ApiPost } from "../../helper/axios";
 import { getCompanyInfoAction } from "../../redux/action/generalManagement";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 
 
 export default function PurchesInvoice() {
@@ -19,6 +19,13 @@ export default function PurchesInvoice() {
   const dropdownRef = useRef(null);
   const [selectedType, setSelectedType] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const createdropdownRef = useRef(null);
+  const [createselectedType, setCreateSelectedType] = useState("");
+  const [createdropdownOpen, setCreateDropdownOpen] = useState(false);
+  const firmdropdownRef = useRef(null);
+  const [firmselectedType, setFirmSelectedType] = useState("");
+  const [firmdropdownOpen, setFirmDropdownOpen] = useState(false);
+
   const [gstFocused, setGstFocused] = useState(false);
   const [panFocused, setPanFocused] = useState(false);
   const [stateFocused, setStateFocused] = useState(false);
@@ -28,13 +35,14 @@ export default function PurchesInvoice() {
   const [outFocused, setOutocused] = useState(false);
   const [groupFocused, setGroupFocused] = useState(false);
   const [firmFocused, setFirmFocused] = useState(false);
-  const [partyNameFocused, setPartyNameFocused] = useState(false);
+  const [partyNameFocused, setPartyNameFocused] = useState(false); 
   const [partyStateFocused, setPartyStateNameFocused] = useState(false);
   const [partyCityFocused, setPartyCityFocused] = useState(false);
   const [partyAddressFocused, setPartyAddressFocused] = useState(false);
   const [partyPinFocused, setPartyPinFocused] = useState(false);
   const [partyGstFocused, setPartyGstFocused] = useState(false);
   const [partyPanFocused, setPartyPanFocused] = useState(false);
+  const [partyEmailFocused, setPartyEmailFocused] = useState(false);
   const [partyNumberFocused, setPartyNumberFocused] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [createdInvoiceId, setCreatedInvoiceId] = useState(null);
@@ -84,6 +92,12 @@ export default function PurchesInvoice() {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
+      }
+      if (createdropdownRef.current && !createdropdownRef.current.contains(event.target)) {
+        setCreateDropdownOpen(false);
+      }
+      if (firmdropdownRef.current && !firmdropdownRef.current.contains(event.target)) {
+        setFirmDropdownOpen(false);
       }
     };
 
@@ -397,7 +411,7 @@ export default function PurchesInvoice() {
                             ))}
                             <div className=" flex w-[100%] p-[10px]">
                               <button
-                                className=" flex w-[100%] items-center gap-[5px]  text-[13px] border-[#0099dd] ts-spj rounded-[5px] font-Poppins border-[1px] font-[400]  justify-center py-[5px] border-dashed "
+                                className=" flex w-[100%] items-center gap-[5px]  text-[13px] border-[#122f97] ts-spj rounded-[5px] font-Poppins border-[1px] font-[400]  justify-center py-[5px] border-dashed "
                                 onClick={handlePartyModal}
                               >
                                 <i className="fa-solid fa-plus"></i>Add Party
@@ -636,10 +650,10 @@ export default function PurchesInvoice() {
                               key={product.id}
                               className="border-t border-gray-200"
                             >
-                              <td className="py-2 px-4 text-sm text-gray-600 border-r border-gray-200">
+                              <td className="py-2 px-4 text-sm text-gray-600 font-Poppins border-r border-gray-200">
                                 {index + 1}
                               </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {product.barcodeVisible ? (
                                   <input
                                     type="text"
@@ -652,13 +666,13 @@ export default function PurchesInvoice() {
                                   product?.groupItemId?.itemName
                                 )}
                               </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {product.hsn || 0}
                               </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {product.gstRate || 0}%
                               </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
@@ -666,7 +680,7 @@ export default function PurchesInvoice() {
                                 /> */}
                                 {product?.toWeight || 0}
                               </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
@@ -674,7 +688,7 @@ export default function PurchesInvoice() {
                                 /> */}
                                 {product?.netWeight || 0}
                               </td>
-                              <td className="py-2 px-4 border-r border-gray-200">
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
@@ -682,7 +696,7 @@ export default function PurchesInvoice() {
                                 /> */}
                                 {product?.extraRate || 0}
                               </td>
-                              <td className="py-2 px-4">
+                              <td className="py-2 font-Poppins  px-4">
                                 {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
@@ -745,14 +759,14 @@ export default function PurchesInvoice() {
                             <td className="border-r border-gray-200"></td>
                             <td className="border-r border-gray-200"></td>
                             <td className="border-r border-gray-200"></td>
-                            <td className="py-3 px-4 font-Poppins text-sm text-gray-600 border-r border-gray-200">
+                            <td className="py-3 px-4 font-Poppins text-[17px] text-gray-600 border-r border-gray-200">
                               {totals.grossQty.toFixed(2)}
                             </td>
-                            <td className="py-3  font-Poppins px-4 text-sm text-gray-600 border-r border-gray-200">
+                            <td className="py-3  font-Poppins px-4 text-[17px] text-gray-600 border-r border-gray-200">
                               {totals.netQty.toFixed(2)}
                             </td>
                             <td className="border-r  border-gray-200"></td>
-                            <td className="py-3 px-4 font-Poppins text-sm text-gray-600">
+                            <td className="py-3 px-4 font-Poppins text-[17px] text-gray-600">
                               {totals.amount.toFixed(2)}
                             </td>
                           </tr>
@@ -760,7 +774,7 @@ export default function PurchesInvoice() {
                       </table>
                     </div>
                   </div>
-                  <div className=" flex w-[100%]  justify-between gap-[20px] mb-[20px]">
+                  <div className=" flex w-[100%]  justify-between gap-[20px]  mt-[19px] mb-[20px]">
                     <div className="flex w-[50%]  flex-col gap-[15px] ">
                       <div className="bg-white  w-[100%] rounded-lg shadow1-blue  ">
                         <div className="overflow-x-auto">
@@ -876,10 +890,10 @@ export default function PurchesInvoice() {
                               </div>
                               <div className="flex  items-center  gap-[20px] justify-between">
                                 <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                  For RTGS/NEFT :
+                                IFSC Code:
                                 </span>
                                 <span className="text-[#5d5b5b] text-[12px]  gap-[4px] flex fnt-[300] font-Poppins">
-                                  <b className=" flex font-[500]">IFSC Code:</b>{" "}
+                                 
                                   {item?.IFSCCode}
                                 </span>
                               </div>
@@ -932,7 +946,7 @@ export default function PurchesInvoice() {
                       ))}
                     </div>
                     <div className=" flex w-[48%]">
-                      <div className="bg-white  w-[100%] rounded-lg shadow-sm p-6">
+                      <div className="bg-white  w-[100%]  rounded-lg  shadow1-blue p-6">
                         <div className="space-y-2">
                           {/* CGST */}
                           {/* Discount */}
@@ -942,32 +956,33 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px] grid grid-cols-2 gap-4">
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                                <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
+                                <lavel
+                     htmlFor="indis"
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${discountInFocused
                                     ? "text-[#000] -translate-y-[19px] "
                                     : "text-[#8f8f8f]"
                                     }`}
                                 >
                                   Discount- in %
-                                </span>
+                                </lavel>
                                 <input
                                   type="number"
                                   name="discount"
-                                  id="number"
+                                  id="indis"
                                   value={discountPercentage}
                                   onChange={(e) => setDiscountPercentage(e.target.value)}
                                   onKeyDown={handleDiscountKeyPress}
-                                  onFocus={() => setGstFocused(true)}
-                                  onBlur={() => setGstFocused(false)}
+                                  onFocus={() => setDiscountInFocused(true)}
+                                  onBlur={() => setDiscountInFocused(false)}
                                   autocomplete="nasme"
                                   className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                                 />
                               </div>
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${gstFocused
-                                    ? "text-[#000] -translate-y-[19px] "
-                                    : "text-[#8f8f8f]"
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${discountAmount || outFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#000000] -translate-y-[21px] "
                                     }`}
                                 >
                                   Discount- Out ₹
@@ -981,7 +996,8 @@ export default function PurchesInvoice() {
                                   autocomplete="nasme"
                                   className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                                 /> */}
-                                <p>{discountAmount.toFixed(2)}</p>
+                                <p   onFocus={() => setOutocused(true)}
+                                  onBlur={() => setOutocused(false)}>{discountAmount.toFixed(2)}</p>
                               </div>
                             </div>
                           </div>
@@ -990,7 +1006,7 @@ export default function PurchesInvoice() {
                               CGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                              <div className=" relative w-full font-Poppins px-[15px] h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <p>{cgst.toFixed(2)}
                                 </p>
                               </div>
@@ -1003,7 +1019,7 @@ export default function PurchesInvoice() {
                               SGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                              <div className=" relative w-full h-10 border-[1px]   font-Poppins px-[15px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <p>{sgst.toFixed(2)}</p>
                               </div>
                             </div>
@@ -1015,7 +1031,7 @@ export default function PurchesInvoice() {
                               IGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <p></p>
                               </div>
                             </div>
@@ -1027,7 +1043,7 @@ export default function PurchesInvoice() {
                               Total Tax Amount
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <p>{totalTaxAmount.toFixed(2)}</p>
                               </div>
                             </div>
@@ -1061,7 +1077,7 @@ export default function PurchesInvoice() {
                               </label>
                             </div>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <p></p>
                               </div>
                             </div>
@@ -1085,15 +1101,12 @@ export default function PurchesInvoice() {
                               TOTAL AMOUNT
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <p>{finalTotal.toFixed(2)}</p>
                               </div>
                             </div>
                           </div>
-                          <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]"
-                            onClick={handleSaveInvoice}>
-                            Save
-                          </button>
+              
                         </div>
                         {showModal && (
                           <div className="modal-backdrop">
@@ -1117,8 +1130,14 @@ export default function PurchesInvoice() {
                           </div>
                         )}
                       </div>
+                      
                     </div>
+                    
                   </div>
+                  <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center  text-[18px] mx-auto mt-[10px] flex w-[120px]"
+                            onClick={handleSaveInvoice}>
+                            Save
+                          </button>
                 </div>
               </div>
             </div>
@@ -1145,12 +1164,12 @@ export default function PurchesInvoice() {
                 <div className="  flex w-[100%] gap-[15px]">
                   <div className=" flex w-[50%] flex-col gap-[16px]">
                     <div
-                      ref={dropdownRef}
+                      ref={createdropdownRef}
                       className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                      onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
+                      onClick={() => setCreateDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${createselectedType || groupFocused
                           ? "text-[#000] -translate-y-[21px] "
                           : "text-[#8f8f8f]"
                           }`}
@@ -1161,15 +1180,15 @@ export default function PurchesInvoice() {
                         type="text"
                         name="firmType"
                         id="type"
-                        value={selectedType}
+                        value={createselectedType}
                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                         readOnly
-                        onFocus={() => setNameFocused(true)}
-                        onBlur={() => setNameFocused(false)}
+                        onFocus={() => setGroupFocused(true)}
+                        onBlur={() => setGroupFocused(false)}
                       />
                       <i
                         className={
-                          dropdownOpen
+                          createdropdownOpen
                             ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                             : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                         }
@@ -1177,12 +1196,12 @@ export default function PurchesInvoice() {
                     </div>
 
                     <AnimatePresence>
-                      {dropdownOpen && (
+                      {createdropdownOpen && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="absolute  mt-[50px] bg-white w-[230px] border border-[#dedede] rounded-lg shadow-md z-10"
+                          className="absolute  mt-[50px] bg-white w-[330px] border border-[#dedede] rounded-lg shadow-md z-10"
                         >
                           {[
                             "Sole Proprietorship",
@@ -1195,97 +1214,93 @@ export default function PurchesInvoice() {
                                 key={index}
                                 className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
                                 onClick={() => {
-                                  setSelectedType(type);
-                                  setDropdownOpen(false);
+                                  setCreateSelectedType(type);
+                                  setCreateDropdownOpen(false);
                                 }}
                               >
                                 {type}
                               </div>
                             </>
                           ))}
-                          <div className=" flex w-[100%] p-[10px]">
-                            <button
-                              className=" flex w-[100%] items-center gap-[5px]  text-[13px] border-[#0099dd] ts-spj rounded-[5px] font-Poppins border-[1px] font-[400]  justify-center py-[5px] border-dashed "
-                              onClick={handlePartyModal}
-                            >
-                              <i className="fa-solid fa-plus"></i>Add Party
-                            </button>
-                          </div>
+                    
                         </motion.div>
                       )}
                     </AnimatePresence>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                      <lavel
+                       htmlFor="partyName"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNameFocused
                           ? "text-[#000] -translate-y-[21px] "
                           : "text-[#8f8f8f]"
                           }`}
                       >
                         Party Name
-                      </span>
+                      </lavel>
                       <input
                         type="number"
-                        name="gstNumber"
-                        id="number"
-                        onFocus={() => setGstFocused(true)}
-                        onBlur={() => setGstFocused(false)}
+                        // name="gstNumber"
+                        id="partyName"
+                        onFocus={() => setPartyNameFocused(true)}
+                        onBlur={() => setPartyNameFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyAddressFocused
                           ? "text-[#000] -translate-y-[48px] font-[]"
                           : "  -translate-y-[27px] "
                           }`}
                       >
-                        Buisness Address
+                        Address
                       </span>
                       <textarea
                         type="text"
                         name="address"
                         id="address"
-                        onFocus={() => setAddressFocused(true)}
-                        onBlur={(e) => setAddressFocused(e.target.value !== "")}
+                        onFocus={() => setPartyAddressFocused(true)}
+                        onBlur={(e) => setPartyAddressFocused(e.target.value !== "")}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                       ></textarea>
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                      <lavel
+                      htmlFor="gstNumber"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyGstFocused
                           ? "text-[#000] -translate-y-[21px] "
                           : "text-[#8f8f8f]"
                           }`}
                       >
                         GST Number
-                      </span>
+                      </lavel>
                       <input
                         type="number"
                         name="gstNumber"
-                        id="number"
-                        onFocus={() => setGstFocused(true)}
-                        onBlur={() => setGstFocused(false)}
+                        id="gstNumber"
+                        onFocus={() => setPartyGstFocused(true)}
+                        onBlur={() => setPartyGstFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                      <label
+                      htmlFor="PanParty"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPanFocused
                           ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
+                          : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
                         PAN Number
-                      </span>
+                      </label>
                       <input
                         type="number"
-                        name="gstNumber"
-                        id="number"
-                        onFocus={() => setGstFocused(true)}
-                        onBlur={() => setGstFocused(false)}
+                 
+                        id="PanParty"
+                        onFocus={() => setPartyPanFocused(true)}
+                        onBlur={() => setPartyPanFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
@@ -1294,31 +1309,32 @@ export default function PurchesInvoice() {
 
                   <div className=" flex w-[50%] gap-[16px] flex-col ">
                     <div
-                      ref={dropdownRef}
+                      ref={firmdropdownRef}
                       className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                      onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
+                      onClick={() => setFirmDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
+                      <label
+                      htmlFor="selectFirm"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${firmselectedType || firmFocused
                           ? "text-[#000] -translate-y-[21px] "
                           : "text-[#8f8f8f]"
                           }`}
                       >
                         Firm Type
-                      </span>
+                      </label>
                       <input
                         type="text"
                         name="firmType"
-                        id="type"
-                        value={selectedType}
+                        id="selectFirm"
+                        value={firmselectedType}
                         className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                         readOnly
-                        onFocus={() => setNameFocused(true)}
-                        onBlur={() => setNameFocused(false)}
+                        onFocus={() => setFirmFocused(true)}
+                        onBlur={() => setFirmFocused(false)}
                       />
                       <i
                         className={
-                          dropdownOpen
+                          firmdropdownOpen
                             ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                             : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                         }
@@ -1326,7 +1342,7 @@ export default function PurchesInvoice() {
                     </div>
 
                     <AnimatePresence>
-                      {dropdownOpen && (
+                      {firmdropdownOpen && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -1344,8 +1360,8 @@ export default function PurchesInvoice() {
                                 key={index}
                                 className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
                                 onClick={() => {
-                                  setSelectedType(type);
-                                  setDropdownOpen(false);
+                                  setFirmSelectedType(type);
+                                  setFirmDropdownOpen(false);
                                 }}
                               >
                                 {type}
@@ -1356,108 +1372,105 @@ export default function PurchesInvoice() {
                       )}
                     </AnimatePresence>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
+                      <label
+                      htmlFor="partyState"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyStateFocused
                           ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
+                          : "text-[#8f8f8f] cursor-text"
                           }`}
-                        onClick={() =>
-                          document.getElementById("number").setPanFocused()
-                        }
+                  
                       >
                         State Name
-                      </span>
+                      </label>
                       <input
                         type="number"
                         name="panNumber"
-                        id="number"
-                        onFocus={() => setPanFocused(true)}
-                        onBlur={() => setPanFocused(false)}
+                        id="partyState"
+                        onFocus={() => setPartyStateNameFocused(true)}
+                        onBlur={() => setPartyStateNameFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
+                      <label
+                      htmlFor="partycity"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyCityFocused
                           ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
+                          : "text-[#8f8f8f] cursor-text"
                           }`}
-                        onClick={() =>
-                          document.getElementById("number").setPanFocused()
-                        }
+
                       >
                         City Name
-                      </span>
+                      </label>
                       <input
                         type="number"
                         name="State"
-                        id="number"
-                        onFocus={() => setStateFocused(true)}
-                        onBlur={() => setStateFocused(false)}
+                        id="partycity"
+                        onFocus={() => setPartyCityFocused(true)}
+                        onBlur={() => setPartyCityFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                      <label
+                      htmlFor="partyPin"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPinFocused
                           ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
+                          : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
                         Pin Code
-                      </span>
+                      </label>
                       <input
                         type="number"
                         name="gstNumber"
-                        id="number"
-                        onFocus={() => setGstFocused(true)}
-                        onBlur={() => setGstFocused(false)}
+                        id="partyPin"
+                        onFocus={() => setPartyPinFocused(true)}
+                        onBlur={() => setPartyPinFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
+                      <label
+                      htmlFor="partynumber"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNumberFocused
                           ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
+                          : "text-[#8f8f8f] cursor-text"
                           }`}
-                        onClick={() =>
-                          document.getElementById("number").setPanFocused()
-                        }
+             
                       >
                         Mobile Number
-                      </span>
+                      </label>
                       <input
                         type="number"
                         name="panNumber"
-                        id="number"
-                        onFocus={() => setPanFocused(true)}
-                        onBlur={() => setPanFocused(false)}
+                        id="partynumber"
+                        onFocus={() => setPartyNumberFocused(true)}
+                        onBlur={() => setPartyNumberFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
+                      <label
+                      htmlFor="emailparty"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyEmailFocused
                           ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
+                          : "text-[#8f8f8f] cursor-text"
                           }`}
-                        onClick={() =>
-                          document.getElementById("number").setPanFocused()
-                        }
+                 
                       >
                         Email ID
-                      </span>
+                      </label>
                       <input
                         type="number"
                         name="State"
-                        id="number"
-                        onFocus={() => setStateFocused(true)}
-                        onBlur={() => setStateFocused(false)}
+                        id="emailparty"
+                        onFocus={() => setPartyEmailFocused(true)}
+                        onBlur={() => setPartyEmailFocused(false)}
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                       />

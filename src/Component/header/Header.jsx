@@ -91,7 +91,7 @@ export default function Header({ pageName = "" }) {
                 <p>
                   <span>{item?.categoryId?.name} </span>= {item?.price}
                 </p>
-                <span>||</span>
+                <span className="text-[#ff8000]">||</span>
               </div>
               ))}
             </div>
@@ -109,7 +109,7 @@ export default function Header({ pageName = "" }) {
             <div className="  flex  items-center gap-[10px]">
               <div className=" flex w-[43px] ">
                 <img
-                  className=" flex w-[40px]   h-[40px] rounded-[100%] border-[1px] border-[#000]"
+                  className=" flex w-[35px]   h-[35px] rounded-[100%] border-[1px] border-[#000]"
                   src={avter}
                 />
               </div>
@@ -141,15 +141,15 @@ export default function Header({ pageName = "" }) {
                       </div>
                       <div className=" flex mt-[0px] mx-auto j">
                         <div className="flex items-center gap-3">
-                          <div className="h-[2px] w-24 md:w-32 bg-[#0099dd]" />
-                          <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
+                          <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                          <div className="w-2 h-2 rounded-full bg-[#122f97]" />
                         </div>
 
-                        <i className="fa-solid fa-xmark text-[#0099dd] mx-[10px]"></i>
+                        <i className="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
                         {/* Right Side */}
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
-                          <div className="h-[2px] w-24 md:w-32 bg-[#0099dd]" />
+                          <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                          <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
                         </div>
                       </div>
                     </div>
@@ -159,7 +159,7 @@ export default function Header({ pageName = "" }) {
                       {categories?.map((item, index) => (
                         <>
                           <div className=" flex items-center  justify-between  gap-[px] w-[100%]">
-                            <p key={index} className=" text-[#0099dd] text-[20px] flex  ">
+                            <p key={index} className=" text-[#122f97] text-[20px] flex  ">
                               {item?.name}
                             </p>
 

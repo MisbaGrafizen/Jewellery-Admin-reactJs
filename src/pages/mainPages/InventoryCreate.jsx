@@ -34,6 +34,13 @@ export default function InventoryCreate() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [percentages, setPercentages] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [caratFocused, setCaratFocused] = useState(false);
+  const [metalFocused, setMetalFocused] = useState(false);
+  const [categoryFocused, setCategoryFocused] = useState(false);
+  const [grossFocused, setGrossFocused] = useState(false);
+  const [lossFocused, setLossFocused] = useState(false);
+  const [wastageFocused, setWastegeFocused] = useState(false);
 
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
@@ -68,7 +75,6 @@ export default function InventoryCreate() {
   const [westage, setWestage] = useState("");
   const [selectedStock, setSelectedStock] = useState(null);
 
-
   const [popupVisible, setPopupVisible] = useState(null);
   const [popupMetalVisible, setPopupMetalVisible] = useState(null);
   const [popupItemVisible, setPopupItemVisible] = useState(null);
@@ -83,6 +89,16 @@ export default function InventoryCreate() {
   const item = useSelector((state) => state.landing.getGroupItem);
   const stocks = useSelector((state) => state.landing.getProduct);
 
+  const handleEditClick = () => {
+    setIsEditing(true); // Enable editing mode
+  };
+
+  const handleSaveClick = () => {
+    if (percentages[item._id]) {
+      handleSavePercentage(item._id); // Save the percentage if it exists
+    }
+    setIsEditing(false); // Exit editing mode
+  };
   useEffect(() => {
     setCarat(categories || []);
     setMetal(metals || []);
@@ -110,7 +126,6 @@ export default function InventoryCreate() {
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
-
 
   const handleSelect = (type) => {
     setSelectedType(type);
@@ -196,7 +211,8 @@ export default function InventoryCreate() {
       if (context === "category") {
         inputValue = action === "edit" ? editCaratName.trim() : name.trim();
       } else if (context === "metal") {
-        inputValue = action === "edit" ? editMetalName.trim() : metalName.trim();
+        inputValue =
+          action === "edit" ? editMetalName.trim() : metalName.trim();
       } else if (context === "item") {
         inputValue = action === "edit" ? editItemName.trim() : itemName.trim();
       }
@@ -331,16 +347,19 @@ export default function InventoryCreate() {
 
   useEffect(() => {
     if (grossWeight && lessWeight && selectedType) {
-      const selectedCarat = categories.find((carat) => carat.name === selectedType);
+      const selectedCarat = categories.find(
+        (carat) => carat.name === selectedType
+      );
       if (selectedCarat && selectedCarat.percentage) {
         const netWeight = parseFloat(grossWeight) - parseFloat(lessWeight || 0);
-        const fineWeight = (netWeight * (selectedCarat.percentage / 100)).toFixed(3);
+        const fineWeight = (
+          netWeight *
+          (selectedCarat.percentage / 100)
+        ).toFixed(3);
         console.log("Calculated Fine Weight:", fineWeight);
       }
     }
   }, [grossWeight, lessWeight, selectedType, categories]);
-
-
 
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
@@ -348,12 +367,20 @@ export default function InventoryCreate() {
       return;
     }
 
-    const selectedCarat = categories.find((carat) => carat.name === selectedType);
-    const selectedMetal = metals.find((metal) => metal.metalName === selectedTypeMetal);
-    const selectedCategory = items.find((data) => data.itemName === selectedTypeCategory);
+    const selectedCarat = categories.find(
+      (carat) => carat.name === selectedType
+    );
+    const selectedMetal = metals.find(
+      (metal) => metal.metalName === selectedTypeMetal
+    );
+    const selectedCategory = items.find(
+      (data) => data.itemName === selectedTypeCategory
+    );
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
-      alert("Invalid selection. Please select valid Carat, Metal, and Category.");
+      alert(
+        "Invalid selection. Please select valid Carat, Metal, and Category."
+      );
       return;
     }
 
@@ -368,7 +395,9 @@ export default function InventoryCreate() {
 
     try {
       if (selectedStock) {
-        const response = await dispatch(updateStockAction(selectedStock?._id, stockData));
+        const response = await dispatch(
+          updateStockAction(selectedStock?._id, stockData)
+        );
         if (response) {
           alert("Stock updated successfully!");
           dispatch(getAllStockAction());
@@ -392,7 +421,6 @@ export default function InventoryCreate() {
     }
   };
 
-
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
     setCaratIdToDelete(id);
@@ -403,8 +431,6 @@ export default function InventoryCreate() {
     setModalOpen(false);
     setCaratIdToDelete(null);
   };
-
-
 
   const handleClickOutside = (event) => {
     if (
@@ -476,7 +502,6 @@ export default function InventoryCreate() {
         setEditingCarat(false);
         setEditingItem(false);
         setEditingMetal(false);
-
       }
     };
 
@@ -513,26 +538,29 @@ export default function InventoryCreate() {
           <Header pageName="Inventory" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className="flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
+            <div className="flex w-[100%] max-h-[90%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
               <div className="flex flex-col gap-[25px] w-[100%]">
                 <div className="flex flex-col gap-[6px] w-[100%]">
-                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#0099dd]">
+                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
                     Carats
                   </h1>
                   <div className="w-[100%] flex flex-col gap-[15px]">
                     <div className="flex gap-[20px]">
-                      <div ref={inputRef} className="flex gap-[15px]  flex-wrap">
+                      <div
+                        ref={inputRef}
+                        className="flex gap-[15px]  flex-wrap"
+                      >
                         {!isInputVisible ? (
                           <div className="flex">
                             <div
                               onClick={handlePlusClick}
-                              className="border-[1px] border-dashed border-[#0099dd] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                              className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                             >
-                              <i className="text-[20px] font-[800] text-[#0099dd] fa-solid fa-plus"></i>
+                              <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
                             </div>
                           </div>
                         ) : (
-                          <div className="flex border-[#0099dd] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                          <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
                             <input
                               type="text"
                               name="name"
@@ -553,9 +581,11 @@ export default function InventoryCreate() {
                               <div className=" flex  justify-center flex-col">
                                 <div
                                   key={item?.id}
-                                  className="border-[1px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                  className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-[180px] px-[15px] font-Poppins  md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                                   onClick={() => handleCategoryClick(item?.id)}
-                                  onDoubleClick={() => handleDoubleClick("category", item, index)}
+                                  onDoubleClick={() =>
+                                    handleDoubleClick("category", item, index)
+                                  }
                                 >
                                   {editingCarat === index ? (
                                     <>
@@ -568,7 +598,12 @@ export default function InventoryCreate() {
                                             setEditCaratName(e.target.value)
                                           }
                                           onKeyDown={(e) =>
-                                            handleKeyPress(e, "category", "edit", editingCaratId)
+                                            handleKeyPress(
+                                              e,
+                                              "category",
+                                              "edit",
+                                              editingCaratId
+                                            )
                                           }
                                           className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                           autoFocus
@@ -592,21 +627,41 @@ export default function InventoryCreate() {
                                     <p>{item.name}</p>
                                   )}
                                 </div>
-                                <div className=" items-center gap-[4px] justify-center  flex">
-                                  <div className="border-[1px] mt-[10px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px] w-fit    px-[5px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer">
-                                    <input
-                                      className=" flex w-[100%] outline-none h-[100%] text-[12px] "
-                                      placeholder="Enter Fine Weight"
-                                      type="number"
-                                      name="percentage"
-                                      value={percentages[item._id] || ""}
-                                      onChange={(e) => handlePercentageChange(item._id, e.target.value)}
-                                    />
+                                <div className="items-center gap-[4px] justify-center flex">
+                                  <div className="border-[1px] mt-[10px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px] px-[5px] font-Poppins w-[140px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[5px] cursor-pointer">
+                                    {isEditing ? (
+                                      <input
+                                        className="flex w-[100%] outline-none h-[100%] text-[12px]"
+                                        placeholder="Enter Fine Weight"
+                                        type="text"
+                                        name="percentage"
+                                        value={percentages[item._id] || ""}
+                                        onChange={(e) =>
+                                          handlePercentageChange(
+                                            item._id,
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    ) : (
+                                      <span>
+                                        {percentages[item._id] || "No Data"}
+                                      </span>
+                                    )}
                                   </div>
-                                  <button className=" mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
-                                    onClick={() => handleSavePercentage(item._id)}
+                                  <button
+                                    className="mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
+                                    onClick={
+                                      isEditing
+                                        ? handleSaveClick
+                                        : handleEditClick
+                                    }
                                   >
-                                    <i className="fa-duotone fa-solid fa-check"></i>
+                                    <i
+                                      className={`fa-duotone fa-solid ${
+                                        isEditing ? "fa-check" : "fa-edit"
+                                      }`}
+                                    ></i>
                                   </button>
                                 </div>
                               </div>
@@ -620,7 +675,7 @@ export default function InventoryCreate() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[6px] w-[100%]">
-                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#0099dd]">
+                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
                     Metal
                   </h1>
                   <div className="w-[100%] flex flex-col gap-[15px]">
@@ -630,13 +685,13 @@ export default function InventoryCreate() {
                           <div className="flex">
                             <div
                               onClick={() => setMetalInputVisible(true)}
-                              className="border-[1px] border-dashed border-[#0099dd] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                              className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                             >
-                              <i className="text-[20px] font-[800] text-[#0099dd] fa-solid fa-plus"></i>
+                              <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
                             </div>
                           </div>
                         ) : (
-                          <div className="flex border-[#0099dd] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                          <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
                             <input
                               type="text"
                               name="metalName"
@@ -650,14 +705,19 @@ export default function InventoryCreate() {
                           </div>
                         )}
                       </div>
-                      <div ref={inputRef} className="flex-wrap flex relative gap-[10px] ">
+                      <div
+                        ref={inputRef}
+                        className="flex-wrap flex relative gap-[10px] "
+                      >
                         {Array.isArray(metal) ? (
                           metal.map((item, index) => (
                             <div
                               key={item?.id}
-                              className="border-[1px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                              className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                               onClick={() => handleMetalClick(item?.id)}
-                              onDoubleClick={() => handleDoubleClick("metal", item, index)}
+                              onDoubleClick={() =>
+                                handleDoubleClick("metal", item, index)
+                              }
                             >
                               {editingMetal === index ? (
                                 <>
@@ -670,7 +730,12 @@ export default function InventoryCreate() {
                                         setEditMetalName(e.target.value)
                                       }
                                       onKeyDown={(e) =>
-                                        handleKeyPress(e, "metal", "edit", editingMetalId)
+                                        handleKeyPress(
+                                          e,
+                                          "metal",
+                                          "edit",
+                                          editingMetalId
+                                        )
                                       }
                                       className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                       autoFocus
@@ -702,7 +767,7 @@ export default function InventoryCreate() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[6px] w-[100%]">
-                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#0099dd]">
+                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
                     Product Category
                   </h1>
                   <div className="w-[100%] flex flex-col gap-[15px]">
@@ -712,13 +777,13 @@ export default function InventoryCreate() {
                           <div className="flex">
                             <div
                               onClick={() => setItemInputVisible(true)}
-                              className="border-[1px] border-dashed border-[#0099dd] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                              className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                             >
-                              <i className="text-[20px] font-[800] text-[#0099dd] fa-solid fa-plus"></i>
+                              <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
                             </div>
                           </div>
                         ) : (
-                          <div className="flex border-[#0099dd] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                          <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
                             <input
                               type="text"
                               name="itemName"
@@ -737,9 +802,11 @@ export default function InventoryCreate() {
                           items.map((data, index) => (
                             <div
                               key={data?.id}
-                              className="border-[1px] border-[#0099dd] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                              className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                               onClick={() => handleItemClick(data?.id)}
-                              onDoubleClick={() => handleDoubleClick("item", data, index)}
+                              onDoubleClick={() =>
+                                handleDoubleClick("item", data, index)
+                              }
                             >
                               {editingItem === index ? (
                                 <>
@@ -752,7 +819,12 @@ export default function InventoryCreate() {
                                         setEditItemName(e.target.value)
                                       }
                                       onKeyDown={(e) =>
-                                        handleKeyPress(e, "item", "edit", editingItemId)
+                                        handleKeyPress(
+                                          e,
+                                          "item",
+                                          "edit",
+                                          editingItemId
+                                        )
                                       }
                                       className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                       autoFocus
@@ -793,10 +865,10 @@ export default function InventoryCreate() {
                   </button>
                 </div>
                 <div className=" flex">
-                  <div className="w-full h-full  mx-auto rounded-[10px] border border-[#0099dd]   relative">
-                    <div className="box-border border-[#0099dd] relative overflow-hidden  w-full">
-                      <div className="sticky top-0 flex  bs-mix-green border-[#0099dd] w-full overflow-hidden">
-                        <div className="flex justify-center text-center gap-[7px] py-[10px] border-r border-b border-[#0099dd]  items-center px-3 min-w-[4%] max-w-[4%]">
+                  <div className="w-full h-full  mx-auto rounded-[10px] border border-[#122f97]   relative">
+                    <div className="box-border border-[#122f97] relative overflow-hidden  w-full">
+                      <div className="sticky top-0 flex  bs-mix-green border-[#122f97] w-full overflow-hidden">
+                        <div className="flex justify-center text-center gap-[7px] py-[10px] border-r border-b border-[#122f97]  items-center px-3 min-w-[4%] max-w-[4%]">
                           <input
                             type="checkbox"
                             id="check-all"
@@ -807,61 +879,70 @@ export default function InventoryCreate() {
                           </p>
                         </div>
 
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[14%] max-w-[88%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Carat
                           </p>
                         </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[14%] max-w-[88%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Metal
                           </p>
                         </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Category
                           </p>
                         </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[11%] max-w-[15%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000] ">
                             G.Weight
                           </p>
                         </div>
 
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#0099dd]  px-3 min-w-[10%] max-w-[14%]">
+                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[10%] max-w-[14%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             L.Weight
                           </p>
                         </div>
-                        <div className="flex justify-center text-center py-2 border-b border-[#0099dd]  px-3 min-w-[9%] max-w-[10%]">
+                        <div className="flex justify-center text-center py-2 border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             N.Weight
                           </p>
                         </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#0099dd]  px-3 min-w-[9%] max-w-[10%]">
+                        <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Fine Weight
                           </p>
                         </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#0099dd]  px-3 min-w-[10%] max-w-[10%]">
+                        <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[10%] max-w-[10%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Wastage
                           </p>
                         </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#0099dd]  px-3 min-w-[5%] max-w-[10%]">
+                        <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[5%] max-w-[10%]">
                           <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
                             Action
                           </p>
                         </div>
                       </div>
                       {stocks?.map((item, index) => {
-                        const netWeight = (Number(item?.toWeight || 0) - Number(item?.lessWeight || 0)).toFixed(3);
+                        const netWeight = (
+                          Number(item?.toWeight || 0) -
+                          Number(item?.lessWeight || 0)
+                        ).toFixed(3);
                         const percentage = item?.groupId?.percentage || 0;
-                        const updatedFineWeight = (netWeight * (percentage / 100)).toFixed(3);
+                        const updatedFineWeight = (
+                          netWeight *
+                          (percentage / 100)
+                        ).toFixed(3);
 
                         return (
-                          <div key={index} className="flex justify-between overflow-hidden">
-                            <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#0099dd] gap-[7px] px-3 min-w-[4%] max-w-[4%]">
+                          <div
+                            key={index}
+                            className="flex justify-between overflow-hidden"
+                          >
+                            <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#122f97] gap-[7px] px-3 min-w-[4%] max-w-[4%]">
                               <input
                                 type="checkbox"
                                 style={{ width: "15px", height: "15px" }}
@@ -871,44 +952,45 @@ export default function InventoryCreate() {
                                 {index + 1}
                               </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
                               {item?.groupId?.name || "-"}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
                               {item?.metalId?.metalName || "-"}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[14%] max-w-[88%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
                               {item?.groupItemId?.itemName || "-"}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[11%] max-w-[15%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
                               {item?.toWeight || 0}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[10%] max-w-[14%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
                               {item?.lessWeight || 0}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[9%] max-w-[14%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9%] max-w-[14%]">
                               {netWeight}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[9.1%] max-w-[14%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9.1%] max-w-[14%]">
                               {updatedFineWeight}
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#0099dd] px-3 min-w-[10%] max-w-[14%]">
+                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
                               {item?.westage || 0}
                             </div>
-                            <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#0099dd] px-3 min-w-[5%] max-w-[14%]">
+                            <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#122f97] px-3 min-w-[5%] max-w-[14%]">
                               <i
-                                className="fa-solid text-[19px] cursor-pointer text-[#0099dd] fa-pen-to-square"
+                                className="fa-solid text-[16px] cursor-pointer text-[#122f97] fa-pen-to-square"
                                 onClick={() => handleStockModalEdit(item)}
                               ></i>
                               <i
-                                className="fa-solid text-[19px] cursor-pointer text-[#ff0c0c] fa-trash"
-                                onClick={() => handleOpenDeleteModal("stock", item?._id)}
+                                className="fa-solid text-[16px] cursor-pointer text-[#ff0c0c] fa-trash"
+                                onClick={() =>
+                                  handleOpenDeleteModal("stock", item?._id)
+                                }
                               ></i>
                             </div>
                           </div>
                         );
                       })}
-
                     </div>
                   </div>
                 </div>
@@ -954,267 +1036,300 @@ export default function InventoryCreate() {
       </NextUIModal>
 
       <NextUIModal isOpen={stockModalopen}>
-        <ModalContent className="md:max-w-[760px] max-w-[760px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[410px]  ">
+        <ModalContent className="md:max-w-[760px] max-w-[760px] relative  bg-transparent shadow-none rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[410px]  ">
           {(handleModalclose) => (
             <>
-              <div className="relative w-[100%] h-[100%] ">
-                <div className="relative  w-[100%] h-[100%]">
-                  <div className="w-[100%] flex  flex-col">
-                    <div
-                      className=" absolute  flex gap-[5px] items-center cursor-pointer py-[5px] border-b-[1px] border-l-[1px] border-red rounded-bl-[8px] px-[5px] right-0"
-                      onClick={handleStockModalClose}
-                    >
-                      <i className=" text-[20px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
-                      <p className=" font-Poppins">Close</p>
-                    </div>
-                    <div className=" flex flex-col mt-[10px]">
-                      <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
-                        <p>Add Stock</p>
+              <div className="relative w-[100%] max-w-[730px] mt-[10px]   bg-white  rounded-2xl z-[100] flex justify-center !py-0 mx-auto  h-[92  %]">
+                <div
+                  className=" absolute right-[-13px]  top-[-13px]  flex gap-[5px]  z-[300] items-center cursor-pointer py-[5px]  border-red rounded-bl-[8px] px-[5px]"
+                  onClick={handleStockModalClose}
+                >
+                  <i className=" text-[30px] text-[red] shadow-delete-icon bg-white   rounded-full fa-solid fa-circle-xmark"></i>
+                </div>
+                <div className="relative w-[100%] h-[100%] ">
+                  <div className="relative  w-[100%] h-[100%]">
+                    <div className="w-[100%] flex  flex-col">
+                      <div className=" flex flex-col mt-[10px]">
+                        <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
+                          <p>Add Stock</p>
+                        </div>
+                        <div className=" flex mt-[0px] mx-auto j">
+                          <div className="flex items-center gap-3">
+                            <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                            <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                          </div>
+
+                          <i className="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
+                          {/* Right Side */}
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                            <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                          </div>
+                        </div>
                       </div>
-                      <div className=" flex mt-[0px] mx-auto j">
-                        <div className="flex items-center gap-3">
-                          <div className="h-[2px] w-24 md:w-32 bg-[#0099dd]" />
-                          <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
-                        </div>
 
-                        <i className="fa-solid fa-xmark text-[#0099dd] mx-[10px]"></i>
-                        {/* Right Side */}
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-[#0099dd]" />
-                          <div className="h-[2px] w-24 md:w-32 bg-[#0099dd]" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className=" flex justify-between  px-[25px] mt-[30px] w-[100%]">
-                      <div className="flex w-[100%] flex-col gap-[25px]">
-                        <div className=" flex w-[100%]  gap-[30px]">
-                          <div
-                            ref={dropdownRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                          >
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Carat
-                            </label>
+                      <div className=" flex justify-between  px-[25px] mt-[30px] w-[100%]">
+                        <div className="flex w-[100%] flex-col gap-[25px]">
+                          <div className=" flex w-[100%]  gap-[30px]">
                             <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() => setDropdownOpen((prev) => !prev)}
+                              ref={dropdownRef}
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
+                              <label
+                                htmlFor="addstock"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedType || caratFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
+                              >
+                                Carat
+                              </label>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() => setDropdownOpen((prev) => !prev)}
+                              >
+                                <input
+                                  type="text"
+                                  name="groupId"
+                                  id="addstock"
+                                  value={selectedType}
+                                  onFocus={() => setCaratFocused(true)}
+                                  onBlur={() => setCaratFocused(false)}
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpen
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                  }
+                                ></i>
+                              </div>
+                              <AnimatePresence>
+                                {dropdownOpen && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-2  left-[-16px] bg-white w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {categories.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => handleSelect(type?.name)}
+                                      >
+                                        {type?.name}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+
+                            <div
+                              ref={dropdownMetalRef}
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            >
+                              <label
+                                htmlFor="addstockMetal"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedTypeMetal || metalFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
+                              >
+                                Metal
+                              </label>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() =>
+                                  setDropdownOpenMetal((prev) => !prev)
+                                } // Toggle dropdown on click
+                              >
+                                <input
+                                  type="text"
+                                  name="metalId"
+                                  id="addstockMetal"
+                                  value={selectedTypeMetal}
+                                  onFocus={() => setMetalFocused(true)}
+                                  onBlur={() => setMetalFocused(false)}
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpenMetal
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                  }
+                                ></i>
+                              </div>
+                              <AnimatePresence>
+                                {dropdownOpenMetal && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {metals.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          handleSelectMetal(type?.metalName);
+                                          setDropdownOpenMetal(false);
+                                        }}
+                                      >
+                                        {type?.metalName}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          </div>
+                          <div className=" flex w-[100%]  gap-[30px]">
+                            <div
+                              ref={dropdownCategoryRef}
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                            >
+                              <label
+                                htmlFor="addstockCategory"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedTypeCategory || categoryFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
+                              >
+                                Category
+                              </label>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() =>
+                                  setDropdownOpenCategory((prev) => !prev)
+                                } // Toggle dropdown on click
+                              >
+                                <input
+                                  type="text"
+                                  name="groupItemId"
+                                  id="addstockCategory"
+                                  value={selectedTypeCategory}
+                                  onFocus={() => setCategoryFocused(true)}
+                                  onBlur={() => setCategoryFocused(false)}
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpenCategory
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                  }
+                                ></i>
+                              </div>
+                              <AnimatePresence>
+                                {dropdownOpenCategory && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {item.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          handleSelectCategory(type?.itemName);
+                                          setDropdownOpenCategory(false);
+                                        }}
+                                      >
+                                        {type?.itemName}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              <label
+                                htmlFor="addstockGross"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  grossWeight || grossFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
+                              >
+                                G .Weight
+                              </label>
                               <input
                                 type="text"
-                                name="groupId"
-                                id="type"
-                                value={selectedType}
-                                placeholder="Select Carat"
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                readOnly
+                                name="toWeight"
+                                id="addstockGross"
+                                onFocus={() => setGrossFocused(true)}
+                                onBlur={() => setGrossFocused(false)}
+                                className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                value={grossWeight}
+                                onChange={(e) => setGrossWeight(e.target.value)}
+                                autocomplete="naqsme"
                               />
-                              <i
-                                className={
-                                  dropdownOpen
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                }
-                              ></i>
                             </div>
-                            <AnimatePresence>
-                              {dropdownOpen && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-1 bg-white w-[290px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {categories.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => handleSelect(type?.name)}
-                                    >
-                                      {type?.name}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
                           </div>
-
-                          <div
-                            ref={dropdownMetalRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                          >
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Metal
-                            </label>
-                            <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenMetal((prev) => !prev)
-                              } // Toggle dropdown on click
-                            >
+                          <div className=" flex w-[100%]  gap-[30px]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              <label
+                                htmlFor="addstockLoss"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  lessWeight || lossFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
+                              >
+                                L .Weight
+                              </label>
                               <input
                                 type="text"
-                                name="metalId"
-                                id="type1"
-                                value={selectedTypeMetal}
-                                placeholder="Select Metal"
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                readOnly
+                                id="addstockLoss"
+                                name="lessWeight"
+                                value={lessWeight}
+                                onFocus={() => setLossFocused(true)}
+                                onBlur={() => setLossFocused(false)}
+                                onChange={(e) => setLessWeight(e.target.value)}
+                                className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                autocomplete="naqsme"
                               />
-                              <i
-                                className={
-                                  dropdownOpenMetal
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                }
-                              ></i>
                             </div>
-                            <AnimatePresence>
-                              {dropdownOpenMetal && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {metals.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        handleSelectMetal(type?.metalName);
-                                        setDropdownOpenMetal(false);
-                                      }}
-                                    >
-                                      {type?.metalName}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                        <div className=" flex w-[100%]  gap-[30px]">
-                          <div
-                            ref={dropdownCategoryRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                          >
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Category
-                            </label>
-                            <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenCategory((prev) => !prev)
-                              } // Toggle dropdown on click
-                            >
+
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              <label
+                                htmlFor="addstockWastage"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  westage || wastageFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#8f8f8f] cursor-text"
+                                }`}
+                              >
+                                Wastage
+                              </label>
                               <input
                                 type="text"
-                                name="groupItemId"
-                                id="type1"
-                                value={selectedTypeCategory}
-                                placeholder="Select Category"
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                readOnly
+                                name="westage"
+                                id="addstockWastage"
+                                value={westage}
+                                onFocus={() => setWastegeFocused(true)}
+                                onBlur={() => setWastegeFocused(false)}
+                                onChange={(e) => setWestage(e.target.value)}
+                                className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                                autocomplete="naqsme"
                               />
-                              <i
-                                className={
-                                  dropdownOpenCategory
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                }
-                              ></i>
                             </div>
-                            <AnimatePresence>
-                              {dropdownOpenCategory && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {item.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        handleSelectCategory(type?.itemName);
-                                        setDropdownOpenCategory(false);
-                                      }}
-                                    >
-                                      {type?.itemName}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
                           </div>
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                            <label
-                              htmlFor="email"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              G .Weight
-                            </label>
-                            <input
-                              type="text"
-                              name="toWeight"
-                              placeholder="Enter Gross Weight"
-                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              value={grossWeight}
-                              onChange={(e) => setGrossWeight(e.target.value)}
-                              autocomplete="naqsme"
-                            />
-                          </div>
-                        </div>
-                        <div className=" flex w-[100%]  gap-[30px]">
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                            <label
-                              htmlFor="email"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              L .Weight
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="Enter Less Weight"
-                              name="lessWeight"
-                              value={lessWeight}
-                              onChange={(e) => setLessWeight(e.target.value)}
-                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              autocomplete="naqsme"
-                            />
-                          </div>
-
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                            <label
-                              htmlFor="email"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Wastage
-                            </label>
-                            <input
-                              type="text"
-                              name="westage"
-                              placeholder="Enter Wastage"
-                              value={westage}
-                              onChange={(e) => setWestage(e.target.value)}
-                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              autocomplete="naqsme"
-                            />
-                          </div>
-                        </div>
-                        <div className=" flex w-[48%]  gap-[30px]">
-                          {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                          <div className=" flex w-[48%]  gap-[30px]">
+                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1229,7 +1344,7 @@ export default function InventoryCreate() {
                             />
                           </div> */}
 
-                          {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1243,14 +1358,17 @@ export default function InventoryCreate() {
                               autocomplete="naqsme"
                             />
                           </div> */}
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <button
+                      className=" flex justify-center mt-[10px] items-center text-[#fff] py-[5px] text-[23px]  rounded-md font-Poppins w-[93%] mx-auto bs-spj"
+                      onClick={handleAddStock}
+                    >
+                      {selectedStock ? "Update Stock" : "Add Stock"}
+                    </button>
                   </div>
-                  <button className=" flex justify-center mt-[40px] items-center text-[#fff] py-[5px] text-[23px]  rounded-md font-Poppins w-[93%] mx-auto bs-spj"
-                    onClick={handleAddStock}>
-                    {selectedStock ? "Update Stock" : "Add Stock"}
-                  </button>
                 </div>
               </div>
             </>

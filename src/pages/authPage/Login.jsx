@@ -458,7 +458,7 @@ export default function Login() {
                   </div>
                   <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                     <label
-                      htmlFor="name"
+                      htmlFor="password"
                       className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${passwordFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
@@ -470,7 +470,7 @@ export default function Login() {
                     <input
                       type="text"
                       name="name"
-                      id="name"
+                      id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={passwordFocused ? "" : ""}
