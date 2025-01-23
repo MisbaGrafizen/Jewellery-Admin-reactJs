@@ -684,19 +684,19 @@ export default function LabourSetting() {
         case 'uchak':
           success = await dispatch(deleteUchakAction(itemId));
           if (success) {
-            await getAllUchakAction(); 
+            dispatch(getAllUchakAction()); 
           }
           break;
         case 'weight':
           success = await dispatch(deletePerGramAction(itemId));
           if (success) {
-            await getPerGramAction(); 
+            dispatch(getPerGramAction()); 
           }
           break;
         case 'percentage':
           success = await dispatch(deletePercentageAction(itemId));
           if (success) {
-            await getPercentageAction();
+            dispatch(getPercentageAction()); 
           }
           break;
         default:
