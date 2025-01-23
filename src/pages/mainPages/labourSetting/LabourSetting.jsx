@@ -4,6 +4,7 @@ import Header from "../../../Component/header/Header";
 // import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
+import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import {
   getCategroyAction,
   getGroupItemAction,
@@ -13,6 +14,9 @@ import {
   addPercentageAction,
   addPerGramAction,
   addUchakAction,
+  deletePercentageAction,
+  deletePerGramAction,
+  deleteUchakAction,
   getAllUchakAction,
   getPercentageAction,
   getPerGramAction,
@@ -29,6 +33,7 @@ export default function LabourSetting() {
   const [selectedTypeMetal, setSelectedTypeMetal] = useState("");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
+  const [deletemodalopen, setDeleteModalOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
@@ -129,6 +134,8 @@ export default function LabourSetting() {
     rate: "",
   });
   const [selectedPercentage, setSelectedPercentage] = useState("");
+  const [deleteType, setDeleteType] = useState(null); 
+  const [itemId, setItemId] = useState(null); 
 
   //edit uchak
   const [editdropdownOpen, setEditDropdownOpen] = useState(false);
@@ -208,14 +215,6 @@ export default function LabourSetting() {
     dispatch(getPercentageAction());
   }, [dispatch]);
 
-  const firmTypes = [
-    "Sole Proprietorship",
-    "Partnership",
-    "LLC",
-    "Corporation",
-  ];
-  const firmTypesMetal = ["Gold", "Silver", "Platinum", "Other"];
-  const firmTypesCategory = ["Gold", "Silver", "Platinum", "Other"];
   const handleSelect = (type) => {
     setSelectedType(type);
     setDropdownOpen(false);
@@ -275,6 +274,11 @@ export default function LabourSetting() {
     setEditDropdownOpenCategoryWeight(false);
   };
 
+  const handleSelectPercentage = (type) => {
+    setSelectedTypePercentage(type);
+    setDropdownOpenPercentage(false);
+  }
+
   const handleEditSelectPercentage = (type) => {
     setEditSelectedTypePercentage(type);
     setEditDropdownOpenPercentage(false);
@@ -286,12 +290,17 @@ export default function LabourSetting() {
   };
 
   const handleEditSelectMetalPercentage = (type) => {
-    setSelectedTypeMetalPercentage(type);
-    setDropdownOpenMetalPercentage(false);
+    setEditSelectedTypeMetalPercentage(type);
+    setEditDropdownOpenMetalPercentage(false);
   };
   const handleSelectCategoryPercentage = (type) => {
     setSelectedTypecategoryPercentage(type);
     setDropdownOpenCategoryPercentage(false);
+  };
+
+  const handleSelectEditCategoryPercentage = (type) => {
+    setEditSelectedTypecategoryPercentage(type);
+    setEditDropdownOpenCategoryPercentage(false);
   };
 
   // const addLabour = () => {
@@ -435,10 +444,7 @@ export default function LabourSetting() {
     setIsEditingPercentage(true); // Enable editing mode
   };
 
-  const handleSave = () => {
-    setIsEditing(false); // Disable editing mode
-    console.log("Saved Data:", formData);
-  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -465,20 +471,19 @@ export default function LabourSetting() {
   };
 
   const handleAddUchak = async () => {
-    if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
-      alert("Please select Carat, Metal, and Category.");
-      return;
-    }
 
-    const selectedCarat = categories.find(
-      (carat) => carat.name === selectedType
-    );
-    const selectedMetal = metals.find(
-      (metal) => metal.metalName === selectedTypeMetal
-    );
-    const selectedCategory = item.find(
-      (data) => data.itemName === selectedTypeCategory
-    );
+    const selectedCarat = isEditing
+    ? categories.find((carat) => carat.name === editselectedType)
+    : categories.find((carat) => carat.name === selectedType);
+
+  const selectedMetal = isEditing
+    ? metals.find((metal) => metal.metalName === editselectedTypeMetal)
+    : metals.find((metal) => metal.metalName === selectedTypeMetal);
+
+  const selectedCategory = isEditing
+    ? item.find((data) => data.itemName === editselectedTypeCategory)
+    : item.find((data) => data.itemName === selectedTypeCategory);
+
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
       alert(
@@ -534,24 +539,18 @@ export default function LabourSetting() {
   };
 
   const handleAddWeight = async () => {
-    if (
-      !selectedTypeWeight ||
-      !selectedTypeMetalWeight ||
-      !selectedTypeCategoryWeight
-    ) {
-      alert("Please select Carat, Metal, and Category.");
-      return;
-    }
+    const selectedCarat = isEditingWeight
+    ? categories.find((carat) => carat.name === editselectedTypeWeight)
+    : categories.find((carat) => carat.name === selectedTypeWeight);
 
-    const selectedCarat = categories.find(
-      (carat) => carat.name === selectedTypeWeight
-    );
-    const selectedMetal = metals.find(
-      (metal) => metal.metalName === selectedTypeMetalWeight
-    );
-    const selectedCategory = item.find(
-      (data) => data.itemName === selectedTypeCategoryWeight
-    );
+  const selectedMetal = isEditingWeight
+    ? metals.find((metal) => metal.metalName === editselectedTypeMetalWeight)
+    : metals.find((metal) => metal.metalName === selectedTypeMetalWeight);
+
+  const selectedCategory = isEditingWeight
+    ? item.find((data) => data.itemName === editselectedTypeCategoryWeight)
+    : item.find((data) => data.itemName === selectedTypeCategoryWeight);
+
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
       alert(
@@ -607,24 +606,20 @@ export default function LabourSetting() {
   };
 
   const handleAddPercentage = async () => {
-    if (
-      !selectedTypePercentage ||
-      !selectedTypeMetalPercentage ||
-      !selectedTypeCategoryPercentage
-    ) {
-      alert("Please select Carat, Metal, and Category.");
-      return;
-    }
 
-    const selectedCarat = categories.find(
-      (carat) => carat.name === selectedTypePercentage
-    );
-    const selectedMetal = metals.find(
-      (metal) => metal.metalName === selectedTypeMetalPercentage
-    );
-    const selectedCategory = item.find(
-      (data) => data.itemName === selectedTypeCategoryPercentage
-    );
+
+    const selectedCarat = isEditingPercentage
+    ? categories.find((carat) => carat.name === editselectedTypePercentage)
+    : categories.find((carat) => carat.name === selectedTypePercentage);
+
+  const selectedMetal = isEditingPercentage
+    ? metals.find((metal) => metal.metalName === editselectedTypeMetalPercentage)
+    : metals.find((metal) => metal.metalName === selectedTypeMetalPercentage);
+
+  const selectedCategory = isEditingPercentage
+    ? item.find((data) => data.itemName === editselectedTypeCategoryPercentage)
+    : item.find((data) => data.itemName === selectedTypeCategoryPercentage);
+
 
     if (!selectedCarat || !selectedMetal || !selectedCategory) {
       alert(
@@ -677,6 +672,77 @@ export default function LabourSetting() {
       console.error("Error saving Uchak:", error);
       alert("An error occurred while saving Uchak.");
     }
+  };
+
+
+
+  const handleDelete = async () => {
+    try {
+      let success = false;
+
+      switch (deleteType) {
+        case 'uchak':
+          success = await dispatch(deleteUchakAction(itemId));
+          if (success) {
+            await getAllUchakAction(); 
+          }
+          break;
+        case 'weight':
+          success = await dispatch(deletePerGramAction(itemId));
+          if (success) {
+            await getPerGramAction(); 
+          }
+          break;
+        case 'percentage':
+          success = await dispatch(deletePercentageAction(itemId));
+          if (success) {
+            await getPercentageAction();
+          }
+          break;
+        default:
+          throw new Error('Invalid delete type.');
+      }
+
+      if (success) {
+        alert(`${deleteType} deleted successfully!`);
+        handleDeleteModalClose();
+      } else {
+        alert(`Failed to delete ${deleteType}.`);
+      }
+
+    } catch (error) {
+      console.error(`Error deleting ${deleteType}:`, error);
+      alert(`An error occurred while deleting ${deleteType}.`);
+    }
+  };
+
+  const handleDeleteUchak = (id) => {
+    setDeleteType('uchak');
+    setItemId(id);
+    handleDeleteModalOpen();
+  };
+
+  const handleDeleteWeight = (id) => {
+    setDeleteType('weight');
+    setItemId(id);
+    handleDeleteModalOpen();
+  };
+
+  const handleDeletePercentage = (id) => {
+    setDeleteType('percentage');
+    setItemId(id);
+    handleDeleteModalOpen();
+  };
+
+  
+
+  const handleDeleteModalOpen = () => {
+    setDeleteModalOpen(true)
+    
+  };
+  const handleDeleteModalClose = () => {
+    setDeleteModalOpen(false)
+    
   };
 
   return (
@@ -1286,7 +1352,7 @@ export default function LabourSetting() {
                                   className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
                                   onClick={handleAddUchak}
                                 >
-                                  Save
+                                  {isEditing? "Edit" : "Save"}
                                 </button>
                               </div>
                             </>
@@ -1300,9 +1366,9 @@ export default function LabourSetting() {
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
                                       className="fa-solid cursor-pointer fa-pen-to-square"
-                                      onClick={() => handleEdit(item?._id)}
+                                      onClick={() => handleEdit(item)}
                                     ></i>
-                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash" onClick={() => handleDeleteUchak(item._id)} ></i>
                                   </div>
                                   <div className=" flex w-[100%] fle  gap-[5px]">
                                     <div
@@ -1702,7 +1768,7 @@ export default function LabourSetting() {
                               className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
                               onClick={handleAddWeight}
                             >
-                              Save
+                              {isEditingWeight ? "Edit" : "Save"}
                             </button>
                           </div>
                           {isEditingWeight ? (
@@ -1735,7 +1801,7 @@ export default function LabourSetting() {
                                     >
                                       <input
                                         type="text"
-                                        name="type"
+                                        name="group"
                                         id="editcarat"
                                         value={editselectedTypeWeight}
                                         onFocus={() =>
@@ -1765,15 +1831,15 @@ export default function LabourSetting() {
                                           exit={{ opacity: 0, y: -10 }}
                                           className="absolute top-[90%]  mt-2 bg-white left-[-17px] w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
-                                          {firmTypes.map((type, index) => (
+                                          {categories.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() =>
-                                                handleSelectEditWeight(type)
+                                                handleSelectEditWeight(type?.name)
                                               }
                                             >
-                                              {type}
+                                              {type?.name}
                                             </div>
                                           ))}
                                         </motion.div>
@@ -1806,7 +1872,7 @@ export default function LabourSetting() {
                                     >
                                       <input
                                         type="text"
-                                        name="type1"
+                                        name="metal"
                                         id="metall"
                                         value={editselectedTypeMetalWeight}
                                         onFocus={() =>
@@ -1836,20 +1902,20 @@ export default function LabourSetting() {
                                           exit={{ opacity: 0, y: -10 }}
                                           className="absolute top-[90%] left-[-16px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
-                                          {firmTypesMetal.map((type, index) => (
+                                          {metals.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
                                                 handleSelectEditMetalWeight(
-                                                  type
+                                                  type?.metalName
                                                 );
                                                 setDropdownOpenMetalWeight(
                                                   false
                                                 );
                                               }}
                                             >
-                                              {type}
+                                              {type?.metalName}
                                             </div>
                                           ))}
                                         </motion.div>
@@ -1882,7 +1948,7 @@ export default function LabourSetting() {
                                   >
                                     <input
                                       type="text"
-                                      name="type1"
+                                      name="item"
                                       id="edicategory"
                                       value={editselectedTypeCategoryWeight}
                                       onFocus={() =>
@@ -1912,21 +1978,21 @@ export default function LabourSetting() {
                                         exit={{ opacity: 0, y: -10 }}
                                         className="absolute top-[90%]  mt-2 left-[-16px] bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypesCategory.map(
+                                        {item.map(
                                           (type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
                                                 handleSelectEditCategoryWeight(
-                                                  type
+                                                  type?.itemName
                                                 );
                                                 setEditDropdownOpenCategoryWeight(
                                                   false
                                                 );
                                               }}
                                             >
-                                              {type}
+                                              {type?.itemName}
                                             </div>
                                           )
                                         )}
@@ -1950,6 +2016,9 @@ export default function LabourSetting() {
                                     <input
                                       type="Number"
                                       id="editmax"
+                                      name="minWeight"
+                                      value={formDataWeight?.minWeight}
+                                      onChange={handleChangeWeight}
                                       onFocus={() =>
                                         setEditWeightMinFocused(true)
                                       }
@@ -1976,6 +2045,9 @@ export default function LabourSetting() {
                                     <input
                                       id="editmin"
                                       type="Number"
+                                      name="maxWeight"
+                                      value={formDataWeight?.maxWeight}
+                                      onChange={handleChangeWeight}
                                       onFocus={() =>
                                         setEditWeightMaxFocused(true)
                                       }
@@ -2003,7 +2075,10 @@ export default function LabourSetting() {
                                     </label>
                                     <input
                                       type="Number"
+                                      name="rate"
                                       id="editrateweigth"
+                                      value={formDataWeight?.rate}
+                                      onChange={handleChangeWeight}
                                       onFocus={() =>
                                         setEditWeightRateFocused(true)
                                       }
@@ -2019,9 +2094,9 @@ export default function LabourSetting() {
                                 </div>
                                 <button
                                   className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                                  onClick={handleSave}
+                                  onClick={handleAddWeight}
                                 >
-                                  Save
+                                  {isEditingWeight ? "Edit" : "Save"}
                                 </button>
                               </div>
                             </>
@@ -2036,9 +2111,10 @@ export default function LabourSetting() {
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
                                       className="fa-solid cursor-pointer fa-pen-to-square"
-                                      onClick={handleEditWeight}
+                                      onClick={() => handleEditWeight(item)}
                                     ></i>
-                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash" onClick={() => handleDeleteWeight(item._id)} 
+                                    ></i>
                                   </div>
                                   <div className=" flex w-[100%] fle  gap-[5px]">
                                     <div
@@ -2438,7 +2514,7 @@ export default function LabourSetting() {
                               className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
                               onClick={handleAddPercentage}
                             >
-                              Save
+                              {isEditingPercentage ? "Edit" : "Save"}
                             </button>
                           </div>
 
@@ -2472,7 +2548,7 @@ export default function LabourSetting() {
                                     >
                                       <input
                                         type="text"
-                                        name="type"
+                                        name="group"
                                         id="editpercarat"
                                         onFocus={() =>
                                           setEditPerCaratFocused(true)
@@ -2502,15 +2578,15 @@ export default function LabourSetting() {
                                           exit={{ opacity: 0, y: -10 }}
                                           className="absolute top-[90%] left-[16px] mt-2 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
-                                          {firmTypes.map((type, index) => (
+                                          {categories.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() =>
-                                                handleEditSelectPercentage(type)
+                                                handleEditSelectPercentage(type?.name)
                                               }
                                             >
-                                              {type}
+                                              {type?.name}
                                             </div>
                                           ))}
                                         </motion.div>
@@ -2536,17 +2612,16 @@ export default function LabourSetting() {
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
-                                        setDropdownOpenMetalPercentage(
+                                        setEditDropdownOpenMetalPercentage(
                                           (prev) => !prev
                                         )
-                                      } 
-                                      setEditDropdownOpenPercentage // Toggle dropdown on click
+                                      }  // Toggle dropdown on click
                                     >
                                       <input
                                         type="text"
-                                        name="type1"
+                                        name="metal"
                                         id="editpermetal"
-                                        value={selectedTypeMetalPercentage}
+                                        value={editselectedTypeMetalPercentage}
                                         onFocus={() =>
                                           setEditPerMetalFocused(true)
                                         }
@@ -2574,20 +2649,20 @@ export default function LabourSetting() {
                                           exit={{ opacity: 0, y: -10 }}
                                           className="absolute top-[90%]  mt-1 bg-white w-[170px] border border-[#dedede] rounded-lg shadow-md z-10"
                                         >
-                                          {firmTypesMetal.map((type, index) => (
+                                          {metals.map((type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectMetalPercentage(
-                                                  type
+                                                handleEditSelectMetalPercentage(
+                                                  type?.metalName
                                                 );
                                                 setDropdownOpenMetalPercentage(
                                                   false
                                                 );
                                               }}
                                             >
-                                              {type}
+                                              {type?.metalName}
                                             </div>
                                           ))}
                                         </motion.div>
@@ -2596,63 +2671,75 @@ export default function LabourSetting() {
                                   </div>
                                 </div>
                                 <div
-                                  ref={dropdownCategoryPercentageRef}
+                                  ref={dropdownEditCategoryPercentageRef}
                                   className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                 >
                                   <label
-                                    htmlFor="name"
-                                    className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                    htmlFor="edicategory"
+                                    className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                      editselectedTypeCategoryPercentage ||
+                                      editpercategoryFocused
+                                        ? "text-[#000] -translate-y-[21px]"
+                                        : "text-[#8f8f8f] cursor-text"
+                                    }`}
                                   >
                                     Category
                                   </label>
                                   <div
                                     className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                     onClick={() =>
-                                      setDropdownOpenCategoryPercentage(
+                                      setEditDropdownOpenCategoryPercentage(
                                         (prev) => !prev
                                       )
                                     } // Toggle dropdown on click
                                   >
                                     <input
                                       type="text"
-                                      name="type1"
-                                      id="type1"
-                                      value={selectedTypeCategoryPercentage}
-                                      placeholder="Select Category"
+                                      name="item"
+                                      id="edicategory"
+                                      value={editselectedTypeCategoryPercentage}
+                                      onFocus={() =>
+                                        setEditPerCategoryFocused(true)
+                                      }
+                                      onBlur={(e) =>
+                                        setPerCategoryFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                                       readOnly
                                     />
                                     <i
                                       className={
-                                        dropdownOpenCategoryPercentage
+                                        editdropdownOpenCategoryPercentage
                                           ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
                                           : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
                                       }
                                     ></i>
                                   </div>
                                   <AnimatePresence>
-                                    {dropdownOpenCategoryPercentage && (
+                                    {editdropdownOpenCategoryPercentage && (
                                       <motion.div
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        className="absolute top-[90%]  mt-2 left-[-16px] bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
                                       >
-                                        {firmTypesCategory.map(
+                                        {item.map(
                                           (type, index) => (
                                             <div
                                               key={index}
                                               className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                               onClick={() => {
-                                                handleSelectCategoryPercentage(
-                                                  type
+                                                handleSelectEditCategoryPercentage(
+                                                  type?.itemName
                                                 );
-                                                setDropdownOpenCategoryPercentage(
+                                                setEditDropdownOpenCategoryPercentage(
                                                   false
                                                 );
                                               }}
                                             >
-                                              {type}
+                                              {type?.itemName}
                                             </div>
                                           )
                                         )}
@@ -2671,6 +2758,9 @@ export default function LabourSetting() {
                                     </label>
                                     <input
                                       type="Number"
+                                      name="minWeight"
+                                      value={formDataPercentage?.minWeight}
+                                      onChange={handleChangePercentage}
                                       placeholder="Enter Min-Weight"
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
@@ -2685,6 +2775,9 @@ export default function LabourSetting() {
                                     </label>
                                     <input
                                       type="Number"
+                                      name="maxWeight"
+                                      value={formDataPercentage?.maxWeight}
+                                      onChange={handleChangePercentage}
                                       placeholder="Enter Max-Weight"
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
@@ -2701,6 +2794,9 @@ export default function LabourSetting() {
                                     </label>
                                     <input
                                       type="Number"
+                                      name="rate"
+                                      value={formDataPercentage?.rate}
+                                      onChange={handleChangePercentage}
                                       placeholder="Enter Rate"
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
@@ -2709,9 +2805,9 @@ export default function LabourSetting() {
                                 </div>
                                 <button
                                   className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
-                                  onClick={handleSave}
+                                  onClick={handleAddPercentage}
                                 >
-                                  Save
+                                  {isEditingPercentage ? "Edit" : "Save"}
                                 </button>
                               </div>
                             </>
@@ -2726,9 +2822,10 @@ export default function LabourSetting() {
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
                                       className="fa-solid cursor-pointer fa-pen-to-square"
-                                      onClick={handleEditPercentage}
+                                      onClick={() => handleEditPercentage(item)}
                                     ></i>
-                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"></i>
+                                    <i className="fa-solid cursor-pointer text-[#f00] fa-trash"  onClick={() => handleDeletePercentage(item._id)} 
+                                    ></i>
                                   </div>
                                   <div className=" flex w-[100%] fle  gap-[5px]">
                                     <div
@@ -2826,6 +2923,8 @@ export default function LabourSetting() {
                                 </div>
                               ))}
                             </>
+
+
                           )}
                         </div>
                       </div>
@@ -2838,509 +2937,33 @@ export default function LabourSetting() {
         </div>
       </section>
 
-      {/* <NextUIModal isOpen={labourModalopen}>
-        <ModalContent className="md:max-w-[1400px] max-w-[1300px] relative overflow-y-auto   rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[650px]  ">
-          {() => (
+ 
+      <NextUIModal isOpen={deletemodalopen} onOpenChange={handleDeleteModalClose}>
+        <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px]  ">
+          {(handleDeleteModalClose) => (
             <>
               <div className="relative w-[100%] h-[100%] ">
                 <div className="relative  w-[100%] h-[100%]">
-                  <div className="w-[100%] flex  flex-col">
-                    <div
-                      className=" absolute  flex gap-[5px] items-center cursor-pointer py-[5px] border-b-[1px] border-l-[1px] border-red rounded-bl-[8px] px-[5px] right-0"
-                      onClick={handleModalclose}
-                    >
-                      <i className=" text-[20px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
-                      <p className=" font-Poppins">Close</p>
+                  <div className="w-[100%] flex gap-7 flex-col">
+                    <div className="w-[100%] mt-[30px] p-[10px] mx-auto flex justify-center s">
+                      <i className=" text-[80px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
                     </div>
-                    <div className=" flex flex-col mt-[10px]">
-                      <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
-                        <p>Add Labour Rate</p>
-                      </div>
-                      <div className=" flex mt-[0px] mx-auto j">
-                        <div className="flex items-center gap-3">
-                          <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
-                          <div className="w-2 h-2 rounded-full bg-[#122f97]" />
-                        </div>
-
-                        <i class="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-[#122f97]" />
-                          <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
-                        </div>
-                      </div>
+                    <div className=" mx-auto justify-center flex text-[28px] font-[500]  font-Montserrat ">
+                      <p>Are you sure ?</p>
                     </div>
-
-                    <div className=" flex justify-between  px-[25px] mt-[20px] w-[100%]">
-                      <div className="flex w-[100%] flex-col  mb-[20px] gap-[14px]">
-                        <div className=" flex w-[100%]  gap-[30px]">
-                          <div
-                            ref={dropdownRef}
-                            className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                          >
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Carat
-                            </label>
-                            <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
-                            >
-                              <input
-                                type="text"
-                                name="type"
-                                id="type"
-                                value={selectedType}
-                                placeholder="Select Carat"
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                readOnly
-                              />
-                              <i
-                                className={
-                                  dropdownOpen
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                }
-                              ></i>
-                            </div>
-                            <AnimatePresence>
-                              {dropdownOpen && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-1 bg-white w-[140px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {firmTypes.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => handleSelect(type)}
-                                    >
-                                      {type}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-
-                          <div
-                            ref={dropdownMetalRef}
-                            className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                          >
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Metal
-                            </label>
-                            <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenMetal((prev) => !prev)
-                              } // Toggle dropdown on click
-                            >
-                              <input
-                                type="text"
-                                name="type1"
-                                id="type1"
-                                value={selectedTypeMetal}
-                                placeholder="Select Metal"
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                readOnly
-                              />
-                              <i
-                                className={
-                                  dropdownOpenMetal
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                }
-                              ></i>
-                            </div>
-                            <AnimatePresence>
-                              {dropdownOpenMetal && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {firmTypesMetal.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        handleSelectMetal(type);
-                                        setDropdownOpenMetal(false);
-                                      }}
-                                    >
-                                      {type}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                          <div
-                            ref={dropdownCategoryRef}
-                            className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                          >
-                            <label
-                              htmlFor="name"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Category
-                            </label>
-                            <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenCategory((prev) => !prev)
-                              } // Toggle dropdown on click
-                            >
-                              <input
-                                type="text"
-                                name="type1"
-                                id="type1"
-                                value={selectedTypeCategory}
-                                placeholder="Select Category"
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                readOnly
-                              />
-                              <i
-                                className={
-                                  dropdownOpenCategory
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                }
-                              ></i>
-                            </div>
-                            <AnimatePresence>
-                              {dropdownOpenCategory && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-1 bg-white w-[240px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {firmTypesCategory.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        handleSelectCategory(type);
-                                        setDropdownOpenCategory(false);
-                                      }}
-                                    >
-                                      {type}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-
-                        <div className=" flex  justify-center mx-auto">
-                          <div className=" w-[100%] flex flex-col">
-                            <h2 className=" text-[#122f97] font-[500] text-[20px] font-Poppins pl-[6px]">
-                              Uchak
-                            </h2>
-                            <div className=" flex flex-wrap gap-[25px]">
-                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Min-weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Min-weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                  <div className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Max-weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Max-weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                </div>
-                                <div className=" flex-col flex gap-[20px] ">
-                                  <div className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Rate
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Rate"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                </div>
-                                <button className=" flex justify-center font-[500]   items-center text-[#fff] py-[5px] text-[18px]  rounded-md font-Poppins w-[100%] mx-auto bs-spj">
-                                  Save
-                                </button>
-                              </div>
-                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Min-weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                  <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Max-weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                </div>
-                                <div className=" flex-col flex gap-[20px] ">
-                                  <div className="relative w-full  h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1  absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Rate
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                </div>
-                                <div className="  gap-[10px] flex">
-                                  <button className=" flex justify-center  font-[500] items-center text-[#fff] py-[5px] text-[18px]  rounded-md font-Poppins w-[100%] mx-auto bs-spj">
-                                    Edit
-                                  </button>
-                                  <div className=" cursor-pointer  flex justify-center   rounded-[5px]  bg-[#ff2222] items-center w-[50px] h-0px]">
-                                    <i className="fa-solid text-[19px] text-[#fff] fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className=" w-[100%] flex flex-col">
-                            <h2 className=" text-[#122f97] font-[500] text-[20px] font-Poppins pl-[6px]">
-                              Weight
-                            </h2>
-                            <div className=" flex flex-wrap gap-[25px]">
-                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Min-weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Min-weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Max-weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Max-weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                </div>
-                                <div className=" flex-col flex gap-[20px] ">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                </div>
-                                <button className=" flex justify-center font-[500]   items-center text-[#fff] py-[5px] text-[18px]  rounded-md font-Poppins w-[100%] mx-auto bs-spj">
-                                  Save
-                                </button>
-                              </div>
-                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Min-weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                  <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Max-weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                </div>
-                                <div className=" flex-col flex gap-[20px] ">
-                                  <div className="relative w-full  h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1  absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                </div>
-                                <div className="  gap-[10px] flex">
-                                  <button className=" flex justify-center  font-[500] items-center text-[#fff] py-[5px] text-[18px]  rounded-md font-Poppins w-[100%] mx-auto bs-spj">
-                                    Edit
-                                  </button>
-                                  <div className=" cursor-pointer  flex justify-center   rounded-[5px]  bg-[#ff2222] items-center w-[50px] h-0px]">
-                                    <i className="fa-solid text-[19px] text-[#fff] fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className=" w-[100%] flex flex-col">
-                            <h2 className=" text-[#122f97] font-[500] text-[20px] font-Poppins pl-[6px]">
-                              Percentege
-                            </h2>
-                            <div className=" flex flex-wrap gap-[25px]">
-                              <div className=" flex border-[1px] flex-col gap-[13px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Min-weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Min-weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Max-weight
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Max-weight"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                </div>
-                                <div className=" flex-col flex gap-[20px] ">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Percentege
-                                    </label>
-                                    <input
-                                      type="Number"
-                                      placeholder="Enter Rate"
-                                      className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                      autocomplete="naqsme"
-                                    />
-                                  </div>
-                                </div>
-                                <button className=" flex justify-center font-[500]   items-center text-[#fff] py-[5px] text-[18px]  rounded-md font-Poppins w-[100%] mx-auto bs-spj">
-                                  Save
-                                </button>
-                              </div>
-                              <div className=" flex border-[1px] flex-col gap-[15px] w-[400px] py-[15px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Min-weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                  <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Max-weight
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                </div>
-                                <div className=" flex-col flex gap-[20px] ">
-                                  <div className="relative w-full  h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1  absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                                    >
-                                      Percentege
-                                    </label>
-                                    <p className=" text-[15px]   py-[9px] font-Poppins"></p>
-                                  </div>
-                                </div>
-                                <div className="  gap-[10px] flex">
-                                  <button className=" flex justify-center  font-[500] items-center text-[#fff] py-[5px] text-[18px]  rounded-md font-Poppins w-[100%] mx-auto bs-spj">
-                                    Edit
-                                  </button>
-                                  <div className=" cursor-pointer  flex justify-center   rounded-[5px]  bg-[#ff2222] items-center w-[50px] h-0px]">
-                                    <i className="fa-solid text-[19px] text-[#fff] fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                    <div className="absolute bottom-0 flex w-[100%]">
+                      <div
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[red] rounded-bl-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
+                        onClick={handleDelete}
+                 
+                      >
+                        <p>Delete</p>
+                      </div>
+                      <div
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[#26b955] rounded-br-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
+                        onClick={handleDeleteModalClose}
+                      >
+                        <p>Cancel</p>
                       </div>
                     </div>
                   </div>
@@ -3349,7 +2972,7 @@ export default function LabourSetting() {
             </>
           )}
         </ModalContent>
-      </NextUIModal> */}
+      </NextUIModal>
     </>
   );
 }
