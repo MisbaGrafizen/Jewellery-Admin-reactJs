@@ -237,7 +237,6 @@ export default function PurchesInvoice() {
   };
 
 
-
   const calculateTax = (totalPrice = 0, discountPercentage = 0) => {
     console.log("totalPrice:", totalPrice);
     console.log("discountPercentage:", discountPercentage);
@@ -250,7 +249,6 @@ export default function PurchesInvoice() {
 
     const finalPrice = discountPrice + totalTax;
 
-    
     setCgst(calculatedCgst);
     setSgst(calculatedSgst);
     setTotalTaxAmount(calculatedCgst + calculatedSgst);
