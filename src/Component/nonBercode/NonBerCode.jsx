@@ -859,8 +859,8 @@ export default function NonBerCode() {
                               <label
                                 htmlFor="addstock"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
-                                  ? "text-[#000] -translate-y-[21px] "
-                                  : "text-[#8f8f8f] cursor-text"
+                                    ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Carat
@@ -916,8 +916,8 @@ export default function NonBerCode() {
                               <label
                                 htmlFor="addstockMetal"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
-                                  ? "text-[#000] -translate-y-[21px] "
-                                  : "text-[#8f8f8f] cursor-text"
+                                                   ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Metal
@@ -979,8 +979,8 @@ export default function NonBerCode() {
                               <label
                                 htmlFor="addstockCategory"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
-                                  ? "text-[#000] -translate-y-[21px] "
-                                  : "text-[#8f8f8f] cursor-text"
+                                                       ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Category
@@ -1038,8 +1038,8 @@ export default function NonBerCode() {
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200
                                   ${ProductNameFocused
-                                    ? "text-[#000] -translate-y-[21px] "
-                                    : "text-[#8f8f8f] cursor-text"
+                                                               ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Product Name
@@ -1062,8 +1062,8 @@ export default function NonBerCode() {
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${ProductPcsFocused
-                                  ? "text-[#000] -translate-y-[21px] "
-                                  : "text-[#8f8f8f] cursor-text"
+                                    ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Product Pcs
@@ -1085,8 +1085,8 @@ export default function NonBerCode() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${netWeghtFocused
-                                  ? "text-[#000] -translate-y-[21px] "
-                                  : "text-[#8f8f8f] cursor-text"
+                                    ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Net Weight
@@ -1107,8 +1107,8 @@ export default function NonBerCode() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${totalWeghtFocused
-                                  ? "text-[#000] -translate-y-[21px] "
-                                  : "text-[#8f8f8f] cursor-text"
+                                                               ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Total Weight
@@ -1131,7 +1131,7 @@ export default function NonBerCode() {
                       </div>
                     </div>
                     <button
-                      className=" flex justify-center mt-[10px] items-center text-[#fff] py-[5px] text-[23px]  rounded-md font-Poppins w-[93%] mx-auto bs-spj"
+                      className=" flex justify-center mt-[33px] items-center text-[#fff] py-[5px] text-[23px]  rounded-md font-Poppins w-[93%] mx-auto bs-spj"
                       onClick={handleAddStock}
                     >
                       {selectedStock ? "Update Stock" : "Add Stock"}

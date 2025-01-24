@@ -768,22 +768,23 @@ export default function LabourSetting() {
                         <h2 className="  flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Uchak
                         </h2>
-                        <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                        <div className=" flex gap-[25px] h-[80  vh] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
                           <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <span
+                                <label
+                                htmlFor="UchakCarat"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     selectedType || caratFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
+                                      ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                   }`}
                                 >
                                   Carat
-                                </span>
+                                </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
@@ -793,7 +794,7 @@ export default function LabourSetting() {
                                   <input
                                     type="text"
                                     name="group"
-                                    id="type"
+                                    id="UchakCarat"
                                     value={selectedType}
                                     onFocus={() => setCaratFocused(true)}
                                     onBlur={(e) =>
@@ -838,15 +839,16 @@ export default function LabourSetting() {
                                 ref={dropdownMetalRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                               >
-                                <span
+                                <label
+                                htmlFor="uchakmetal"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     selectedTypeMetal || metalFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
+                                        ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                   }`}
                                 >
                                   Metal
-                                </span>
+                                </label>
                                 <div
                                   className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                   onClick={() =>
@@ -856,7 +858,7 @@ export default function LabourSetting() {
                                   <input
                                     type="text"
                                     name="metal"
-                                    id="type1"
+                                    id="uchakmetal"
                                     value={selectedTypeMetal}
                                     onFocus={() => setMetalFocused(true)}
                                     onBlur={(e) =>
@@ -902,15 +904,16 @@ export default function LabourSetting() {
                               ref={dropdownCategoryRef}
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
-                              <span
+                              <label
+                              htmlFor="uchakCategory"
                                 className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                   selectedTypeCategory || categoryFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
+                                   ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                 }`}
                               >
                                 Category
-                              </span>
+                              </label>
                               <div
                                 className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                 onClick={() =>
@@ -920,7 +923,7 @@ export default function LabourSetting() {
                                 <input
                                   type="text"
                                   name="item"
-                                  id="type1"
+                                  id="uchakCategory"
                                   onFocus={() => setCategoryFocused(true)}
                                   onBlur={(e) =>
                                     setCategoryFocused(e.target.value !== "")
@@ -965,11 +968,11 @@ export default function LabourSetting() {
                             <div className=" flex gap-[20px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                 <label
-                                  htmlFor="name"
+                                  htmlFor="minuchak"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formData?.minWeight || minFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f]"
+                                ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                   }`}
                                 >
                                   Min-Weight
@@ -977,7 +980,7 @@ export default function LabourSetting() {
                                 <input
                                   type="Number"
                                   name="minWeight"
-                                  id="name"
+                                  id="minuchak"
                                   onFocus={() => setMinFocused(true)}
                                   onBlur={(e) =>
                                     setMinFocused(e.target.value !== "")
@@ -993,8 +996,8 @@ export default function LabourSetting() {
                                   htmlFor="max"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formData?.maxWeight || maxFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-pointer"
+                                                   ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                   }`}
                                 >
                                   Max-Weight
@@ -1020,8 +1023,8 @@ export default function LabourSetting() {
                                   htmlFor="rate1"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formData?.rate || rateFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                            ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                   }`}
                                 >
                                   Rate
@@ -1058,11 +1061,11 @@ export default function LabourSetting() {
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
                                     <label
-                                      htmlFor="type"
+                                      htmlFor="edituchakcarat"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedType || editcaratFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text "
+                                                      ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                       }`}
                                     >
                                       Carat
@@ -1076,7 +1079,7 @@ export default function LabourSetting() {
                                       <input
                                         type="text"
                                         name="group"
-                                        id="type"
+                                        id="edituchakcarat"
                                         value={editselectedType}
                                         onFocus={() =>
                                           setEditCaratFocused(true)
@@ -1125,16 +1128,17 @@ export default function LabourSetting() {
                                     ref={dropdownEditMetalRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
-                                    <span
+                                    <label
+                                    htmlFor="edituMetal"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedTypeMetal ||
                                         editmetalFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f]"
+                                                   ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                       }`}
                                     >
                                       Metal
-                                    </span>
+                                    </label>
                                     <div
                                       className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                       onClick={() =>
@@ -1146,7 +1150,7 @@ export default function LabourSetting() {
                                       <input
                                         type="text"
                                         name="metal"
-                                        id="type1"
+                                        id="edituMetal"
                                         value={editselectedTypeMetal}
                                         onFocus={() =>
                                           setEditMetalFocused(true)
@@ -1198,16 +1202,17 @@ export default function LabourSetting() {
                                   ref={dropdownCategoryRef}
                                   className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                 >
-                                  <span
+                                  <label
+                                  htmlFor="uecate"
                                     className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                       editselectedTypeCategory ||
                                       editcategoryFocused
-                                        ? "text-[#000] -translate-y-[21px]"
-                                        : "text-[#8f8f8f]"
+                                                     ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                     }`}
                                   >
                                     Category
-                                  </span>
+                                  </label>
                                   <div
                                     className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
                                     onClick={() =>
@@ -1219,7 +1224,7 @@ export default function LabourSetting() {
                                     <input
                                       type="text"
                                       name="item"
-                                      id="type1"
+                                      id="uecate"
                                       value={editselectedTypeCategory}
                                       onFocus={() =>
                                         setEditCategoryFocused(true)
@@ -1273,8 +1278,8 @@ export default function LabourSetting() {
                                       htmlFor="editmin"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         formData?.minWeight || editminFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                                 ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                       }`}
                                     >
                                       Min-Weight
@@ -1298,8 +1303,8 @@ export default function LabourSetting() {
                                       htmlFor="editmax"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         formData?.maxWeight || editmaxFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                              ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                       }`}
                                     >
                                       Max-Weight
@@ -1325,8 +1330,8 @@ export default function LabourSetting() {
                                       htmlFor="editrate"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         formData?.rate || editrateFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                                    ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
                                       }`}
                                     >
                                       Rate
@@ -1377,7 +1382,7 @@ export default function LabourSetting() {
                                     >
                                       <label
                                         htmlFor="name"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Carat
                                       </label>
@@ -1395,7 +1400,7 @@ export default function LabourSetting() {
                                     >
                                       <label
                                         htmlFor="name"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white  hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Metal
                                       </label>
@@ -1413,7 +1418,7 @@ export default function LabourSetting() {
                                   >
                                     <label
                                       htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                     >
                                       Category
                                     </label>
@@ -1429,7 +1434,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1 hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Min-Weight
                                       </label>
@@ -1440,7 +1445,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Max-weight
                                       </label>
@@ -1453,7 +1458,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Rate
                                       </label>
@@ -1485,8 +1490,8 @@ export default function LabourSetting() {
                                   htmlFor="weightcarat"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     selectedTypeWeight || weightcaratFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                      ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                   }`}
                                 >
                                   Carat
@@ -1552,8 +1557,8 @@ export default function LabourSetting() {
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     selectedTypeMetalWeight ||
                                     weightmetalFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                   ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                   }`}
                                 >
                                   Metal
@@ -1622,8 +1627,8 @@ export default function LabourSetting() {
                                 className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                   selectedTypeCategoryWeight ||
                                   weightcategoryFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f] cursor-text"
+                              ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                 }`}
                               >
                                 Category
@@ -1690,8 +1695,8 @@ export default function LabourSetting() {
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formDataWeight?.minWeight ||
                                     weightminFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                    ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                   }`}
                                 >
                                   Min-Weight
@@ -1716,8 +1721,8 @@ export default function LabourSetting() {
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formDataWeight?.maxWeight ||
                                     weightmaxFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                  ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                   }`}
                                 >
                                   Max-Weight
@@ -1743,8 +1748,8 @@ export default function LabourSetting() {
                                   htmlFor="weight1"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formDataWeight?.rate || weightrateFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                   }`}
                                 >
                                   Weight
@@ -1785,8 +1790,8 @@ export default function LabourSetting() {
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedTypeWeight ||
                                         editweightcaratFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                   ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                       }`}
                                     >
                                       Carat
@@ -1856,8 +1861,8 @@ export default function LabourSetting() {
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedTypeMetalWeight ||
                                         editweightmetalFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                     ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                       }`}
                                     >
                                       Metal
@@ -1932,8 +1937,8 @@ export default function LabourSetting() {
                                     className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                       editselectedTypeCategoryWeight ||
                                       editweightcategoryFocused
-                                        ? "text-[#000] -translate-y-[21px]"
-                                        : "text-[#8f8f8f] cursor-text"
+                               ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                     }`}
                                   >
                                     Category
@@ -2007,8 +2012,8 @@ export default function LabourSetting() {
                                       htmlFor="editmax"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editweightminFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+ ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                       }`}
                                     >
                                       Min-Weight
@@ -2036,8 +2041,8 @@ export default function LabourSetting() {
                                       htmlFor="editmin"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editweightmaxFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                      ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                       }`}
                                     >
                                       Max-Weight
@@ -2067,8 +2072,8 @@ export default function LabourSetting() {
                                       htmlFor="editrateweigth"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editweightrateFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                    ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex "
                                       }`}
                                     >
                                       Weight
@@ -2123,7 +2128,7 @@ export default function LabourSetting() {
                                     >
                                       <label
                                         htmlFor="name"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1 hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Carat
                                       </label>
@@ -2141,7 +2146,7 @@ export default function LabourSetting() {
                                     >
                                       <label
                                         htmlFor="name"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Metal
                                       </label>
@@ -2159,7 +2164,7 @@ export default function LabourSetting() {
                                   >
                                     <label
                                       htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                     >
                                       Category
                                     </label>
@@ -2175,7 +2180,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Min-Weight
                                       </label>
@@ -2186,7 +2191,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Max-weight
                                       </label>
@@ -2199,7 +2204,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1 hidden  absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Weight
                                       </label>
@@ -2230,8 +2235,8 @@ export default function LabourSetting() {
                                   htmlFor="weightmin"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     selectedTypePercentage || percaratFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                      ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                                 >
                                   Carat
@@ -2295,8 +2300,8 @@ export default function LabourSetting() {
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     selectedTypeMetalPercentage ||
                                     permetalFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                   ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                                 >
                                   Metal
@@ -2366,8 +2371,8 @@ export default function LabourSetting() {
                                 className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                   selectedTypeCategoryPercentage ||
                                   percategoryFocused
-                                    ? "text-[#000] -translate-y-[21px]"
-                                    : "text-[#8f8f8f]"
+                                  ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                 }`}
                               >
                                 Category
@@ -2436,8 +2441,8 @@ export default function LabourSetting() {
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formDataPercentage?.minWeight ||
                                     perminFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                   ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                                 >
                                   Min-Weight
@@ -2462,8 +2467,8 @@ export default function LabourSetting() {
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formDataPercentage?.maxWeight ||
                                     permaxFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                       ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                                 >
                                   Max-Weight
@@ -2489,8 +2494,8 @@ export default function LabourSetting() {
                                   htmlFor="perrate"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                     formDataPercentage?.rate || perrateFocused
-                                      ? "text-[#000] -translate-y-[21px]"
-                                      : "text-[#8f8f8f] cursor-text"
+                                ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                                 >
                                   Percentege
@@ -2514,7 +2519,7 @@ export default function LabourSetting() {
                               className=" flex justify-center items-center py-[5px] font-[500] rounded-md  bs-spj  text-[#fff] font-Poppins"
                               onClick={handleAddPercentage}
                             >
-                              {isEditingPercentage ? "Edit" : "Save"}
+                           Save
                             </button>
                           </div>
 
@@ -2532,8 +2537,8 @@ export default function LabourSetting() {
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedTypePercentage ||
                                         editpercaratFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                        ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                       }`}
                                     >
                                       Carat
@@ -2603,8 +2608,8 @@ export default function LabourSetting() {
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                         editselectedTypePercentage ||
                                         editpermetalFocused
-                                          ? "text-[#000] -translate-y-[21px]"
-                                          : "text-[#8f8f8f] cursor-text"
+                                            ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                       }`}
                                     >
                                       Metal
@@ -2679,8 +2684,8 @@ export default function LabourSetting() {
                                     className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                                       editselectedTypeCategoryPercentage ||
                                       editpercategoryFocused
-                                        ? "text-[#000] -translate-y-[21px]"
-                                        : "text-[#8f8f8f] cursor-text"
+                                      ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
                                     }`}
                                   >
                                     Category
@@ -2750,35 +2755,63 @@ export default function LabourSetting() {
 
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              
                                     <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="minjdhfd"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                      formDataPercentage?.minWeight ||
+                                        editperminFocused
+                                            ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
+                                      }`}
                                     >
-                                      Min-Weight
+                                     Min-Weight
                                     </label>
                                     <input
                                       type="Number"
                                       name="minWeight"
+                                      id="minjdhfd"
                                       value={formDataPercentage?.minWeight}
                                       onChange={handleChangePercentage}
-                                      placeholder="Enter Min-Weight"
+                                      onFocus={() =>
+                                        setEditPerMinFocused  (true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditPerMinFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
                                   </div>
                                   <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                                    <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                  <label
+                                      htmlFor="middnjdhfd"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                      formDataPercentage?.maxWeight ||
+                                        editpermaxFocused
+                                            ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
+                                      }`}
                                     >
-                                      Max-weight
+                                     Max-Weight
                                     </label>
                                     <input
                                       type="Number"
                                       name="maxWeight"
+                                      id="middnjdhfd"
                                       value={formDataPercentage?.maxWeight}
                                       onChange={handleChangePercentage}
-                                      placeholder="Enter Max-Weight"
+                                      onFocus={() =>
+                                        setEditPerMaxFocused  (true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditPerMaxFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
+
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
@@ -2786,18 +2819,32 @@ export default function LabourSetting() {
                                 </div>
                                 <div className=" flex-col flex gap-[20px] ">
                                   <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            
                                     <label
-                                      htmlFor="email"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      htmlFor="percentage"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                      formDataPercentage?.rate ||
+                                        editperrateFocused
+                                            ? "text-[#000] -translate-y-[21px] hidden"
+                                      : "text-[#8f8f8f] cursor-text flex"
+                                      }`}
                                     >
-                                      Percentege
+                                             Percentege
                                     </label>
                                     <input
                                       type="Number"
                                       name="rate"
+                                      id="percentage"
                                       value={formDataPercentage?.rate}
                                       onChange={handleChangePercentage}
-                                      placeholder="Enter Rate"
+                                      onFocus={() =>
+                                        setEditPerRateFocused  (true)
+                                      }
+                                      onBlur={(e) =>
+                                        setEditPerRateFocused(
+                                          e.target.value !== ""
+                                        )
+                                      }
                                       className="w-full outline-none text-[13px]   py-[9px] font-Poppins font-[400] bg-transparent"
                                       autocomplete="naqsme"
                                     />
@@ -2834,7 +2881,7 @@ export default function LabourSetting() {
                                     >
                                       <label
                                         htmlFor="name"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Carat
                                       </label>
@@ -2852,7 +2899,7 @@ export default function LabourSetting() {
                                     >
                                       <label
                                         htmlFor="name"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Metal
                                       </label>
@@ -2870,7 +2917,7 @@ export default function LabourSetting() {
                                   >
                                     <label
                                       htmlFor="name"
-                                      className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                      className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                     >
                                       Category
                                     </label>
@@ -2886,7 +2933,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Min-Weight
                                       </label>
@@ -2897,7 +2944,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white px-1 hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Max-weight
                                       </label>
@@ -2910,7 +2957,7 @@ export default function LabourSetting() {
                                     <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
-                                        className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
+                                        className="bg-white hidden   px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
                                       >
                                         Percentege
                                       </label>

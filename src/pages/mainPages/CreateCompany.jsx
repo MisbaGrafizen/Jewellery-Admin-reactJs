@@ -79,20 +79,20 @@ export default function CreateCompany() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const payload = {
       ...formData,
       userId,
     };
-      dispatch(addCompanyInfoAction(payload));
-  
+    dispatch(addCompanyInfoAction(payload));
+
     alert("Data created Successfully.");
   };
-  
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false); 
+        setDropdownOpen(false);
       }
     };
 
@@ -106,7 +106,7 @@ export default function CreateCompany() {
   return (
     <>
       <section className=" flex  w-[100%]  h-[100%] select-none *: p-[15px] overflow-hidden ">
-        <div className=" flex w-[100%] flex-col gap-[14px]  h-[100vh] ">
+        <div className=" flex w-[100%] flex-col gap-[14px]  h-[96vh] ">
           <Header pageName=" Create New Company" />
           <div className=" flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
@@ -139,19 +139,20 @@ export default function CreateCompany() {
                       </div> */}
 
                       <div className="relative w-full input-box12 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="name1"
                           className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.name || NameFocused
-                              ? "text-[#000] -translate-y-[21px]"
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden"
+                              : "text-[#8f8f8f] cursor-text   flex"
                           }`}
                         >
                           Name
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="name"
-                          id="name"
+                          id="name1"
                           value={user?.name}
                           className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setNameFocused(true)}
@@ -160,19 +161,20 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="emailid"
                           className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.email || EmailFocused
-                              ? "text-[#000] -translate-y-[21px]"
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden"
+                              : "text-[#8f8f8f]  cursor-text  flex"
                           }`}
                         >
                           Email Id
-                        </span>
+                        </label>
                         <input
                           type="email"
                           name="email"
-                          id="email"
+                          id="emailid"
                           value={user?.email}
                           placeholder="Enter Email"
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -184,19 +186,20 @@ export default function CreateCompany() {
                     </div>
                     <div className=" flex w-[100%] flex-col gap-[16px]">
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="Monumber"
                           className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.mobileNumber || mobileNumber
-                              ? "text-[#000] -translate-y-[21px]"
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden"
+                              : "text-[#8f8f8f] cursor-text  flex"
                           }`}
                         >
                           Mobile Number
-                        </span>
+                        </label>
                         <input
                           type="number"
                           name="number"
-                          id="number"
+                          id="Monumber"
                           value={user?.mobileNumber}
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setMobileNumber(true)}
@@ -215,19 +218,20 @@ export default function CreateCompany() {
                   <div className=" w-[100%]  relative flex gap-[16px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] flex-col gap-[16px]">
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="firmName"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.firmName || firmFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden"
+                              : "text-[#8f8f8f]  cursor-text flex"
                           }`}
                         >
                           Firm Name
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="firmName"
-                          id="firm"
+                          id="firmName"
                           value={formData?.firmName}
                           onChange={handleChange}
                           className="w-full outline-none text-[15px] py-[9px]  font-Poppins font-[400] bg-transparent"
@@ -237,15 +241,16 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="address"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.address || addressFocused
-                              ? "text-[#000] -translate-y-[45px] font-[]"
-                              : "  -translate-y-[27px] "
+                              ? "text-[#000] -translate-y-[45px] font-[] hidden"
+                              : "  -translate-y-[27px] flex cursor-text"
                           }`}
                         >
                           Buisness Address
-                        </span>
+                        </label>
                         <textarea
                           type="text"
                           name="address"
@@ -262,16 +267,16 @@ export default function CreateCompany() {
                       </div>
 
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <span
-                          html="state"
+                        <label
+                          htmlFor="state"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.state || stateFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] flex cursor-text"
                           }`}
                         >
                           State
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="state"
@@ -285,15 +290,16 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="city"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.city || cityFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
                           }`}
                         >
                           City
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="city"
@@ -307,15 +313,16 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="pin"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.pinCode || pinFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
                           }`}
                         >
                           Pin-Code
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="pinCode"
@@ -335,15 +342,17 @@ export default function CreateCompany() {
                         className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                         onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                       >
-                        <span
+                        <label
+                          htmlFor="type"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             selectedType || typeFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
                           }`}
+                          onClick={() => setDropdownOpen((prev) => !prev)}
                         >
                           Firm Type
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="firmType"
@@ -392,19 +401,20 @@ export default function CreateCompany() {
                         )}
                       </AnimatePresence>
                       <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="gst"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.gstNumber || gstFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
                           }`}
                         >
                           GST Number
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="gstNumber"
-                          id="number"
+                          id="gst"
                           value={formData?.gstNumber}
                           onChange={handleChange}
                           onFocus={() => setGstFocused(true)}
@@ -414,22 +424,23 @@ export default function CreateCompany() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
+                        <label
+                          htmlFor="pannumber"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.panNumber || panFocused
-                              ? "text-[#000] -translate-y-[21px] "
-                              : "text-[#8f8f8f]"
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
                           }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
                         >
                           PAN Number
-                        </span>
+                        </label>
                         <input
                           type="number"
                           name="panNumber"
-                          id="number"
+                          id="pannumber"
                           value={formData?.panNumber}
                           onChange={handleChange}
                           onFocus={() => setPanFocused(true)}
@@ -618,19 +629,20 @@ export default function CreateCompany() {
                     <div className=" flex w-[100%] gap-[16px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                          <span
+                          <label
+                          htmlFor="Holdername"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                               user?.holderName || holderFocused
-                                ? "text-[#000] -translate-y-[21px] "
-                                : "text-[#8f8f8f]"
+                                ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
                             }`}
                           >
                             Account Holder Name
-                          </span>
+                          </label>
                           <input
                             type="text"
                             name="holderName"
-                            id="name"
+                            id="Holdername"
                             value={formData?.holderName}
                             onChange={handleChange}
                             onFocus={() => setHolderFocused(true)}
@@ -642,19 +654,20 @@ export default function CreateCompany() {
                       </div>
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                          <span
+                          <label
+                          htmlFor="accountno"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                               formData?.accountNo || accountFocused
-                                ? "text-[#000] -translate-y-[21px] "
-                                : "text-[#8f8f8f]"
+                               ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
                             }`}
                           >
                             Account No
-                          </span>
+                          </label>
                           <input
                             type="number"
                             name="accountNo"
-                            id="number"
+                            id="accountno"
                             value={formData?.accountNo}
                             onChange={handleChange}
                             onFocus={() => setAccountFocused(true)}
@@ -788,19 +801,20 @@ export default function CreateCompany() {
                     <div className=" flex w-[100%] gap-[20px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                          <span
+                          <label
+                          htmlFor="bankname"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                               formData?.bankName || bankFocused
-                                ? "text-[#000] -translate-y-[21px] "
-                                : "text-[#8f8f8f]"
+                        ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
                             }`}
                           >
                             Bank Name
-                          </span>
+                          </label>
                           <input
                             type="text"
                             name="bankName"
-                            id="name"
+                            id="bankname"
                             value={formData?.bankName}
                             onChange={handleChange}
                             onFocus={() => setBankFocused(true)}
@@ -812,20 +826,21 @@ export default function CreateCompany() {
                       </div>
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                          <span
+                          <label
+                          htmlFor="ifsc"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                               formData?.IFSCCode || ifscFocused
-                                ? "text-[#000] -translate-y-[21px] "
-                                : "text-[#8f8f8f]"
+                                ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
                             }`}
                           >
                             IFSC Code
-                          </span>
+                          </label>
                           <input
                             type="text"
                             name="IFSCCode"
                             autocomplete="nasme"
-                            id="number"
+                            id="ifsc"
                             value={formData?.IFSCCode}
                             onChange={handleChange}
                             onFocus={() => setIfscFocused(true)}
@@ -836,19 +851,20 @@ export default function CreateCompany() {
                       </div>
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
+                      <label
+                      htmlFor="bankaddress"
                         className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                           formData?.bankAddress || bankAddressFocused
-                            ? "text-[#000] -translate-y-[45px] "
-                            : "text-[#8f8f8f] -translate-y-[26px]"
+                            ? "text-[#000] -translate-y-[45px]  hidden"
+                            : "text-[#8f8f8f] -translate-y-[26px]  flex  cursor-text"
                         }`}
                       >
                         Bank address
-                      </span>
+                      </label>
                       <textarea
                         type="email"
                         name="bankAddress"
-                        id="email"
+                        id="bankaddress"
                         value={formData?.bankAddress}
                         onChange={handleChange}
                         onFocus={() => setBankAddressFocused(true)}
@@ -868,19 +884,20 @@ export default function CreateCompany() {
                     <div className=" flex w-[100%] gap-[20px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                          <span
+                          <label
+                          htmlFor="finanace"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                               formData?.beginingFrom || financialFocused
-                                ? "text-[#000] -translate-y-[20px] "
-                                : "text-[#8f8f8f]"
+                               ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
                             }`}
                           >
                             Financial year Beginning From
-                          </span>
+                          </label>
                           <input
                             type="text"
                             name="beginingFrom"
-                            id="name"
+                            id="finanace"
                             value={formData?.beginingFrom}
                             onChange={handleChange}
                             onFocus={() => setFinancialFocused(true)}
@@ -892,20 +909,20 @@ export default function CreateCompany() {
                       </div>
                       <div className=" flex w-[100%] flex-col gap-[20px]">
                         <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-         
-                          <span
+                          <label
+                          htmlFor="invoice"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                               formData?.invoicePrefix || invoiceFocused
-                                ? "text-[#000] -translate-y-[20px] "
-                                : "text-[#8f8f8f]"
+                           ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
                             }`}
                           >
-                                                  Invoice Prefix
-                          </span>
+                            Invoice Prefix
+                          </label>
                           <input
                             type="number"
                             name="invoicePrefix"
-                            id="number"
+                            id="invoice"
                             value={formData?.invoicePrefix}
                             onChange={handleChange}
                             onFocus={() => setInvoiceFocused(true)}
@@ -918,24 +935,24 @@ export default function CreateCompany() {
 
                     <div className=" flex  w-[100%] gap-[20px]">
                       <div className="relative w-[50%]  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      <span
-                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                              formData?.terms || termsFocused
-                                ? "text-[#000] -translate-y-[44px] "
-                                : "text-[#8f8f8f] -translate-y-[26px]"
-                            }`}
-                          >
-                                          Term & Condition 
-                          </span>
+                        <label
+                        htmlFor="terms"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            formData?.terms || termsFocused
+                              ? "text-[#000] -translate-y-[44px]  hidden "
+                              : "text-[#8f8f8f] -translate-y-[26px] flex cursor-text"
+                          }`}
+                        >
+                          Term & Condition
+                        </label>
                         <textarea
                           type="email"
                           name="terms"
-                          id="email"
+                          id="terms"
                           value={formData?.terms}
                           onChange={handleChange}
                           onFocus={() => setTermsFocused(true)}
                           onBlur={() => setTermsFocused(false)}
-   
                           className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                         ></textarea>
                       </div>
@@ -943,20 +960,20 @@ export default function CreateCompany() {
                       <div className=" flex flex-col gap-[20px] w-[50%]">
                         <div className=" flex w-[100%] flex-col gap-[20px]">
                           <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                      
-                            <span
-                            className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                              formData?.invoiceNumber || invoiceNumberFocused
-                                ? "text-[#000] -translate-y-[20px] "
-                                : "text-[#8f8f8f] "
-                            }`}
-                          >
-                                                   Invoice Number
-                          </span>
+                            <label
+                            htmlFor="invoiceNumber"
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                formData?.invoiceNumber || invoiceNumberFocused
+                                                 ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
+                              }`}
+                            >
+                              Invoice Number
+                            </label>
                             <input
                               type="number"
                               name="invoiceNumber"
-                              id="number"
+                              id="invoiceNumber"
                               value={formData?.invoiceNumber}
                               onChange={handleChange}
                               onFocus={() => setInvoiceNumberFocused(true)}

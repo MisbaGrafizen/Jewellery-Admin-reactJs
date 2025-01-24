@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SideBar from "../../Component/sidebar/SideBar";
 import Header from "../../Component/header/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import { DatePicker} from "antd";
+import { DatePicker } from "antd";
 import { Check } from "lucide-react";
 import { Plus, Scan, Pencil } from "lucide-react";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
@@ -35,7 +35,7 @@ export default function PurchesInvoice() {
   const [outFocused, setOutocused] = useState(false);
   const [groupFocused, setGroupFocused] = useState(false);
   const [firmFocused, setFirmFocused] = useState(false);
-  const [partyNameFocused, setPartyNameFocused] = useState(false); 
+  const [partyNameFocused, setPartyNameFocused] = useState(false);
   const [partyStateFocused, setPartyStateNameFocused] = useState(false);
   const [partyCityFocused, setPartyCityFocused] = useState(false);
   const [partyAddressFocused, setPartyAddressFocused] = useState(false);
@@ -92,9 +92,9 @@ export default function PurchesInvoice() {
   useEffect(() => {
     dispatch(getAllCustomerAction());
     dispatch(getCompanyInfoAction());
-  }, [dispatch])
+  }, [dispatch]);
 
-  console.log('companyInfo', companyInfo);
+  console.log("companyInfo", companyInfo);
   const handlePartyModal = () => {
     setPartyModalOpen(true);
   };
@@ -108,10 +108,16 @@ export default function PurchesInvoice() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
-      if (createdropdownRef.current && !createdropdownRef.current.contains(event.target)) {
+      if (
+        createdropdownRef.current &&
+        !createdropdownRef.current.contains(event.target)
+      ) {
         setCreateDropdownOpen(false);
       }
-      if (firmdropdownRef.current && !firmdropdownRef.current.contains(event.target)) {
+      if (
+        firmdropdownRef.current &&
+        !firmdropdownRef.current.contains(event.target)
+      ) {
         setFirmDropdownOpen(false);
       }
     };
@@ -145,7 +151,7 @@ export default function PurchesInvoice() {
   const fetchUserDetails = async (userName) => {
     try {
       const response = await ApiGet(`/admin/customer-by-name/${userName}`);
-      console.log('response', response)
+      console.log("response", response);
       const userData = response.data?.data || response.data;
 
       setAddress(userData.address || "");
@@ -169,7 +175,6 @@ export default function PurchesInvoice() {
     fetchUserDetails(user.name);
   };
 
-
   const fetchProductByBarcode = async (barcodeValue, productIndex) => {
     try {
       const response = await ApiGet(`/admin/product/${barcodeValue}`);
@@ -180,26 +185,23 @@ export default function PurchesInvoice() {
         prevProducts.map((product, index) =>
           index === productIndex
             ? {
-              ...product,
-              ...productData,
-              barcodeVisible: false,
-              groupItemId: productData.groupItemId || { itemName: "N/A" },
-              toWeight: productData.toWeight || "0",
-              netWeight: productData.netWeight || "0",
-              totalPrice: productData.totalPrice || "0",
-            }
+                ...product,
+                ...productData,
+                barcodeVisible: false,
+                groupItemId: productData.groupItemId || { itemName: "N/A" },
+                toWeight: productData.toWeight || "0",
+                netWeight: productData.netWeight || "0",
+                totalPrice: productData.totalPrice || "0",
+              }
             : product
         )
       );
 
       // Update totals
       setTotals((prevTotals) => ({
-        grossQty:
-          prevTotals.grossQty + parseFloat(productData.toWeight || 0),
-        netQty:
-          prevTotals.netQty + parseFloat(productData.netWeight || 0),
-        amount:
-          prevTotals.amount + parseFloat(productData.totalPrice || 0),
+        grossQty: prevTotals.grossQty + parseFloat(productData.toWeight || 0),
+        netQty: prevTotals.netQty + parseFloat(productData.netWeight || 0),
+        amount: prevTotals.amount + parseFloat(productData.totalPrice || 0),
       }));
     } catch (error) {
       console.error("Error fetching product by barcode:", error);
@@ -236,7 +238,6 @@ export default function PurchesInvoice() {
     }
   };
 
-
   const calculateTax = (totalPrice = 0, discountPercentage = 0) => {
     console.log("totalPrice:", totalPrice);
     console.log("discountPercentage:", discountPercentage);
@@ -252,11 +253,11 @@ export default function PurchesInvoice() {
     setCgst(calculatedCgst);
     setSgst(calculatedSgst);
     setTotalTaxAmount(calculatedCgst + calculatedSgst);
-    setDiscountAmount(discountAmount);   
-    setDiscountPrice(discountPrice)                         
+    setDiscountAmount(discountAmount);
+    setDiscountPrice(discountPrice);
     setFinalTotal(finalPrice);
-    
-    console.log('discountPrice', discountPrice)
+
+    console.log("discountPrice", discountPrice);
     console.log("Discount Amount:", discountAmount);
     console.log("Final Price:", finalPrice);
 
@@ -273,12 +274,10 @@ export default function PurchesInvoice() {
 
     console.log("Calculated Invoice Data:", invoiceData);
     return invoiceData;
-
   };
 
   const handleSaveInvoice = async () => {
     try {
-
       const {
         discountAmount,
         discountPrice,
@@ -287,36 +286,36 @@ export default function PurchesInvoice() {
         totalTax,
         finalPrice,
       } = calculateTax(totals.amount || 0, discountPercentage || 0);
-  
+
       const payload = {
         customerId,
         products: products.map((product) => ({
-          productId: product?.groupItemId?._id, 
-          hsnCode: product?.hsn || 0, 
-          gstRate: product?.gstRate || 0, 
+          productId: product?.groupItemId?._id,
+          hsnCode: product?.hsn || 0,
+          gstRate: product?.gstRate || 0,
           grossQty: product?.toWeight || 0,
-          netQty: product?.netWeight || 0, 
-          rate: product?.extraRate || 0, 
+          netQty: product?.netWeight || 0,
+          rate: product?.extraRate || 0,
           totalPrice: product?.totalPrice || 0,
         })),
-        billType: "estimate", 
+        billType: "estimate",
         billNo: Date.now(),
         date: selectedDate,
         discount: discountPercentage || 0,
         discountAmount: discountAmount,
-        discountPrice: discountPrice, 
-        cgstAmount: calculatedCgst, 
-        sgstAmount: calculatedSgst, 
-        gstAmount: totalTax, 
-        totalPrice: finalPrice, 
-        companyId: companyInfo?.[0]?._id, 
-        paymentType: "cash", 
+        discountPrice: discountPrice,
+        cgstAmount: calculatedCgst,
+        sgstAmount: calculatedSgst,
+        gstAmount: totalTax,
+        totalPrice: finalPrice,
+        companyId: companyInfo?.[0]?._id,
+        paymentType: "cash",
       };
 
-      const response = await ApiPost('/admin/bill', payload);
-      console.log('response', response)
+      const response = await ApiPost("/admin/bill", payload);
+      console.log("response", response);
       if (response.data.bill) {
-        const createdInvoiceId = response.data.bill._id; 
+        const createdInvoiceId = response.data.bill._id;
         setCreatedInvoiceId(createdInvoiceId);
         alert("Invoice created successfully!");
         navigate(`/invoice-bill/${createdInvoiceId}`);
@@ -329,7 +328,6 @@ export default function PurchesInvoice() {
     }
   };
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -340,8 +338,8 @@ export default function PurchesInvoice() {
 
   const handleSubmit = async () => {
     try {
-      const response = await ApiPost("/admin/customer", formData); 
-      console.log('response', response)
+      const response = await ApiPost("/admin/customer", formData);
+      console.log("response", response);
       alert("Party created successfully!");
 
       // Reset form and close modal
@@ -365,11 +363,10 @@ export default function PurchesInvoice() {
     }
   };
 
-
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
-        <div className="flex w-[100%] flex-col gap-[14px] h-[95vh]">
+        <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
           <Header pageName="Invoice" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
@@ -403,18 +400,20 @@ export default function PurchesInvoice() {
                         className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                         onClick={() => setDropdownOpen((prev) => !prev)}
                       >
-                        <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                            }`}
+                        <label
+                          htmlFor="inname"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            selectedType || nameFocused
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
+                          }`}
                         >
                           Name
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="firmType"
-                          id="type"
+                          id="inname"
                           value={selectedType}
                           className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                           readOnly
@@ -461,14 +460,16 @@ export default function PurchesInvoice() {
                         )}
                       </AnimatePresence>
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
-                        <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
-                            ? "text-[#000] -translate-y-[45px] font-[]"
-                            : "  -translate-y-[27px] "
-                            }`}
+                        <label
+                          htmlFor="address"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            addressFocused
+                              ? "text-[#000] -translate-y-[45px] hidden font-[]"
+                              : "  -translate-y-[27px] flex cursor-text "
+                          }`}
                         >
                           Address
-                        </span>
+                        </label>
                         <textarea
                           type="text"
                           name="address"
@@ -487,18 +488,20 @@ export default function PurchesInvoice() {
 
                     <div className=" flex w-[90%] gap-[15px] flex-col ">
                       <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                            }`}
+                        <label
+                          htmlFor="gst"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            gstFocused
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
+                          }`}
                         >
                           GST Number
-                        </span>
+                        </label>
                         <input
                           type="number"
                           name="GST"
-                          id="number"
+                          id="gst"
                           value={gstNumber}
                           onChange={(e) => setGstNumber(e.target.value)}
                           onFocus={() => setGstFocused(true)}
@@ -508,21 +511,23 @@ export default function PurchesInvoice() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                            }`}
+                        <label
+                          htmlFor="pan"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            panFocused
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
+                          }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
                         >
                           PAN Number
-                        </span>
+                        </label>
                         <input
                           type="number"
                           name="panNo"
-                          id="number"
+                          id="pan"
                           value={panNumber}
                           onChange={(e) => setPanNumber(e.target.value)}
                           onFocus={() => setPanFocused(true)}
@@ -532,21 +537,23 @@ export default function PurchesInvoice() {
                         />
                       </div>
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                        <span
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                            }`}
+                        <label
+                          htmlFor="state"
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                            stateFocused
+                              ? "text-[#000] -translate-y-[21px] hidden "
+                              : "text-[#8f8f8f] cursor-text flex"
+                          }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
                         >
                           State
-                        </span>
+                        </label>
                         <input
                           type="text"
                           name="state"
-                          id="number"
+                          id="state"
                           value={userState}
                           onChange={(e) => setUserState(e.target.value)}
                           onFocus={() => setStateFocused(true)}
@@ -697,7 +704,9 @@ export default function PurchesInvoice() {
                                 {product.barcodeVisible ? (
                                   <input
                                     type="text"
-                                    ref={(el) => (productNameInputRefs.current[index] = el)}
+                                    ref={(el) =>
+                                      (productNameInputRefs.current[index] = el)
+                                    }
                                     onKeyDown={(e) => handleKeyDown(e, index)}
                                     className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                     autoFocus
@@ -759,7 +768,6 @@ export default function PurchesInvoice() {
                           className="w-[70%] mr-4 py-2 px-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-Poppins"
                         />
                       </div> */}
-
 
                       <div className="px-4 py-3  w-[100%] relative flex  justify-between items-center">
                         <button
@@ -930,10 +938,9 @@ export default function PurchesInvoice() {
                               </div>
                               <div className="flex  items-center  gap-[20px] justify-between">
                                 <span className="text-[#000000] text-[14px] fnt-[300] font-Poppins">
-                                IFSC Code:
+                                  IFSC Code:
                                 </span>
                                 <span className="text-[#5d5b5b] text-[12px]  gap-[4px] flex fnt-[300] font-Poppins">
-                                 
                                   {item?.IFSCCode}
                                 </span>
                               </div>
@@ -996,21 +1003,24 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px] grid grid-cols-2 gap-4">
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
-                                <lavel
-                     htmlFor="indis"
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${discountInFocused
-                                    ? "text-[#000] -translate-y-[19px] "
-                                    : "text-[#8f8f8f]"
-                                    }`}
+                                <label
+                                  htmlFor="indis"
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${
+                                    discountInFocused
+                                      ? "text-[#000] -translate-y-[19px] hidden "
+                                      : "text-[#8f8f8f] flex cursor-text"
+                                  }`}
                                 >
                                   Discount- in %
-                                </lavel>
+                                </label>
                                 <input
                                   type="number"
                                   name="discount"
                                   id="indis"
                                   value={discountPercentage}
-                                  onChange={(e) => setDiscountPercentage(e.target.value)}
+                                  onChange={(e) =>
+                                    setDiscountPercentage(e.target.value)
+                                  }
                                   onKeyDown={handleDiscountKeyPress}
                                   onFocus={() => setDiscountInFocused(true)}
                                   onBlur={() => setDiscountInFocused(false)}
@@ -1020,10 +1030,11 @@ export default function PurchesInvoice() {
                               </div>
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${discountAmount || outFocused
-                                    ? "text-[#000] -translate-y-[21px] "
-                                    : "text-[#000000] -translate-y-[21px] "
-                                    }`}
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${
+                                    discountAmount || outFocused
+                                      ? "text-[#000] -translate-y-[21px] "
+                                      : "text-[#000000] -translate-y-[21px] "
+                                  }`}
                                 >
                                   Discount- Out ₹
                                 </span>
@@ -1036,8 +1047,12 @@ export default function PurchesInvoice() {
                                   autocomplete="nasme"
                                   className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                                 /> */}
-                                <p   onFocus={() => setOutocused(true)}
-                                  onBlur={() => setOutocused(false)}>{discountAmount.toFixed(2)}</p>
+                                <p
+                                  onFocus={() => setOutocused(true)}
+                                  onBlur={() => setOutocused(false)}
+                                >
+                                  {discountAmount.toFixed(2)}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -1047,8 +1062,7 @@ export default function PurchesInvoice() {
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full font-Poppins px-[15px] h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{cgst.toFixed(2)}
-                                </p>
+                                <p>{cgst.toFixed(2)}</p>
                               </div>
                             </div>
                           </div>
@@ -1088,8 +1102,6 @@ export default function PurchesInvoice() {
                               </div>
                             </div>
                           </div>
-
-
 
                           {/* TCS Checkbox */}
                           <div className="flex items-center justify-between gap-4">
@@ -1146,17 +1158,16 @@ export default function PurchesInvoice() {
                               </div>
                             </div>
                           </div>
-              
                         </div>
                       </div>
-                      
                     </div>
-                    
                   </div>
-                  <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center  text-[18px] mx-auto mt-[10px] flex w-[120px]"
-                            onClick={handleSaveInvoice}>
-                            Save
-                          </button> 
+                  <button
+                    className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center  text-[18px] mx-auto mt-[10px] flex w-[120px]"
+                    onClick={handleSaveInvoice}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
             </div>
@@ -1188,10 +1199,11 @@ export default function PurchesInvoice() {
                       onClick={() => setCreateDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${createselectedType || groupFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
-                          }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          createselectedType || groupFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                        }`}
                       >
                         Party Group
                       </span>
@@ -1241,17 +1253,17 @@ export default function PurchesInvoice() {
                               </div>
                             </>
                           ))}
-                    
                         </motion.div>
                       )}
                     </AnimatePresence>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
-                       htmlFor="partyName"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNameFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
-                          }`}
+                        htmlFor="partyName"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyNameFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                        }`}
                       >
                         Party Name
                       </lavel>
@@ -1269,10 +1281,11 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyAddressFocused
-                          ? "text-[#000] -translate-y-[48px] font-[]"
-                          : "  -translate-y-[27px] "
-                          }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyAddressFocused
+                            ? "text-[#000] -translate-y-[48px] font-[]"
+                            : "  -translate-y-[27px] "
+                        }`}
                       >
                         Address
                       </span>
@@ -1283,18 +1296,21 @@ export default function PurchesInvoice() {
                         value={formData.address}
                         onChange={handleInputChange}
                         onFocus={() => setPartyAddressFocused(true)}
-                        onBlur={(e) => setPartyAddressFocused(e.target.value !== "")}
+                        onBlur={(e) =>
+                          setPartyAddressFocused(e.target.value !== "")
+                        }
                         autocomplete="nasme"
                         className="w-full outline-none text-[14px] pt-[10px]  h-[100%] font-Poppins font-[400] bg-transparent"
                       ></textarea>
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
-                      htmlFor="gstNumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyGstFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
-                          }`}
+                        htmlFor="gstNumber"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyGstFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                        }`}
                       >
                         GST Number
                       </lavel>
@@ -1312,11 +1328,12 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
-                      htmlFor="PanParty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPanFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f] cursor-text"
-                          }`}
+                        htmlFor="PanParty"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyPanFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f] cursor-text"
+                        }`}
                       >
                         PAN Number
                       </label>
@@ -1341,11 +1358,12 @@ export default function PurchesInvoice() {
                       onClick={() => setFirmDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
                       <label
-                      htmlFor="selectFirm"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${firmselectedType || firmFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f]"
-                          }`}
+                        htmlFor="selectFirm"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          firmselectedType || firmFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f]"
+                        }`}
                       >
                         Firm Type
                       </label>
@@ -1400,12 +1418,12 @@ export default function PurchesInvoice() {
                     </AnimatePresence>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
-                      htmlFor="partyState"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyStateFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f] cursor-text"
-                          }`}
-                  
+                        htmlFor="partyState"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyStateFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f] cursor-text"
+                        }`}
                       >
                         State Name
                       </label>
@@ -1423,12 +1441,12 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
-                      htmlFor="partycity"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyCityFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f] cursor-text"
-                          }`}
-
+                        htmlFor="partycity"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyCityFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f] cursor-text"
+                        }`}
                       >
                         City Name
                       </label>
@@ -1446,11 +1464,12 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
-                      htmlFor="partyPin"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPinFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f] cursor-text"
-                          }`}
+                        htmlFor="partyPin"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyPinFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f] cursor-text"
+                        }`}
                       >
                         Pin Code
                       </label>
@@ -1468,12 +1487,12 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
-                      htmlFor="partynumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNumberFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f] cursor-text"
-                          }`}
-             
+                        htmlFor="partynumber"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyNumberFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f] cursor-text"
+                        }`}
                       >
                         Mobile Number
                       </label>
@@ -1491,12 +1510,12 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
-                      htmlFor="emailparty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyEmailFocused
-                          ? "text-[#000] -translate-y-[21px] "
-                          : "text-[#8f8f8f] cursor-text"
-                          }`}
-                 
+                        htmlFor="emailparty"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                          partyEmailFocused
+                            ? "text-[#000] -translate-y-[21px] "
+                            : "text-[#8f8f8f] cursor-text"
+                        }`}
                       >
                         Email ID
                       </label>
@@ -1514,8 +1533,10 @@ export default function PurchesInvoice() {
                     </div>
                   </div>
                 </div>
-                <button className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]"
-                onClick={handleSubmit}>
+                <button
+                  className=" bs-spj  font-[500] font-Poppins text-[#fff] rounded-[8px] py-[5px] justify-center text-[18px] mx-auto mt-[10px] flex w-[120px]"
+                  onClick={handleSubmit}
+                >
                   Save
                 </button>
               </div>
