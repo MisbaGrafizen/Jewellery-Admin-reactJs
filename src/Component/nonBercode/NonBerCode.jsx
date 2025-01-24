@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 
 export default function NonBerCode() {
+    const [stockModalopen, setStockModalOpen] = useState(false);
   const [tilescategories, setTilescategories] = useState([]);
   const [tilescategoryName, setTilescategoryName] = useState("");
   const [isTilescategoryInputVisible, setTilescategoryInputVisible] =
@@ -57,23 +61,44 @@ export default function NonBerCode() {
       prevTilescategories.filter((item) => item.id !== id)
     );
   };
+  const dropdownRef = useRef(null);
+  const dropdownMetalRef = useRef(null);
+  const dropdownCategoryRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+      if (
+        dropdownMetalRef.current &&
+        !dropdownMetalRef.current.contains(event.target)
+      ) {
+        setDropdownOpenMetal(false);
+      }
+      if (
+        dropdownCategoryRef.current &&
+        !dropdownCategoryRef.current.contains(event.target)
+      ) {
+        setDropdownOpenCategory(false);
+      }
+    };
 
-  const handleClickOutside = (e) => {
-    if (
-      tilescategoryInputRef.current &&
-      !tilescategoryInputRef.current.contains(e.target)
-    ) {
-      setTilescategoryInputVisible(false);
-      setEditingTilescategoryIndex(false);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+
+  const handleStockModal = () => {
+    setStockModalOpen(true);
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+
+  const handleStockModalClose = () => {
+    setStockModalOpen(false);
+  };
+
+
+
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
@@ -163,7 +188,7 @@ export default function NonBerCode() {
           </div>
 
           <div className=" flex  justify-end w-[100%]">
-            <button className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj ">
+            <button className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj " onClick={handleStockModal}>
               <i className="fa-solid fa-plus"></i>
               Add Stock
             </button>
@@ -253,7 +278,7 @@ export default function NonBerCode() {
           </div>
         </div>
       </div>
-      {/* <NextUIModal isOpen={stockModalopen}>
+      <NextUIModal isOpen={stockModalopen}>
         <ModalContent className="md:max-w-[760px] max-w-[760px] relative  bg-transparent shadow-none rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[410px]  ">
           {(handleModalclose) => (
             <>
@@ -473,29 +498,7 @@ export default function NonBerCode() {
                                 )}
                               </AnimatePresence>
                             </div>
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                              <label
-                                htmlFor="addstockGross"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  grossWeight || grossFocused
-                                    ? "text-[#000] -translate-y-[21px] "
-                                    : "text-[#8f8f8f] cursor-text"
-                                }`}
-                              >
-                                G .Weight
-                              </label>
-                              <input
-                                type="text"
-                                name="toWeight"
-                                id="addstockGross"
-                                onFocus={() => setGrossFocused(true)}
-                                onBlur={() => setGrossFocused(false)}
-                                className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                                value={grossWeight}
-                                onChange={(e) => setGrossWeight(e.target.value)}
-                                autocomplete="naqsme"
-                              />
-                            </div>
+                       
                           </div>
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
@@ -547,7 +550,7 @@ export default function NonBerCode() {
                             </div>
                           </div>
                           <div className=" flex w-[48%]  gap-[30px]">
-                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -560,9 +563,9 @@ export default function NonBerCode() {
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
-                          </div> */}
+                          </div>
 
-                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                         <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -592,7 +595,7 @@ export default function NonBerCode() {
             </>
           )}
         </ModalContent>
-      </NextUIModal> */}
+      </NextUIModal>
     </>
   );
 }
