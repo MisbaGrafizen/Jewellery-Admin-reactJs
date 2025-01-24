@@ -22,6 +22,7 @@ import {
   updateMetalAction,
   updateStockAction,
 } from "../../redux/action/landingManagement";
+import NonBerCode from "../../Component/nonBercode/NonBerCode";
 
 export default function InventoryCreate() {
   const [isInputVisible, setInputVisible] = useState(false);
@@ -88,18 +89,26 @@ export default function InventoryCreate() {
   const metals = useSelector((state) => state.landing.getMetal);
   const item = useSelector((state) => state.landing.getGroupItem);
   const stocks = useSelector((state) => state.landing.getProduct);
+  const [isBercodeVisible, setIsBercodeVisible] = useState(true);
 
+  const handleBercodeClick = () => {
+    setIsBercodeVisible(true);
+  };
+
+  const handleNoneBercodeClick = () => {
+    setIsBercodeVisible(false);
+  };
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing mode
   };
 
   const handleSaveClick = () => {
-    console.log("function triggered")
+    console.log("function triggered");
     if (percentages[item._id]) {
-      console.log("find percentge")
-      handleSavePercentage(item._id); 
+      console.log("find percentge");
+      handleSavePercentage(item._id);
     }
-    setIsEditing(false); 
+    setIsEditing(false);
   };
   useEffect(() => {
     setCarat(categories || []);
@@ -536,87 +545,252 @@ export default function InventoryCreate() {
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
-        <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
+        <div className="flex w-[100%] flex-col gap-[14px] h-[98vh]">
           <Header pageName="Inventory" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className="flex w-[100%] max-h-[90%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
-              <div className="flex flex-col gap-[25px] w-[100%]">
-                <div className="flex flex-col gap-[6px] w-[100%]">
-                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
-                    Carats
-                  </h1>
-                  <div className="w-[100%] flex flex-col gap-[15px]">
-                    <div className="flex gap-[20px]">
-                      <div
-                        ref={inputRef}
-                        className="flex gap-[15px]  flex-wrap"
-                      >
-                        {!isInputVisible ? (
-                          <div className="flex">
-                            <div
-                              onClick={handlePlusClick}
-                              className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                            >
-                              <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
-                            </div>
+            <div className="flex flex-col pt-[10px] w-[100%] max-h-[90%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
+            <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
+        <div
+          className={`absolute top-0 left-0 h-full w-[130px] bg-blue-500 rounded-[8px] transition-transform duration-300 ${
+            isBercodeVisible ? "translate-x-0" : "translate-x-[150px]"
+          }`}
+        ></div>
+        <button
+          onClick={handleBercodeClick}
+          className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${
+            isBercodeVisible ? "[#fff]" : "[#000]"
+          }`}
+        >
+          Bercode
+        </button>
+        <button
+          onClick={handleNoneBercodeClick}
+          className={`flex w-[150px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${
+            isBercodeVisible ? "[#000]" : "[#fff]"
+          }`}
+        >
+          None Bercode
+        </button>
+      </div>
+
+              {isBercodeVisible ? (
+                <>
+                  <div className="flex flex-col gap-[25px] w-[100%]">
+                    <div className="flex flex-col gap-[6px] w-[100%]">
+                      <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
+                        Carats
+                      </h1>
+                      <div className="w-[100%] flex flex-col gap-[15px]">
+                        <div className="flex gap-[20px]">
+                          <div
+                            ref={inputRef}
+                            className="flex gap-[15px]  flex-wrap"
+                          >
+                            {!isInputVisible ? (
+                              <div className="flex">
+                                <div
+                                  onClick={handlePlusClick}
+                                  className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                >
+                                  <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                                <input
+                                  type="text"
+                                  name="name"
+                                  value={name}
+                                  onChange={(e) => setName(e.target.value)}
+                                  onKeyDown={(e) =>
+                                    handleKeyPress(e, "category")
+                                  }
+                                  placeholder="Carats"
+                                  className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
+                                  autoFocus
+                                />
+                              </div>
+                            )}
                           </div>
-                        ) : (
-                          <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
-                            <input
-                              type="text"
-                              name="name"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                              onKeyDown={(e) => handleKeyPress(e, "category")}
-                              placeholder="Carats"
-                              className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
-                              autoFocus
-                            />
+                          <div className="flex-wrap flex relative gap-[10px]">
+                            {Array.isArray(carat) ? (
+                              carat.map((item, index) => (
+                                <>
+                                  <div className=" flex  justify-center flex-col">
+                                    <div
+                                      key={item?.id}
+                                      className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-[180px] px-[15px] font-Poppins  md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                      onClick={() =>
+                                        handleCategoryClick(item?.id)
+                                      }
+                                      onDoubleClick={() =>
+                                        handleDoubleClick(
+                                          "category",
+                                          item,
+                                          index
+                                        )
+                                      }
+                                    >
+                                      {editingCarat === index ? (
+                                        <>
+                                          <div className="flex flex-col justify-center">
+                                            <input
+                                              type="text"
+                                              name="name"
+                                              value={editCaratName}
+                                              onChange={(e) =>
+                                                setEditCaratName(e.target.value)
+                                              }
+                                              onKeyDown={(e) =>
+                                                handleKeyPress(
+                                                  e,
+                                                  "category",
+                                                  "edit",
+                                                  editingCaratId
+                                                )
+                                              }
+                                              className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
+                                              autoFocus
+                                            />
+                                            <p
+                                              ref={popupRef}
+                                              className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px]  z-10 font-Montserrat cursor-pointer mx-auto"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleOpenDeleteModal(
+                                                  "category",
+                                                  item?._id
+                                                );
+                                              }}
+                                            >
+                                              Delete
+                                            </p>
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <p>{item.name}</p>
+                                      )}
+                                    </div>
+                                    <div className="items-center gap-[4px] justify-center flex">
+                                      <div className="border-[1px] mt-[10px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px] px-[5px] font-Poppins w-[140px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[5px] cursor-pointer">
+                                        {isEditing ? (
+                                          <input
+                                            className="flex w-[100%] outline-none h-[100%] text-[12px]"
+                                            placeholder="Enter Fine Weight"
+                                            type="text"
+                                            name="percentage"
+                                            value={percentages[item._id] || ""}
+                                            onChange={(e) =>
+                                              handlePercentageChange(
+                                                item._id,
+                                                e.target.value
+                                              )
+                                            }
+                                          />
+                                        ) : (
+                                          <span>
+                                            {percentages[item._id] || "No Data"}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <button
+                                        className="mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
+                                        onClick={
+                                          isEditing
+                                            ? handleSaveClick
+                                            : handleEditClick
+                                        }
+                                      >
+                                        <i
+                                          className={`fa-duotone fa-solid ${
+                                            isEditing ? "fa-check" : "fa-edit"
+                                          }`}
+                                        ></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </>
+                              ))
+                            ) : (
+                              <p> No Categories Available</p>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </div>
-                      <div className="flex-wrap flex relative gap-[10px]">
-                        {Array.isArray(carat) ? (
-                          carat.map((item, index) => (
-                            <>
-                              <div className=" flex  justify-center flex-col">
+                    </div>
+                    <div className="flex flex-col gap-[6px] w-[100%]">
+                      <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
+                        Metal
+                      </h1>
+                      <div className="w-[100%] flex flex-col gap-[15px]">
+                        <div className="flex gap-[20px]">
+                          <div className="flex gap-[15px] items-center flex-wrap">
+                            {!isMetalInputVisible ? (
+                              <div className="flex">
+                                <div
+                                  onClick={() => setMetalInputVisible(true)}
+                                  className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                >
+                                  <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                                <input
+                                  type="text"
+                                  name="metalName"
+                                  value={metalName}
+                                  onChange={(e) => setMetalName(e.target.value)}
+                                  onKeyDown={(e) => handleKeyPress(e, "metal")}
+                                  placeholder="Metals"
+                                  className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
+                                  autoFocus
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div
+                            ref={inputRef}
+                            className="flex-wrap flex relative gap-[10px] "
+                          >
+                            {Array.isArray(metal) ? (
+                              metal.map((item, index) => (
                                 <div
                                   key={item?.id}
-                                  className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-[180px] px-[15px] font-Poppins  md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                                  onClick={() => handleCategoryClick(item?.id)}
+                                  className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                  onClick={() => handleMetalClick(item?.id)}
                                   onDoubleClick={() =>
-                                    handleDoubleClick("category", item, index)
+                                    handleDoubleClick("metal", item, index)
                                   }
                                 >
-                                  {editingCarat === index ? (
+                                  {editingMetal === index ? (
                                     <>
                                       <div className="flex flex-col justify-center">
                                         <input
                                           type="text"
-                                          name="name"
-                                          value={editCaratName}
+                                          name="metalName"
+                                          value={editMetalName}
                                           onChange={(e) =>
-                                            setEditCaratName(e.target.value)
+                                            setEditMetalName(e.target.value)
                                           }
                                           onKeyDown={(e) =>
                                             handleKeyPress(
                                               e,
-                                              "category",
+                                              "metal",
                                               "edit",
-                                              editingCaratId
+                                              editingMetalId
                                             )
                                           }
                                           className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                           autoFocus
                                         />
                                         <p
-                                          ref={popupRef}
-                                          className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px]  z-10 font-Montserrat cursor-pointer mx-auto"
+                                          className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             handleOpenDeleteModal(
-                                              "category",
+                                              "metal",
                                               item?._id
                                             );
                                           }}
@@ -626,373 +800,250 @@ export default function InventoryCreate() {
                                       </div>
                                     </>
                                   ) : (
-                                    <p>{item.name}</p>
+                                    <p>{item.metalName}</p>
                                   )}
                                 </div>
-                                <div className="items-center gap-[4px] justify-center flex">
-                                  <div className="border-[1px] mt-[10px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px] px-[5px] font-Poppins w-[140px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[5px] cursor-pointer">
-                                    {isEditing ? (
-                                      <input
-                                        className="flex w-[100%] outline-none h-[100%] text-[12px]"
-                                        placeholder="Enter Fine Weight"
-                                        type="text"
-                                        name="percentage"
-                                        value={percentages[item._id] || ""}
-                                        onChange={(e) =>
-                                          handlePercentageChange(item._id, e.target.value)
-                                        }
-                                      />
-                                    ) : (
-                                      <span>
-                                        {percentages[item._id] || "No Data"}
-                                      </span>
-                                    )}
-                                  </div>
-                                  <button
-                                    className="mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
-                                    onClick={  isEditing
-                                        ? handleSaveClick
-                                        : handleEditClick
-                                    }
-                                  >
-                                    <i
-                                      className={`fa-duotone fa-solid ${
-                                        isEditing ? "fa-check" : "fa-edit"
-                                      }`}
-                                    ></i>
-                                  </button>
+                              ))
+                            ) : (
+                              <p> No Categories Available</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-[6px] w-[100%]">
+                      <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
+                        Product Category
+                      </h1>
+                      <div className="w-[100%] flex flex-col gap-[15px]">
+                        <div className="flex gap-[20px]">
+                          <div className="flex gap-[15px] items-center flex-wrap">
+                            {!isItemInputVisible ? (
+                              <div className="flex">
+                                <div
+                                  onClick={() => setItemInputVisible(true)}
+                                  className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                >
+                                  <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
                                 </div>
                               </div>
-                            </>
-                          ))
-                        ) : (
-                          <p> No Categories Available</p>
-                        )}
+                            ) : (
+                              <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                                <input
+                                  type="text"
+                                  name="itemName"
+                                  value={itemName}
+                                  onChange={(e) => setItemName(e.target.value)}
+                                  onKeyDown={(e) => handleKeyPress(e, "item")}
+                                  placeholder="Products"
+                                  className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
+                                  autoFocus
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-wrap flex relative gap-[10px]">
+                            {Array.isArray(items) ? (
+                              items.map((data, index) => (
+                                <div
+                                  key={data?.id}
+                                  className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                  onClick={() => handleItemClick(data?.id)}
+                                  onDoubleClick={() =>
+                                    handleDoubleClick("item", data, index)
+                                  }
+                                >
+                                  {editingItem === index ? (
+                                    <>
+                                      <div className="flex flex-col justify-center">
+                                        <input
+                                          type="text"
+                                          name="itemName"
+                                          value={editItemName}
+                                          onChange={(e) =>
+                                            setEditItemName(e.target.value)
+                                          }
+                                          onKeyDown={(e) =>
+                                            handleKeyPress(
+                                              e,
+                                              "item",
+                                              "edit",
+                                              editingItemId
+                                            )
+                                          }
+                                          className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
+                                          autoFocus
+                                        />
+                                        <p
+                                          className="text-red-500 hover:bg-red-100 !bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleOpenDeleteModal(
+                                              "item",
+                                              data?._id
+                                            );
+                                          }}
+                                        >
+                                          Delete
+                                        </p>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <p>{data.itemName}</p>
+                                  )}
+                                </div>
+                              ))
+                            ) : (
+                              <p> No Categories Available</p>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-[6px] w-[100%]">
-                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
-                    Metal
-                  </h1>
-                  <div className="w-[100%] flex flex-col gap-[15px]">
-                    <div className="flex gap-[20px]">
-                      <div className="flex gap-[15px] items-center flex-wrap">
-                        {!isMetalInputVisible ? (
-                          <div className="flex">
-                            <div
-                              onClick={() => setMetalInputVisible(true)}
-                              className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                            >
-                              <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
-                            <input
-                              type="text"
-                              name="metalName"
-                              value={metalName}
-                              onChange={(e) => setMetalName(e.target.value)}
-                              onKeyDown={(e) => handleKeyPress(e, "metal")}
-                              placeholder="Metals"
-                              className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
-                              autoFocus
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div
-                        ref={inputRef}
-                        className="flex-wrap flex relative gap-[10px] "
+                    <div className=" flex  justify-end w-[100%]">
+                      <button
+                        className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
+                        onClick={handleStockModal}
                       >
-                        {Array.isArray(metal) ? (
-                          metal.map((item, index) => (
-                            <div
-                              key={item?.id}
-                              className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                              onClick={() => handleMetalClick(item?.id)}
-                              onDoubleClick={() =>
-                                handleDoubleClick("metal", item, index)
-                              }
-                            >
-                              {editingMetal === index ? (
-                                <>
-                                  <div className="flex flex-col justify-center">
-                                    <input
-                                      type="text"
-                                      name="metalName"
-                                      value={editMetalName}
-                                      onChange={(e) =>
-                                        setEditMetalName(e.target.value)
-                                      }
-                                      onKeyDown={(e) =>
-                                        handleKeyPress(
-                                          e,
-                                          "metal",
-                                          "edit",
-                                          editingMetalId
-                                        )
-                                      }
-                                      className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
-                                      autoFocus
-                                    />
-                                    <p
-                                      className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleOpenDeleteModal(
-                                          "metal",
-                                          item?._id
-                                        );
-                                      }}
-                                    >
-                                      Delete
-                                    </p>
-                                  </div>
-                                </>
-                              ) : (
-                                <p>{item.metalName}</p>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <p> No Categories Available</p>
-                        )}
-                      </div>
+                        <i className="fa-solid fa-plus"></i>
+                        Add Stock
+                      </button>
                     </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-[6px] w-[100%]">
-                  <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
-                    Product Category
-                  </h1>
-                  <div className="w-[100%] flex flex-col gap-[15px]">
-                    <div className="flex gap-[20px]">
-                      <div className="flex gap-[15px] items-center flex-wrap">
-                        {!isItemInputVisible ? (
-                          <div className="flex">
-                            <div
-                              onClick={() => setItemInputVisible(true)}
-                              className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                            >
-                              <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
-                            <input
-                              type="text"
-                              name="itemName"
-                              value={itemName}
-                              onChange={(e) => setItemName(e.target.value)}
-                              onKeyDown={(e) => handleKeyPress(e, "item")}
-                              placeholder="Products"
-                              className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
-                              autoFocus
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-wrap flex relative gap-[10px]">
-                        {Array.isArray(items) ? (
-                          items.map((data, index) => (
-                            <div
-                              key={data?.id}
-                              className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                              onClick={() => handleItemClick(data?.id)}
-                              onDoubleClick={() =>
-                                handleDoubleClick("item", data, index)
-                              }
-                            >
-                              {editingItem === index ? (
-                                <>
-                                  <div className="flex flex-col justify-center">
-                                    <input
-                                      type="text"
-                                      name="itemName"
-                                      value={editItemName}
-                                      onChange={(e) =>
-                                        setEditItemName(e.target.value)
-                                      }
-                                      onKeyDown={(e) =>
-                                        handleKeyPress(
-                                          e,
-                                          "item",
-                                          "edit",
-                                          editingItemId
-                                        )
-                                      }
-                                      className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
-                                      autoFocus
-                                    />
-                                    <p
-                                      className="text-red-500 hover:bg-red-100 !bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleOpenDeleteModal(
-                                          "item",
-                                          data?._id
-                                        );
-                                      }}
-                                    >
-                                      Delete
-                                    </p>
-                                  </div>
-                                </>
-                              ) : (
-                                <p>{data.itemName}</p>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <p> No Categories Available</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className=" flex  justify-end w-[100%]">
-                  <button
-                    className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
-                    onClick={handleStockModal}
-                  >
-                    <i className="fa-solid fa-plus"></i>
-                    Add Stock
-                  </button>
-                </div>
-                <div className=" flex">
-                  <div className="w-full h-full  mx-auto rounded-[10px] border border-[#122f97]   relative">
-                    <div className="box-border border-[#122f97] relative overflow-hidden  w-full">
-                      <div className="sticky top-0 flex  bs-mix-green border-[#122f97] w-full overflow-hidden">
-                        <div className="flex justify-center text-center gap-[7px] py-[10px] border-r border-b border-[#122f97]  items-center px-3 min-w-[4%] max-w-[4%]">
-                          <input
-                            type="checkbox"
-                            id="check-all"
-                            style={{ width: "15px", height: "15px" }}
-                          />
-                          <p className="w-fit  md11:text-[14px] md150:text-[18px] font-[600] text-[#000]  font-Poppins">
-                            Sr.
-                          </p>
-                        </div>
-
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            Carat
-                          </p>
-                        </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            Metal
-                          </p>
-                        </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            Category
-                          </p>
-                        </div>
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000] ">
-                            G.Weight
-                          </p>
-                        </div>
-
-                        <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[10%] max-w-[14%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            L.Weight
-                          </p>
-                        </div>
-                        <div className="flex justify-center text-center py-2 border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            N.Weight
-                          </p>
-                        </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            Fine Weight
-                          </p>
-                        </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[10%] max-w-[10%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            Wastage
-                          </p>
-                        </div>
-                        <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[5%] max-w-[10%]">
-                          <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                            Action
-                          </p>
-                        </div>
-                      </div>
-                      {stocks?.map((item, index) => {
-                        const netWeight = (
-                          Number(item?.toWeight || 0) -
-                          Number(item?.lessWeight || 0)
-                        ).toFixed(3);
-                        const percentage = item?.groupId?.percentage || 0;
-                        const updatedFineWeight = (
-                          netWeight *
-                          (percentage / 100)
-                        ).toFixed(3);
-
-                        return (
-                          <div
-                            key={index}
-                            className="flex justify-between overflow-hidden"
-                          >
-                            <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#122f97] gap-[7px] px-3 min-w-[4%] max-w-[4%]">
+                    <div className=" flex">
+                      <div className="w-full h-full  mx-auto rounded-[10px] border border-[#122f97]   relative">
+                        <div className="box-border border-[#122f97] relative overflow-hidden  w-full">
+                          <div className="sticky top-0 flex  bs-mix-green border-[#122f97] w-full overflow-hidden">
+                            <div className="flex justify-center text-center gap-[7px] py-[10px] border-r border-b border-[#122f97]  items-center px-3 min-w-[4%] max-w-[4%]">
                               <input
                                 type="checkbox"
+                                id="check-all"
                                 style={{ width: "15px", height: "15px" }}
-                                className="ml-[-25%]"
                               />
-                              <p className="font-[600] md11:text-[15px] md150:text-[17px] md11:mt-[5%] md150:mt-[2%]">
-                                {index + 1}
+                              <p className="w-fit  md11:text-[14px] md150:text-[18px] font-[600] text-[#000]  font-Poppins">
+                                Sr.
                               </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                              {item?.groupId?.name || "-"}
+
+                            <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                Carat
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                              {item?.metalId?.metalName || "-"}
+                            <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                Metal
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                              {item?.groupItemId?.itemName || "-"}
+                            <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                Category
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
-                              {item?.toWeight || 0}
+                            <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000] ">
+                                G.Weight
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
-                              {item?.lessWeight || 0}
+
+                            <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[10%] max-w-[14%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                L.Weight
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9%] max-w-[14%]">
-                              {netWeight}
+                            <div className="flex justify-center text-center py-2 border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                N.Weight
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9.1%] max-w-[14%]">
-                              {updatedFineWeight}
+                            <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                Fine Weight
+                              </p>
                             </div>
-                            <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
-                              {item?.westage || 0}
+                            <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[10%] max-w-[10%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                Wastage
+                              </p>
                             </div>
-                            <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#122f97] px-3 min-w-[5%] max-w-[14%]">
-                              <i
-                                className="fa-solid text-[16px] cursor-pointer text-[#122f97] fa-pen-to-square"
-                                onClick={() => handleStockModalEdit(item)}
-                              ></i>
-                              <i
-                                className="fa-solid text-[16px] cursor-pointer text-[#ff0c0c] fa-trash"
-                                onClick={() =>
-                                  handleOpenDeleteModal("stock", item?._id)
-                                }
-                              ></i>
+                            <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[5%] max-w-[10%]">
+                              <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
+                                Action
+                              </p>
                             </div>
                           </div>
-                        );
-                      })}
+                          {stocks?.map((item, index) => {
+                            const netWeight = (
+                              Number(item?.toWeight || 0) -
+                              Number(item?.lessWeight || 0)
+                            ).toFixed(3);
+                            const percentage = item?.groupId?.percentage || 0;
+                            const updatedFineWeight = (
+                              netWeight *
+                              (percentage / 100)
+                            ).toFixed(3);
+
+                            return (
+                              <div
+                                key={index}
+                                className="flex justify-between overflow-hidden"
+                              >
+                                <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#122f97] gap-[7px] px-3 min-w-[4%] max-w-[4%]">
+                                  <input
+                                    type="checkbox"
+                                    style={{ width: "15px", height: "15px" }}
+                                    className="ml-[-25%]"
+                                  />
+                                  <p className="font-[600] md11:text-[15px] md150:text-[17px] md11:mt-[5%] md150:mt-[2%]">
+                                    {index + 1}
+                                  </p>
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
+                                  {item?.groupId?.name || "-"}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
+                                  {item?.metalId?.metalName || "-"}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
+                                  {item?.groupItemId?.itemName || "-"}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
+                                  {item?.toWeight || 0}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
+                                  {item?.lessWeight || 0}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9%] max-w-[14%]">
+                                  {netWeight}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9.1%] max-w-[14%]">
+                                  {updatedFineWeight}
+                                </div>
+                                <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
+                                  {item?.westage || 0}
+                                </div>
+                                <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#122f97] px-3 min-w-[5%] max-w-[14%]">
+                                  <i
+                                    className="fa-solid text-[16px] cursor-pointer text-[#122f97] fa-pen-to-square"
+                                    onClick={() => handleStockModalEdit(item)}
+                                  ></i>
+                                  <i
+                                    className="fa-solid text-[16px] cursor-pointer text-[#ff0c0c] fa-trash"
+                                    onClick={() =>
+                                      handleOpenDeleteModal("stock", item?._id)
+                                    }
+                                  ></i>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </>
+              ) : (
+                <NonBerCode />
+              )}
             </div>
           </div>
         </div>
