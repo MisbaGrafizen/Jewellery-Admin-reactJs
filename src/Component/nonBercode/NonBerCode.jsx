@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from 'js-cookie';
-import { addNonBarcodeCategoryAction, deleteNonBarcodeCategoryAction, getAllNonBarcodeProductAction, getnonBarcodeCategroyAction, updateNonBarcodeCategoryAction } from "../../redux/action/landingManagement";
+import { addNonBarcodeCategoryAction, deleteNonBarcodeCategoryAction, deleteNonBarcodeProductAction, getAllNonBarcodeProductAction, getnonBarcodeCategroyAction, updateNonBarcodeCategoryAction } from "../../redux/action/landingManagement";
 
 export default function NonBerCode() {
+  const [deletemodalopen, setDeletemodalOpen] = useState(false);
   const [stockModalopen, setStockModalOpen] = useState(false);
   const [editingTilescategoryId, setEditingTilescategoryId] = useState(null);
   const [tilescategoryName, setTilescategoryName] = useState("");
@@ -22,8 +23,9 @@ export default function NonBerCode() {
   const [ProductPcsFocused, setProductPcsFocused] = useState(false);
   const [netWeghtFocused, setNetWeightFocused] = useState(false);
   const [totalWeghtFocused, setTotalWeightFocused] = useState(false);
+  const [deleteType, setDeleteType] = useState(null); 
+  const [deleteId, setDeleteId] = useState(null);
 
-  const tilescategoryInputRef = useRef(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
@@ -49,6 +51,19 @@ export default function NonBerCode() {
     setSelectedType(type);
     setDropdownOpen(false);
   };
+
+  const handleDeleteOpen = (type, id) => {
+    setDeleteType(type);
+    setDeleteId(id);
+    setDeletemodalOpen(true);
+  };
+  
+  const handleDeleteClose = () => {
+    setDeletemodalOpen(false);
+    setDeleteType(null);
+    setDeleteId(null);
+  };
+  
 
   const handleSelectMetal = (type) => {
     setSelectedTypeMetal(type);
@@ -107,82 +122,12 @@ export default function NonBerCode() {
       .catch(() => alert("Failed to update category."));
   };
 
-  const handleDeleteTilescategory = (index) => {
-    const categoryToDelete = categories[index];
-    dispatch(deleteNonBarcodeCategoryAction(categoryToDelete._id))
-      .then(() => alert("Category deleted successfully!"))
-      .catch(() => alert("Failed to delete category."));
-  };
-
-  // const handleAddStock = async () => {
-  //   if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
-  //     alert("Please select Carat, Metal, and Category.");
-  //     return;
-  //   }
-
-  //   const selectedCarat = categories.find(
-  //     (carat) => carat.name === selectedType
-  //   );
-  //   const selectedMetal = metals.find(
-  //     (metal) => metal.metalName === selectedTypeMetal
-  //   );
-  //   const selectedCategory = item.find(
-  //     (data) => data.itemName === selectedTypeCategory
-  //   );
-
-  //   if (!selectedCarat || !selectedMetal || !selectedCategory) {
-  //     alert(
-  //       "Invalid selection. Please select valid Carat, Metal, and Category."
-  //     );
-  //     return;
-  //   }
-  //   const stockData = {
-  //     groupId: selectedCarat._id, // Carat ID
-  //     metalId: selectedMetal._id, // Metal ID
-  //     groupItemId: selectedCategory._id, // Category ID
-  //     productName: productName || "", // Ensure empty string if not provided
-  //     pcs: pcs ? parseInt(pcs, 10) : 0, // Convert to integer
-  //     netWeight: netWeight ? parseFloat(netWeight) : 0, // Convert to float
-  //     toWeight: toWeight ? parseFloat(toWeight) : 0, // Convert to float
-  //   };
-
-  //   console.log('stockData', stockData)
-
-  //   try {
-  //     if (selectedStock) {
-  //       const response = await dispatch(
-  //         updateNonBarcodeCategoryAction(selectedStock?._id, stockData)
-  //       );
-  //       if (response) {
-  //         alert("Stock updated successfully!");
-  //         dispatch(getAllNonBarcodeProductAction());
-  //       } else {
-  //         alert("Failed to update stock.");
-  //       }
-  //     } else {
-  //       const response = await dispatch(addNonBarcodeCategoryAction(stockData));
-  //       if (response) {
-  //         alert("Stock added successfully!");
-  //         dispatch(getAllNonBarcodeProductAction());
-  //       } else {
-  //         alert("Failed to add stock.");
-  //       }
-  //     }
-
-  //     setStockModalOpen(false); // Close modal
-  //   } catch (error) {
-  //     console.error("Error saving stock:", error);
-  //     alert("An error occurred while saving stock.");
-  //   }
-  // };
-
   const handleAddStock = async () => {
-    // Validate the form inputs
-    if (!selectedType || !selectedTypeMetal || !selectedTypeCategory || !productName || !pcs || !netWeight || !toWeight) {
-      alert("Please fill in all fields.");
+    if ( !selectedType || !selectedTypeMetal || !selectedTypeCategory ) {
+      alert("Please select Carat, Metal and Category.");
       return;
     }
-
+  
     const selectedCarat = categories.find(
       (carat) => carat.name === selectedType
     );
@@ -192,38 +137,45 @@ export default function NonBerCode() {
     const selectedCategory = item.find(
       (data) => data.itemName === selectedTypeCategory
     );
-
-
-    // Prepare the stock data
-    const stockData = {
+      const stockData = {
       groupId: selectedCarat._id,
-      metalId: selectedMetal._id, 
+      metalId: selectedMetal._id,
       groupItemId: selectedCategory._id,
       productName,
       pcs: parseInt(pcs, 10),
       netWeight: parseFloat(netWeight),
       toWeight: parseFloat(toWeight),
-      date: new Date().toISOString(), 
+      date: new Date().toISOString(),
     };
-
-    console.log('stockData', stockData)
-
+  
+    console.log("stockData", stockData);
+  
     try {
-
       const token = Cookies.get("token");
-      const response = await fetch("http://localhost:8000/api/v1/admin/non-barcode/product", {
-        method: selectedStock ? "PUT" : "POST", 
+  
+      const url = selectedStock
+      ? `http://localhost:8000/api/v1/admin/non-barcode/product/${selectedStock._id}` // URL for PUT
+        : "http://localhost:8000/api/v1/admin/non-barcode/product"; // URL for POST
+  
+      const method = selectedStock ? "PUT" : "POST";
+  
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(stockData),
       });
-
+  
       const result = await response.json();
-
+  
       if (response.ok) {
-        alert(selectedStock ? "Stock updated successfully!" : "Stock added successfully!");
+        alert(
+          selectedStock
+            ? "Stock updated successfully!"
+            : "Stock added successfully!"
+        );
         resetForm();
         dispatch(getAllNonBarcodeProductAction());
         handleStockModalClose();
@@ -235,6 +187,7 @@ export default function NonBerCode() {
       alert("An error occurred. Please try again.");
     }
   };
+  
 
   const resetForm = () => {
     setSelectedType("");
@@ -255,6 +208,8 @@ export default function NonBerCode() {
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
+  const deleteRef = useRef(null)
+  const tilescategoryInputRef = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -272,6 +227,12 @@ export default function NonBerCode() {
       ) {
         setDropdownOpenCategory(false);
       }
+      if (
+        tilescategoryInputRef.current &&
+        !tilescategoryInputRef.current.contains(event.target)
+      ) {
+        setEditingTilescategoryIndex(null);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -285,6 +246,35 @@ export default function NonBerCode() {
   const handleStockModalClose = () => {
     setStockModalOpen(false);
   };
+
+  const handleConfirmDelete = async () => {
+    try {
+      if (deleteType === "category") {
+        // Delete Category
+        const success = await dispatch(deleteNonBarcodeCategoryAction(deleteId));
+        if (success) {
+          alert("Category deleted successfully!");
+          dispatch(getnonBarcodeCategroyAction());
+        } else {
+          alert("Failed to delete category.");
+        }
+      } else if (deleteType === "stock") {
+        // Delete Stock
+        const success = await dispatch(deleteNonBarcodeProductAction(deleteId));
+        if (success) {
+          alert("Stock deleted successfully!");
+          dispatch(getAllNonBarcodeProductAction());
+        } else {
+          alert("Failed to delete stock.");
+        }
+      }
+      handleDeleteClose(); // Close modal after deletion
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      alert("An error occurred while deleting the item.");
+    }
+  };
+  
 
   return (
     <>
@@ -351,9 +341,9 @@ export default function NonBerCode() {
                         autoFocus
                       />
                       <button
-                        className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto"
-                        onClick={() => handleDeleteTilescategory(index)}
-                      >
+                        className="text-red-500 hover:bg-red-100 z-[30] bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto"
+                        onClick={() => handleDeleteOpen("category", data._id)}
+                        >
                         Delete
                       </button>
                     </div>
@@ -453,8 +443,8 @@ export default function NonBerCode() {
 
                     <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[15%] max-w-[14%]">{item?.toWeight}</div>
                     <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#122f97] px-3 min-w-[5%] max-w-[14%]">
-                      <i className="fa-solid text-[16px] cursor-pointer text-[#122f97] fa-pen-to-square"></i>
-                      <i className="fa-solid text-[16px] cursor-pointer text-[#ff0c0c] fa-trash"></i>
+                      <i className="fa-solid text-[16px] cursor-pointer text-[#122f97] fa-pen-to-square"  onClick={() => handleStockModalEdit(item)}></i>
+                      <i className="fa-solid text-[16px] cursor-pointer text-[#ff0c0c] fa-trash"   onClick={() => handleDeleteOpen("stock", item._id)}></i>
                     </div>
                   </div>
                 ))}
@@ -1136,6 +1126,40 @@ export default function NonBerCode() {
                     >
                       {selectedStock ? "Update Stock" : "Add Stock"}
                     </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </ModalContent>
+      </NextUIModal>
+      <NextUIModal isOpen={deletemodalopen} onOpenChange={handleDeleteClose}>
+        <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px] shadow-delete ">
+          {(handleDeleteClose) => (
+            <>
+              <div className="relative w-[100%] h-[100%] ">
+                <div className="relative  w-[100%] h-[100%]">
+                  <div className="w-[100%] flex gap-7 flex-col">
+                    <div className="w-[100%] mt-[30px] p-[10px] mx-auto flex justify-center s">
+                      <i className=" text-[80px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <div className=" mx-auto justify-center flex text-[28px] font-[500]  font-Montserrat ">
+                      <p>Are you sure ?</p>
+                    </div>
+                    <div className="absolute bottom-0 flex w-[100%]">
+                      <div
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[red] rounded-bl-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
+                        onClick={handleConfirmDelete}
+                      >
+                        <p>Delete</p>
+                      </div>
+                      <div
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[#26b955] rounded-br-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
+                        onClick={handleDeleteClose}
+                      >
+                        <p>Cancel</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

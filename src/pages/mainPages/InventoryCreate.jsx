@@ -35,7 +35,7 @@ export default function InventoryCreate() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [percentages, setPercentages] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(null);
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
   const [categoryFocused, setCategoryFocused] = useState(false);
@@ -46,7 +46,6 @@ export default function InventoryCreate() {
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
   const [deleteContext, setDeleteContext] = useState(null);
-  const [inputValue, setInputValue] = useState("");
   const [dropdownOpenMetal, setDropdownOpenMetal] = useState(false);
   const [selectedTypeMetal, setSelectedTypeMetal] = useState("");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
@@ -98,18 +97,18 @@ export default function InventoryCreate() {
   const handleNoneBercodeClick = () => {
     setIsBercodeVisible(false);
   };
-  const handleEditClick = () => {
-    setIsEditing(true); // Enable editing mode
-  };
 
-  const handleSaveClick = () => {
-    console.log("function triggered");
-    if (percentages[item._id]) {
-      console.log("find percentge");
-      handleSavePercentage(item._id);
+  const handleSaveClick = (id) => {
+    if (percentages[id] && !isNaN(parseFloat(percentages[id]))) {
+      console.log("Found percentage:", percentages[id]);
+      handleSavePercentage(id);
+    } else {
+      alert("Please enter a valid percentage.");
     }
     setIsEditing(false);
   };
+
+
   useEffect(() => {
     setCarat(categories || []);
     setMetal(metals || []);
@@ -326,8 +325,39 @@ export default function InventoryCreate() {
     }));
   };
 
+  // const handleSavePercentage = async (id) => {
+  //   const percentage = percentages[id];
+
+  //   if (!percentage || isNaN(percentage)) {
+  //     alert("Please enter a valid percentage.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const success = await dispatch(
+  //       updateCategoryAction(id, { percentage: parseFloat(percentage) })
+  //     );
+
+  //     if (success) {
+  //       alert("Percentage updated successfully!");
+  //       setPercentages((prev) => ({
+  //         ...prev,
+  //         [id]: "",
+  //       }));
+
+  //       dispatch(getCategroyAction());
+  //     } else {
+  //       alert("Failed to update percentage.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating percentage:", error);
+  //     alert("An error occurred while updating the percentage.");
+  //   }
+  // };
+
+
   const handleSavePercentage = async (id) => {
-    const percentage = percentages[id];
+    const percentage = parseFloat(percentages[id]); // Parse percentage value
 
     if (!percentage || isNaN(percentage)) {
       alert("Please enter a valid percentage.");
@@ -335,12 +365,11 @@ export default function InventoryCreate() {
     }
 
     try {
-      const success = await dispatch(
-        updateCategoryAction(id, { percentage: parseFloat(percentage) })
-      );
-
+      // const success = await dispatch(
+      //   updateCategoryAction(id, { percentage }) // API call to update percentage
+      // );
+      const success = await dispatch(updateCategoryAction(id, { percentage }));
       if (success) {
-        alert("Percentage updated successfully!");
         setPercentages((prev) => ({
           ...prev,
           [id]: "",
@@ -355,7 +384,6 @@ export default function InventoryCreate() {
       alert("An error occurred while updating the percentage.");
     }
   };
-
   useEffect(() => {
     if (grossWeight && lessWeight && selectedType) {
       const selectedCarat = categories.find(
@@ -552,23 +580,20 @@ export default function InventoryCreate() {
             <div className="flex flex-col pt-[10px] w-[100%] max-h-[90%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
               <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
                 <div
-                  className={`absolute top-0 left-0 h-full w-[130px] bs-spj rounded-[8px] transition-transform duration-300 ${
-                    isBercodeVisible ? "translate-x-0" : "translate-x-[130px]"
-                  }`}
+                  className={`absolute top-0 left-0 h-full w-[130px] bs-spj rounded-[8px] transition-transform duration-300 ${isBercodeVisible ? "translate-x-0" : "translate-x-[130px]"
+                    }`}
                 ></div>
                 <button
                   onClick={handleBercodeClick}
-                  className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${
-                    isBercodeVisible ? "[#fff]" : "[#000]"
-                  }`}
+                  className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#fff]" : "[#000]"
+                    }`}
                 >
                   Bercode
                 </button>
                 <button
                   onClick={handleNoneBercodeClick}
-                  className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${
-                    isBercodeVisible ? "[#000]" : "[#fff]"
-                  }`}
+                  className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#000]" : "[#fff]"
+                    }`}
                 >
                   None Bercode
                 </button>
@@ -674,7 +699,7 @@ export default function InventoryCreate() {
                                     </div>
                                     <div className="items-center gap-[4px] justify-center flex">
                                       <div className="border-[1px] mt-[10px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px] px-[5px] font-Poppins w-[140px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[5px] cursor-pointer">
-                                        {isEditing ? (
+                                        {editingCaratId === item._id ? (
                                           <input
                                             className="flex w-[100%] outline-none h-[100%] text-[12px]"
                                             placeholder="Enter Fine Weight"
@@ -682,33 +707,34 @@ export default function InventoryCreate() {
                                             name="percentage"
                                             value={percentages[item._id] || ""}
                                             onChange={(e) =>
-                                              handlePercentageChange(
-                                                item._id,
-                                                e.target.value
-                                              )
+                                              handlePercentageChange(item._id, e.target.value)
                                             }
                                           />
                                         ) : (
-                                          <span>
-                                            {percentages[item._id] || "No Data"}
-                                          </span>
+                                          <span>{item.percentage || "No Data"}</span>
                                         )}
                                       </div>
+
                                       <button
                                         className="mt-[8px] text-[#fff] bs-spj flex justify-center items-center h-[35px] rounded-[5px] w-[40px]"
-                                        onClick={
-                                          isEditing
-                                            ? handleSaveClick
-                                            : handleEditClick
-                                        }
+                                        onClick={() => {
+                                          if (editingCaratId === item._id) {
+                                            handleSaveClick(item._id); // Save changes
+                                            setIsEditing(false);
+                                            window.location.reload()
+                                          } else {
+                                            setEditingCaratId(item._id);
+                                      
+                                          }
+                                        }}
                                       >
                                         <i
-                                          className={`fa-duotone fa-solid ${
-                                            isEditing ? "fa-check" : "fa-edit"
-                                          }`}
+                                          className={`fa-duotone fa-solid ${editingCaratId === item._id ? "fa-check" : "fa-edit"
+                                            }`}
                                         ></i>
                                       </button>
                                     </div>
+
                                   </div>
                                 </>
                               ))
@@ -1126,11 +1152,10 @@ export default function InventoryCreate() {
                             >
                               <label
                                 htmlFor="addstock"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedType || caratFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Carat
                               </label>
@@ -1184,11 +1209,10 @@ export default function InventoryCreate() {
                             >
                               <label
                                 htmlFor="addstockMetal"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeMetal || metalFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Metal
                               </label>
@@ -1248,11 +1272,10 @@ export default function InventoryCreate() {
                             >
                               <label
                                 htmlFor="addstockCategory"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeCategory || categoryFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Category
                               </label>
@@ -1307,11 +1330,10 @@ export default function InventoryCreate() {
                             <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                               <label
                                 htmlFor="addstockGross"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  grossWeight || grossFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${grossWeight || grossFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 G .Weight
                               </label>
@@ -1332,11 +1354,10 @@ export default function InventoryCreate() {
                             <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                               <label
                                 htmlFor="addstockLoss"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  lessWeight || lossFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${lessWeight || lossFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 L .Weight
                               </label>
@@ -1356,11 +1377,10 @@ export default function InventoryCreate() {
                             <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                               <label
                                 htmlFor="addstockWastage"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  westage || wastageFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${westage || wastageFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Wastage
                               </label>

@@ -54,11 +54,11 @@ export default function Header({ pageName = "" }) {
 
 
     try {
-      const response =  await ApiPost("/admin/market-rate", { rates: ratesToSave });
+      const response = await ApiPost("/admin/market-rate", { rates: ratesToSave });
       console.log('response', response)
-      if(response?.data) {
+      if (response?.data) {
         alert("Rates saved successfully!");
-        setCaratModalOpen(false); 
+        setCaratModalOpen(false);
       }
     } catch (error) {
       console.error("Error saving rates:", error);
@@ -85,16 +85,30 @@ export default function Header({ pageName = "" }) {
               {pageName}
             </h1>
 
-            <div className=" flex pl-[40px] gap-[20px]">
-              {rates?.map((item, index) => (
-              <div key={index} className=" flex  gap-[20px] font-Poppins ">
-                <p>
-                  <span>{item?.categoryId?.name} </span>= {item?.price}
-                </p>
-                <span className="text-[#ff8000]">||</span>
-              </div>
-              ))}
+            <div className="flex pl-[40px] gap-[20px]">
+              {categories && categories.length > 0 ? (
+                categories.map((category, index) => {
+                  const matchedRate = rates.find(
+                    (rate) => rate.categoryId?._id === category?._id
+                  );
+
+                  return (
+                    <div key={index} className="flex gap-[20px] font-Poppins">
+                      <p>
+                        <span>{category.name} </span>
+                        {matchedRate ? `= ${matchedRate.price}` : "= 0"}
+                      </p>
+                      {index !== categories.length - 1 && (
+                        <span className="text-[#ff8000]">||</span>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-[#9f9e9e] font-Poppins">No categories available</p>
+              )}
             </div>
+
           </div>
 
           <div className=" items-center   w-fit pr-[10px] flex gap-[20px]">
@@ -197,7 +211,7 @@ export default function Header({ pageName = "" }) {
 
                   </div>
                   <button className=" flex justify-center font-Poppins items-center text-[19px] bs-spj w-[90%] mx-auto py-[6px]  rounded-lg font-[500] text-[#fff] absolute right-0 left-0 bottom-5"
-                  onClick={handleSaveRates}>
+                    onClick={handleSaveRates}>
                     Save
                   </button>
                 </div>
