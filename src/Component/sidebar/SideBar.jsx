@@ -13,7 +13,7 @@ export default function SideBar() {
 
   const menuItems = [
     { name: "Inventory", icon: inventory, path: "/inventory" },
-    { name: "Sales", icon: sales,  },
+    { name: "Sales", icon: sales,path: "/add-stock"  },
     { name: "Purchases", icon: purches, path: "/purches-invoice" },
     { name: "Settings", icon: settings, path: "/create-account" },
     { name: "Reports", icon: reports, path: "/labour" },

@@ -176,7 +176,7 @@ export default function CreateCompany() {
                           name="email"
                           id="emailid"
                           value={user?.email}
-                          placeholder="Enter Email"
+            
                           className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                           onFocus={() => setEmailFocused(true)}
                           onBlur={(e) => setEmailFocused(e.target.value !== "")}
@@ -246,7 +246,7 @@ export default function CreateCompany() {
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
                             user?.address || addressFocused
                               ? "text-[#000] -translate-y-[45px] font-[] hidden"
-                              : "  -translate-y-[27px] flex cursor-text"
+                              : " text-[#8f8f8f]   -translate-y-[27px] flex cursor-text"
                           }`}
                         >
                           Buisness Address
@@ -378,7 +378,7 @@ export default function CreateCompany() {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute  mt-[50px] bg-white w-[270px] border border-[#dedede] rounded-lg shadow-md z-10"
+                            className="absolute  mt-[50px] bg-white w-[220px] border border-[#dedede] rounded-lg shadow-md z-10"
                           >
                             {[
                               "Sole Proprietorship",

@@ -926,7 +926,7 @@ export default function InventoryCreate() {
                         </div>
                       </div>
                     </div>
-                    <div className=" flex  justify-end w-[100%]">
+                    {/* <div className=" flex  justify-end w-[100%]">
                       <button
                         className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
                         onClick={handleStockModal}
@@ -1064,7 +1064,7 @@ export default function InventoryCreate() {
                           })}
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </>
               ) : (

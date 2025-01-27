@@ -1,13 +1,15 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const ProtectedRoute = ({ children }) => {
-  const token = Cookies.get('authToken'); 
+  const token = Cookies.get("authToken");
+
+  console.log("Checking auth token:", token);
 
   if (!token) {
-    console.error("No auth token found, redirecting to login.");
-    return <Navigate to="/create-account" />;
+    console.warn("No auth token found. Redirecting to login.");
+    return <Navigate to="/create-account" replace />;
   }
 
   return <>{children}</>;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 export default function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -21,11 +21,10 @@ export default function Login() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const isOtpComplete = otp.every((digit) => digit !== "");
   const isPasswordValid = password === confirmPassword && password.length >= 6;
-
-
 
   const navigate = useNavigate();
 
@@ -38,31 +37,42 @@ export default function Login() {
   const handleMobileChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value)) {
-      setMobileNumber(value); 
+      setMobileNumber(value);
     }
   };
 
   const handleGetOtp = async () => {
     setLoading(true);
     try {
-      const registerResponse = await axios.post("http://localhost:8000/api/v1/auth/user/register", {
-        name: userName,
-        email,
-        mobileNumber,
-      });
+      const registerResponse = await axios.post(
+        "http://localhost:8000/api/v1/auth/user/register",
+        {
+          name: userName,
+          email,
+          mobileNumber,
+        }
+      );
       console.log("Register Response:", registerResponse.data);
 
       // Step 2: Send OTP
-      const sendOtpResponse = await axios.post("http://localhost:8000/api/v1/auth/send-otp", {
-        mobileNumber,
-      });
+      const sendOtpResponse = await axios.post(
+        "http://localhost:8000/api/v1/auth/send-otp",
+        {
+          mobileNumber,
+        }
+      );
       console.log("Send OTP Response:", sendOtpResponse.data);
 
       alert("User registered and OTP sent successfully!");
       alert("User registered and OTP sent successfully!");
     } catch (error) {
-      console.error("Error during registration and OTP:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Failed to register and send OTP.");
+      console.error(
+        "Error during registration and OTP:",
+        error.response?.data || error.message
+      );
+      alert(
+        error.response?.data?.message || "Failed to register and send OTP."
+      );
     } finally {
       setLoading(false);
     }
@@ -74,20 +84,25 @@ export default function Login() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/auth/user/login", {
-        name: userName,
-        password: password,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/auth/user/login",
+        {
+          name: userName,
+          password: password,
+        }
+      );
       console.log("Login Success:", response.data);
       Cookies.set("token", response.data.token);
       Cookies.set("user", response.data.user._id);
-      navigate("/create-account"); 
+      navigate("/create-account");
     } catch (error) {
-      console.error("Login Error:", error.response?.data?.message || error.message);
+      console.error(
+        "Login Error:",
+        error.response?.data?.message || error.message
+      );
       setErrorMessage("Invalid credentials. Please try again.");
     }
   };
-
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
@@ -104,7 +119,7 @@ export default function Login() {
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace") {
       const newOtp = [...otp];
-      newOtp[index] = ""; 
+      newOtp[index] = "";
       setOtp(newOtp);
 
       if (index > 0) {
@@ -114,20 +129,23 @@ export default function Login() {
   };
 
   const handleVerifyOtp = async () => {
-    const otpValue = otp.join(""); 
+    const otpValue = otp.join("");
     if (!mobileNumber || !otpValue) {
       alert("Mobile number and OTP are required!");
       return;
     }
-  
+
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8000/api/v1/auth/verify-otp", {
-        mobileNumber,
-        otp: otpValue,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/auth/verify-otp",
+        {
+          mobileNumber,
+          otp: otpValue,
+        }
+      );
       alert(response.data.message);
-      setRegisterStep(2); 
+      setRegisterStep(2);
     } catch (error) {
       alert(error.response?.data?.message || "OTP verification failed.");
     } finally {
@@ -140,29 +158,33 @@ export default function Login() {
       alert("Mobile number, password, and confirm password are required!");
       return;
     }
-  
+
     if (password !== confirmPassword) {
       alert("Password and confirm password do not match!");
       return;
     }
-  
+
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8000/api/v1/auth/set-password", {
-        mobileNumber,
-        password,
-        confirmPassword,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/auth/set-password",
+        {
+          mobileNumber,
+          password,
+          confirmPassword,
+        }
+      );
       alert(response.data.message);
-      navigate("/create-account"); 
+      navigate("/create-account");
     } catch (error) {
       alert(error.response?.data?.message || "Failed to set password.");
     } finally {
       setLoading(false);
     }
   };
-  
-  
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   return (
     <div className="bg-white sm:bg-[#122f97] sm:py-11 select-none h-[100vh] sm:px-16 overflow-hidden">
@@ -183,10 +205,11 @@ export default function Login() {
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="name"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${nameFocused
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                          nameFocused
                             ? "-translate-y-[50%] text-primary text-xs"
                             : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                        }`}
                       >
                         User Name
                       </label>
@@ -196,7 +219,7 @@ export default function Login() {
                         name="name"
                         id="name"
                         placeholder={nameFocused ? "" : ""}
-                        value= {userName}
+                        value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                         className="w-full outline-none text-[15px] font-Poppins font-[400] bg-transparent"
                         onFocus={() => setNameFocused(true)}
@@ -208,10 +231,11 @@ export default function Login() {
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="email"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${emailFocused
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                          emailFocused
                             ? "-translate-y-[50%] text-primary text-xs"
                             : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                        }`}
                       >
                         Email
                       </label>
@@ -233,10 +257,11 @@ export default function Login() {
                       <div className="relative w-full border border-[#BCBCBC] py-4 px-1 rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="number"
-                          className={`bg-white px-1 absolute top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${mobileFocused
+                          className={`bg-white px-1 absolute top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                            mobileFocused
                               ? "-translate-y-[50%] left-[20px] text-primary text-xs"
                               : " -translate-y-[-55%] cursor-text left-[50px] text-[#9f9e9e] text-xs"
-                            }`}
+                          }`}
                         >
                           Mobile Number
                         </label>
@@ -258,10 +283,11 @@ export default function Login() {
                         />
                       </div>
                       <div
-                        className={`flex w-[150px] justify-center items-center text-[18px] rounded-[8px] font-[500] font-Poppins ${mobileNumber.length === 10
+                        className={`flex w-[150px] justify-center items-center text-[18px] rounded-[8px] font-[500] font-Poppins ${
+                          mobileNumber.length === 10
                             ? "bg-[#fff] text-primary border-primary select-none active:bg-[#122f97] active:text-[#fff]  active:border-[0px] border-[1.5px] cursor-pointer"
                             : "bg-[#fb0a0a] text-[#fff] cursor-not-allowed"
-                          }`}
+                        }`}
                         onClick={handleGetOtp}
                       >
                         <p>Get OTP</p>
@@ -273,8 +299,9 @@ export default function Login() {
                         {otp.map((digit, index) => (
                           <div
                             key={index}
-                            className={`relative w-[60px] h-[60px] rounded-lg flex items-center justify-center ${isOtpSent ? "" : "border-gray-300"
-                              } border-[1.5px]`}
+                            className={`relative w-[60px] h-[60px] rounded-lg flex items-center justify-center ${
+                              isOtpSent ? "" : "border-gray-300"
+                            } border-[1.5px]`}
                           >
                             <input
                               key={index}
@@ -295,43 +322,44 @@ export default function Login() {
                         ))}
                       </div>
                     )}
-                           <div className="text-center  w-[90%] bottom-[33px] absolute  ">
-                  <button
-                    type="button"
-                    onClick={handleVerifyOtp}
-                    className={`w-full px-3 py-4 rounded-md font-Poppins text-white text-xl font-medium ${(registerStep === 1 && isOtpComplete) ||
-                        (registerStep === 2 && isPasswordValid)
-                        ? "bg-[#122f97] shadow-blue"
-                        : "bg-gray-400 cursor-not-allowed"
-                      }`}
-                    disabled={
-                      (registerStep === 1 && !isOtpComplete) ||
-                      (registerStep === 2 && !isPasswordValid)
-                    }
-                  >
-                    {registerStep === 1 ? "Go Ahead" : "Register Now"}
-                  </button>
-                  <p className="text-sm sm:text-[12px]  pl-[4px]  font-Poppins w-[90%] text-[#00000099]  mx-auto font-light mt-auto lg:mt-[10px]">
-                    By Logging in, I agree with all
-                    <a
-                      href="https://billwale.com/privacypolicy?navigate=policy"
-                      target="_blank"
-                      className=" pl-[5px] pr-[5px] text-[#F7941D]"
-                      rel="noreferrer"
-                    >
-                      Privacy Policy
-                    </a>
-                    and
-                    <a
-                      href="https://billwale.com/privacypolicy?navigate=terms"
-                      target="_blank"
-                      className="text-[#F7941D] pl-[5px]"
-                      rel="noreferrer"
-                    >
-                      Terms of Service
-                    </a>
-                  </p>
-                </div>
+                    <div className="text-center  w-[90%] bottom-[33px] absolute  ">
+                      <button
+                        type="button"
+                        onClick={handleVerifyOtp}
+                        className={`w-full px-3 py-4 rounded-md font-Poppins text-white text-xl font-medium ${
+                          (registerStep === 1 && isOtpComplete) ||
+                          (registerStep === 2 && isPasswordValid)
+                            ? "bg-[#122f97] shadow-blue"
+                            : "bg-gray-400 cursor-not-allowed"
+                        }`}
+                        disabled={
+                          (registerStep === 1 && !isOtpComplete) ||
+                          (registerStep === 2 && !isPasswordValid)
+                        }
+                      >
+                        {registerStep === 1 ? "Go Ahead" : "Register Now"}
+                      </button>
+                      <p className="text-sm sm:text-[12px]  pl-[4px]  font-Poppins w-[90%] text-[#00000099]  mx-auto font-light mt-auto lg:mt-[10px]">
+                        By Logging in, I agree with all
+                        <a
+                          href="https://billwale.com/privacypolicy?navigate=policy"
+                          target="_blank"
+                          className=" pl-[5px] pr-[5px] text-[#F7941D]"
+                          rel="noreferrer"
+                        >
+                          Privacy Policy
+                        </a>
+                        and
+                        <a
+                          href="https://billwale.com/privacypolicy?navigate=terms"
+                          target="_blank"
+                          className="text-[#F7941D] pl-[5px]"
+                          rel="noreferrer"
+                        >
+                          Terms of Service
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 )}
 
@@ -340,10 +368,11 @@ export default function Login() {
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="password"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${newpasswordFocused
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                          newpasswordFocused
                             ? "-translate-y-[50%] text-primary text-xs"
                             : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                        }`}
                       >
                         New Password
                       </label>
@@ -365,16 +394,17 @@ export default function Login() {
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="confirmPassword"
-                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${confirmpasswordFocused
+                        className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                          confirmpasswordFocused
                             ? "-translate-y-[50%] text-primary text-xs"
                             : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                          }`}
+                        }`}
                       >
                         Confirmed password
                       </label>
 
                       <input
-                        type="text"
+                                     type={showPassword ? "text" : "password"}
                         name="confirmPassword"
                         id="confirmPassword"
                         value={confirmPassword}
@@ -386,40 +416,44 @@ export default function Login() {
                           setConfirmpasswordFocused(e.target.value !== "")
                         }
                       />
+                        <i
+                      className={`fa-solid ${
+                        showPassword ? "fa-eye text-[#122f97]" : "fa-eye-slash"
+                      } text-[19px]  cursor-pointer`}
+                      onClick={togglePasswordVisibility}
+                    ></i>
                     </div>
                     <div className="text-center  w-[90%] bottom-[33px] absolute  ">
-                  <button
-                    type="button"
-                    onClick={handleSetPassword}
-                    className={`w-full px-3 py-4 rounded-md font-Poppins text-white bg-[#122f97] shadow-blue text-xl font-medium `}
-                  >
-                   Register Now
-                  </button>
-                  <p className="text-sm sm:text-[12px]  pl-[4px]  font-Poppins w-[90%] text-[#00000099]  mx-auto font-light mt-auto lg:mt-[10px]">
-                    By Logging in, I agree with all
-                    <a
-                      href="https://billwale.com/privacypolicy?navigate=policy"
-                      target="_blank"
-                      className=" pl-[5px] pr-[5px] text-[#F7941D]"
-                      rel="noreferrer"
-                    >
-                      Privacy Policy
-                    </a>
-                    and
-                    <a
-                      href="https://billwale.com/privacypolicy?navigate=terms"
-                      target="_blank"
-                      className="text-[#F7941D] pl-[5px]"
-                      rel="noreferrer"
-                    >
-                      Terms of Service
-                    </a>
-                  </p>
-                </div>
+                      <button
+                        type="button"
+                        onClick={handleSetPassword}
+                        className={`w-full px-3 py-4 rounded-md font-Poppins text-white bg-[#122f97] shadow-blue text-xl font-medium `}
+                      >
+                        Register Now
+                      </button>
+                      <p className="text-sm sm:text-[12px]  pl-[4px]  font-Poppins w-[90%] text-[#00000099]  mx-auto font-light mt-auto lg:mt-[10px]">
+                        By Logging in, I agree with all
+                        <a
+                          href="https://billwale.com/privacypolicy?navigate=policy"
+                          target="_blank"
+                          className=" pl-[5px] pr-[5px] text-[#F7941D]"
+                          rel="noreferrer"
+                        >
+                          Privacy Policy
+                        </a>
+                        and
+                        <a
+                          href="https://billwale.com/privacypolicy?navigate=terms"
+                          target="_blank"
+                          className="text-[#F7941D] pl-[5px]"
+                          rel="noreferrer"
+                        >
+                          Terms of Service
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 )}
-
-        
               </form>
             </div>
           ) : (
@@ -436,10 +470,11 @@ export default function Login() {
                   <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                     <label
                       htmlFor="name"
-                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${nameFocused
+                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                        nameFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                        }`}
+                      }`}
                     >
                       User Name
                     </label>
@@ -459,16 +494,17 @@ export default function Login() {
                   <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                     <label
                       htmlFor="password"
-                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${passwordFocused
+                      className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
+                        passwordFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
-                        }`}
+                      }`}
                     >
                       Password
                     </label>
 
                     <input
-                      type="text"
+                       type={showPassword ? "text" : "password"}
                       name="name"
                       id="password"
                       value={password}
@@ -478,6 +514,13 @@ export default function Login() {
                       onFocus={() => setPasswordFocused(true)}
                       onBlur={(e) => setPasswordFocused(e.target.value !== "")}
                     />
+
+                    <i
+                      className={`fa-solid ${
+                        showPassword ? "fa-eye text-[#122f97]" : "fa-eye-slash"
+                      } text-[19px]  cursor-pointer`}
+                      onClick={togglePasswordVisibility}
+                    ></i>
                   </div>
                 </div>
 
@@ -491,7 +534,7 @@ export default function Login() {
 
                   <div className="text-center  w-[90%]  mt-5">
                     <button
-                    onClick={handleLogin}
+                      onClick={handleLogin}
                       type="button"
                       className="w-full bg-bill shadow-blue px-3 bg-[#122f97] py-4 rounded-md font-Poppins text-white text-xl font-medium"
                     >
