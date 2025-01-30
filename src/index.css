@@ -1,7 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* @import "~react-clock/dist/Clock.css"; */
+@import "~re";
+@import "~react-datepicker/dist/react-datepicker.css";
+@import "~react-image-crop/dist/ReactCrop.css";
+@import "~react-bootstrap-typeahead/css/Typeahead.css";
+@import "~react-dropzone-uploader/dist/styles.css";
+@import "~react-dragula/dist/dragula.css";
+/* @import '~@asseinfo/react-kanban/dist/styles.css'; */
+@import "~react-toastify/dist/ReactToastify.css";
+@import "~react-image-crop/dist/ReactCrop.css";
+@import "react-day-picker/dist/style.css";
+@import "~react-big-calendar/lib/css/react-big-calendar.css";
+@import "~@fullcalendar/daygrid/main.css";
+@import "~@fullcalendar/timegrid/main.css";
+@import "~react-vertical-timeline-component/style.min.css";
+@import "~easymde/dist/easymde.min.css";
+/* @import '~emoji-mart/css/emoji-mart.css'; */
+@import "~leaflet/dist/leaflet.css";
+@import "~react-image-lightbox/style.css";
+@import "~react-perfect-scrollbar/dist/css/styles.css";
 
 
 @import "../src/assets/css/Subindex.css";
@@ -1854,4 +1873,41 @@ background-color: #175a2d;
   font-family: "Jersey 25", serif;
   font-weight: 100;
   font-style: normal;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.profile-box1 {
+  background: linear-gradient(to bottom, #047dc8, var(--theme-default));
+  color: #fff;
 }

@@ -38,14 +38,14 @@ export default function StockAddPage() {
                   className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#fff]" : "[#000]"
                     }`}
                 >
-                  Bercode
+                  Barcode
                 </button>
                 <button
                   onClick={handleNoneBercodeClick}
                   className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#000]" : "[#fff]"
                     }`}
                 >
-                  None Bercode
+                  None Barcode
                 </button>
               </div>
 

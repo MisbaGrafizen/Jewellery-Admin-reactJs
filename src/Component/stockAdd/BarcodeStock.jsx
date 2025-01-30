@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
+
+import { X, CheckCircle } from "lucide-react"
 import {
   addCategoryAction,
   addGroupItemAction,
@@ -21,8 +23,10 @@ import {
   updateStockAction,
 } from "../../redux/action/landingManagement";
 export default function BarcodeStock() {
+    const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
   const [name, setName] = useState("");
+    const [isMounted, setIsMounted] = useState(false)
   const [editingCarat, setEditingCarat] = useState(null);
   const [editCaratName, setEditCaratName] = useState("");
   const [editingCaratId, setEditingCaratId] = useState(null);
@@ -207,7 +211,7 @@ export default function BarcodeStock() {
     const selectedMetal = metals.find(
       (metal) => metal.metalName === selectedTypeMetal
     );
-    const selectedCategory = items.find(
+    const selectedCategory = item.find(
       (data) => data.itemName === selectedTypeCategory
     );
 
@@ -241,7 +245,10 @@ export default function BarcodeStock() {
       } else {
         const response = await dispatch(addStockAction(stockData));
         if (response) {
-          alert("Stock added successfully!");
+          setIsOpen(true)
+          setTimeout(() => {
+            setIsOpen(false);
+          }, 2000);
           dispatch(getAllStockAction());
         } else {
           alert("Failed to add stock.");
@@ -287,6 +294,22 @@ export default function BarcodeStock() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+
+
+
+
+   const onClose = () => {
+      setIsOpen(false); // Close the modal
+    };
+  
+  
+    const onAdd = () => {
+      setIsOpen(true); // Close the modal
+    };
+    useEffect(() => {
+      setIsMounted(true)
+    }, [])
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
@@ -583,18 +606,18 @@ export default function BarcodeStock() {
                     <div className="w-[100%] mt-[30px] p-[10px] mx-auto flex justify-center s">
                       <i className=" text-[80px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
                     </div>
-                    <div className=" mx-auto justify-center flex text-[28px] font-[500]  font-Montserrat ">
+                    <div className=" mx-auto justify-center flex text-[60px] font-[500]   font-Poppins">
                       <p>Are you sure ?</p>
                     </div>
                     <div className="absolute bottom-0 flex w-[100%]">
                       <div
-                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[red] rounded-bl-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[red] rounded-bl-[10px] text-[#fff] font-[600]   font-Poppins text-[20px]"
                         onClick={handleDelete}
                       >
                         <p>Delete</p>
                       </div>
                       <div
-                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[#26b955] rounded-br-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[#26b955] rounded-br-[10px] text-[#fff] font-[600]   font-Poppins text-[20px]"
                         onClick={handleModalclose}
                       >
                         <p>Cancel</p>
@@ -865,7 +888,7 @@ export default function BarcodeStock() {
                                 L .Weight
                               </label>
                               <input
-                                type="text"
+                                type="number"
                                 id="addstockLoss"
                                 name="lessWeight"
                                 value={lessWeight}
@@ -889,7 +912,7 @@ export default function BarcodeStock() {
                                 Wastage
                               </label>
                               <input
-                                type="text"
+                                type="number"
                                 name="westage"
                                 id="addstockWastage"
                                 value={westage}
@@ -948,6 +971,78 @@ export default function BarcodeStock() {
           )}
         </ModalContent>
       </NextUIModal>
+
+
+
+      <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
+            <motion.div
+              initial={{ scale: 0.5, rotateX: 90 }}
+              animate={{ scale: 1, rotateX: 0 }}
+              exit={{ scale: 0.5, rotateX: -90 }}
+              transition={{ type: "spring", damping: 15, stiffness: 100 }}
+              className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="flex justify-center mb-4"
+              >
+                <CheckCircle className="w-16 h-16 text-[#122f97]" />
+              </motion.div>
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
+                id="modal-title"
+              >
+                Stock {  selectedStock ? "Update" :" Added"} successfully!
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
+              >
+                Your information has been successfully saved to our database.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-6 flex justify-center"
+              >
+                <button
+                  onClick={onClose}
+                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                >
+                  Close
+                </button>
+              </motion.div>
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
+              >
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
     </>
   );
 }

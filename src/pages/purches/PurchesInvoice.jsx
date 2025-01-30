@@ -13,6 +13,8 @@ import { getCompanyInfoAction } from "../../redux/action/generalManagement";
 import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 
+import { X, CheckCircle } from "lucide-react"
+
 export default function PurchesInvoice() {
   const [products, setProducts] = useState([]);
   const [nameFocused, setNameFocused] = useState(false);
@@ -25,7 +27,7 @@ export default function PurchesInvoice() {
   const firmdropdownRef = useRef(null);
   const [firmselectedType, setFirmSelectedType] = useState("");
   const [firmdropdownOpen, setFirmDropdownOpen] = useState(false);
-
+  const [isOpen, setIsOpen] = useState(false);
   const [gstFocused, setGstFocused] = useState(false);
   const [panFocused, setPanFocused] = useState(false);
   const [stateFocused, setStateFocused] = useState(false);
@@ -340,7 +342,11 @@ export default function PurchesInvoice() {
     try {
       const response = await ApiPost("/admin/customer", formData);
       console.log("response", response);
-      alert("Party created successfully!");
+      setIsOpen(true)
+      setTimeout(() => {
+        setIsOpen(false);
+    }, 2000);
+    
 
       // Reset form and close modal
       setFormData({
@@ -362,6 +368,12 @@ export default function PurchesInvoice() {
       alert("Failed to create party. Please try again.");
     }
   };
+
+
+  const onClose = () => {
+    setIsOpen(false); // Close the modal
+  };
+
 
   return (
     <>
@@ -1544,6 +1556,77 @@ export default function PurchesInvoice() {
           </>
         </ModalContent>
       </NextUIModal>
+
+
+      <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
+            <motion.div
+              initial={{ scale: 0.5, rotateX: 90 }}
+              animate={{ scale: 1, rotateX: 0 }}
+              exit={{ scale: 0.5, rotateX: -90 }}
+              transition={{ type: "spring", damping: 15, stiffness: 100 }}
+              className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="flex justify-center mb-4"
+              >
+                <CheckCircle className="w-16 h-16 text-[#122f97]" />
+              </motion.div>
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
+                id="modal-title"
+              >
+                Stock {  selectedStock ? "Update" :" Added"} successfully!
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
+              >
+                Your information has been successfully saved to our database.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-6 flex justify-center"
+              >
+                <button
+                  onClick={onClose}
+                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-md hover:from-green-600 hover:to-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                >
+                  Close
+                </button>
+              </motion.div>
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
+              >
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
     </>
   );
 }

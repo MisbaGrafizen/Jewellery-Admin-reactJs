@@ -94,7 +94,7 @@ export default function Login() {
       console.log("Login Success:", response.data);
       Cookies.set("token", response.data.token);
       Cookies.set("user", response.data.user._id);
-      navigate("/create-account");
+      navigate("/dashboard");
     } catch (error) {
       console.error(
         "Login Error:",
@@ -187,7 +187,7 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-white sm:bg-[#122f97] sm:py-11 select-none h-[100vh] sm:px-16 overflow-hidden">
+    <div className=" sm:!bg-[#122f97] sm:py-11 select-none h-[100vh] sm:px-16 overflow-hidden">
       <div className="login-bg flex h-full gap-14 overflow-hidden justify-center">
         <div className="flex items-center justify-center  relative font-medium text-sm md:min-w-[501px] max-w-[501px]">
           {isRegistering ? (
@@ -260,7 +260,7 @@ export default function Login() {
                           className={`bg-white px-1 absolute top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
                             mobileFocused
                               ? "-translate-y-[50%] left-[20px] text-primary text-xs"
-                              : " -translate-y-[-55%] cursor-text left-[50px] text-[#9f9e9e] text-xs"
+                              : " -translate-y-[-67%] cursor-text left-[50px] text-[#9f9e9e] text-xs"
                           }`}
                         >
                           Mobile Number
@@ -339,7 +339,7 @@ export default function Login() {
                       >
                         {registerStep === 1 ? "Go Ahead" : "Register Now"}
                       </button>
-                      <p className="text-sm sm:text-[12px]  pl-[4px]  font-Poppins w-[90%] text-[#00000099]  mx-auto font-light mt-auto lg:mt-[10px]">
+                      <p className="text-sm sm:text-[13px]    font-Poppins w-[90%] !text-[#00000099] mt-[5px]  font-[300] mx-auto  lg:mt-[10px]">
                         By Logging in, I agree with all
                         <a
                           href="https://billwale.com/privacypolicy?navigate=policy"
@@ -532,7 +532,7 @@ export default function Login() {
                     New User Registration
                   </p>
 
-                  <div className="text-center  w-[90%]  mt-5">
+                  <div className="text-center  w-[87%]  mt-3">
                     <button
                       onClick={handleLogin}
                       type="button"
@@ -541,7 +541,7 @@ export default function Login() {
                       Log in
                     </button>
                   </div>
-                  <p className="text-sm sm:text-[14px] font-Poppins w-[90%] text-[#00000099] text-center font-light mt-auto lg:mt-[10px]">
+                  <p className="text-sm sm:text-[12px]   text-left pl-[6px] font-Poppins mt-1  text-[#00000099]  mx-auto font-light  lg:mt-[10px]">
                     By Logging in, I agree with all
                     <a
                       href="https://billwale.com/privacypolicy?navigate=policy"

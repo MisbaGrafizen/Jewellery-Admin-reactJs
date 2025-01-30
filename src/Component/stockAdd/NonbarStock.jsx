@@ -63,6 +63,7 @@ export default function NonbarStock() {
     setDropdownOpenCategory(false);
   };
   const dispatch = useDispatch();
+  const categories = useSelector((state) => state.landing.getAllCategory);
   const metals = useSelector((state) => state.landing.getMetal);
   const item = useSelector((state) => state?.landing?.getNonBarcodeCategory);
   const products = useSelector((state) => state.landing.getNonBarcodeProduct);
@@ -121,6 +122,9 @@ export default function NonbarStock() {
         //     : "Stock added successfully!"
         // );
         setIsOpen(true)
+        setTimeout(() => {
+          setIsOpen(false);
+        }, 2000);
         resetForm();
         dispatch(getAllNonBarcodeProductAction());
         handleStockModalClose();
@@ -268,8 +272,8 @@ export default function NonbarStock() {
           <div className=" flex  justify-end w-[100%]">
             <button
               className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
-              // onClick={handleStockModal}
-              onClick={onAdd}
+              onClick={handleStockModal}
+            
             >
               <i className="fa-solid fa-plus"></i>
               Add Stock
@@ -676,7 +680,7 @@ export default function NonbarStock() {
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200
                                   ${
-                                    ProductNameFocused
+                                productName  ||  ProductNameFocused
                                       ? "text-[#000] -translate-y-[21px] hidden "
                                       : "text-[#8f8f8f] cursor-text flex"
                                   }`}
@@ -701,7 +705,7 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  ProductPcsFocused
+                               pcs    || ProductPcsFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -725,7 +729,7 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  netWeghtFocused
+                                 netWeight|| netWeghtFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -748,7 +752,7 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  totalWeghtFocused
+                             toWeight    || totalWeghtFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -873,7 +877,7 @@ export default function NonbarStock() {
               >
                 <button
                   onClick={onClose}
-                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-md hover:from-green-600 hover:to-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
                 >
                   Close
                 </button>
