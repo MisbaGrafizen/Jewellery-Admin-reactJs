@@ -36,6 +36,20 @@ export default function NonbarStock() {
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
   const [categoryFocused, setCategoryFocused] = useState(false);
+
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.landing.getAllCategory);
+  const metals = useSelector((state) => state.landing.getMetal);
+  const item = useSelector((state) => state?.landing?.getNonBarcodeCategory);
+  const products = useSelector((state) => state.landing?.getNonBarcodeProduct);
+
+  console.log('productssdf', products)
+
+  useEffect(() => {
+    dispatch(getAllNonBarcodeProductAction());
+  }, [dispatch]);
+
+
   const handleSelect = (type) => {
     setSelectedType(type);
     setDropdownOpen(false);
@@ -62,11 +76,8 @@ export default function NonbarStock() {
     setSelectedTypecategory(type);
     setDropdownOpenCategory(false);
   };
-  const dispatch = useDispatch();
-  const categories = useSelector((state) => state.landing.getAllCategory);
-  const metals = useSelector((state) => state.landing.getMetal);
-  const item = useSelector((state) => state?.landing?.getNonBarcodeCategory);
-  const products = useSelector((state) => state.landing.getNonBarcodeProduct);
+
+  
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
       alert("Please select Carat, Metal and Category.");

@@ -145,6 +145,7 @@ const landingManagementReducer = (state = initialState, action) => {
                 deleteNonBarcodeCategory: action.payload,
             };
         case GET_NON_BARCODE_PRODUCT: 
+        console.log('action.payload', action.payload)
         return {
             ...state,
             getNonBarcodeProduct: action.payload,
