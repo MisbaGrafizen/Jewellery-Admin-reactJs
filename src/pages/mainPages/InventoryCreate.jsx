@@ -6,15 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import {
   addCategoryAction,
+  addDesignAction,
   addGroupItemAction,
   addMetalAction,
   addStockAction,
   deleteCategoryAction,
+  deleteDesignAction,
   deleteGroupItemAction,
   deleteMetalAction,
   deleteStockAction,
   getAllStockAction,
   getCategroyAction,
+  getDesignAction,
   getGroupItemAction,
   getMetalAction,
   updateCategoryAction,
@@ -90,6 +93,7 @@ export default function InventoryCreate() {
   const categories = useSelector((state) => state.landing.getAllCategory);
   const metals = useSelector((state) => state.landing.getMetal);
   const item = useSelector((state) => state.landing.getGroupItem);
+  const design = useSelector((state) => state.landing.getDesign);
   const stocks = useSelector((state) => state.landing.getProduct);
   const [isBercodeVisible, setIsBercodeVisible] = useState(true);
 
@@ -132,12 +136,14 @@ export default function InventoryCreate() {
     setCarat(categories || []);
     setMetal(metals || []);
     setItems(item || []);
-  }, [categories, metals, item]);
+    setDesigns(design || []);
+  }, [categories, metals, item, design]);
 
   useEffect(() => {
     dispatch(getCategroyAction());
     dispatch(getMetalAction());
     dispatch(getGroupItemAction());
+    dispatch(getDesignAction());
     dispatch(getAllStockAction());
   }, [dispatch]);
 
@@ -218,6 +224,11 @@ export default function InventoryCreate() {
         if (success) {
           dispatch(getAllStockAction());
         }
+      } else if (deleteContext === "design") {
+        success = await dispatch(deleteDesignAction(caratIdToDelete));
+        if (success) {
+          dispatch(getDesignAction());
+        }
       }
 
       if (success) {
@@ -244,6 +255,8 @@ export default function InventoryCreate() {
           action === "edit" ? editMetalName.trim() : metalName.trim();
       } else if (context === "item") {
         inputValue = action === "edit" ? editItemName.trim() : itemName.trim();
+      } else if (context === "design") {
+        inputValue = action === "edit" ? editDesignName.trim() : designName.trim();
       }
 
       if (!inputValue) {
@@ -264,12 +277,15 @@ export default function InventoryCreate() {
           action === "edit" ? setEditMetalName("") : setMetalName("");
         } else if (context === "item") {
           action === "edit" ? setEditItemName("") : setItemName("");
+        } else if (context === "design") {
+          action === "edit" ? setEditDesignName("") : setDesignName("");
         }
 
         if (action === "edit") {
           if (context === "category") setEditingCarat(null);
           if (context === "metal") setEditingMetal(null);
           if (context === "item") setEditingItem(null);
+          if (context === "design") setEditingDesign(null);
         }
       } catch (error) {
         console.error(`Failed to ${action} ${context}:`, error);
@@ -291,6 +307,9 @@ export default function InventoryCreate() {
         } else if (context === "item") {
           await dispatch(addGroupItemAction({ itemName: inputValue }));
           await dispatch(getGroupItemAction());
+        } else if (context === "design") {
+          await dispatch(addDesignAction({ designName: inputValue}));
+          await dispatch(getDesignAction());
         }
       } else if (action === "edit" && id) {
         if (context === "category") {
@@ -302,6 +321,9 @@ export default function InventoryCreate() {
         } else if (context === "item") {
           await dispatch(updateGroupItemAction(id, { itemName: inputValue }));
           await dispatch(getGroupItemAction());
+        } else if (context === "design") {
+          await dispatch(updateGroupItemAction(id, { designName: inputValue }));
+          await dispatch(getDesignAction());
         }
       }
     } catch (error) {
@@ -321,6 +343,10 @@ export default function InventoryCreate() {
     } else if (context === "item") {
       setEditingItem(index);
       setEditItemName(item.itemName);
+      setEditingItemId(item._id);
+    } else if (context === "design") {
+      setEditingDesign(index);
+      setEditDesignName(item.designName);
       setEditingItemId(item._id);
     }
   };
@@ -342,37 +368,6 @@ export default function InventoryCreate() {
     }));
   };
 
-  // const handleSavePercentage = async (id) => {
-  //   const percentage = percentages[id];
-
-  //   if (!percentage || isNaN(percentage)) {
-  //     alert("Please enter a valid percentage.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const success = await dispatch(
-  //       updateCategoryAction(id, { percentage: parseFloat(percentage) })
-  //     );
-
-  //     if (success) {
-  //       alert("Percentage updated successfully!");
-  //       setPercentages((prev) => ({
-  //         ...prev,
-  //         [id]: "",
-  //       }));
-
-  //       dispatch(getCategroyAction());
-  //     } else {
-  //       alert("Failed to update percentage.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating percentage:", error);
-  //     alert("An error occurred while updating the percentage.");
-  //   }
-  // };
-
-
   const handleSavePercentage = async (id) => {
     const percentage = parseFloat(percentages[id]); // Parse percentage value
 
@@ -382,9 +377,6 @@ export default function InventoryCreate() {
     }
 
     try {
-      // const success = await dispatch(
-      //   updateCategoryAction(id, { percentage }) // API call to update percentage
-      // );
       const success = await dispatch(updateCategoryAction(id, { percentage }));
       if (success) {
         setPercentages((prev) => ({
@@ -530,13 +522,6 @@ export default function InventoryCreate() {
     setDesigns(designs.filter((design) => design.id !== id));
   };
 
-
-
-
-
-
-
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (inputRef.current && !inputRef.current.contains(event.target)) {
@@ -548,45 +533,7 @@ export default function InventoryCreate() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   
-  // const handleCategoryClick = (categoryId) => {
-  //   setSelectedCategory(categoryId);
-  //   setIsSubcategoryInputVisible(false);
-  // };
-  
-  const handleKeyPressSubcategory = (e, action = "add", id = null) => {
-    if (e?.key === "Enter") {
-      e.preventDefault();
-      let inputValue = action === "edit" ? editSubcategoryName.trim() : subcategoryName.trim();
-      if (!inputValue) {
-        alert("Subcategory name cannot be empty.");
-        return;
-      }
-      
-      if (action === "add") {
-        setSubcategories((prev) => ({
-          ...prev,
-          [selectedCategoryi]: [...(prev[selectedCategoryi] || []), { id: Date.now(), name: inputValue }],
-        }));
-      } else if (action === "edit" && id) {
-        setSubcategories((prev) => ({
-          ...prev,
-          [selectedCategoryi]: prev[selectedCategoryi].map((sub) =>
-            sub.id === id ? { ...sub, name: inputValue } : sub
-          ),
-        }));
-      }
-      
-      action === "edit" ? setEditSubcategoryName("") : setSubcategoryName("");
-      if (action === "edit") setEditingSubcategory(null);
-    }
-  };
-  
-  const handleOpenDeleteModalSubcategory = (id) => {
-    setSubcategories((prev) => ({
-      ...prev,
-      [selectedCategoryi]: prev[selectedCategoryi].filter((sub) => sub.id !== id),
-    }));
-  };
+
   const handleItemClick = (index) => {
     setSelectedCategoryi(data ?.id);
     // setSubcategoryInputVisible(false);
@@ -735,14 +682,14 @@ export default function InventoryCreate() {
                   className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#fff]" : "[#000]"
                     }`}
                 >
-                  Bercode
+                  Barcode
                 </button>
                 <button
                   onClick={handleNoneBercodeClick}
                   className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#000]" : "[#fff]"
                     }`}
                 >
-                  None Bercode
+                  None Barcode
                 </button>
               </div>
 
@@ -894,7 +841,7 @@ export default function InventoryCreate() {
                     </div>
                     <div className="flex flex-col gap-[6px] w-[100%]">
                       <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
-                        Metal
+                        Size
                       </h1>
                       <div className="w-[100%] flex flex-col gap-[15px]">
                         <div className="flex gap-[20px]">
@@ -1023,7 +970,7 @@ export default function InventoryCreate() {
                                 items.map((data, index) => (
                                   <div
                                     key={data?.id}
-                                    className={`border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer ${selectedCategoryi === data?.id ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+                                    className={`border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer   `}
                                     onClick={() => handleItemClick(data?.id)}
                                     onDoubleClick={() =>
                                       handleDoubleClick("item", data, index)
@@ -1076,7 +1023,7 @@ export default function InventoryCreate() {
                           </div>
                         </div>
                       </div>
-                      {selectedCategoryi && subcategories[selectedCategoryi] && (
+                      {/* {selectedCategoryi && subcategories[selectedCategoryi] && (
                         <div className="flex flex-col gap-[6px] mt-10">
                           <h2 className="flex pl-[6px] font-Poppins text-[16px] text-[#122f97]">Subcategories</h2>
                           <div className="flex gap-[10px]">
@@ -1135,7 +1082,7 @@ export default function InventoryCreate() {
                             ))}
                           </div>
                         </div>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="flex flex-col gap-[6px] w-[100%]">
@@ -1159,23 +1106,26 @@ export default function InventoryCreate() {
                                   name="designName"
                                   value={designName}
                                   onChange={(e) => setDesignName(e.target.value)}
-                                  onKeyDown={(e) => handleKeyPressDesign(e)}
+                                  onKeyDown={(e) => handleKeyPress(e, "design")}
                                   placeholder="Design Name"
                                   className="px-[10px] outline-none font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
                                   autoFocus
                                 />
                               </div>
+
                             )}
                           </div>
                           <div ref={inputRefdesign} className="flex-wrap flex relative gap-[10px]">
                             {Array.isArray(designs) ? (
                               designs.map((data, index) => (
                                 <div
-                                  key={data?.id}
+                                  key={data?._id}
                                   className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px] w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
 
-                                  onClick={() => handleDesignClick(data?.id)}
-                                  onDoubleClick={() => handleDoubleClickDesign(data, index)}
+                                  onClick={() => handleDesignClick(data?._id)}
+                                  onDoubleClick={() =>
+                                      handleDoubleClick("design", data, index)
+                                    }
                                 >
                                   {editingDesign === index ? (
                                     <>
@@ -1185,7 +1135,7 @@ export default function InventoryCreate() {
                                           name="designName"
                                           value={editDesignName}
                                           onChange={(e) => setEditDesignName(e.target.value)}
-                                          onKeyDown={(e) => handleKeyPressDesign(e, "edit", editingDesignId)}
+                                          onKeyDown={(e) => handleKeyPressDesign(e, "design", "edit", editingDesignId)}
                                           className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                           autoFocus
                                         />
@@ -1193,7 +1143,7 @@ export default function InventoryCreate() {
                                           className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            handleOpenDeleteModalDesign(data?.id);
+                                            handleOpenDeleteModal("design", data?._id);
                                           }}
                                         >
                                           Delete

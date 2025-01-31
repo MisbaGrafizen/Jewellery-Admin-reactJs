@@ -4,7 +4,7 @@ import {
   ApiPost,
   ApiPut,
 } from '../../helper/axios';
-import { GET_CATEGORY, GET_GROUP_ITEM, GET_METAL, ADD_NON_BARCODE_PRODUCT, DELETE_NON_BARCODE_PRODUCT, GET_NON_BARCODE_PRODUCT, UPDATE_NON_BARCODE_CATEGORY, DELETE_NON_BARCODE_CATEGORY, ADD_NON_BARCODE_CATEGORY, GET_NON_BARCODE_CATEGORY, GET_ORDER_BY_ID, DELETE_CATEGORY, GET_PRODUCT, GET_ORDER_LIST, ADD_PRODUCT, DELETE_GROUP_ITEM, ADD_CATEGORY, ADD_METAL, ADD_GROUP_ITEM, UPDATE_METAL, UPDATE_GROUP_ITEM,  UPDATE_CATEGORY, DELETE_PRODUCT, DELETE_METAL} from '../type';
+import { GET_CATEGORY, GET_GROUP_ITEM, GET_METAL, ADD_DESIGN,UPDATE_DESIGN, DELETE_SIZE, DELETE_DESIGN, GET_SIZE, ADD_SIZE, UPDATE_SIZE, ADD_NON_BARCODE_PRODUCT, GET_DESIGN,  DELETE_NON_BARCODE_PRODUCT, GET_NON_BARCODE_PRODUCT, UPDATE_NON_BARCODE_CATEGORY, DELETE_NON_BARCODE_CATEGORY, ADD_NON_BARCODE_CATEGORY, GET_NON_BARCODE_CATEGORY, GET_ORDER_BY_ID, DELETE_CATEGORY, GET_PRODUCT, GET_ORDER_LIST, ADD_PRODUCT, DELETE_GROUP_ITEM, ADD_CATEGORY, ADD_METAL, ADD_GROUP_ITEM, UPDATE_METAL, UPDATE_GROUP_ITEM,  UPDATE_CATEGORY, DELETE_PRODUCT, DELETE_METAL} from '../type';
 
 
 export const getCategroyAction = () => {
@@ -52,27 +52,27 @@ export const getnonBarcodeCategroyAction = () => {
 };
 
 
-export const getAllOrderAction = () => {
-return (dispatch) => {
-    return ApiGet(`/admin/orderList`)
-  .then((res) => {
-    console.log('res', res);
-    if (res.orderList) {
+export const getAllSizeAction = () => {
+  return (dispatch) => {
+      return ApiGet(`/admin/size`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.size) {
+        dispatch({
+          type: GET_SIZE,
+          payload: res.size,
+        });
+        return res.size;
+      }
+    })
+    .catch((error) => {
       dispatch({
-        type: GET_ORDER_LIST,
-        payload: res.orderList,
+        type: GET_SIZE,
+        payload: error,
       });
-      return res.orderList;
-    }
-  })
-  .catch((error) => {
-    dispatch({
-      type: GET_ORDER_LIST,
-      payload: error,
     });
-  });
-};
-};
+  };
+  };
 
 export const getOrderByIdAction = (orderId) => {
 return (dispatch) => {
@@ -162,6 +162,28 @@ return (dispatch) => {
 };
 };
 
+export const getDesignAction = () => {
+  return (dispatch) => {
+      return ApiGet(`/admin/design`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.design) {
+        dispatch({
+          type: GET_DESIGN,
+          payload: res.design,
+        });
+        return res.design;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_PRODUCT,
+        payload: error,
+      });
+    });
+  };
+  };
+
 export const getAllNonBarcodeProductAction = () => {
   return (dispatch) => {
       return ApiGet(`/admin/non-barcode/products`)
@@ -190,12 +212,12 @@ return (dispatch) => {
     return ApiPost(`/admin/product`, stockData)
   .then((res) => {
     console.log('resasdfg', res);
-    if (res.data.product) {
+    if (res.data.data) {
       dispatch({
         type: ADD_PRODUCT,
-        payload: res.data.product,
+        payload: res.data.data,
       });
-      return res.data.product;
+      return res.data.data;
     }
   })
   .catch((error) => {
@@ -206,6 +228,50 @@ return (dispatch) => {
   });
 };
 };
+
+export const addDesignAction = (designData) => {
+  return (dispatch) => {
+      return ApiPost(`/admin/design`, designData)
+    .then((res) => {
+      console.log('resasdfg', res);
+      if (res.data.design) {
+        dispatch({
+          type: ADD_DESIGN,
+          payload: res.data.design,
+        });
+        return res.data.design;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: ADD_DESIGN,
+        payload: error,
+      });
+    });
+  };
+  };
+
+  export const addSizeAction = (stockData) => {
+    return (dispatch) => {
+        return ApiPost(`/admin/size`, stockData)
+      .then((res) => {
+        console.log('resasdfg', res);
+        if (res.data.size) {
+          dispatch({
+            type: ADD_SIZE,
+            payload: res.data.size,
+          });
+          return res.data.size;
+        }
+      })
+      .catch((error) => {
+        dispatch({
+          type: ADD_SIZE,
+          payload: error,
+        });
+      });
+    };
+    };
 
 export const addNonBarcodeProductAction = (stockData) => {
   return (dispatch) => {
@@ -335,6 +401,50 @@ export const updateMetalAction = (metalId, formData) => {
     .catch((error) => {
       dispatch({
         type: UPDATE_METAL,
+        payload: error,
+      });
+    });
+};
+};
+
+export const updateDesignAction = (designId, formData) => {
+  return (dispatch) => {
+      return ApiPut(`/admin/design/${designId}`, formData)
+    .then((res) => {
+      console.log('res', res);
+      if (res.design) {
+        dispatch({
+          type: UPDATE_DESIGN,
+          payload: res.design,
+        });
+        return res.design;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: UPDATE_DESIGN,
+        payload: error,
+      });
+    });
+};
+};
+
+export const updateSizeAction = (sizeId, formData) => {
+  return (dispatch) => {
+      return ApiPut(`/admin/size/${sizeId}`, formData)
+    .then((res) => {
+      console.log('res', res);
+      if (res.size) {
+        dispatch({
+          type: UPDATE_SIZE,
+          payload: res.size,
+        });
+        return res.size;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: UPDATE_SIZE,
         payload: error,
       });
     });
@@ -495,6 +605,52 @@ export const deleteMetalAction = (metalId) => {
     });
 };
 };
+
+export const deleteDesignAction = (designId) => {
+  return (dispatch) => {
+      return ApiDelete(`/admin/design/${designId}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.design) {
+        dispatch({
+          type: DELETE_DESIGN,
+          payload: res.design,
+        });
+        return res.design;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: DELETE_DESIGN,
+        payload: error,
+      });
+    });
+};
+};
+
+export const deleteSizeAction = (sizeId) => {
+  return (dispatch) => {
+      return ApiDelete(`/admin/size/${sizeId}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.size) {
+        dispatch({
+          type: DELETE_SIZE,
+          payload: res.size,
+        });
+        return res.size;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: DELETE_SIZE,
+        payload: error,
+      });
+    });
+};
+};
+
+
 
 export const deleteGroupItemAction = (categoryId) => {
 return (dispatch) => {

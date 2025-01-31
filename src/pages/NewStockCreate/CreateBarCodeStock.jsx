@@ -13,8 +13,10 @@ import {
   deleteGroupItemAction,
   deleteMetalAction,
   deleteStockAction,
+  getAllSizeAction,
   getAllStockAction,
   getCategroyAction,
+  getDesignAction,
   getGroupItemAction,
   getMetalAction,
   updateCategoryAction,
@@ -39,8 +41,6 @@ export default function CreateBarCodeStock() {
   const [selectedType, setSelectedType] = useState("");
   const [percentages, setPercentages] = useState({});
   const [isEditing, setIsEditing] = useState(null);
-
-
 
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
@@ -81,24 +81,33 @@ export default function CreateBarCodeStock() {
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
   const [items, setItems] = useState([]);
-  // const [itemName, setItemName] = useState("");
-  // const [editingItem, setEditingItem] = useState(null);
-  // const [editItemName, setEditItemName] = useState("");
-  // const [editingItemId, setEditingItemId] = useState(null);
-  // const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  // const [isItemInputVisible, setItemInputVisible] = useState(null);
-  // const [inputItemValue, setInputItemValue] = useState("");
-  // const [apiTrigger, setApiTrigger] = useState(null);
 
   const [grossWeight, setGrossWeight] = useState("");
   const [lessWeight, setLessWeight] = useState("");
   const [westage, setWestage] = useState("");
+  const [hsn, setHsn] = useState("");
+  const [group, setGroup] = useState("");
+  const [account, setAccount] = useState("");
+  const [labour, setLabour] = useState("");
+  const [extra, setExtra] = useState("");
+  const [location, setLocation] = useState("");
+  const [design, setDesign] = useState("");
+  const [pcs, setPcs] = useState("");
+  const [size, setSize] = useState("");
+  const [moti, setMoti] = useState("");
+  const [stone, setStone] = useState("");
+  const [jadatr, setJadatr] = useState("");
+  const [huid, setHuid] = useState("");
+  const [huidRule, setHuidRule] = useState("");
+  const [huidCharge, setHuidCharge] = useState("");
   const [selectedStock, setSelectedStock] = useState(null);
   const [stockModalopen, setStockModalOpen] = useState(false);
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.landing.getAllCategory);
   const metals = useSelector((state) => state.landing.getMetal);
   const item = useSelector((state) => state.landing.getGroupItem);
+  const designs = useSelector((state) => state.landing.getDesign);
+  const sizes = useSelector((state) => state.landing.getSize);
   const stocks = useSelector((state) => state.landing.getProduct);
   // useEffect(() => {
   //   setCarat(categories || []);
@@ -110,17 +119,33 @@ export default function CreateBarCodeStock() {
     dispatch(getCategroyAction());
     dispatch(getMetalAction());
     dispatch(getGroupItemAction());
+    dispatch(getDesignAction());
+    dispatch(getAllSizeAction());
     dispatch(getAllStockAction());
   }, [dispatch]);
 
   useEffect(() => {
     if (selectedStock) {
       setSelectedType(selectedStock.caratName || "");
-      setSelectedTypeMetal(selectedStock.metalName || "");
+      // setSelectedTypeMetal(selectedStock.metalName || "");
       setSelectedTypecategory(selectedStock.categoryName || "");
       setGrossWeight(selectedStock.toWeight || "");
       setLessWeight(selectedStock.lessWeight || "");
       setWestage(selectedStock.wastage || "");
+      setHsn(selectedStock.hsnCode || "");
+      setGroup(selectedStock.group || "");
+      setAccount(selectedStock.account || "");
+      setLabour(selectedStock.extraRate || "");
+      setLocation(selectedStock.location || "");
+      setSelectedTypeDesign(selectedStock.design || "");
+      setPcs(selectedStock.pcs || "");
+      setSize(selectedStock.size || "");
+      setMoti(selectedStock.moti || "");
+      setStone(selectedStock.stone || "");
+      setJadatr(selectedStock.jadatr || "");
+      setHuid(selectedStock.huid || "");
+      setHuidRule(selectedStock.huidRule || "");
+      setHuidCharge(selectedStock,huidCharge || "");
     }
   }, [selectedStock]);
   const dropdownRef = useRef(null);
@@ -135,6 +160,11 @@ export default function CreateBarCodeStock() {
   const handleSelectMetal = (type) => {
     setSelectedTypeMetal(type);
     setDropdownOpenMetal(false);
+  };
+
+  const handleSelectDesign = (type) => {
+    setSelectedTypeDesign(type);
+    setDropdownOpenDesign(false);
   };
 
   const handleSelectCategory = (type) => {
@@ -230,69 +260,178 @@ export default function CreateBarCodeStock() {
       }
     }
   }, [grossWeight, lessWeight, selectedType, categories]);
+
+  // const handleAddStock = async () => {
+  //   if (!selectedType || !selectedTypeCategory) {
+  //     alert("Please select Carat and Category.");
+  //     return;
+  //   }
+
+  //   const selectedCarat = categories.find(
+  //     (carat) => carat.name === selectedType
+  //   );
+  //   const selectedMetal = metals.find(
+  //     (metal) => metal.metalName === selectedTypeMetal
+  //   );
+  //   const selectedCategory = item.find(
+  //     (data) => data.itemName === selectedTypeCategory
+  //   );
+  //   const selectedDesign = item.find(
+  //     (data) => data.designName === selectedTypeDesign
+  //   );
+
+  //   if (!selectedCarat  || !selectedCategory) {
+  //     alert(
+  //       "Invalid selection. Please select valid Carat, Metal, and Category."
+  //     );
+  //     return;
+  //   }
+
+  //   const stockData = {};
+
+  //   if (selectedCarat) stockData.groupId = selectedCarat._id;
+  //   if (selectedCategory) stockData.groupItemId = selectedCategory._id;
+  //   if (grossWeight) stockData.toWeight = parseFloat(grossWeight);
+  //   if (lessWeight) stockData.lessWeight = parseFloat(lessWeight);
+  //   if (westage) stockData.wastage = parseFloat(westage);
+  //   if (hsn) stockData.hsnCode = parseFloat(hsn);
+  //   if (group) stockData.group = group.toString();
+  //   if (account) stockData.account = account.toString();
+  //   if (labour) stockData.labour = parseFloat(labour);
+  //   if (location) stockData.location =  location.toString();
+  //   if (selectedDesign) stockData.design = selectedDesign._id;
+  //   if (pcs) stockData.pcs = parseFloat(pcs);
+  //   if (size) stockData.size = parseFloat(size);
+  //   if (moti) stockData.moti = parseFloat(moti);
+  //   if (stone) stockData.stone = parseFloat(stone);
+  //   if (jadatr) stockData.jadatr = parseFloat(jadatr);
+  //   if (huid) stockData.huid = huid.toString();
+  //   if (huidRule) stockData.huidRule = huidRule.toString();
+  //   if (huidCharge) stockData.huidCharge = parseFloat(huidCharge);
+
+
+  //   try {
+  //     if (selectedStock) {
+  //       const response = await dispatch(
+  //         updateStockAction(selectedStock?._id, stockData)
+  //       );
+  //       if (response) {
+  //         alert("Stock updated successfully!");
+  //         dispatch(getAllStockAction());
+  //       } else {
+  //         alert("Failed to update stock.");
+  //       }
+  //     } else {
+  //       const response = await dispatch(addStockAction(stockData));
+  //       if (response) {
+  //         setIsOpen(true)
+  //         setTimeout(() => {
+  //           setIsOpen(false);
+  //         }, 2000);
+  //         dispatch(getAllStockAction());
+  //       } else {
+  //         alert("Failed to add stock.");
+  //       }
+  //     }
+
+  //     setStockModalOpen(false); // Close modal
+  //   } catch (error) {
+  //     console.error("Error saving stock:", error);
+  //     alert("An error occurred while saving stock.");
+  //   }
+  // };
+
+
   const handleAddStock = async () => {
-    if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
-      alert("Please select Carat, Metal, and Category.");
+    if (!selectedType || !selectedTypeCategory) {
+      alert("Please select Carat and Category.");
       return;
     }
-
-    const selectedCarat = categories.find(
-      (carat) => carat.name === selectedType
-    );
-    const selectedMetal = metals.find(
-      (metal) => metal.metalName === selectedTypeMetal
-    );
-    const selectedCategory = item.find(
-      (data) => data.itemName === selectedTypeCategory
-    );
-
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
-      alert(
-        "Invalid selection. Please select valid Carat, Metal, and Category."
-      );
+  
+    const selectedCarat = categories.find((carat) => carat.name === selectedType);
+    const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
+    const selectedDesign = item.find((data) => data.designName === selectedTypeDesign);
+  
+    if (!selectedCarat || !selectedCategory) {
+      alert("Invalid selection. Please select valid Carat and Category.");
       return;
     }
-
-    const stockData = {};
-
-    if (selectedCarat) stockData.groupId = selectedCarat._id;
-    if (selectedMetal) stockData.metalId = selectedMetal._id;
-    if (selectedCategory) stockData.groupItemId = selectedCategory._id;
-    if (grossWeight) stockData.toWeight = parseFloat(grossWeight);
-    if (lessWeight) stockData.lessWeight = parseFloat(lessWeight);
-    if (westage) stockData.wastage = parseFloat(westage);
-
-    try {
-      if (selectedStock) {
-        const response = await dispatch(
-          updateStockAction(selectedStock?._id, stockData)
-        );
-        if (response) {
-          alert("Stock updated successfully!");
-          dispatch(getAllStockAction());
-        } else {
-          alert("Failed to update stock.");
-        }
-      } else {
-        const response = await dispatch(addStockAction(stockData));
-        if (response) {
-          setIsOpen(true)
-          setTimeout(() => {
-            setIsOpen(false);
-          }, 2000);
-          dispatch(getAllStockAction());
-        } else {
-          alert("Failed to add stock.");
-        }
+  
+    // **Creating Multiple Product Objects**
+    const productsArray = [
+      {
+        groupId: selectedCarat._id,
+        groupItemId: selectedCategory._id,
+        toWeight: parseFloat(grossWeight) || 0,
+        lessWeight: parseFloat(lessWeight) || 0,
+        wastage: parseFloat(westage) || 0,
+        hsnCode: hsn ? hsn.toString() : "",
+        group: group ? group.toString() : "",
+        account: account ? account.toString() : "",
+        labour: parseFloat(labour) || 0,
+        location: location ? location.toString() : "",
+        design: selectedDesign?._id || null,
+        pcs: parseInt(pcs) || 1,
+        size: parseFloat(size) || null,
+        moti: parseFloat(moti) || 0,
+        stone: parseFloat(stone) || 0,
+        jadatr: parseFloat(jadatr) || 0,
+        huid: huid ? huid.toString() : "",
+        huidRule: huidRule ? huidRule.toString() : "",
+        huidCharge: parseFloat(huidCharge) || 0,
+      },
+      {
+        groupId: selectedCarat._id, // Duplicating for testing
+        groupItemId: selectedCategory._id,
+        toWeight: 30, // Different weight
+        lessWeight: 2,
+        wastage: 1,
+        hsnCode: "67890",
+        group: "Test Group 2",
+        account: "Test Account 2",
+        labour: 100,
+        location: "Warehouse B",
+        design: selectedDesign?._id || null,
+        pcs: 2,
+        size: 14,
+        moti: 1,
+        stone: 2,
+        jadatr: 3,
+        huid: "HUID2",
+        huidRule: "",
+        huidCharge: 50,
       }
-
-      setStockModalOpen(false); // Close modal
+    ];
+  
+    console.log("🟢 Sending multiple products:", {
+      groupId: selectedCarat._id,
+      groupItemId: selectedCategory._id,
+      products: productsArray,
+    });
+  
+    try {
+      const response = await dispatch(addStockAction({
+        groupId: selectedCarat._id,
+        groupItemId: selectedCategory._id,
+        products: productsArray, // ✅ Sending multiple products at once
+      }));
+  
+      console.log("🟢 API Response:", response);
+  
+      if (response) {
+        alert("Stock added successfully!");
+        dispatch(getAllStockAction());
+      } else {
+        alert("Failed to add stock.");
+        console.error("❌ Backend Response Error:", response);
+      }
     } catch (error) {
-      console.error("Error saving stock:", error);
+      console.error("❌ API Request Error:", error);
       alert("An error occurred while saving stock.");
     }
   };
-
+  
+  
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
     setCaratIdToDelete(id);
@@ -485,15 +624,7 @@ export default function CreateBarCodeStock() {
                     {fieldSets.map((_, index) => (
 
                       <div key={index} className=" flex flex-col gap-[15px] w-[100%]">
-
-
                         <div className=" flex w-[100%]  gap-[20px]">
-
-
-
-
-
-
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
 bg-[#fff] ">
                             <label
@@ -507,13 +638,13 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="text"
-                         
+                              name="hsnCode"
                               id={`hsn-${index}`}
                               onFocus={() => setHsnFocused(true)}
                               onBlur={() => setHsnFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-
-                   
+                              value={hsn}
+                              onChange={(e) => setHsn(e.target.value)}
                               autocomplete="naqsme"
                             />
                           </div>
@@ -607,11 +738,11 @@ bg-[#fff] ">
                             <input
                               type="number"
                               id={`group-${index}`}
-                              name="lessWeight"
-           
+                              name="group"
+                              value={group}
+                              onChange={(e) => setGroup(e.target.value)}
                               onFocus={() => setGroupFocused(true)}
                               onBlur={() => setLossFocused(false)}
-                              onChange={(e) => setLessWeight(e.target.value)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -630,12 +761,12 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="number"
-                              name="westage"
+                              name="account"
                               id={`account-${index}`}
-                          
+                              value={account}
+                              onChange={(e) => setAccount(e.target.value)}
                               onFocus={() => setAccountFocused(true)}
                               onBlur={() => setAccountFocused(false)}
-         
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -715,13 +846,13 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="text"
-                           
+                              name="extraRate"
                               id={`extra-${index}`}
                               onFocus={() => setExtraFocused(true)}
                               onBlur={() => setExtraFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                        
-
+                              value={extra}
+                              onChange={(e) => setExtra(e.target.value)}
                               autocomplete="naqsme"
                             />
                           </div>
@@ -741,10 +872,11 @@ bg-[#fff] ">
                             <input
                               type="number"
                               id={`location-${index}`}
-               
+                              name="location"
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
                               onFocus={() => setLocationFocused(true)}
                               onBlur={() => setLocationFocused(false)}
-
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -764,7 +896,9 @@ bg-[#fff] ">
                             <input
                               type="number"
                               id={`pcs-${index}`}
-      
+                              name="pcs"
+                              value={pcs}
+                              onChange={(e) => setPcs(e.target.value)}
                               onFocus={() => setPcsFocused(true)}
                               onBlur={() => setPcsFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -793,9 +927,9 @@ bg-[#fff] "
                             >
                               <input
                                 type="text"
-                         
+                                name="design"
                                 id={`deisgn-${index}`}
-
+                                value={selectedTypeDesign}
                                 onFocus={() => setDesignFocused(true)}
                                 onBlur={() => setDesignFocused(false)}
                                 className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
@@ -817,16 +951,16 @@ bg-[#fff] "
                                   exit={{ opacity: 0, y: -10 }}
                                   className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {metals.map((type, index) => (
+                                  {designs.map((type, index) => (
                                     <div
                                       key={index}
                                       className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                       onClick={() => {
-                                        handleSelect(type?.metalName);
+                                        handleSelectDesign(type?.designName);
                                         setDropdownOpenDesign(false);
                                       }}
                                     >
-                                      {type?.metalName}
+                                      {type?.designName}
                                     </div>
                                   ))}
                                 </motion.div>
@@ -855,8 +989,10 @@ bg-[#fff] "
                             >
                               <input
                                 type="text"
-                                name="metalId"
+                                name="size"
                                 id={`size-${index}`}
+                                value={size}
+                                onChange={(e) => setSize(e.target.value)}
                                 onFocus={() => (true)}
                                 onBlur={() => setMetalFocused(false)}
                                 className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
@@ -910,8 +1046,9 @@ bg-[#fff] ">
                             <input
                               type="number"
                               id={`moti-${index}`}
-                  
-
+                              name="moti"
+                              value={moti}
+                              onChange={(e) => setMoti(e.target.value)}
                               onFocus={() => setMotiFocused(true)}
                               onBlur={() => setMotiFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -932,10 +1069,10 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="number"
-                   
+                              name="stone"
                               id={`stone-${index}`}
-                              value={westage}
-                              onFocus={() => setStoneFocused(true)}
+                              value={stone}
+                              onChange={(e) => setStone(e.target.value)}                              onFocus={() => setStoneFocused(true)}
                               onBlur={() => setStoneFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
@@ -955,12 +1092,13 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="text"
-                              name="toWeight"
+                              name="jadatr"
                               id={`jatadr-${index}`}
                               onFocus={() => setJadatrFocused(true)}
                               onBlur={() => setJadatrFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-
+                              value={jadatr}
+                              onChange={(e) => setJadatr(e.target.value)}
                               autocomplete="naqsme"
                             />
                           </div>
@@ -977,17 +1115,16 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="text"
+                              name="huid"
                               id={`huid-${index}`}
                               onFocus={() => setHuidFocused(true)}
                               onBlur={() => setHuidFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                           
+                              value={huid}
+                              onChange={(e) => setHuid(e.target.value)}
                               autocomplete="naqsme"
                             />
                           </div>
-
-
-
                           <div
                             ref={dropdownMetalRef}
                             className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -1010,7 +1147,7 @@ bg-[#fff] "
                             >
                               <input
                                 type="text"
-                                name="metalId"
+                                name="huidRule"
                                 id={`huidrule-${index}`}
                              
                                 onFocus={() => setHuidRuleFocused(true)}
@@ -1063,10 +1200,12 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="number"
+                              name="huidCharge"
                               id={`huidCharge-${index}`}
                               onFocus={() => setHuidChargeFocused(true)}
                               onBlur={() => setHuidChargeFocused(false)}
-                            
+                              value={huidCharge}
+                              onChange={(e) => setHuidCharge(e.target.value)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -1097,10 +1236,14 @@ bg-[#fff] ">
                         Add more Stock
                       </button>
                     </div>
-
-
-
-
+                    <div className=" flex w-[100%] justify-center ">
+                      <button
+                        className=" flex  w-[150px] font-Poppins items-center justify-center gap-[6px] py-[8px] text-[20px] rounded-[8px] text-[#fff] bs-spj "
+                        onClick={handleAddStock}
+                      >
+                      Save
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
