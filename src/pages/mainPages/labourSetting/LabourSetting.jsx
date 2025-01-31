@@ -773,7 +773,8 @@ export default function LabourSetting() {
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                               >
                                 <label
                                 htmlFor="UchakCarat"
@@ -837,7 +838,8 @@ export default function LabourSetting() {
 
                               <div
                                 ref={dropdownMetalRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                               >
                                 <label
                                 htmlFor="uchakmetal"
@@ -966,7 +968,8 @@ export default function LabourSetting() {
                             </div>
 
                             <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                 <label
                                   htmlFor="minuchak"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -1058,7 +1061,8 @@ export default function LabourSetting() {
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownEditRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                   >
                                     <label
                                       htmlFor="edituchakcarat"
@@ -1126,7 +1130,8 @@ export default function LabourSetting() {
 
                                   <div
                                     ref={dropdownEditMetalRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                   >
                                     <label
                                     htmlFor="edituMetal"
@@ -1273,7 +1278,8 @@ export default function LabourSetting() {
                                 </div>
 
                                 <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                     <label
                                       htmlFor="editmin"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -1378,7 +1384,8 @@ export default function LabourSetting() {
                                   <div className=" flex w-[100%] fle  gap-[5px]">
                                     <div
                                       ref={dropdownRef}
-                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                     >
                                       <label
                                         htmlFor="name"
@@ -1396,7 +1403,8 @@ export default function LabourSetting() {
 
                                     <div
                                       ref={dropdownMetalRef}
-                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                     >
                                       <label
                                         htmlFor="name"
@@ -1431,7 +1439,8 @@ export default function LabourSetting() {
                                   </div>
 
                                   <div className=" flex gap-[20px] w-[100%]">
-                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                       <label
                                         htmlFor="email"
                                         className="bg-white px-1 hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1484,7 +1493,8 @@ export default function LabourSetting() {
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownWeightRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                               >
                                 <label
                                   htmlFor="weightcarat"
@@ -1550,7 +1560,8 @@ export default function LabourSetting() {
 
                               <div
                                 ref={dropdownMetalWeightRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                               >
                                 <label
                                   htmlFor="weightcarat"
@@ -1689,7 +1700,8 @@ export default function LabourSetting() {
                             </div>
 
                             <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                 <label
                                   htmlFor="weightmin"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -1783,7 +1795,8 @@ export default function LabourSetting() {
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownEditWeightRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                   >
                                     <label
                                       htmlFor="editcarat"
@@ -1854,7 +1867,8 @@ export default function LabourSetting() {
 
                                   <div
                                     ref={dropdownEditMetalWeightRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                   >
                                     <label
                                       htmlFor="metall"
@@ -2007,7 +2021,8 @@ export default function LabourSetting() {
                                 </div>
 
                                 <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                     <label
                                       htmlFor="editmax"
                                       className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -2124,7 +2139,8 @@ export default function LabourSetting() {
                                   <div className=" flex w-[100%] fle  gap-[5px]">
                                     <div
                                       ref={dropdownWeightRef}
-                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                     >
                                       <label
                                         htmlFor="name"
@@ -2142,7 +2158,8 @@ export default function LabourSetting() {
 
                                     <div
                                       ref={dropdownMetalWeightRef}
-                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                     >
                                       <label
                                         htmlFor="name"
@@ -2177,7 +2194,8 @@ export default function LabourSetting() {
                                   </div>
 
                                   <div className=" flex gap-[20px] w-[100%]">
-                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                       <label
                                         htmlFor="email"
                                         className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -2229,7 +2247,8 @@ export default function LabourSetting() {
                             <div className=" flex w-[100%] fle  gap-[5px]">
                               <div
                                 ref={dropdownPercentageRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                               >
                                 <label
                                   htmlFor="weightmin"
@@ -2293,7 +2312,8 @@ export default function LabourSetting() {
 
                               <div
                                 ref={dropdownMetalPercentageRef}
-                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                               >
                                 <label
                                   htmlFor="weightmin"
@@ -2435,7 +2455,8 @@ export default function LabourSetting() {
                             </div>
 
                             <div className=" flex gap-[20px] w-[100%]">
-                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                              <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                 <label
                                   htmlFor="permin"
                                   className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -2530,7 +2551,8 @@ export default function LabourSetting() {
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownEditPercentageRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                   >
                                     <label
                                       htmlFor="editpercarat"
@@ -2601,7 +2623,8 @@ export default function LabourSetting() {
 
                                   <div
                                     ref={dropdownEditMetalPercentageRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                   >
                                     <label
                                       htmlFor="editpermetal"
@@ -2754,7 +2777,8 @@ export default function LabourSetting() {
                                 </div>
 
                                 <div className=" flex gap-[20px] w-[100%]">
-                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                  <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               
                                     <label
                                       htmlFor="minjdhfd"
@@ -2877,7 +2901,8 @@ export default function LabourSetting() {
                                   <div className=" flex w-[100%] fle  gap-[5px]">
                                     <div
                                       ref={dropdownPercentageRef}
-                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                     >
                                       <label
                                         htmlFor="name"
@@ -2895,7 +2920,8 @@ export default function LabourSetting() {
 
                                     <div
                                       ref={dropdownMetalPercentageRef}
-                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                                      className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                                     >
                                       <label
                                         htmlFor="name"
@@ -2930,7 +2956,8 @@ export default function LabourSetting() {
                                   </div>
 
                                   <div className=" flex gap-[20px] w-[100%]">
-                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                                       <label
                                         htmlFor="email"
                                         className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"

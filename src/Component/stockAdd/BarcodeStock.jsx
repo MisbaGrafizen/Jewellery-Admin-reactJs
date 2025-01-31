@@ -22,6 +22,7 @@ import {
   updateMetalAction,
   updateStockAction,
 } from "../../redux/action/landingManagement";
+import { useNavigate } from "react-router-dom";
 export default function BarcodeStock() {
     const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
@@ -74,7 +75,11 @@ export default function BarcodeStock() {
   //   setMetal(metals || []);
   //   setItems(item || []);
   // }, [categories, metals, item]);
+const navigate =useNavigate ()
 
+ const handleaddstock=()=>{
+  navigate("/nonbar-stock")
+ }
   useEffect(() => {
     dispatch(getCategroyAction());
     dispatch(getMetalAction());
@@ -317,7 +322,7 @@ export default function BarcodeStock() {
           <div className=" flex  justify-end w-[100%]">
             <button
               className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
-              onClick={handleStockModal}
+              onClick={handleaddstock}
             >
               <i className="fa-solid fa-plus"></i>
               Add Stock
@@ -325,131 +330,6 @@ export default function BarcodeStock() {
           </div>
           <div className=" flex">
             <div className="w-full h-full  mx-auto rounded-[10px]  mt-[10px]  relative">
-              {/* <div className="box-border border-[#122f97] relative overflow-hidden  w-full">
-                <div className="sticky top-0 flex  bs-mix-green border-[#122f97] w-full overflow-hidden">
-                  <div className="flex justify-center text-center gap-[7px] py-[10px] border-r border-b border-[#122f97]  items-center px-3 min-w-[4%] max-w-[4%]">
-                    <input
-                      type="checkbox"
-                      id="check-all"
-                      style={{ width: "15px", height: "15px" }}
-                    />
-                    <p className="w-fit  md11:text-[14px] md150:text-[18px] font-[600] text-[#000]  font-Poppins">
-                      Sr.
-                    </p>
-                  </div>
-
-                  <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      Carat
-                    </p>
-                  </div>
-                  <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[14%] max-w-[88%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      Metal
-                    </p>
-                  </div>
-                  <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      Category
-                    </p>
-                  </div>
-                  <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000] ">
-                      G.Weight
-                    </p>
-                  </div>
-
-                  <div className="flex justify-start text-center py-[10px] border-r border-b border-[#122f97]  px-3 min-w-[10%] max-w-[14%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      L.Weight
-                    </p>
-                  </div>
-                  <div className="flex justify-center text-center py-2 border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      N.Weight
-                    </p>
-                  </div>
-                  <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[9%] max-w-[10%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      Fine Weight
-                    </p>
-                  </div>
-                  <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[10%] max-w-[10%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      Wastage
-                    </p>
-                  </div>
-                  <div className="flex justify-center text-center py-2 border-l border-b border-[#122f97]  px-3 min-w-[5%] max-w-[10%]">
-                    <p className=" md11:text-[14px] md150:text-[18px] font-[600]  font-Poppins text-[#000]">
-                      Action
-                    </p>
-                  </div>
-                </div>
-                {stocks?.map((item, index) => {
-                  const netWeight = (
-                    Number(item?.toWeight || 0) - Number(item?.lessWeight || 0)
-                  ).toFixed(3);
-                  const percentage = item?.groupId?.percentage || 0;
-                  const updatedFineWeight = (
-                    netWeight *
-                    (percentage / 100)
-                  ).toFixed(3);
-
-                  return (
-                    <div
-                      key={index}
-                      className="flex justify-between overflow-hidden"
-                    >
-                      <div className="flex justify-center items-center text-center py-[10px] border-r border-b border-[#122f97] gap-[7px] px-3 min-w-[4%] max-w-[4%]">
-                        <input
-                          type="checkbox"
-                          style={{ width: "15px", height: "15px" }}
-                          className="ml-[-25%]"
-                        />
-                        <p className="font-[600] md11:text-[15px] md150:text-[17px] md11:mt-[5%] md150:mt-[2%]">
-                          {index + 1}
-                        </p>
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                        {item?.groupId?.name || "-"}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                        {item?.metalId?.metalName || "-"}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[14%] max-w-[88%]">
-                        {item?.groupItemId?.itemName || "-"}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[11%] max-w-[15%]">
-                        {item?.toWeight || 0}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
-                        {item?.lessWeight || 0}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9%] max-w-[14%]">
-                        {netWeight}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[9.1%] max-w-[14%]">
-                        {updatedFineWeight}
-                      </div>
-                      <div className="flex justify-start md11:items-center text-center py-[10px] border-r border-b border-[#122f97] px-3 min-w-[10%] max-w-[14%]">
-                        {item?.westage || 0}
-                      </div>
-                      <div className="flex justify-center gap-[10px] md11:items-center text-center py-[10px] border-b border-[#122f97] px-3 min-w-[5%] max-w-[14%]">
-                        <i
-                          className="fa-solid text-[16px] cursor-pointer text-[#122f97] fa-pen-to-square"
-                          onClick={() => handleStockModalEdit(item)}
-                        ></i>
-                        <i
-                          className="fa-solid text-[16px] cursor-pointer text-[#ff0c0c] fa-trash"
-                          onClick={() =>
-                            handleOpenDeleteModal("stock", item?._id)
-                          }
-                        ></i>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div> */}
 
               <div className="bg-white w-[100%]  rounded-[10px] overflow-hidden shadow1-blue ">
                 {/* Table Header */}
@@ -554,42 +434,9 @@ export default function BarcodeStock() {
                     </tbody>
                   </table>
 
-                  {/* Total Row */}
 
-                  {/* <table className="w-[100%]">
-                        <thead>
-                          <tr className="bg-[#F9FAFB]">
-                            <th className="text-left   text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32"></th>
-                          </tr>
-                        </thead>
-                        <tfoot>
-                          <tr className="border- border-gray-200 bg-[#f0f1f364]">
-                            <td className="py-3 px-2 text-sm  font-Poppins font-medium text-gray-600 border-r border-gray-200">
-                              Total ₹
-                            </td>
-                            <td className="border-r border-gray-200"></td>
-                            <td className="border-r border-gray-200"></td>
-                            <td className="border-r border-gray-200"></td>
-                            <td className="py-3 px-4 font-Poppins text-[17px] text-gray-600 border-r border-gray-200">
-                              {totals.grossQty.toFixed(2)}
-                            </td>
-                            <td className="py-3  font-Poppins px-4 text-[17px] text-gray-600 border-r border-gray-200">
-                              {totals.netQty.toFixed(2)}
-                            </td>
-                            <td className="border-r  border-gray-200"></td>
-                            <td className="py-3 px-4 font-Poppins text-[17px] text-gray-600">
-                              {totals.amount.toFixed(2)}
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table> */}
+
+               
                 </div>
               </div>
             </div>
@@ -646,8 +493,8 @@ export default function BarcodeStock() {
                   <div className="relative  w-[100%] h-[100%]">
                     <div className="w-[100%] flex  flex-col">
                       <div className=" flex flex-col mt-[10px]">
-                        <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
-                          <p>Add Stock</p>
+                        <div className=" mx-auto  text-[#081a21] justify-center flex font-[500]  font-Poppins ">
+                          <p className=" text-[28px] ">Add Stock</p>
                         </div>
                         <div className=" flex mt-[0px] mx-auto j">
                           <div className="flex items-center gap-3">
@@ -669,7 +516,8 @@ export default function BarcodeStock() {
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstock"
@@ -724,74 +572,10 @@ export default function BarcodeStock() {
                                 )}
                               </AnimatePresence>
                             </div>
-
-                            <div
-                              ref={dropdownMetalRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                            >
-                              <label
-                                htmlFor="addstockMetal"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeMetal || metalFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
-                                }`}
-                              >
-                                Metal
-                              </label>
-                              <div
-                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                onClick={() =>
-                                  setDropdownOpenMetal((prev) => !prev)
-                                } // Toggle dropdown on click
-                              >
-                                <input
-                                  type="text"
-                                  name="metalId"
-                                  id="addstockMetal"
-                                  value={selectedTypeMetal}
-                                  onFocus={() => setMetalFocused(true)}
-                                  onBlur={() => setMetalFocused(false)}
-                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                  readOnly
-                                />
-                                <i
-                                  className={
-                                    dropdownOpenMetal
-                                      ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                      : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                  }
-                                ></i>
-                              </div>
-                              <AnimatePresence>
-                                {dropdownOpenMetal && (
-                                  <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                  >
-                                    {metals.map((type, index) => (
-                                      <div
-                                        key={index}
-                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                        onClick={() => {
-                                          handleSelectMetal(type?.metalName);
-                                          setDropdownOpenMetal(false);
-                                        }}
-                                      >
-                                        {type?.metalName}
-                                      </div>
-                                    ))}
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                          </div>
-                          <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownCategoryRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstockCategory"
@@ -851,7 +635,83 @@ export default function BarcodeStock() {
                                 )}
                               </AnimatePresence>
                             </div>
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+
+                          </div>
+
+
+
+
+
+                          <div className=" flex w-[100%]  gap-[30px]">
+                        
+
+
+
+                            <div
+                              ref={dropdownMetalRef}
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
+                            >
+                              <label
+                                htmlFor="addstockMetal"
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
+                                  selectedTypeMetal || metalFocused
+                                    ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
+                                }`}
+                              >
+                                Size
+                              </label>
+                              <div
+                                className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                onClick={() =>
+                                  setDropdownOpenMetal((prev) => !prev)
+                                } // Toggle dropdown on click
+                              >
+                                <input
+                                  type="text"
+                                  name="metalId"
+                                  id="addstockMetal"
+                                  value={selectedTypeMetal}
+                                  onFocus={() => setMetalFocused(true)}
+                                  onBlur={() => setMetalFocused(false)}
+                                  className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                  readOnly
+                                />
+                                <i
+                                  className={
+                                    dropdownOpenMetal
+                                      ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                      : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                  }
+                                ></i>
+                              </div>
+                              <AnimatePresence>
+                                {dropdownOpenMetal && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  >
+                                    {metals.map((type, index) => (
+                                      <div
+                                        key={index}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          handleSelectMetal(type?.metalName);
+                                          setDropdownOpenMetal(false);
+                                        }}
+                                      >
+                                        {type?.metalName}
+                                      </div>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -876,7 +736,8 @@ export default function BarcodeStock() {
                             </div>
                           </div>
                           <div className=" flex w-[100%]  gap-[30px]">
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -900,7 +761,8 @@ export default function BarcodeStock() {
                               />
                             </div>
 
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -925,7 +787,8 @@ export default function BarcodeStock() {
                             </div>
                           </div>
                           <div className=" flex w-[48%]  gap-[30px]">
-                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -940,20 +803,6 @@ export default function BarcodeStock() {
                             />
                           </div> */}
 
-                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
-                            <label
-                              htmlFor="email"
-                              className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
-                            >
-                              Wastage
-                            </label>
-                            <input
-                              type="Number"
-                              placeholder="Enter Wastage"
-                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              autocomplete="naqsme"
-                            />
-                          </div> */}
                           </div>
                         </div>
                       </div>

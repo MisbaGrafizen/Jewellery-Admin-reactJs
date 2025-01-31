@@ -504,7 +504,8 @@ export default function NonbarStock() {
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstock"
@@ -562,7 +563,8 @@ export default function NonbarStock() {
 
                             <div
                               ref={dropdownMetalRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstockMetal"
@@ -626,7 +628,8 @@ export default function NonbarStock() {
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownCategoryRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstockCategory"
@@ -686,7 +689,8 @@ export default function NonbarStock() {
                                 )}
                               </AnimatePresence>
                             </div>
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200
@@ -712,7 +716,8 @@ export default function NonbarStock() {
                             </div>
                           </div>
                           <div className=" flex w-[100%]  gap-[30px]">
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -736,7 +741,8 @@ export default function NonbarStock() {
                               />
                             </div>
 
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -759,7 +765,8 @@ export default function NonbarStock() {
                                 autocomplete="naqsme"
                               />
                             </div>
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${

@@ -23,6 +23,8 @@ import {
   updateStockAction,
 } from "../../redux/action/landingManagement";
 import NonBerCode from "../../Component/nonBercode/NonBerCode";
+import { data } from "autoprefixer";
+import { id } from "date-fns/locale/id";
 
 export default function InventoryCreate() {
   const [isInputVisible, setInputVisible] = useState(false);
@@ -81,6 +83,7 @@ export default function InventoryCreate() {
 
   const [stockModalopen, setStockModalOpen] = useState(false);
   const inputRef = useRef(null);
+  const inputCateRef = useRef(null);
   const popupRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -90,6 +93,22 @@ export default function InventoryCreate() {
   const stocks = useSelector((state) => state.landing.getProduct);
   const [isBercodeVisible, setIsBercodeVisible] = useState(true);
 
+  const [selectedCategoryi, setSelectedCategoryi] = useState(null);
+  const [subcategories, setSubcategories] = useState({});
+ 
+  const [subcategoryName, setSubcategoryName] = useState("");
+  const [editingSubcategory, setEditingSubcategory] = useState(null);
+  const [editSubcategoryName, setEditSubcategoryName] = useState("");
+  const [isSubcategoryInputVisible, setSubcategoryInputVisible] = useState(false);
+
+
+  const [designs, setDesigns] = useState([]);
+  const [designName, setDesignName] = useState("");
+  const [editingDesign, setEditingDesign] = useState(null);
+  const [editDesignName, setEditDesignName] = useState("");
+  const [editingDesignId, setEditingDesignId] = useState(null);
+  const [selectedDesignIndex, setSelectedDesignIndex] = useState(0);
+  const [isDesignInputVisible, setDesignInputVisible] = useState(null);
   const handleBercodeClick = () => {
     setIsBercodeVisible(true);
   };
@@ -308,15 +327,13 @@ export default function InventoryCreate() {
 
   const handleCategoryClick = (index) => {
     setSelectedCaratIndex(index);
+   
   };
 
   const handleMetalClick = (index) => {
     setSelectedMetalIndex(index);
   };
 
-  const handleItemClick = (index) => {
-    setSelectedItemIndex(index);
-  };
 
   const handlePercentageChange = (id, value) => {
     setPercentages((prev) => ({
@@ -471,6 +488,112 @@ export default function InventoryCreate() {
     setCaratIdToDelete(null);
   };
 
+
+
+
+
+  const handleDesignClick = (index) => {
+    setSelectedDesignIndex(index);
+  };
+
+  const handleDoubleClickDesign = (item, index) => {
+    setEditingDesign(index);
+    setEditDesignName(item.designName);
+    setEditingDesignId(item.id);
+  };
+
+  const handleKeyPressDesign = (e, action = "add", id = null) => {
+    if (e?.key === "Enter") {
+      e.preventDefault();
+      let inputValue = action === "edit" ? editDesignName.trim() : designName.trim();
+      if (!inputValue) {
+        alert("Design name cannot be empty.");
+        return;
+      }
+
+      if (action === "add") {
+        setDesigns([...designs, { id: Date.now(), designName: inputValue }]);
+      } else if (action === "edit" && id) {
+        setDesigns(
+          designs.map((design) =>
+            design.id === id ? { ...design, designName: inputValue } : design
+          )
+        );
+      }
+
+      action === "edit" ? setEditDesignName("") : setDesignName("");
+      if (action === "edit") setEditingDesign(null);
+    }
+  };
+
+  const handleOpenDeleteModalDesign = (id) => {
+    setDesigns(designs.filter((design) => design.id !== id));
+  };
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setSubcategoryInputVisible(false);
+        setEditingSubcategory(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  
+  // const handleCategoryClick = (categoryId) => {
+  //   setSelectedCategory(categoryId);
+  //   setIsSubcategoryInputVisible(false);
+  // };
+  
+  const handleKeyPressSubcategory = (e, action = "add", id = null) => {
+    if (e?.key === "Enter") {
+      e.preventDefault();
+      let inputValue = action === "edit" ? editSubcategoryName.trim() : subcategoryName.trim();
+      if (!inputValue) {
+        alert("Subcategory name cannot be empty.");
+        return;
+      }
+      
+      if (action === "add") {
+        setSubcategories((prev) => ({
+          ...prev,
+          [selectedCategoryi]: [...(prev[selectedCategoryi] || []), { id: Date.now(), name: inputValue }],
+        }));
+      } else if (action === "edit" && id) {
+        setSubcategories((prev) => ({
+          ...prev,
+          [selectedCategoryi]: prev[selectedCategoryi].map((sub) =>
+            sub.id === id ? { ...sub, name: inputValue } : sub
+          ),
+        }));
+      }
+      
+      action === "edit" ? setEditSubcategoryName("") : setSubcategoryName("");
+      if (action === "edit") setEditingSubcategory(null);
+    }
+  };
+  
+  const handleOpenDeleteModalSubcategory = (id) => {
+    setSubcategories((prev) => ({
+      ...prev,
+      [selectedCategoryi]: prev[selectedCategoryi].filter((sub) => sub.id !== id),
+    }));
+  };
+  const handleItemClick = (index) => {
+    setSelectedCategoryi(data ?.id);
+    // setSubcategoryInputVisible(false);
+  };
+
+
+
   const handleClickOutside = (event) => {
     if (
       popupRef.current &&
@@ -481,6 +604,9 @@ export default function InventoryCreate() {
     }
     if (inputRef.current && !inputRef.current.contains(event.target)) {
       setInputVisible("");
+    }
+    if (inputCateRef.current && !inputCateRef.current.contains(event.target)) {
+      setItemInputVisible("");
     }
   };
 
@@ -500,6 +626,9 @@ export default function InventoryCreate() {
     if (inputRef.current && !inputRef.current.contains(event.target)) {
       setMetalInputVisible("");
     }
+    if (inputCateRef.current && !inputCateRef.current.contains(event.target)) {
+      setItemInputVisible("");
+    }
   };
 
   useEffect(() => {
@@ -517,6 +646,9 @@ export default function InventoryCreate() {
       setPopupItemVisible(null);
     }
     if (inputRef.current && !inputRef.current.contains(event.target)) {
+      setItemInputVisible("");
+    }
+    if (inputCateRef.current && !inputCateRef.current.contains(event.target)) {
       setItemInputVisible("");
     }
   };
@@ -569,6 +701,21 @@ export default function InventoryCreate() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+
+  const inputRefdesign = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (inputRefdesign.current && !inputRefdesign.current.contains(event.target)) {
+        setDesignInputVisible(false);
+        setEditingDesign(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
 
   return (
     <>
@@ -724,7 +871,7 @@ export default function InventoryCreate() {
                                             window.location.reload()
                                           } else {
                                             setEditingCaratId(item._id);
-                                      
+
                                           }
                                         }}
                                       >
@@ -837,77 +984,216 @@ export default function InventoryCreate() {
                         </div>
                       </div>
                     </div>
+                    <div className=" flex flex-col gap-[20px]">
+
+
+                      <div className="flex flex-col gap-[6px] w-[100%]">
+                        <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
+                          Product Category
+                        </h1>
+                        <div className="w-[100%] flex flex-col gap-[15px]">
+                          <div className="flex gap-[20px]">
+                            <div className="flex gap-[15px] items-center flex-wrap">
+                              {!isItemInputVisible ? (
+                                <div className="flex">
+                                  <div
+                                    onClick={() => setItemInputVisible(true)}
+                                    className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+                                  >
+                                    <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div ref={inputCateRef} className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                                  <input
+                                    type="text"
+                                    name="itemName"
+                                    value={itemName}
+                                    onChange={(e) => setItemName(e.target.value)}
+                                    onKeyDown={(e) => handleKeyPress(e, "item")}
+                                    placeholder="Products"
+                                    className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
+                                    autoFocus
+                                  />
+                                </div>
+                              )}
+                            </div>
+                            <div ref={inputCateRef} className="flex-wrap flex relative gap-[10px]">
+                              {Array.isArray(items) ? (
+                                items.map((data, index) => (
+                                  <div
+                                    key={data?.id}
+                                    className={`border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer ${selectedCategoryi === data?.id ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+                                    onClick={() => handleItemClick(data?.id)}
+                                    onDoubleClick={() =>
+                                      handleDoubleClick("item", data, index)
+                                    }
+                                  >
+                                    {editingItem === index ? (
+                                      <>
+                                        <div className="flex flex-col justify-center">
+                                          <input
+                                            type="text"
+                                            name="itemName"
+                                            value={editItemName}
+                                            onChange={(e) =>
+                                              setEditItemName(e.target.value)
+                                            }
+                                            onKeyDown={(e) =>
+                                              handleKeyPress(
+                                                e,
+                                                "item",
+                                                "edit",
+                                                editingItemId
+                                              )
+                                            }
+                                            className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
+                                            autoFocus
+                                          />
+                                          <p
+                                            className="text-red-500 hover:bg-red-100 !bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleOpenDeleteModal(
+                                                "item",
+                                                data?._id
+                                              );
+                                            }}
+                                          >
+                                            Delete
+                                          </p>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <p>{data.itemName}</p>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <p> No Categories Available</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {selectedCategoryi && subcategories[selectedCategoryi] && (
+                        <div className="flex flex-col gap-[6px] mt-10">
+                          <h2 className="flex pl-[6px] font-Poppins text-[16px] text-[#122f97]">Subcategories</h2>
+                          <div className="flex gap-[10px]">
+                            {!isSubcategoryInputVisible ? (
+                              <div className="flex">
+                                <button
+                                  onClick={() => setSubcategoryInputVisible(true)}
+                                  className="border border-dashed px-4 py-2 rounded cursor-pointer"
+                                >
+                                  + Add Subcategory
+                                </button>
+                              </div>
+                            ) : (
+                              <div ref={inputRef} className="flex border border-dashed rounded overflow-hidden">
+                                <input
+                                  type="text"
+                                  value={subcategoryName}
+                                  onChange={(e) => setSubcategoryName(e.target.value)}
+                                  onKeyDown={(e) => handleKeyPressSubcategory(e)}
+                                  placeholder="Subcategory Name"
+                                  className="px-[10px] outline-none py-[5px] w-[120px]"
+                                  autoFocus
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-wrap flex gap-[10px]">
+                            {subcategories[selectedCategoryi]?.map((sub, index) => (
+                              <div
+                                key={sub.id}
+                                className="border px-4 py-2 rounded cursor-pointer"
+                                onDoubleClick={() => {
+                                  setEditingSubcategory(sub.id);
+                                  setEditSubcategoryName(sub.name);
+                                }}
+                              >
+                                {editingSubcategory === sub.id ? (
+                                  <input
+                                    type="text"
+                                    value={editSubcategoryName}
+                                    onChange={(e) => setEditSubcategoryName(e.target.value)}
+                                    onKeyDown={(e) => handleKeyPressSubcategory(e, "edit", sub.id)}
+                                    className="bg-transparent border-none outline-none"
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <p>{sub.name}</p>
+                                )}
+                                <button
+                                  className="text-red-500 text-xs mt-1"
+                                  onClick={() => handleOpenDeleteModalSubcategory(sub.id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="flex flex-col gap-[6px] w-[100%]">
-                      <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">
-                        Product Category
-                      </h1>
+                      <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">Product Design</h1>
                       <div className="w-[100%] flex flex-col gap-[15px]">
                         <div className="flex gap-[20px]">
                           <div className="flex gap-[15px] items-center flex-wrap">
-                            {!isItemInputVisible ? (
+                            {!isDesignInputVisible ? (
                               <div className="flex">
                                 <div
-                                  onClick={() => setItemInputVisible(true)}
+                                  onClick={() => setDesignInputVisible(true)}
                                   className="border-[1px] border-dashed border-[#122f97] md150:text-[18px] md11:text-[15px] w-[140px] md11:w-[120px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
                                 >
                                   <i className="text-[20px] font-[800] text-[#122f97] fa-solid fa-plus"></i>
                                 </div>
                               </div>
                             ) : (
-                              <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
+                              <div ref={inputRef} className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
                                 <input
                                   type="text"
-                                  name="itemName"
-                                  value={itemName}
-                                  onChange={(e) => setItemName(e.target.value)}
-                                  onKeyDown={(e) => handleKeyPress(e, "item")}
-                                  placeholder="Products"
-                                  className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
+                                  name="designName"
+                                  value={designName}
+                                  onChange={(e) => setDesignName(e.target.value)}
+                                  onKeyDown={(e) => handleKeyPressDesign(e)}
+                                  placeholder="Design Name"
+                                  className="px-[10px] outline-none font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
                                   autoFocus
                                 />
                               </div>
                             )}
                           </div>
-                          <div className="flex-wrap flex relative gap-[10px]">
-                            {Array.isArray(items) ? (
-                              items.map((data, index) => (
+                          <div ref={inputRefdesign} className="flex-wrap flex relative gap-[10px]">
+                            {Array.isArray(designs) ? (
+                              designs.map((data, index) => (
                                 <div
                                   key={data?.id}
-                                  className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px]  w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
-                                  onClick={() => handleItemClick(data?.id)}
-                                  onDoubleClick={() =>
-                                    handleDoubleClick("item", data, index)
-                                  }
+                                  className="border-[1px] border-[#122f97] font-[500] md150:text-[18px] md11:text-[15px] w-fit px-[15px] font-Poppins md11:w-[100px] md150:h-[40px] md11:h-[35px] flex justify-center items-center rounded-[8px] cursor-pointer"
+
+                                  onClick={() => handleDesignClick(data?.id)}
+                                  onDoubleClick={() => handleDoubleClickDesign(data, index)}
                                 >
-                                  {editingItem === index ? (
+                                  {editingDesign === index ? (
                                     <>
                                       <div className="flex flex-col justify-center">
                                         <input
                                           type="text"
-                                          name="itemName"
-                                          value={editItemName}
-                                          onChange={(e) =>
-                                            setEditItemName(e.target.value)
-                                          }
-                                          onKeyDown={(e) =>
-                                            handleKeyPress(
-                                              e,
-                                              "item",
-                                              "edit",
-                                              editingItemId
-                                            )
-                                          }
+                                          name="designName"
+                                          value={editDesignName}
+                                          onChange={(e) => setEditDesignName(e.target.value)}
+                                          onKeyDown={(e) => handleKeyPressDesign(e, "edit", editingDesignId)}
                                           className="text-center w-[100px] mt-[39px] bg-transparent border-none outline-none"
                                           autoFocus
                                         />
                                         <p
-                                          className="text-red-500 hover:bg-red-100 !bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
+                                          className="text-red-500 hover:bg-red-100 bg-white border-[1.5px] w-[123px] flex justify-center text-center mt-[10px] rounded-[5px] font-Montserrat cursor-pointer mx-auto z-[10]"
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            handleOpenDeleteModal(
-                                              "item",
-                                              data?._id
-                                            );
+                                            handleOpenDeleteModalDesign(data?.id);
                                           }}
                                         >
                                           Delete
@@ -915,17 +1201,18 @@ export default function InventoryCreate() {
                                       </div>
                                     </>
                                   ) : (
-                                    <p>{data.itemName}</p>
+                                    <p>{data.designName}</p>
                                   )}
                                 </div>
                               ))
                             ) : (
-                              <p> No Categories Available</p>
+                              <p>No Designs Available</p>
                             )}
                           </div>
                         </div>
                       </div>
                     </div>
+
                     {/* <div className=" flex  justify-end w-[100%]">
                       <button
                         className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
@@ -1148,13 +1435,14 @@ export default function InventoryCreate() {
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstock"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Carat
@@ -1205,13 +1493,14 @@ export default function InventoryCreate() {
 
                             <div
                               ref={dropdownMetalRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstockMetal"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Metal
@@ -1268,13 +1557,14 @@ export default function InventoryCreate() {
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownCategoryRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstockCategory"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Category
@@ -1327,12 +1617,13 @@ export default function InventoryCreate() {
                                 )}
                               </AnimatePresence>
                             </div>
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${grossWeight || grossFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 G .Weight
@@ -1351,12 +1642,13 @@ export default function InventoryCreate() {
                             </div>
                           </div>
                           <div className=" flex w-[100%]  gap-[30px]">
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${lessWeight || lossFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 L .Weight
@@ -1374,12 +1666,13 @@ export default function InventoryCreate() {
                               />
                             </div>
 
-                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${westage || wastageFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Wastage
@@ -1398,7 +1691,8 @@ export default function InventoryCreate() {
                             </div>
                           </div>
                           <div className=" flex w-[48%]  gap-[30px]">
-                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1413,7 +1707,8 @@ export default function InventoryCreate() {
                             />
                           </div> */}
 
-                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                            {/* <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                             <label
                               htmlFor="email"
                               className="bg-white px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"

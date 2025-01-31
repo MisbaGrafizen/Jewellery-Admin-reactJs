@@ -160,7 +160,8 @@ export default function CreateCompany() {
                           autoComplete="name"
                         />
                       </div>
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                         <label
                           htmlFor="emailid"
                           className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -266,7 +267,8 @@ export default function CreateCompany() {
                         ></textarea>
                       </div>
 
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                         <label
                           htmlFor="state"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -289,7 +291,8 @@ export default function CreateCompany() {
                           autocomplete="nasme"
                         />
                       </div>
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                         <label
                           htmlFor="city"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -312,7 +315,8 @@ export default function CreateCompany() {
                           autocomplete="nasme"
                         />
                       </div>
-                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                         <label
                           htmlFor="pin"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -628,7 +632,8 @@ export default function CreateCompany() {
                   <div className=" w-[100%]  flex  flex-col gap-[14px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] gap-[16px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
-                        <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                        <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                           <label
                           htmlFor="Holdername"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -800,7 +805,8 @@ export default function CreateCompany() {
                     </div>
                     <div className=" flex w-[100%] gap-[20px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
-                        <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                        <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                           <label
                           htmlFor="bankname"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
@@ -883,7 +889,8 @@ export default function CreateCompany() {
                   <div className=" w-[100%]  flex  flex-col gap-[20px] border-[1px] bg-white shadow1-blue py-[20px]  px-[20px] rounded-[10px] h-fit">
                     <div className=" flex w-[100%] gap-[20px]">
                       <div className=" flex w-[100%] flex-col gap-[20px]">
-                        <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                        <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
                           <label
                           htmlFor="finanace"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
