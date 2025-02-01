@@ -6,6 +6,9 @@ import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import {
+  deleteCategoryAction,
+  deleteGroupItemAction,
+  deleteMetalAction,
   deleteNonBarcodeCategoryAction,
   deleteNonBarcodeProductAction,
   getAllNonBarcodeProductAction,
@@ -38,8 +41,17 @@ export default function NonbarStock() {
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
   const [categoryFocused, setCategoryFocused] = useState(false);
- 
+  const [deleteContext, setDeleteContext] = useState(null);
+  const [caratIdToDelete, setCaratIdToDelete] = useState(null);
+  const [selectedmodalopen, setModalOpen] = useState(false);
+  const [carat, setCarat] = useState([]);
+  const [items, setItems] = useState([]);
 
+
+  const scrollContainerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.landing.getAllCategory);
   const metals = useSelector((state) => state.landing.getMetal);
@@ -52,10 +64,10 @@ export default function NonbarStock() {
     dispatch(getAllNonBarcodeProductAction());
   }, [dispatch]);
 
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
 
-  const addnonbarstock=()=>{
+  const addnonbarstock = () => {
     navigate("/nonbarcode-stock")
   }
 
@@ -64,10 +76,60 @@ export default function NonbarStock() {
     setDropdownOpen(false);
   };
 
+   const handleDelete = async () => {
+      try {
+        let success = false;
+  
+        if (deleteContext === "category") {
+          success = await dispatch(deleteCategoryAction(caratIdToDelete));
+          if (success) {
+            setCarat((prev) =>
+              prev.filter((category) => category._id !== caratIdToDelete)
+            );
+          }
+        }  else if (deleteContext === "item") {
+          success = await dispatch(deleteGroupItemAction(caratIdToDelete));
+          if (success) {
+            setItems((prev) =>
+              prev.filter((item) => item._id !== caratIdToDelete)
+            );
+          }
+          window.location.reload();
+        } else if (deleteContext === "stock") {
+          success = await dispatch(deleteNonBarcodeProductAction(caratIdToDelete));
+          if (success) {
+            dispatch(getAllNonBarcodeProductAction());
+          }
+        }
+  
+        if (success) {
+          setModalOpen(false);
+          setCaratIdToDelete(null);
+        } else {
+          alert(`Failed to delete ${deleteContext}.`);
+        }
+      } catch (error) {
+        console.error(`Error deleting ${deleteContext}:`, error);
+        alert(`Failed to delete ${deleteContext}.`);
+      }
+    };
+
+    const handleModalclose = () => {
+      setModalOpen(false);
+      setCaratIdToDelete(null);
+    };
+  
+
   const handleDeleteOpen = (type, id) => {
     setDeleteType(type);
     setDeleteId(id);
     setDeletemodalOpen(true);
+  };
+
+  const handleOpenDeleteModal = (context, id) => {
+    setDeleteContext(context);
+    setCaratIdToDelete(id);
+    setModalOpen(true);
   };
 
   const handleDeleteClose = () => {
@@ -285,6 +347,47 @@ export default function NonbarStock() {
 
   if (!isMounted) return null
 
+
+
+
+
+
+
+
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // Adjust the multiplier for speed
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
@@ -293,7 +396,7 @@ export default function NonbarStock() {
             <button
               className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
               onClick={addnonbarstock}
-            
+
             >
               <i className="fa-solid fa-plus"></i>
               Add Stock
@@ -383,87 +486,126 @@ export default function NonbarStock() {
               </div>
             </div> */}
 
-            <div className="bg-white max-w-[2000px]  w-[2000px] overflow-scroll mt-[10px] rounded-[10px]  shadow1-blue ">
+            <div
+
+              ref={scrollContainerRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+
+
+
+              className="bg-white max-w-[2000px]  w-[2000px] overflow-x-auto  mt-[10px] rounded-[10px]  shadow1-blue ">
               {/* Table Header */}
-              <div className="  bg-white  w-[2800px]">
+              <div className="  bg-white  w-[2600px]">
                 <table className="w-full border-collapse  border-gray-300  font-Poppins">
                   <thead>
-                  <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
-                        <th className="py-3 px-2 text-left  border-gray-300">
-                          <input
-                            type="checkbox"
-                            id="check-all"
-                            className="w-4 ml-2 mb-[-4px] h-4"
-                          />
-                          <span className="ml-2 font-[500]">Sr.</span>
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          Carat
-                        </th>
-                   
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          Category
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
+                      <th className="py-3 px-2 text-left  border-gray-300">
+                        <input
+                          type="checkbox"
+                          id="check-all"
+                          className="w-4 ml-2 mb-[-4px] h-4"
+                        />
+                        <span className="ml-2 font-[500]">Sr.</span>
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Carat
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Category
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Product Name
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         To Weight
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Net Weight
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Fine Weight
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        G Rate
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Group
+                        M Rate
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Account
+                          M Rs
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                     G Rs
                         </th>
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    Extra Rate
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        GME Amt
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    GST 
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    Amount
+                        </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Group
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Account
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Labour
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         ExtraRate
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Location
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Pcs
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         design
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         size
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Moti
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Stone
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Jadatr
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Huid
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Huid Rule
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        huidCharge
-                        </th>
-                       
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          Action
-                        </th>
-                      </tr>
+                      </th>
+                    
+
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Action
+                      </th>
+                    </tr>
                   </thead>
                   <tbody>
-                    {products?.map((item, index) => (
+                  {products?.map((item, index) => {
+                        const netWeight = (
+                          Number(item?.toWeight || 0) -
+                          Number(item?.lessWeight || 0)
+                        ).toFixed(3);
+                        const percentage = item?.groupId?.percentage || 0;
+                        const updatedFineWeight = (
+                          netWeight *
+                          (percentage / 100)
+                        ).toFixed(3);
+
+                        return (
                       <tr key={index} className="">
                         <td className="py-2 px-2 flex items-center  border-gray-300">
                           <input type="checkbox" className="w-4 h-4 mr-3  ml-[10px]" />
@@ -473,60 +615,79 @@ export default function NonbarStock() {
                           {item?.groupId?.name}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.metalId?.metalName || "-"}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.groupItemId?.itemName || "-"}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.productName || "-"}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.pcs || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.netWeight || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                           {netWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {updatedFineWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.labour || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.extraRate || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.labour || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.extraRate || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.labour || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.extraRate || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.labour || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.extraRate || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.group || "-"}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.account || 0}
                         </td>
 
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.productName || "-"}
+                          {item?.labour || 0}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.pcs || 0}
+                          {item?.extraRate || 0}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.netWeight || 0}
+                          {item?.location || "-"}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
+                          {item?.pcs || 1}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
+                          {item?.design || "-"}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
+                          {item?.size || 0}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
+                          {item?.moti || 0}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
+                          {item?.stone || 0}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
+                          {item?.jadatr || 0}
                         </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
-                        </td>
+               
 
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           <i
@@ -541,7 +702,8 @@ export default function NonbarStock() {
                           ></i>
                         </td>
                       </tr>
-                    ))}
+                    );
+                  })}
                   </tbody>
                 </table>
               </div>
@@ -549,6 +711,42 @@ export default function NonbarStock() {
           </div>
         </div>
       </div>
+
+
+      <NextUIModal isOpen={selectedmodalopen} onOpenChange={handleModalclose}>
+        <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px]  ">
+          {(handleModalclose) => (
+            <>
+              <div className="relative w-[100%] h-[100%] ">
+                <div className="relative  w-[100%] h-[100%]">
+                  <div className="w-[100%] flex gap-7 flex-col">
+                    <div className="w-[100%] mt-[30px] p-[10px] mx-auto flex justify-center s">
+                      <i className=" text-[80px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <div className=" mx-auto justify-center flex text-[60px] font-[500]   font-Poppins">
+                      <p>Are you sure ?</p>
+                    </div>
+                    <div className="absolute bottom-0 flex w-[100%]">
+                      <div
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[red] rounded-bl-[10px] text-[#fff] font-[600]   font-Poppins text-[20px]"
+                        onClick={handleDelete}
+                      >
+                        <p>Delete</p>
+                      </div>
+                      <div
+                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[#26b955] rounded-br-[10px] text-[#fff] font-[600]   font-Poppins text-[20px]"
+                        onClick={handleModalclose}
+                      >
+                        <p>Cancel</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </ModalContent>
+      </NextUIModal>
 
       <NextUIModal isOpen={stockModalopen}>
         <ModalContent className="md:max-w-[760px] max-w-[760px] relative  bg-transparent shadow-none rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[410px]  ">
@@ -593,11 +791,10 @@ export default function NonbarStock() {
                             >
                               <label
                                 htmlFor="addstock"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedType || caratFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Carat
                               </label>
@@ -652,11 +849,10 @@ export default function NonbarStock() {
                             >
                               <label
                                 htmlFor="addstockMetal"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeMetal || metalFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Metal
                               </label>
@@ -717,11 +913,10 @@ export default function NonbarStock() {
                             >
                               <label
                                 htmlFor="addstockCategory"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeCategory || categoryFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Category
                               </label>
@@ -778,10 +973,9 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200
-                                  ${
-                                productName  ||  ProductNameFocused
-                                      ? "text-[#000] -translate-y-[21px] hidden "
-                                      : "text-[#8f8f8f] cursor-text flex"
+                                  ${productName || ProductNameFocused
+                                    ? "text-[#000] -translate-y-[21px] hidden "
+                                    : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Product Name
@@ -804,11 +998,10 @@ export default function NonbarStock() {
    bg-[#fff] ">
                               <label
                                 htmlFor="addstockLoss"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                               pcs    || ProductPcsFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${pcs || ProductPcsFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Product Pcs
                               </label>
@@ -829,11 +1022,10 @@ export default function NonbarStock() {
    bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                 netWeight|| netWeghtFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${netWeight || netWeghtFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Net Weight
                               </label>
@@ -853,11 +1045,10 @@ export default function NonbarStock() {
    bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                             toWeight    || totalWeghtFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${toWeight || totalWeghtFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Total Weight
                               </label>
@@ -927,74 +1118,74 @@ export default function NonbarStock() {
 
 
       <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
-          aria-labelledby="modal-title"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
-            <motion.div
-              initial={{ scale: 0.5, rotateX: 90 }}
-              animate={{ scale: 1, rotateX: 0 }}
-              exit={{ scale: 0.5, rotateX: -90 }}
-              transition={{ type: "spring", damping: 15, stiffness: 100 }}
-              className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="flex justify-center mb-4"
+                initial={{ scale: 0.5, rotateX: 90 }}
+                animate={{ scale: 1, rotateX: 0 }}
+                exit={{ scale: 0.5, rotateX: -90 }}
+                transition={{ type: "spring", damping: 15, stiffness: 100 }}
+                className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
               >
-                <CheckCircle className="w-16 h-16 text-[#122f97]" />
-              </motion.div>
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
-                id="modal-title"
-              >
-                Stock {  selectedStock ? "Update" :" Added"} successfully!
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
-              >
-                Your information has been successfully saved to our database.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-6 flex justify-center"
-              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="flex justify-center mb-4"
+                >
+                  <CheckCircle className="w-16 h-16 text-[#122f97]" />
+                </motion.div>
+                <motion.h3
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
+                  id="modal-title"
+                >
+                  Stock {selectedStock ? "Update" : " Added"} successfully!
+                </motion.h3>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
+                >
+                  Your information has been successfully saved to our database.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mt-6 flex justify-center"
+                >
+                  <button
+                    onClick={onClose}
+                    className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  >
+                    Close
+                  </button>
+                </motion.div>
                 <button
                   onClick={onClose}
-                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
                 >
-                  Close
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
               </motion.div>
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
-              >
-                <X className="h-6 w-6" aria-hidden="true" />
-              </button>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

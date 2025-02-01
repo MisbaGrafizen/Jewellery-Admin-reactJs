@@ -176,7 +176,7 @@ export default function CreateBarCodeStock() {
       });
 
     } catch (error) {
-      console.error("❌ Error fetching labour rate:", error);
+      console.error("Error fetching labour rate:", error);
     }
   };
 
@@ -303,44 +303,66 @@ export default function CreateBarCodeStock() {
   //     alert("Please select Carat and Category.");
   //     return;
   //   }
-
+  
   //   const selectedCarat = categories.find((carat) => carat.name === selectedType);
   //   const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-
+  
   //   if (!selectedCarat || !selectedCategory) {
   //     alert("Invalid selection. Please select valid Carat and Category.");
   //     return;
   //   }
+  
+  //   const productsArray = fieldSets.map((field) => {
+  //     let labourAmount = 0;
+  //     const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
+  
+  //     console.log(`Calculating Labour for: ${field.selectedTypeLabour}`);
+  //     console.log("Net Weight:", netWeight);
+  
+  //     if (field.selectedTypeLabour === "Uchak") {
+  //       labourAmount = parseFloat(field.labourRate) || 0;
+  //     } else if (field.selectedTypeLabour === "PerGram") {
+  //       labourAmount = (parseFloat(field.labourRate) || 0) * netWeight;
+  //     } else if (field.selectedTypeLabour === "Percentage") {
+  //       labourAmount = (parseFloat(field.labourRate) / 100);
+  //     }
+  
+  //     console.log("Final Labour Amount:", labourAmount);
+  
+  //     return {
+  //       groupId: selectedCarat._id, 
+  //       groupItemId: selectedCategory._id,
+  //       toWeight: parseFloat(field.grossWeight) || 0,
+  //       lessWeight: parseFloat(field.lessWeight) || 0,
+  //       wastage: parseFloat(field.westage) || 0,
+  //       labour: labourAmount.toFixed(2),
+  //       hsnCode: field.hsn ? field.hsn.toString() : "",
+  //       extraRate: field.extra ? field.extra.toString() : "",
+  //       group: field.group ? field.group.toString() : "",
+  //       account: field.account ? field.account.toString() : "",
+  //       location: field.location ? field.location.toString() : "",
+  //       design: field.selectedTypeDesign || null,
+  //       pcs: parseInt(field.pcs) || 1,
+  //       size: parseFloat(field.size) || null,
+  //       moti: parseFloat(field.moti) || 0,
+  //       stone: parseFloat(field.stone) || 0,
+  //       jadatr: parseFloat(field.jadatr) || 0,
+  //       huid: field.huid ? field.huid.toString() : "",
+  //       huidRule: field.huidRule ? field.huidRule.toString() : "",
+  //       huidCharge: parseFloat(field.huidCharge) || 0,
+  //     };
+  //   });
 
-  //   const productsArray = fieldSets.map((field) => ({
-  //     groupId: selectedCarat._id,
-  //     groupItemId: selectedCategory._id,
-  //     toWeight: parseFloat(field.grossWeight) || 0,
-  //     lessWeight: parseFloat(field.lessWeight) || 0,
-  //     wastage: parseFloat(field.westage) || 0,
-  //     hsnCode: field.hsn ? field.hsn.toString() : "",
-  //     group: field.group ? field.group.toString() : "",
-  //     account: field.account ? field.account.toString() : "",
-  //     labour: parseFloat(field.labour) || 0,
-  //     location: field.location ? field.location.toString() : "",
-  //     design: field.selectedTypeDesign || null,
-  //     pcs: parseInt(field.pcs) || 1,
-  //     size: parseFloat(field.size) || null,
-  //     moti: parseFloat(field.moti) || 0,
-  //     stone: parseFloat(field.stone) || 0,
-  //     jadatr: parseFloat(field.jadatr) || 0,
-  //     huid: field.huid ? field.huid.toString() : "",
-  //     huidRule: field.huidRule ? field.huidRule.toString() : "",
-  //     huidCharge: parseFloat(field.huidCharge) || 0,
-  //   }));
+  //   console.log("Final API Request Payload:", productsArray);
 
+  
   //   try {
   //     const response = await dispatch(addStockAction({
   //       groupId: selectedCarat._id,
   //       groupItemId: selectedCategory._id,
   //       products: productsArray,
   //     }));
-
+  
   //     if (response) {
   //       alert("Stock added successfully!");
   //       navigate('/add-stock');
@@ -353,8 +375,7 @@ export default function CreateBarCodeStock() {
   //     alert("An error occurred while saving stock.");
   //   }
   // };
-
-
+  
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeCategory) {
       alert("Please select Carat and Category.");
@@ -369,6 +390,11 @@ export default function CreateBarCodeStock() {
       return;
     }
   
+    // ✅ Fetch Labour Data from Redux (Ensure Labour has categoryId matching selectedCategory)
+    const uchakLabours = await dispatch(getAllUchakAction());
+    const perGramLabours = await dispatch(getPerGramAction());
+    const percentageLabours = await dispatch(getPercentageAction());
+  
     const productsArray = fieldSets.map((field) => {
       let labourAmount = 0;
       const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
@@ -376,23 +402,33 @@ export default function CreateBarCodeStock() {
       console.log(`Calculating Labour for: ${field.selectedTypeLabour}`);
       console.log("Net Weight:", netWeight);
   
+      // ✅ Apply Labour ONLY if `categoryId` matches the selected category
       if (field.selectedTypeLabour === "Uchak") {
-        labourAmount = parseFloat(field.labourRate) || 0;
+        const labourMatch = uchakLabours.find(labour => labour.categoryId === selectedCategory._id);
+        if (labourMatch) {
+          labourAmount = parseFloat(labourMatch.rate) || 0;
+        }
       } else if (field.selectedTypeLabour === "PerGram") {
-        labourAmount = (parseFloat(field.labourRate) || 0) * netWeight;
+        const labourMatch = perGramLabours.find(labour => labour.categoryId === selectedCategory._id);
+        if (labourMatch) {
+          labourAmount = (parseFloat(labourMatch.rate) || 0) * netWeight;
+        }
       } else if (field.selectedTypeLabour === "Percentage") {
-        labourAmount = (parseFloat(field.labourRate) / 100);
+        const labourMatch = percentageLabours.find(labour => labour.categoryId === selectedCategory._id);
+        if (labourMatch) {
+          labourAmount = (parseFloat(labourMatch.rate) / 100) * netWeight;
+        }
       }
   
       console.log("Final Labour Amount:", labourAmount);
   
       return {
-        groupId: selectedCarat._id, 
+        groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
         toWeight: parseFloat(field.grossWeight) || 0,
         lessWeight: parseFloat(field.lessWeight) || 0,
         wastage: parseFloat(field.westage) || 0,
-        labour: labourAmount.toFixed(2),
+        labour: labourAmount.toFixed(2), 
         hsnCode: field.hsn ? field.hsn.toString() : "",
         extraRate: field.extra ? field.extra.toString() : "",
         group: field.group ? field.group.toString() : "",
@@ -409,9 +445,8 @@ export default function CreateBarCodeStock() {
         huidCharge: parseFloat(field.huidCharge) || 0,
       };
     });
-
+  
     console.log("Final API Request Payload:", productsArray);
-
   
     try {
       const response = await dispatch(addStockAction({
@@ -421,15 +456,15 @@ export default function CreateBarCodeStock() {
       }));
   
       if (response) {
-        alert("✅ Stock added successfully!");
+        alert("Stock added successfully!");
         navigate('/add-stock');
         dispatch(getAllStockAction());
       } else {
-        alert("❌ Failed to add stock.");
+        alert("Failed to add stock.");
       }
     } catch (error) {
-      console.error("❌ Error:", error);
-      alert("❌ An error occurred while saving stock.");
+      console.error("Error:", error);
+      alert("An error occurred while saving stock.");
     }
   };
   
@@ -466,10 +501,6 @@ export default function CreateBarCodeStock() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
-
-
 
   const onClose = () => {
     setIsOpen(false); // Close the modal

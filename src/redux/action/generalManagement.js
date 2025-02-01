@@ -9,8 +9,29 @@ import {
     ApiPut,
     ApiPutWithId,
 } from '../../helper/axios';
-import { GET_UCHAK, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_BILL_BY_ID, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
+import { GET_UCHAK, ADD_UCHAK,UPDATE_NON_UCHAK,UPDATE_NON_PERCENTAGE, DELETE_NON_PERGRAM, UPDATE_NON_PERGRAM, ADD_NON_PERGRAM, GET_NON_PERGRAM, DELETE_NON_PERCENTAGE, ADD_NON_PERCENTAGE, GET_NON_PERCENTAGE, DELETE_NON_UCHAK, UPDATE_UCHAK, ADD_NON_UCHAK, GET_NON_UCHAK, DELETE_UCHAK, GET_BILL_BY_ID, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
 
+export const getInvoiceByIdAction = (invoiceId) => {
+  return (dispatch) => {
+      return ApiGet(`/admin/bill/${invoiceId}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.bill) {
+        dispatch({
+          type: GET_BILL_BY_ID,
+          payload: res.bill,
+        });
+        return res.bill;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_BILL_BY_ID,
+        payload: error,
+      });
+    });
+};
+};
 
 export const getAllUchakAction = () => {
     return (dispatch) => {
@@ -33,7 +54,6 @@ export const getAllUchakAction = () => {
       });
   };
 };
-
 
 export const addUchakAction = (formData) => {
   return (dispatch) => {
@@ -101,6 +121,94 @@ export const deleteUchakAction = (id) => {
 };
 };
 
+export const getAllNonUchakAction = () => {
+    return (dispatch) => {
+        return ApiGet(`/admin/non-uchak`)
+      .then((res) => {
+        console.log('res', res);
+        if (res.uchak) {
+          dispatch({
+            type: GET_NON_UCHAK,
+            payload: res.uchak,
+          });
+          return res.uchak;
+        }
+      })
+      .catch((error) => {
+        dispatch({
+          type: GET_NON_UCHAK,
+          payload: error,
+        });
+      });
+  };
+};
+
+export const addNonUchakAction = (formData) => {
+  return (dispatch) => {
+      return ApiPost(`/admin/non-uchak`, formData)
+    .then((res) => {
+      console.log('res', res);
+      if (res.data.uchak) {
+        dispatch({
+          type: ADD_NON_UCHAK,
+          payload: res.data.uchak,
+        });
+        return res.data.uchak;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: ADD_NON_UCHAK,
+        payload: error,
+      });
+    });
+};
+};
+
+export const updateNonUchakAction = (id, formData) => {
+  return (dispatch) => {
+      return ApiPut(`/admin/non-uchak/${id}`, formData)
+    .then((res) => {
+      console.log('res', res);
+      if (res.uchak) {
+        dispatch({
+          type: UPDATE_NON_UCHAK,
+          payload: res.uchak,
+        });
+        return res.uchak;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: UPDATE_NON_UCHAK,
+        payload: error,
+      });
+    });
+};
+};
+
+export const deleteNonUchakAction = (id) => {
+  return (dispatch) => {
+      return ApiDelete(`/admin/non-uchak/${id}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.uchak) {
+        dispatch({
+          type: DELETE_NON_UCHAK,
+          payload: res.uchak,
+        });
+        return res.uchak;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: DELETE_NON_UCHAK,
+        payload: error,
+      });
+    });
+};
+};
+
 
 export const getCompanyInfoAction = () => {
     return (dispatch) => {
@@ -146,49 +254,6 @@ export const addCompanyInfoAction = (formData) => {
 };
 };
 
-export const updateBrandAction = (id, formData) => {
-  return (dispatch) => {
-      return ApiPut(`/admin/brand/${id}`, formData)
-    .then((res) => {
-      console.log('res', res);
-      if (res.brand) {
-        dispatch({
-          type: UPDATE_BRAND,
-          payload: res.brand,
-        });
-        return res.brand;
-      }
-    })
-    .catch((error) => {
-      dispatch({
-        type: UPDATE_BRAND,
-        payload: error,
-      });
-    });
-};
-};
-
-export const deleteBrandAction = (id) => {
-  return (dispatch) => {
-      return ApiDelete(`/admin/brand/${id}`)
-    .then((res) => {
-      console.log('res', res);
-      if (res.brand) {
-        dispatch({
-          type: DELETE_BRAND,
-          payload: res.brand,
-        });
-        return res.brand;
-      }
-    })
-    .catch((error) => {
-      dispatch({
-        type: DELETE_BRAND,
-        payload: error,
-      });
-    });
-};
-};
 
 export const getPercentageAction = () => {
     return (dispatch) => {
@@ -210,28 +275,6 @@ export const getPercentageAction = () => {
         });
       });
   };
-};
-
-export const getInvoiceByIdAction = (invoiceId) => {
-  return (dispatch) => {
-      return ApiGet(`/admin/bill/${invoiceId}`)
-    .then((res) => {
-      console.log('res', res);
-      if (res.bill) {
-        dispatch({
-          type: GET_BILL_BY_ID,
-          payload: res.bill,
-        });
-        return res.bill;
-      }
-    })
-    .catch((error) => {
-      dispatch({
-        type: GET_BILL_BY_ID,
-        payload: error,
-      });
-    });
-};
 };
 
 export const addPercentageAction = (formData) => {
@@ -300,27 +343,94 @@ export const deletePercentageAction = (id) => {
 };
 };
 
-// export const getAllTagsAction = () => {
-//     return (dispatch) => {
-//         return ApiPost(`/admin/tag`)
-//       .then((res) => {
-//         console.log('res', res);
-//         if (res.category) {
-//           dispatch({
-//             type: ADD_TAG,
-//             payload: res.category,
-//           });
-//           return res.category;
-//         }
-//       })
-//       .catch((error) => {
-//         dispatch({
-//           type: ADD_TAG,
-//           payload: error,
-//         });
-//       });
-//   };
-// };
+export const getNonPercentageAction = () => {
+    return (dispatch) => {
+        return ApiGet(`/admin/non-percentage`)
+      .then((res) => {
+        console.log('resfgh', res);
+        if (res.percentage) {
+          dispatch({
+            type: GET_NON_PERCENTAGE,
+            payload: res.percentage,
+          });
+          return res.percentage;
+        }
+      })
+      .catch((error) => {
+        dispatch({
+          type: GET_NON_PERCENTAGE,
+          payload: error,
+        });
+      });
+  };
+};
+
+
+export const addNonPercentageAction = (formData) => {
+  return (dispatch) => {
+      return ApiPost(`/admin/non-percentage`, formData)
+    .then((res) => {
+      console.log('res', res);
+      if (res.data.percentage) {
+        dispatch({
+          type: ADD_NON_PERCENTAGE,
+          payload: res.data.percentage,
+        });
+        return res.data.percentage;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: ADD_NON_PERCENTAGE,
+        payload: error,
+      });
+    });
+};
+};
+
+export const updateNonPercentageAction = (id, formData) => {
+  return (dispatch) => {
+      return ApiPut(`/admin/non-percentage/${id}`, formData)
+    .then((res) => {
+      console.log('res', res);
+      if (res.percentage) {
+        dispatch({
+          type: UPDATE_NON_PERCENTAGE,
+          payload: res.percentage,
+        });
+        return res.percentage;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: UPDATE_NON_PERCENTAGE,
+        payload: error,
+      });
+    });
+};
+};
+
+export const deleteNonPercentageAction = (id) => {
+  return (dispatch) => {
+      return ApiDelete(`/admin/non-percentage/${id}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.percentage) {
+        dispatch({
+          type: DELETE_NON_PERCENTAGE,
+          payload: res.percentage,
+        });
+        return res.percentage;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: DELETE_NON_PERCENTAGE,
+        payload: error,
+      });
+    });
+};
+};
 
 export const getPerGramAction = () => {
     return (dispatch) => {
@@ -410,7 +520,93 @@ export const deletePerGramAction = (id) => {
 };
 };
 
+export const getNonPerGramAction = () => {
+  return (dispatch) => {
+      return ApiGet(`/admin/non-pergram`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.pergram) {
+        dispatch({
+          type: GET_NON_PERGRAM,
+          payload: res.pergram,
+        });
+        return res.pergram;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_NON_PERGRAM,
+        payload: error,
+      });
+    });
+};
+};
 
+export const addNonPerGramAction = (formData) => {
+return (dispatch) => {
+    return ApiPost(`/admin/non-pergram`, formData)
+  .then((res) => {
+    console.log('res', res);
+    if (res.data.pergram) {
+      dispatch({
+        type: ADD_NON_PERGRAM,
+        payload: res.data.pergram,
+      });
+      return res.data.pergram;
+    }
+  })
+  .catch((error) => {
+    dispatch({
+      type: ADD_NON_PERGRAM,
+      payload: error,
+    });
+  });
+};
+};
+
+export const updateNonPerGramAction = (id, formData) => {
+return (dispatch) => {
+    return ApiPut(`/admin/non-pergram/${id}`, formData)
+  .then((res) => {
+    console.log('res', res);
+    if (res.pergram) {
+      dispatch({
+        type: UPDATE_NON_PERGRAM,
+        payload: res.pergram,
+      });
+      return res.pergram;
+    }
+  })
+  .catch((error) => {
+    dispatch({
+      type: UPDATE_NON_PERGRAM,
+      payload: error,
+    });
+  });
+};
+};
+
+export const deleteNonPerGramAction = (id) => {
+return (dispatch) => {
+    return ApiDelete(`/admin/non-pergram/${id}`)
+  .then((res) => {
+    console.log('res', res);
+    if (res.pergram) {
+      dispatch({
+        type: DELETE_NON_PERGRAM,
+        payload: res.pergram,
+      });
+      return res.pergram;
+    }
+  })
+  .catch((error) => {
+    dispatch({
+      type: DELETE_NON_PERGRAM,
+      payload: error,
+    });
+  });
+};
+};
 
 
 export const getMarketRateAction = () => {
@@ -451,50 +647,6 @@ export const addMarketRateAction = (rates) => {
     .catch((error) => {
       dispatch({
         type: ADD_MARKET_RATE,
-        payload: error,
-      });
-    });
-};
-};
-
-export const updateAttributeAction = (id, formData) => {
-  return (dispatch) => {
-      return ApiPut(`/admin/attribute/${id}`, formData)
-    .then((res) => {
-      console.log('res', res);
-      if (res.category) {
-        dispatch({
-          type: UPDATE_ATTRIBUTE,
-          payload: res.category,
-        });
-        return res.category;
-      }
-    })
-    .catch((error) => {
-      dispatch({
-        type: UPDATE_ATTRIBUTE,
-        payload: error,
-      });
-    });
-};
-};
-
-export const deleteAttributeAction = (id) => {
-  return (dispatch) => {
-      return ApiDelete(`/admin/attribute/${id}`)
-    .then((res) => {
-      console.log('res', res);
-      if (res.category) {
-        dispatch({
-          type: DELETE_ATTRIBUTE,
-          payload: res.category,
-        });
-        return res.category;
-      }
-    })
-    .catch((error) => {
-      dispatch({
-        type: DELETE_ATTRIBUTE,
         payload: error,
       });
     });

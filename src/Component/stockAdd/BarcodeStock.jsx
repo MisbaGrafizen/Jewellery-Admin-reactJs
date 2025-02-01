@@ -143,14 +143,7 @@ const navigate =useNavigate ()
             prev.filter((category) => category._id !== caratIdToDelete)
           );
         }
-      } else if (deleteContext === "metal") {
-        success = await dispatch(deleteMetalAction(caratIdToDelete));
-        if (success) {
-          setMetal((prev) =>
-            prev.filter((metal) => metal._id !== caratIdToDelete)
-          );
-        }
-      } else if (deleteContext === "item") {
+      }  else if (deleteContext === "item") {
         success = await dispatch(deleteGroupItemAction(caratIdToDelete));
         if (success) {
           setItems((prev) =>
@@ -177,17 +170,6 @@ const navigate =useNavigate ()
     }
   };
 
-  const handleCategoryClick = (index) => {
-    setSelectedCaratIndex(index);
-  };
-
-  const handleMetalClick = (index) => {
-    setSelectedMetalIndex(index);
-  };
-
-  const handleItemClick = (index) => {
-    setSelectedItemIndex(index);
-  };
 
   useEffect(() => {
     if (grossWeight && lessWeight && selectedType) {
@@ -315,6 +297,42 @@ const navigate =useNavigate ()
     useEffect(() => {
       setIsMounted(true)
     }, [])
+
+
+
+    const scrollContainerRef = useRef(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeft, setScrollLeft] = useState(0);
+  
+    const handleMouseDown = (e) => {
+      setIsDragging(true);
+      setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+      setScrollLeft(scrollContainerRef.current.scrollLeft);
+    };
+  
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - scrollContainerRef.current.offsetLeft;
+      const walk = (x - startX) * 1.5; // Adjust the multiplier for speed
+      scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+    };
+  
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+  
+
+
+
+
+
+
+
+
+
+    
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
@@ -333,8 +351,14 @@ const navigate =useNavigate ()
 
               <div className="bg-white   w-[100%] rounded-[10px] overflow-hidden shadow1-blue ">
                 {/* Table Header */}
-                <div className="  overflow-x-auto  bg-white !max-w-[3500px] flex-shrink-0">
-                  <table className="min-w-[2000px] w-full border-collapse  border-gray-300  font-Poppins">
+                <div 
+                ref={scrollContainerRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
+                  <table className="min-w-[2300px] w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
                         <th className="py-3 px-2 text-left  border-gray-300">
@@ -362,17 +386,41 @@ const navigate =useNavigate ()
                         Fine Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Group
+                        G Rate
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Account
+                        M Rate
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          M Rs
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                     G Rs
                         </th>
 
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    Extra Rate
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        GME Amt
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    GST 
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                    Amount
+                        </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Labour
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         ExtraRate
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Group
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Account
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Location
@@ -395,16 +443,7 @@ const navigate =useNavigate ()
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Jadatr
                         </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Huid
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Huid Rule
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        huidCharge
-                        </th>
-                       
+             
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Action
                         </th>
@@ -443,17 +482,49 @@ const navigate =useNavigate ()
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {updatedFineWeight}
                             </td>
+
+
+
+
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item.group ||"-"}
+                            {netWeight}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item.account || 0}
+                            {updatedFineWeight}
                             </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {netWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {updatedFineWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {netWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {updatedFineWeight}
+                            </td>
+     
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {netWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {updatedFineWeight}
+                            </td>
+                                                                  
+     
+     
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item?.labour || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item.extraRate || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item.group ||"-"}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item.account || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item?.location || "-"}
@@ -476,15 +547,7 @@ const navigate =useNavigate ()
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item.jadatr || 0}
                             </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.huid || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.huidRule | 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.huidCharge || 0}
-                            </td>
+                  
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               <i
                                 className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"

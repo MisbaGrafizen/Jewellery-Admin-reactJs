@@ -8,12 +8,7 @@ import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 
 import { X, CheckCircle } from "lucide-react"
 import {
-  addCategoryAction,
-  addGroupItemAction,
-  addMetalAction,
-  addNonBarcodeCategoryAction,
   addNonBarcodeProductAction,
-  addStockAction,
   deleteCategoryAction,
   deleteGroupItemAction,
   deleteMetalAction,
@@ -23,70 +18,40 @@ import {
   getAllStockAction,
   getCategroyAction,
   getDesignAction,
-  getGroupItemAction,
-  getMetalAction,
-  updateCategoryAction,
-  updateGroupItemAction,
-  updateMetalAction,
-  updateStockAction,
+  getnonBarcodeCategroyAction,
+
 } from "../../redux/action/landingManagement";
-import { getAllUchakAction, getMarketRateAction, getPercentageAction, getPerGramAction } from '../../redux/action/generalManagement';
+import { getAllNonUchakAction, getMarketRateAction, getNonPercentageAction, getNonPerGramAction } from '../../redux/action/generalManagement';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CreateNonbarStock() {
+  const navigate = useNavigate();
   const [fieldSets, setFieldSets] = useState([
     {
       hsn: "", grossWeight: "", lessWeight: "", westage: "", group: "",
       account: "", labour: "", location: "", pcs: "", size: "",
       moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
       huidCharge: "", selectedTypeDesign: "", selectedTypeHuidRule: "",
-      dropdownOpenDesign: false, dropdownOpenHuid: false, selectedTypeLabour: "", 
+      dropdownOpenDesign: false, dropdownOpenHuid: false, selectedTypeLabour: "",
       dropdownOpenLabour: false,
     }
   ]);
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
-  const [name, setName] = useState("");
   const [isMounted, setIsMounted] = useState(false)
-  const [editingCarat, setEditingCarat] = useState(null);
-  const [editCaratName, setEditCaratName] = useState("");
-  const [editingCaratId, setEditingCaratId] = useState(null);
   const [caratIdToDelete, setCaratIdToDelete] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
-  const [percentages, setPercentages] = useState({});
-  const [isEditing, setIsEditing] = useState(null);
-
   const [caratFocused, setCaratFocused] = useState(false);
-  const [metalFocused, setMetalFocused] = useState(false);
   const [categoryFocused, setCategoryFocused] = useState(false);
-  const [grossFocused, setGrossFocused] = useState(false);
-  const [lossFocused, setLossFocused] = useState(false);
-  const [wastageFocused, setWastegeFocused] = useState(false);
-
-  const [hsnFocused, setHsnFocused] = useState(false);
-  const [groupFocused, setGroupFocused] = useState(false);
-  const [accountFocused, setAccountFocused] = useState(false);
-  const [labourFocused, setLabourFocused] = useState(false);
-  const [extraFocused, setExtraFocused] = useState(false);
-  const [locationFocused, setLocationFocused] = useState(false);
-  const [pcsFocused, setPcsFocused] = useState(false);
-  const [designFocused, setDesignFocused] = useState(false);
-  const [sizeFocused, setSizeFocused] = useState(false);
-  const [motiFocused, setMotiFocused] = useState(false);
-  const [stoneFocused, setStoneFocused] = useState(false);
-  const [jadatrFocused, setJadatrFocused] = useState(false);
-  const [huidFocused, setHuidFocused] = useState(false);
-  const [huidRuleFocused, setHuidRuleFocused] = useState(false);
-  const [huidChargeFocused, setHuidChargeFocused] = useState(false);
-
+  const [proNameFocused, setProNameFocused] = useState(false);
+  const [productName, setProductName]  = useState("");
   const labourOptions = [
     { type: "Uchak", key: "uchakRate" },
     { type: "PerGram", key: "pergramRate" },
     { type: "Percentage", key: "percentageRate" }
   ];
-
-  
 
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
@@ -114,9 +79,12 @@ export default function CreateNonbarStock() {
   const sizes = useSelector((state) => state.landing.getSize);
   const marketRates = useSelector((state) => state.general.getMarketRate);
   const stocks = useSelector((state) => state.landing.getProduct);
-  const uchakRates = useSelector((state) => state.general.getUchak);
-  const perGramRates = useSelector((state) => state.general.getPergram);
-  const percentageRates = useSelector((state) => state.general.getPercentage);
+  const uchakRates = useSelector((state) => state.general.getNonUchak);
+  const perGramRates = useSelector((state) => state.general.getNonPergram);
+  const percentageRates = useSelector((state) => state.general.getNonPercentage);
+
+
+  console.log('item', item)                                                                   
 
   const labourRates = [
     ...uchakRates.map(rate => ({ type: "Uchak", rate: rate.rate, minWeight: rate.minWeight, maxWeight: rate.maxWeight })),
@@ -127,8 +95,7 @@ export default function CreateNonbarStock() {
 
   useEffect(() => {
     dispatch(getCategroyAction());
-    dispatch(getMetalAction());
-    dispatch(getGroupItemAction());
+    dispatch(getnonBarcodeCategroyAction());
     dispatch(getDesignAction());
     dispatch(getMarketRateAction());
     dispatch(getAllSizeAction());
@@ -142,6 +109,52 @@ export default function CreateNonbarStock() {
   const handleSelect = (type) => {
     setSelectedType(type);
     setDropdownOpen(false);
+  };
+
+  const handleSelectLabourType = async (labourType, index) => {
+    setFieldSets((prevFieldSets) => {
+      const updatedFieldSets = [...prevFieldSets];
+
+      // Ensure field exists before updating
+      if (!updatedFieldSets[index]) {
+        updatedFieldSets[index] = {};
+      }
+
+      updatedFieldSets[index].selectedTypeLabour = labourType;
+      updatedFieldSets[index].dropdownOpenLabour = false;
+
+      return updatedFieldSets;
+    });
+
+    try {
+      let labourRate = 0;
+
+      if (labourType === "Uchak") {
+        const response = await dispatch(getAllNonUchakAction());
+        if (response && response.length > 0) {
+          labourRate = parseFloat(response[0].rate) || 0;
+        }
+      } else if (labourType === "PerGram") {
+        const response = await dispatch(getNonPerGramAction());
+        if (response && response.length > 0) {
+          labourRate = parseFloat(response[0].rate) || 0;
+        }
+      } else if (labourType === "Percentage") {
+        const response = await dispatch(getNonPercentageAction());
+        if (response && response.length > 0) {
+          labourRate = parseFloat(response[0].rate) || 0;
+        }
+      }
+
+      setFieldSets((prevFieldSets) => {
+        const updatedFieldSets = [...prevFieldSets];
+        updatedFieldSets[index].labourRate = labourRate;
+        return updatedFieldSets;
+      });
+
+    } catch (error) {
+      console.error("Error fetching labour rate:", error);
+    }
   };
 
   const handleSelectMetal = (type) => {
@@ -220,35 +233,6 @@ export default function CreateNonbarStock() {
     }
   };
 
-  const handleSelectLabourType = async (labourType, index) => {
-    let updatedFieldSets = [...fieldSets];
-    updatedFieldSets[index].selectedTypeLabour = labourType;
-    updatedFieldSets[index].dropdownOpenLabour = false;
-
-    try {
-      let labourRate = 0;
-
-      if (labourType === "Uchak") {
-        const response = await dispatch(getAllUchakAction()); // Replace with API URL
-        const data = await response.json();
-        labourRate = data.rate || 0;
-      } else if (labourType === "PerGram") {
-        const response = await dispatch(getPerGramAction()); // Replace with API URL
-        const data = await response.json();
-        labourRate = data.rate || 0;
-      } else if (labourType === "Percentage") {
-        const response = await dispatch(getPercentageAction()); // Replace with API URL
-        const data = await response.json();
-        labourRate = data.rate || 0;
-      }
-
-      updatedFieldSets[index].labourRate = labourRate;
-      setFieldSets(updatedFieldSets);
-    } catch (error) {
-      console.error("Error fetching labour rate:", error);
-    }
-  };
-
 
   useEffect(() => {
     if (fieldSets.grossWeight && fieldSets.lessWeight && selectedType) {
@@ -270,38 +254,6 @@ export default function CreateNonbarStock() {
     setFieldSets(prevFieldSets => {
       const updatedFieldSets = [...prevFieldSets];
       updatedFieldSets[index][field] = value;
-
-      // **Calculate Net Weight**
-      if (field === "toWeight" || field === "lessWeight") {
-        const toWeight = parseFloat(updatedFieldSets[index].toWeight) || 0;
-        const lessWeight = parseFloat(updatedFieldSets[index].lessWeight) || 0;
-        updatedFieldSets[index].netWeight = (toWeight - lessWeight).toFixed(2);
-      }
-
-      // **Calculate Labour Cost Based on Selection**
-      const selectedLabourType = updatedFieldSets[index].labourType;
-      if (selectedLabourType) {
-        const netWeight = parseFloat(updatedFieldSets[index].netWeight) || 0;
-        const totalPrice = parseFloat(updatedFieldSets[index].totalPrice) || 0;
-        let labourCost = 0;
-
-        const labourData = labourRates.find(rate => rate.type === selectedLabourType);
-        if (labourData) {
-          if (selectedLabourType === "Uchak") {
-            if (labourData.minWeight <= netWeight && labourData.maxWeight >= netWeight) {
-              labourCost = parseFloat(labourData.rate);
-            }
-          } else if (selectedLabourType === "PerGram") {
-            labourCost = (parseFloat(labourData.rate) * netWeight).toFixed(2);
-          } else if (selectedLabourType === "Percentage") {
-            labourCost = ((parseFloat(labourData.rate) / 100) * totalPrice).toFixed(2);
-          }
-        }
-
-        updatedFieldSets[index].labourCost = labourCost;
-        updatedFieldSets[index].totalPrice = (totalPrice + parseFloat(labourCost)).toFixed(2);
-      }
-
       return updatedFieldSets;
     });
   };
@@ -331,43 +283,63 @@ export default function CreateNonbarStock() {
       return;
     }
 
-    const productsArray = fieldSets.map((field) => ({
-      groupId: selectedCarat._id,
-      groupItemId: selectedCategory._id,
-      toWeight: parseFloat(field.grossWeight) || 0,
-      lessWeight: parseFloat(field.lessWeight) || 0,
-      netWeight: field.netWeight || "0",
-      fineWeight: field.fineWeight || "0",
-      wastage: parseFloat(field.westage) || 0,
-      hsnCode: field.hsn ? field.hsn.toString() : "",
-      group: field.group ? field.group.toString() : "",
-      account: field.account ? field.account.toString() : "",
-      labour: parseFloat(field.labour) || 0,
-      location: field.location ? field.location.toString() : "",
-      design: field.selectedTypeDesign || null,
-      pcs: parseInt(field.pcs) || 1,
-      size: parseFloat(field.size) || null,
-      moti: parseFloat(field.moti) || 0,
-      stone: parseFloat(field.stone) || 0,
-      jadatr: parseFloat(field.jadatr) || 0,
-      huid: field.huid ? field.huid.toString() : "",
-      huidRule: field.huidRule ? field.huidRule.toString() : "",
-      huidCharge: parseFloat(field.huidCharge) || 0,
-      totalPrice: field.totalPrice || "0",
-    }));
+    const productsArray = fieldSets.map((field) => {
+      let labourAmount = 0;
+      const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
 
-    console.log('productsArray', productsArray)
+      console.log(`Calculating Labour for: ${field.selectedTypeLabour}`);
+      console.log("Net Weight:", netWeight);
+
+      if (field.selectedTypeLabour === "Uchak") {
+        labourAmount = parseFloat(field.labourRate) || 0;
+      } else if (field.selectedTypeLabour === "PerGram") {
+        labourAmount = (parseFloat(field.labourRate) || 0) * netWeight;
+      } else if (field.selectedTypeLabour === "Percentage") {
+        labourAmount = (parseFloat(field.labourRate) / 100);
+      }
+
+      console.log("Final Labour Amount:", labourAmount);
+
+      return {
+        groupId: selectedCarat._id,
+        groupItemId: selectedCategory._id,
+        productName: productName,
+        toWeight: parseFloat(field.grossWeight) || 0,
+        lessWeight: parseFloat(field.lessWeight) || 0,
+        wastage: parseFloat(field.westage) || 0,
+        labour: labourAmount.toFixed(2),
+        hsnCode: field.hsn ? field.hsn.toString() : "",
+        extraRate: field.extra ? field.extra.toString() : "",
+        group: field.group ? field.group.toString() : "",
+        account: field.account ? field.account.toString() : "",
+        location: field.location ? field.location.toString() : "",
+        design: field.selectedTypeDesign || null,
+        pcs: parseInt(field.pcs) || 1,
+        size: parseFloat(field.size) || null,
+        moti: parseFloat(field.moti) || 0,
+        stone: parseFloat(field.stone) || 0,
+        jadatr: parseFloat(field.jadatr) || 0,
+        huid: field.huid ? field.huid.toString() : "",
+        huidRule: field.huidRule ? field.huidRule.toString() : "",
+        huidCharge: parseFloat(field.huidCharge) || 0,
+      };
+    });
+
+    console.log("Final API Request Payload:", productsArray);
 
     try {
       const response = await dispatch(addNonBarcodeProductAction({
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
+        productName: productName,
         products: productsArray,
       }));
 
+      console.log('response', response)
+
       if (response) {
-        setIsOpen(true);
-        setTimeout(() => setIsOpen(false), 2000);
+        alert("Stock added successfully!");
+        navigate('/add-stock');
         dispatch(getAllNonBarcodeProductAction());
       } else {
         alert("Failed to add stock.");
@@ -410,10 +382,6 @@ export default function CreateNonbarStock() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
-
-
 
   const onClose = () => {
     setIsOpen(false); // Close the modal
@@ -560,6 +528,29 @@ export default function CreateNonbarStock() {
                           )}
                         </AnimatePresence>
                       </div>
+                      <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+  bg-[#fff] ">
+                            <label
+                              htmlFor="product Name"
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200  ${productName || proNameFocused
+                                ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
+                                }`}
+                            >
+                     Product Name
+                            </label>
+                            <input
+                              type="text"
+                              name="productName"
+                              id='product Name'
+                              value={productName}
+                              onChange={(e) => setProductName(e.target.value)}
+                              onFocus={() => setProNameFocused(true)}
+                              onBlur={() => setProNameFocused(false)}
+                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                              autocomplete="naqsme"
+                            />
+                          </div>
                     </div>
                     {fieldSets.map((_, index) => (
 
@@ -737,7 +728,7 @@ export default function CreateNonbarStock() {
                               Group
                             </label>
                             <input
-                              type="number"
+                              type="string"
                               id={`group-${index}`}
                               name="group"
                               value={fieldSets.group}
@@ -786,8 +777,6 @@ export default function CreateNonbarStock() {
                               // onChange={(e) => setAccount(e.target.value)}
                               // onFocus={() => setAccountFocused(true)}
                               // onBlur={() => setAccountFocused(false)}
-
-
                               onFocus={() => {
                                 let updatedFieldSets = [...fieldSets];
                                 updatedFieldSets[index].accountFocused = true;
@@ -807,15 +796,15 @@ export default function CreateNonbarStock() {
                               autocomplete="naqsme"
                             />
                           </div>
-                          {/* <div
+                          <div
                             className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]"
                           >
                             <label
                               htmlFor={`labour-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-        ${fieldSets[index]?.selectedTypeLabour || fieldSets[index]?.labourFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+      ${fieldSets[index]?.selectedTypeLabour || fieldSets[index]?.labourFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
-                              Labour
+                              Labour Type
                             </label>
                             <div
                               className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
@@ -830,24 +819,10 @@ export default function CreateNonbarStock() {
                                 id={`labour-${index}`}
                                 value={fieldSets[index]?.selectedTypeLabour || ""}
                                 readOnly
-                                onFocus={() => {
-                                  let updatedFieldSets = [...fieldSets];
-                                  updatedFieldSets[index].labourFocused = true;
-                                  setFieldSets(updatedFieldSets);
-                                }}
-                                onBlur={() => {
-                                  let updatedFieldSets = [...fieldSets];
-                                  updatedFieldSets[index].labourFocused = false;
-                                  setFieldSets(updatedFieldSets);
-                                }}
                                 className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
-                                className={
-                                  fieldSets[index]?.dropdownOpenLabour
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                }
+                                className={fieldSets[index]?.dropdownOpenLabour ? "fa-solid fa-chevron-up text-[14px] pr-[10px]" : "fa-solid fa-chevron-down text-[14px] pr-[10px]"}
                               ></i>
                             </div>
 
@@ -859,104 +834,20 @@ export default function CreateNonbarStock() {
                                   exit={{ opacity: 0, y: -10 }}
                                   className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {labourRates.map((labour, idx) => (
+                                  {["Uchak", "PerGram", "Percentage"].map((labourType, idx) => (
                                     <div
                                       key={idx}
                                       className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        let updatedFieldSets = [...fieldSets];
-                                        updatedFieldSets[index].selectedTypeLabour = labour.type;
-                                        updatedFieldSets[index].dropdownOpenLabour = false;
-                                        updatedFieldSets[index].labourRate = labour.rate;
-
-                                        // **Auto-apply Labour Cost based on selection**
-                                        const netWeight = parseFloat(updatedFieldSets[index].netWeight) || 0;
-                                        const totalPrice = parseFloat(updatedFieldSets[index].totalPrice) || 0;
-                                        let labourCost = 0;
-
-                                        if (labour.type === "Uchak") {
-                                          if (labour.minWeight <= netWeight && labour.maxWeight >= netWeight) {
-                                            labourCost = parseFloat(labour.rate);
-                                          }
-                                        } else if (labour.type === "PerGram") {
-                                          labourCost = (parseFloat(labour.rate) * netWeight).toFixed(2);
-                                        } else if (labour.type === "Percentage") {
-                                          labourCost = ((parseFloat(labour.rate) / 100) * totalPrice).toFixed(2);
-                                        }
-
-                                        updatedFieldSets[index].labourCost = labourCost;
-                                        updatedFieldSets[index].totalPrice = (totalPrice + parseFloat(labourCost)).toFixed(2);
-
-                                        setFieldSets(updatedFieldSets);
-                                      }}
+                                      onClick={() => handleSelectLabourType(labourType, index)}
                                     >
-                                      {`${labour.type} - Rate: ${labour.rate}`}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div> */}
-                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
-                            <label
-                              htmlFor={`labour-${index}`}
-                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-    ${fieldSets[index]?.selectedTypeLabour || fieldSets[index]?.labourFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
-                            >
-                              Labour Type
-                            </label>
-                            <div
-                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={(e) => {
-                                e.stopPropagation(); // Prevents click propagation issues
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].dropdownOpenLabour = !updatedFieldSets[index].dropdownOpenLabour;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                            >
-                              <input
-                                type="text"
-                                id={`labour-${index}`}
-                                value={fieldSets[index]?.selectedTypeLabour || ""}
-                                readOnly
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                              />
-                              <i
-                                className={
-                                  fieldSets[index]?.dropdownOpenLabour
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                }
-                              ></i>
-                            </div>
-
-                            {/* Dropdown List */}
-                            <AnimatePresence>
-                              {fieldSets[index]?.dropdownOpenLabour && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {labourOptions.map((labour, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        let updatedFieldSets = [...fieldSets];
-                                        updatedFieldSets[index].selectedTypeLabour = labour.type;
-                                        updatedFieldSets[index].dropdownOpenLabour = false;
-                                        setFieldSets(updatedFieldSets);
-                                      }}
-                                    >
-                                      {labour.type}
+                                      {labourType}
                                     </div>
                                   ))}
                                 </motion.div>
                               )}
                             </AnimatePresence>
                           </div>
+
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
   bg-[#fff] ">
                             <label
@@ -1011,7 +902,7 @@ export default function CreateNonbarStock() {
                               Location
                             </label>
                             <input
-                              type="number"
+                              type="string"
                               id={`location-${index}`}
                               name="location"
                               value={fieldSets.location}

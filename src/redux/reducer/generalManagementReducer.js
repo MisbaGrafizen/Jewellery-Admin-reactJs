@@ -1,32 +1,35 @@
-import { RESET_GLOBAL_STATE, GET_UCHAK, GET_BILL_BY_ID, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_COMPANY_INFO, GET_TAG, ADD_TAG, UPDATE_TAG, DELETE_TAG, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_BRAND, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
+import { RESET_GLOBAL_STATE, DELETE_NON_PERGRAM, UPDATE_NON_PERGRAM, DELETE_NON_PERCENTAGE, DELETE_NON_UCHAK, UPDATE_NON_PERCENTAGE, UPDATE_NON_UCHAK, ADD_NON_PERGRAM, ADD_NON_PERCENTAGE, ADD_NON_UCHAK, GET_UCHAK, GET_NON_PERGRAM, GET_NON_PERCENTAGE, GET_NON_UCHAK, GET_BILL_BY_ID, ADD_UCHAK, UPDATE_UCHAK, DELETE_UCHAK, GET_COMPANY_INFO, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, ADD_COMPANY_INFO,  GET_MARKET_RATE, ADD_MARKET_RATE, GET_PERGRAM, ADD_PERGRAM, UPDATE_PERGRAM, DELETE_PERGRAM } from '../type';
 
 const initialState = {
     getUchak: [],
-    getTag: [],
     getPercentage: [],
-    getBrand: [],
     getMarketRate: [],
     getPergram: [],
     addUchak : [],
     updateUchak: [],
     deleteUchak: [],
-    addTag: [],
-    updateTag: [],
-    deleteTag: [],
     addPercentage: [],
     updatePercentage: [],
     deletePercentage: [],
     addCompanyInfo: [],
-    updateBrand: [],
-    deleteBrand: [],
     addMarketRate: [],
-    updateAttribute: [],
-    deleteAttribute: [],
     addPergram: [],
     updatePergram: [],
     deletePergram: [],
     getCompanyInfo: [],
     getBillById: null,
+    getNonUchak: [],
+    getNonPercentage: [],
+    getNonPergram: [],
+    addNonUchak : [],
+    updateNonUchak: [],
+    deleteNonUchak: [],
+    addNonPercentage: [],
+    updateNonPercentage: [],
+    deleteNonPercentage: [],
+    addNonPergram: [],
+    updateNonPergram: [],
+    deleteNonPergram: [],
 };
 
 const generalManagementReducer = (state = initialState, action) => {
@@ -35,11 +38,6 @@ const generalManagementReducer = (state = initialState, action) => {
         return {
             ...state,
             getUchak: action.payload,
-        };
-        case GET_TAG: 
-        return {
-            ...state,
-            getTag: action.payload,
         };
         case GET_BILL_BY_ID:
             return {
@@ -50,11 +48,6 @@ const generalManagementReducer = (state = initialState, action) => {
             return {
                 ...state,
                 getPercentage: action.payload,
-            };
-        case GET_BRAND:
-            return {
-                ...state,
-                getBrand: action.payload,
             };
         case GET_MARKET_RATE: 
         return {
@@ -75,11 +68,6 @@ const generalManagementReducer = (state = initialState, action) => {
         return {
             ...state,
             addUchak: action.payload,
-        };
-        case ADD_TAG: 
-        return {
-            ...state,
-            addTag: action.payload,
         };
         case ADD_PERCENTAGE:
             return {
@@ -106,26 +94,11 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             updateUchak: action.payload,
         };
-        case UPDATE_TAG: 
-        return {
-            ...state,
-            updateTag: action.payload,
-        };
         case UPDATE_PERCENTAGE:
             return {
                 ...state,
                 updatePercentage: action.payload,
             };
-        case UPDATE_BRAND:
-            return {
-                ...state,
-                updateBrand: action.payload,
-            };
-        case UPDATE_ATTRIBUTE: 
-        return {
-            ...state,
-            updateAttribute: action.payload,
-        };
         case UPDATE_PERGRAM: 
         return {
             ...state,
@@ -136,30 +109,75 @@ const generalManagementReducer = (state = initialState, action) => {
             ...state,
             deleteUchak: action.payload,
         };
-        case DELETE_TAG: 
-        return {
-            ...state,
-            deleteTag: action.payload,
-        };
         case DELETE_PERCENTAGE:
             return {
                 ...state,
                 deletePercentage: action.payload,
             };
-        case DELETE_BRAND:
-            return {
-                ...state,
-                deleteBrand: action.payload,
-            };
-        case DELETE_ATTRIBUTE: 
-        return {
-            ...state,
-            deleteAttribute: action.payload,
-        };
         case DELETE_PERGRAM: 
         return {
             ...state,
             deletePergram: action.payload,
+        };
+        case GET_NON_UCHAK: 
+        return {
+            ...state,
+            getNonUchak: action.payload,
+        };
+        case GET_NON_PERCENTAGE:
+            return {
+                ...state,
+                getNonPercentage: action.payload,
+            };
+        case GET_NON_PERGRAM: 
+        return {
+            ...state,
+            getNonPergram: action.payload,
+        };
+        case ADD_NON_UCHAK: 
+        return {
+            ...state,
+            addNonUchak: action.payload,
+        };
+        case ADD_NON_PERCENTAGE:
+            return {
+                ...state,
+                addNonPercentage: action.payload,
+            };
+        case ADD_NON_PERGRAM: 
+        return {
+            ...state,
+            addNonPergram: action.payload,
+        };
+        case UPDATE_NON_UCHAK: 
+        return {
+            ...state,
+            updateNonUchak: action.payload,
+        };
+        case UPDATE_NON_PERCENTAGE:
+            return {
+                ...state,
+                updateNonPercentage: action.payload,
+            };
+        case UPDATE_NON_PERGRAM: 
+        return {
+            ...state,
+            updateNonPergram: action.payload,
+        };
+        case DELETE_NON_UCHAK: 
+        return {
+            ...state,
+            deleteNonUchak: action.payload,
+        };
+        case DELETE_NON_PERCENTAGE:
+            return {
+                ...state,
+                deleteNonPercentage: action.payload,
+            };
+        case DELETE_NON_PERGRAM: 
+        return {
+            ...state,
+            deleteNonPergram: action.payload,
         };
         case RESET_GLOBAL_STATE:
             return initialState;

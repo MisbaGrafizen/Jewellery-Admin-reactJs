@@ -278,12 +278,12 @@ export const addNonBarcodeProductAction = (stockData) => {
       return ApiPost(`/admin/non-barcode/product`, stockData)
     .then((res) => {
       console.log('resasdfg', res);
-      if (res.data.product) {
+      if (res.data.data) {
         dispatch({
           type: ADD_NON_BARCODE_PRODUCT,
-          payload: res.data.product,
+          payload: res.data.data,
         });
-        return res.data.product;
+        return res.data.data;
       }
     })
     .catch((error) => {
