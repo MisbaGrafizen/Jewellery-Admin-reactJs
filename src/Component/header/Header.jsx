@@ -46,26 +46,55 @@ export default function Header({ pageName = "" }) {
     }));
   };
 
+  // const handleSaveRates = async () => {
+  //   const ratesToSave = Object.entries(categoryRates).map(([categoryId, price]) => ({
+  //     categoryId,
+  //     price,
+  //   }));
+
+
+  //   try {
+  //     const response = await ApiPost("/admin/market-rate", { rates: ratesToSave });
+  //     console.log('response', response)
+  //     if (response?.data) {
+  //       alert("Rates saved successfully!");
+  //       setCaratModalOpen(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving rates:", error);
+  //     alert("Failed to save rates.");
+  //   }
+  // };
+
   const handleSaveRates = async () => {
-    const ratesToSave = Object.entries(categoryRates).map(([categoryId, price]) => ({
+    const ratesToSave = Object.keys(categoryRates).map((categoryId) => ({
       categoryId,
-      price,
+      price: categoryRates[categoryId],
     }));
-
-
+  
+    if (ratesToSave.length === 0) {
+      alert("Please enter at least one rate before saving.");
+      return;
+    }
+  
+    console.log("Sending to API:", ratesToSave);
+  
     try {
-      const response = await ApiPost("/admin/market-rate", { rates: ratesToSave });
-      console.log('response', response)
+      // Directly send the array, NOT wrapped inside "rates"
+      const response = await ApiPost("/admin/market-rate", ratesToSave);
+  
       if (response?.data) {
         alert("Rates saved successfully!");
         setCaratModalOpen(false);
+        dispatch(getMarketRateAction()); // Refresh rates
       }
     } catch (error) {
       console.error("Error saving rates:", error);
-      alert("Failed to save rates.");
+      alert("Failed to save rates. Please check your inputs and try again.");
     }
   };
-
+  
+  
 
   return (
     <>

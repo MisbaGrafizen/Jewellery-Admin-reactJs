@@ -26,12 +26,27 @@ import {
 } from "../../redux/action/landingManagement";
 import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
+import { useNavigate } from "react-router-dom";
+import { getAllUchakAction, getPercentageAction, getPerGramAction } from "../../redux/action/generalManagement";
+
 export default function CreateBarCodeStock() {
 
   const [fieldSets, setFieldSets] = useState([
-    { selectedTypeLabour: "", dropdownOpenLabour: false }
-
+    {
+      hsn: "", grossWeight: "", lessWeight: "", westage: "", group: "",
+      account: "", labour: "", location: "", pcs: "", size: "",
+      moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
+      huidCharge: "", selectedTypeDesign: "", selectedTypeHuidRule: "",
+      dropdownOpenDesign: false, dropdownOpenHuid: false,
+      selectedTypeLabour: "", dropdownOpenLabour: false,
+    }
   ]);
+  const labourOptions = [
+    { type: "Uchak", key: "uchakRate" },
+    { type: "PerGram", key: "pergramRate" },
+    { type: "Percentage", key: "percentageRate" }
+  ];
+
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
   const [name, setName] = useState("");
@@ -84,25 +99,8 @@ export default function CreateBarCodeStock() {
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
   const [items, setItems] = useState([]);
+  const navigate = useNavigate();
 
-  const [grossWeight, setGrossWeight] = useState("");
-  const [lessWeight, setLessWeight] = useState("");
-  const [westage, setWestage] = useState("");
-  const [hsn, setHsn] = useState("");
-  const [group, setGroup] = useState("");
-  const [account, setAccount] = useState("");
-  const [labour, setLabour] = useState("");
-  const [extra, setExtra] = useState("");
-  const [location, setLocation] = useState("");
-  const [design, setDesign] = useState("");
-  const [pcs, setPcs] = useState("");
-  const [size, setSize] = useState("");
-  const [moti, setMoti] = useState("");
-  const [stone, setStone] = useState("");
-  const [jadatr, setJadatr] = useState("");
-  const [huid, setHuid] = useState("");
-  const [huidRule, setHuidRule] = useState("");
-  const [huidCharge, setHuidCharge] = useState("");
   const [selectedStock, setSelectedStock] = useState(null);
   const [stockModalopen, setStockModalOpen] = useState(false);
   const dispatch = useDispatch();
@@ -127,30 +125,6 @@ export default function CreateBarCodeStock() {
     dispatch(getAllStockAction());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (selectedStock) {
-      setSelectedType(selectedStock.caratName || "");
-      // setSelectedTypeMetal(selectedStock.metalName || "");
-      setSelectedTypecategory(selectedStock.categoryName || "");
-      setGrossWeight(selectedStock.toWeight || "");
-      setLessWeight(selectedStock.lessWeight || "");
-      setWestage(selectedStock.wastage || "");
-      setHsn(selectedStock.hsnCode || "");
-      setGroup(selectedStock.group || "");
-      setAccount(selectedStock.account || "");
-      setLabour(selectedStock.extraRate || "");
-      setLocation(selectedStock.location || "");
-      setSelectedTypeDesign(selectedStock.design || "");
-      setPcs(selectedStock.pcs || "");
-      setSize(selectedStock.size || "");
-      setMoti(selectedStock.moti || "");
-      setStone(selectedStock.stone || "");
-      setJadatr(selectedStock.jadatr || "");
-      setHuid(selectedStock.huid || "");
-      setHuidRule(selectedStock.huidRule || "");
-      setHuidCharge(selectedStock, huidCharge || "");
-    }
-  }, [selectedStock]);
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
@@ -160,9 +134,69 @@ export default function CreateBarCodeStock() {
     setDropdownOpen(false);
   };
 
-  const handleSelectMetal = (type) => {
-    setSelectedTypeMetal(type);
-    setDropdownOpenMetal(false);
+  const handleSelectLabourType = async (labourType, index) => {
+    setFieldSets((prevFieldSets) => {
+      const updatedFieldSets = [...prevFieldSets];
+
+      // Ensure field exists before updating
+      if (!updatedFieldSets[index]) {
+        updatedFieldSets[index] = {};
+      }
+
+      updatedFieldSets[index].selectedTypeLabour = labourType;
+      updatedFieldSets[index].dropdownOpenLabour = false;
+
+      return updatedFieldSets;
+    });
+
+    try {
+      let labourRate = 0;
+
+      if (labourType === "Uchak") {
+        const response = await dispatch(getAllUchakAction());
+        if (response && response.length > 0) {
+          labourRate = parseFloat(response[0].rate) || 0;
+        }
+      } else if (labourType === "PerGram") {
+        const response = await dispatch(getPerGramAction());
+        if (response && response.length > 0) {
+          labourRate = parseFloat(response[0].rate) || 0;
+        }
+      } else if (labourType === "Percentage") {
+        const response = await dispatch(getPercentageAction());
+        if (response && response.length > 0) {
+          labourRate = parseFloat(response[0].rate) || 0;
+        }
+      }
+
+      setFieldSets((prevFieldSets) => {
+        const updatedFieldSets = [...prevFieldSets];
+        updatedFieldSets[index].labourRate = labourRate;
+        return updatedFieldSets;
+      });
+
+    } catch (error) {
+      console.error("❌ Error fetching labour rate:", error);
+    }
+  };
+
+
+  const handleFieldChange = (index, field, value) => {
+    setFieldSets(prevFieldSets => {
+      const updatedFieldSets = [...prevFieldSets];
+      updatedFieldSets[index][field] = value;
+      return updatedFieldSets;
+    });
+  };
+
+  const handleAddFieldSet = () => {
+    setFieldSets([...fieldSets, {
+      hsn: "", grossWeight: "", lessWeight: "", westage: "", group: "",
+      account: "", labour: "", location: "", pcs: "", size: "",
+      moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
+      huidCharge: "", selectedTypeDesign: "", selectedTypeHuidRule: "",
+      dropdownOpenDesign: false, dropdownOpenHuid: false
+    }]);
   };
 
   const handleSelectDesign = (type) => {
@@ -249,12 +283,12 @@ export default function CreateBarCodeStock() {
   };
 
   useEffect(() => {
-    if (grossWeight && lessWeight && selectedType) {
+    if (fieldSets.grossWeight && fieldSets.lessWeight && selectedType) {
       const selectedCarat = categories.find(
         (carat) => carat.name === selectedType
       );
       if (selectedCarat && selectedCarat.percentage) {
-        const netWeight = parseFloat(grossWeight) - parseFloat(lessWeight || 0);
+        const netWeight = parseFloat(fieldSets.grossWeight) - parseFloat(fieldSets.lessWeight || 0);
         const fineWeight = (
           netWeight *
           (selectedCarat.percentage / 100)
@@ -262,7 +296,7 @@ export default function CreateBarCodeStock() {
         console.log("Calculated Fine Weight:", fineWeight);
       }
     }
-  }, [grossWeight, lessWeight, selectedType, categories]);
+  }, [fieldSets.grossWeight, fieldSets.lessWeight, selectedType, categories]);
 
   // const handleAddStock = async () => {
   //   if (!selectedType || !selectedTypeCategory) {
@@ -270,88 +304,55 @@ export default function CreateBarCodeStock() {
   //     return;
   //   }
 
-  //   const selectedCarat = categories.find(
-  //     (carat) => carat.name === selectedType
-  //   );
-  //   const selectedMetal = metals.find(
-  //     (metal) => metal.metalName === selectedTypeMetal
-  //   );
-  //   const selectedCategory = item.find(
-  //     (data) => data.itemName === selectedTypeCategory
-  //   );
-  //   const selectedDesign = item.find(
-  //     (data) => data.designName === selectedTypeDesign
-  //   );
+  //   const selectedCarat = categories.find((carat) => carat.name === selectedType);
+  //   const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
 
-  //   if (!selectedCarat  || !selectedCategory) {
-  //     alert(
-  //       "Invalid selection. Please select valid Carat, Metal, and Category."
-  //     );
+  //   if (!selectedCarat || !selectedCategory) {
+  //     alert("Invalid selection. Please select valid Carat and Category.");
   //     return;
   //   }
 
-  //   const stockData = {};
-
-  //   if (selectedCarat) stockData.groupId = selectedCarat._id;
-  //   if (selectedCategory) stockData.groupItemId = selectedCategory._id;
-  //   if (grossWeight) stockData.toWeight = parseFloat(grossWeight);
-  //   if (lessWeight) stockData.lessWeight = parseFloat(lessWeight);
-  //   if (westage) stockData.wastage = parseFloat(westage);
-  //   if (hsn) stockData.hsnCode = parseFloat(hsn);
-  //   if (group) stockData.group = group.toString();
-  //   if (account) stockData.account = account.toString();
-  //   if (labour) stockData.labour = parseFloat(labour);
-  //   if (location) stockData.location =  location.toString();
-  //   if (selectedDesign) stockData.design = selectedDesign._id;
-  //   if (pcs) stockData.pcs = parseFloat(pcs);
-  //   if (size) stockData.size = parseFloat(size);
-  //   if (moti) stockData.moti = parseFloat(moti);
-  //   if (stone) stockData.stone = parseFloat(stone);
-  //   if (jadatr) stockData.jadatr = parseFloat(jadatr);
-  //   if (huid) stockData.huid = huid.toString();
-  //   if (huidRule) stockData.huidRule = huidRule.toString();
-  //   if (huidCharge) stockData.huidCharge = parseFloat(huidCharge);
-
+  //   const productsArray = fieldSets.map((field) => ({
+  //     groupId: selectedCarat._id,
+  //     groupItemId: selectedCategory._id,
+  //     toWeight: parseFloat(field.grossWeight) || 0,
+  //     lessWeight: parseFloat(field.lessWeight) || 0,
+  //     wastage: parseFloat(field.westage) || 0,
+  //     hsnCode: field.hsn ? field.hsn.toString() : "",
+  //     group: field.group ? field.group.toString() : "",
+  //     account: field.account ? field.account.toString() : "",
+  //     labour: parseFloat(field.labour) || 0,
+  //     location: field.location ? field.location.toString() : "",
+  //     design: field.selectedTypeDesign || null,
+  //     pcs: parseInt(field.pcs) || 1,
+  //     size: parseFloat(field.size) || null,
+  //     moti: parseFloat(field.moti) || 0,
+  //     stone: parseFloat(field.stone) || 0,
+  //     jadatr: parseFloat(field.jadatr) || 0,
+  //     huid: field.huid ? field.huid.toString() : "",
+  //     huidRule: field.huidRule ? field.huidRule.toString() : "",
+  //     huidCharge: parseFloat(field.huidCharge) || 0,
+  //   }));
 
   //   try {
-  //     if (selectedStock) {
-  //       const response = await dispatch(
-  //         updateStockAction(selectedStock?._id, stockData)
-  //       );
-  //       if (response) {
-  //         alert("Stock updated successfully!");
-  //         dispatch(getAllStockAction());
-  //       } else {
-  //         alert("Failed to update stock.");
-  //       }
-  //     } else {
-  //       const response = await dispatch(addStockAction(stockData));
-  //       if (response) {
-  //         setIsOpen(true)
-  //         setTimeout(() => {
-  //           setIsOpen(false);
-  //         }, 2000);
-  //         dispatch(getAllStockAction());
-  //       } else {
-  //         alert("Failed to add stock.");
-  //       }
-  //     }
+  //     const response = await dispatch(addStockAction({
+  //       groupId: selectedCarat._id,
+  //       groupItemId: selectedCategory._id,
+  //       products: productsArray,
+  //     }));
 
-  //     setStockModalOpen(false); // Close modal
+  //     if (response) {
+  //       alert("Stock added successfully!");
+  //       navigate('/add-stock');
+  //       dispatch(getAllStockAction());
+  //     } else {
+  //       alert("Failed to add stock.");
+  //     }
   //   } catch (error) {
-  //     console.error("Error saving stock:", error);
+  //     console.error("Error:", error);
   //     alert("An error occurred while saving stock.");
   //   }
   // };
-
-
-
-
-
-
-
-
-
 
 
   const handleAddStock = async () => {
@@ -359,90 +360,79 @@ export default function CreateBarCodeStock() {
       alert("Please select Carat and Category.");
       return;
     }
-
+  
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-    const selectedDesign = item.find((data) => data.designName === selectedTypeDesign);
-
+  
     if (!selectedCarat || !selectedCategory) {
       alert("Invalid selection. Please select valid Carat and Category.");
       return;
     }
-
-    // **Creating Multiple Product Objects**
-    const productsArray = [
-      {
-        groupId: selectedCarat._id,
-        groupItemId: selectedCategory._id,
-        toWeight: parseFloat(grossWeight) || 0,
-        lessWeight: parseFloat(lessWeight) || 0,
-        wastage: parseFloat(westage) || 0,
-        hsnCode: hsn ? hsn.toString() : "",
-        group: group ? group.toString() : "",
-        account: account ? account.toString() : "",
-        labour: parseFloat(labour) || 0,
-        location: location ? location.toString() : "",
-        design: selectedDesign?._id || null,
-        pcs: parseInt(pcs) || 1,
-        size: parseFloat(size) || null,
-        moti: parseFloat(moti) || 0,
-        stone: parseFloat(stone) || 0,
-        jadatr: parseFloat(jadatr) || 0,
-        huid: huid ? huid.toString() : "",
-        huidRule: huidRule ? huidRule.toString() : "",
-        huidCharge: parseFloat(huidCharge) || 0,
-      },
-      {
-        groupId: selectedCarat._id, // Duplicating for testing
-        groupItemId: selectedCategory._id,
-        toWeight: 30, // Different weight
-        lessWeight: 2,
-        wastage: 1,
-        hsnCode: "67890",
-        group: "Test Group 2",
-        account: "Test Account 2",
-        labour: 100,
-        location: "Warehouse B",
-        design: selectedDesign?._id || null,
-        pcs: 2,
-        size: 14,
-        moti: 1,
-        stone: 2,
-        jadatr: 3,
-        huid: "HUID2",
-        huidRule: "",
-        huidCharge: 50,
+  
+    const productsArray = fieldSets.map((field) => {
+      let labourAmount = 0;
+      const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
+  
+      console.log(`Calculating Labour for: ${field.selectedTypeLabour}`);
+      console.log("Net Weight:", netWeight);
+  
+      if (field.selectedTypeLabour === "Uchak") {
+        labourAmount = parseFloat(field.labourRate) || 0;
+      } else if (field.selectedTypeLabour === "PerGram") {
+        labourAmount = (parseFloat(field.labourRate) || 0) * netWeight;
+      } else if (field.selectedTypeLabour === "Percentage") {
+        labourAmount = (parseFloat(field.labourRate) / 100);
       }
-    ];
-
-    console.log("🟢 Sending multiple products:", {
-      groupId: selectedCarat._id,
-      groupItemId: selectedCategory._id,
-      products: productsArray,
+  
+      console.log("Final Labour Amount:", labourAmount);
+  
+      return {
+        groupId: selectedCarat._id, 
+        groupItemId: selectedCategory._id,
+        toWeight: parseFloat(field.grossWeight) || 0,
+        lessWeight: parseFloat(field.lessWeight) || 0,
+        wastage: parseFloat(field.westage) || 0,
+        labour: labourAmount.toFixed(2),
+        hsnCode: field.hsn ? field.hsn.toString() : "",
+        extraRate: field.extra ? field.extra.toString() : "",
+        group: field.group ? field.group.toString() : "",
+        account: field.account ? field.account.toString() : "",
+        location: field.location ? field.location.toString() : "",
+        design: field.selectedTypeDesign || null,
+        pcs: parseInt(field.pcs) || 1,
+        size: parseFloat(field.size) || null,
+        moti: parseFloat(field.moti) || 0,
+        stone: parseFloat(field.stone) || 0,
+        jadatr: parseFloat(field.jadatr) || 0,
+        huid: field.huid ? field.huid.toString() : "",
+        huidRule: field.huidRule ? field.huidRule.toString() : "",
+        huidCharge: parseFloat(field.huidCharge) || 0,
+      };
     });
 
+    console.log("Final API Request Payload:", productsArray);
+
+  
     try {
       const response = await dispatch(addStockAction({
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
-        products: productsArray, // ✅ Sending multiple products at once
+        products: productsArray,
       }));
-
-      console.log("🟢 API Response:", response);
-
+  
       if (response) {
-        alert("Stock added successfully!");
+        alert("✅ Stock added successfully!");
+        navigate('/add-stock');
         dispatch(getAllStockAction());
       } else {
-        alert("Failed to add stock.");
-        console.error("❌ Backend Response Error:", response);
+        alert("❌ Failed to add stock.");
       }
     } catch (error) {
-      console.error("❌ API Request Error:", error);
-      alert("An error occurred while saving stock.");
+      console.error("❌ Error:", error);
+      alert("❌ An error occurred while saving stock.");
     }
   };
-
+  
 
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
@@ -493,11 +483,6 @@ export default function CreateBarCodeStock() {
     setIsMounted(true)
   }, [])
 
-
-
-  const handleAddFieldSet = () => {
-    setFieldSets([...fieldSets, {}]);
-  };
 
   return (
     <>
@@ -879,7 +864,7 @@ bg-[#fff] ">
                               autocomplete="naqsme"
                             />
                           </div>
-                          <div
+                          {/* <div
                             className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]"
                           >
                             <label
@@ -943,6 +928,57 @@ bg-[#fff] ">
                                       }}
                                     >
                                       {type?.metalName}
+                                    </div>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div> */}
+                          <div
+                            className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]"
+                          >
+                            <label
+                              htmlFor={`labour-${index}`}
+                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
+      ${fieldSets[index]?.selectedTypeLabour || fieldSets[index]?.labourFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+                            >
+                              Labour Type
+                            </label>
+                            <div
+                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                              onClick={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].dropdownOpenLabour = !updatedFieldSets[index].dropdownOpenLabour;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                            >
+                              <input
+                                type="text"
+                                id={`labour-${index}`}
+                                value={fieldSets[index]?.selectedTypeLabour || ""}
+                                readOnly
+                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                              />
+                              <i
+                                className={fieldSets[index]?.dropdownOpenLabour ? "fa-solid fa-chevron-up text-[14px] pr-[10px]" : "fa-solid fa-chevron-down text-[14px] pr-[10px]"}
+                              ></i>
+                            </div>
+
+                            <AnimatePresence>
+                              {fieldSets[index]?.dropdownOpenLabour && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -10 }}
+                                  className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                >
+                                  {["Uchak", "PerGram", "Percentage"].map((labourType, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
+                                      onClick={() => handleSelectLabourType(labourType, index)}
+                                    >
+                                      {labourType}
                                     </div>
                                   ))}
                                 </motion.div>
@@ -1298,9 +1334,6 @@ bg-[#fff] ">
                               id={`jatadr-${index}`}
                               // onFocus={() => setJadatrFocused(true)}
                               // onBlur={() => setJadatrFocused(false)}
-
-
-
                               onFocus={() => {
                                 let updatedFieldSets = [...fieldSets];
                                 updatedFieldSets[index].jadatrFocused = true;
@@ -1361,7 +1394,7 @@ bg-[#fff] ">
 
 
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              value={huid}
+                              value={fieldSets.huid}
 
                               autocomplete="naqsme"
                             />

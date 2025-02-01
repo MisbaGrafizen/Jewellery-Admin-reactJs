@@ -356,10 +356,10 @@ const navigate =useNavigate ()
                         To Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          L.Weight
+                        Net Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Hsn Code
+                        Fine Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Group
@@ -432,58 +432,58 @@ const navigate =useNavigate ()
                               {item?.groupId?.name || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.metalId?.metalName || "-"}
+                            {item?.groupItemId?.itemName || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.groupItemId?.itemName || "-"}
+                            {item?.toWeight || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.toWeight || 0}
+                            {netWeight}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.lessWeight || 0}
+                            {updatedFineWeight}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {netWeight}
+                            {item.group ||"-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {updatedFineWeight}
+                            {item.account || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                            {item?.labour || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {updatedFineWeight}
+                            {item.extraRate || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.location || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.pcs || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.design || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.size || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.moti || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.stone || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {updatedFineWeight}
+                              {item.jadatr || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.huid || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {updatedFineWeight}
+                              {item?.huidRule | 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.westage || 0}
+                              {item?.huidCharge || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               <i

@@ -12,6 +12,7 @@ import {
   getnonBarcodeCategroyAction,
 } from "../../redux/action/landingManagement";
 import { useNavigate } from "react-router-dom";
+import { getMarketRateAction } from "../../redux/action/generalManagement";
 export default function NonbarStock() {
   const [isOpen, setIsOpen] = useState(false);
   const [deletemodalopen, setDeletemodalOpen] = useState(false);
@@ -37,6 +38,7 @@ export default function NonbarStock() {
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
   const [categoryFocused, setCategoryFocused] = useState(false);
+ 
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.landing.getAllCategory);
@@ -50,6 +52,12 @@ export default function NonbarStock() {
     dispatch(getAllNonBarcodeProductAction());
   }, [dispatch]);
 
+  const navigate=useNavigate()
+
+
+  const addnonbarstock=()=>{
+    navigate("/nonbarcode-stock")
+  }
 
   const handleSelect = (type) => {
     setSelectedType(type);
@@ -78,11 +86,7 @@ export default function NonbarStock() {
     setDropdownOpenCategory(false);
   };
 
-  const navigate=useNavigate()
 
-  const addnonbarstock=()=>{
-    navigate("/nonbarcode-stock")
-  }
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
       alert("Please select Carat, Metal and Category.");
