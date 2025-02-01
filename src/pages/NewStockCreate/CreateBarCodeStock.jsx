@@ -28,7 +28,10 @@ import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
 export default function CreateBarCodeStock() {
 
-  const [fieldSets, setFieldSets] = useState([{}]);
+  const [fieldSets, setFieldSets] = useState([
+    { selectedTypeLabour: "", dropdownOpenLabour: false }
+
+  ]);
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
   const [name, setName] = useState("");
@@ -145,7 +148,7 @@ export default function CreateBarCodeStock() {
       setJadatr(selectedStock.jadatr || "");
       setHuid(selectedStock.huid || "");
       setHuidRule(selectedStock.huidRule || "");
-      setHuidCharge(selectedStock,huidCharge || "");
+      setHuidCharge(selectedStock, huidCharge || "");
     }
   }, [selectedStock]);
   const dropdownRef = useRef(null);
@@ -342,21 +345,30 @@ export default function CreateBarCodeStock() {
   // };
 
 
+
+
+
+
+
+
+
+
+
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeCategory) {
       alert("Please select Carat and Category.");
       return;
     }
-  
+
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
     const selectedDesign = item.find((data) => data.designName === selectedTypeDesign);
-  
+
     if (!selectedCarat || !selectedCategory) {
       alert("Invalid selection. Please select valid Carat and Category.");
       return;
     }
-  
+
     // **Creating Multiple Product Objects**
     const productsArray = [
       {
@@ -402,22 +414,22 @@ export default function CreateBarCodeStock() {
         huidCharge: 50,
       }
     ];
-  
+
     console.log("🟢 Sending multiple products:", {
       groupId: selectedCarat._id,
       groupItemId: selectedCategory._id,
       products: productsArray,
     });
-  
+
     try {
       const response = await dispatch(addStockAction({
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
         products: productsArray, // ✅ Sending multiple products at once
       }));
-  
+
       console.log("🟢 API Response:", response);
-  
+
       if (response) {
         alert("Stock added successfully!");
         dispatch(getAllStockAction());
@@ -430,8 +442,8 @@ export default function CreateBarCodeStock() {
       alert("An error occurred while saving stock.");
     }
   };
-  
-  
+
+
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
     setCaratIdToDelete(id);
@@ -543,7 +555,7 @@ export default function CreateBarCodeStock() {
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
-                              className="absolute top-[90%]  mt-2  left-[-16px] bg-white w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                              className="absolute top-[90%]  mt-2  left-[-16px] bg-white w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                             >
                               {categories.map((type, index) => (
                                 <div
@@ -602,7 +614,7 @@ export default function CreateBarCodeStock() {
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
-                              className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                              className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                             >
                               {item.map((type, index) => (
                                 <div
@@ -629,7 +641,7 @@ export default function CreateBarCodeStock() {
 bg-[#fff] ">
                             <label
                               htmlFor={`hsn-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${ hsnFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200  ${fieldSets[index].hsn || fieldSets[index].hsnFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -640,19 +652,34 @@ bg-[#fff] ">
                               type="text"
                               name="hsnCode"
                               id={`hsn-${index}`}
-                              onFocus={() => setHsnFocused(true)}
-                              onBlur={() => setHsnFocused(false)}
+                              // onFocus={() => setHsnFocused(true)}
+                              // onBlur={() => setHsnFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              value={hsn}
-                              onChange={(e) => setHsn(e.target.value)}
+                              value={fieldSets.hsn}
+                              // onChange={(e) => setHsn(e.target.value)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].hsnFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].hsnFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].hsn = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               autocomplete="naqsme"
                             />
                           </div>
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                             <label
-                              htmlFor="addstockGross"
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${grossWeight || grossFocused
+                              htmlFor={`gross-${index}`}
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index].grossWeight || fieldSets[index].grossFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -662,20 +689,36 @@ bg-[#fff] ">
                             <input
                               type="text"
                               name="toWeight"
-                              id="addstockGross"
-                              onFocus={() => setGrossFocused(true)}
-                              onBlur={() => setGrossFocused(false)}
+                              id={`gross-${index}`}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].grossFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].grossFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              // onFocus={() => setGrossFocused(true)}
+                              // onBlur={() => setGrossFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              value={grossWeight}
-                              onChange={(e) => setGrossWeight(e.target.value)}
+                              value={fieldSets.grossWeight}
+                              // onChange={(e) => setGrossWeight(e.target.value)}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].grossWeight = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+
                               autocomplete="naqsme"
                             />
                           </div>
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                             <label
-                              htmlFor="addstockLoss"
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${lessWeight || lossFocused
+                              htmlFor={`less-${index}`}
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index].lessWeight || fieldSets[index].lossFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -684,12 +727,27 @@ bg-[#fff] ">
                             </label>
                             <input
                               type="number"
-                              id="addstockLoss"
+                              id={`less-${index}`}
                               name="lessWeight"
-                              value={lessWeight}
-                              onFocus={() => setLossFocused(true)}
-                              onBlur={() => setLossFocused(false)}
-                              onChange={(e) => setLessWeight(e.target.value)}
+                              value={fieldSets.lessWeight}
+                              // onFocus={() => setLossFocused(true)}
+                              // onBlur={() => setLossFocused(false)}
+                              // onChange={(e) => setLessWeight(e.target.value)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].lossFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].lossFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].lessWeight = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -698,8 +756,8 @@ bg-[#fff] ">
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                             <label
-                              htmlFor="addstockWastage"
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${westage || wastageFocused
+                              htmlFor={`westage-${index}`}
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index].westage || fieldSets[index].wastageFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -709,11 +767,26 @@ bg-[#fff] ">
                             <input
                               type="number"
                               name="westage"
-                              id="addstockWastage"
-                              value={westage}
-                              onFocus={() => setWastegeFocused(true)}
-                              onBlur={() => setWastegeFocused(false)}
-                              onChange={(e) => setWestage(e.target.value)}
+                              id={`westage-${index}`}
+                              value={fieldSets.westage}
+                              // onFocus={() => setWastegeFocused(true)}
+                              // onBlur={() => setWastegeFocused(false)}
+                              // onChange={(e) => setWestage(e.target.value)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].wastageFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].wastageFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].westage = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -728,7 +801,7 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`group-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${lessWeight || groupFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index].group || fieldSets[index].groupFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -739,10 +812,28 @@ bg-[#fff] ">
                               type="number"
                               id={`group-${index}`}
                               name="group"
-                              value={group}
-                              onChange={(e) => setGroup(e.target.value)}
-                              onFocus={() => setGroupFocused(true)}
-                              onBlur={() => setLossFocused(false)}
+                              value={fieldSets.group}
+                              // onChange={(e) => setGroup(e.target.value)}
+                              // onFocus={() => setGroupFocused(true)}
+                              // onBlur={() => setLossFocused(false)}
+
+
+
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].groupFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].groupFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].group = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -752,7 +843,7 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`account-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${westage || accountFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index].account || fieldSets[index].accountFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -763,67 +854,92 @@ bg-[#fff] ">
                               type="number"
                               name="account"
                               id={`account-${index}`}
-                              value={account}
-                              onChange={(e) => setAccount(e.target.value)}
-                              onFocus={() => setAccountFocused(true)}
-                              onBlur={() => setAccountFocused(false)}
+                              value={fieldSets.account}
+                              // onChange={(e) => setAccount(e.target.value)}
+                              // onFocus={() => setAccountFocused(true)}
+                              // onBlur={() => setAccountFocused(false)}
+
+
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].accountFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].accountFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].account = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
                           </div>
                           <div
-                            ref={dropdownMetalRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-bg-[#fff] "
+                            className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]"
                           >
                             <label
                               htmlFor={`labour-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${  labourFocused
-                                ? "text-[#000] -translate-y-[21px] hidden "
-                                : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
+      ${fieldSets[index]?.selectedTypeLabour || fieldSets[index]?.labourFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Labour
                             </label>
                             <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenLabour((prev) => !prev)
-                              } // Toggle dropdown on click
+                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                              onClick={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].dropdownOpenLabour = !updatedFieldSets[index].dropdownOpenLabour;
+                                setFieldSets(updatedFieldSets);
+                              }}
                             >
                               <input
                                 type="text"
-                             
                                 id={`labour-${index}`}
-       
-                                onFocus={() => setLabourFocused(true)}
-                                onBlur={() => setLabourFocused(false)}
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                value={fieldSets[index]?.selectedTypeLabour || ""}
                                 readOnly
+                                onFocus={() => {
+                                  let updatedFieldSets = [...fieldSets];
+                                  updatedFieldSets[index].labourFocused = true;
+                                  setFieldSets(updatedFieldSets);
+                                }}
+                                onBlur={() => {
+                                  let updatedFieldSets = [...fieldSets];
+                                  updatedFieldSets[index].labourFocused = false;
+                                  setFieldSets(updatedFieldSets);
+                                }}
+                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
                                 className={
-                                  dropdownOpenLabour
+                                  fieldSets[index]?.dropdownOpenLabour
                                     ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                     : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                                 }
                               ></i>
                             </div>
+
                             <AnimatePresence>
-                              {dropdownOpenLabour && (
+                              {fieldSets[index]?.dropdownOpenLabour && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {metals.map((type, index) => (
+                                  {metals.map((type, idx) => (
                                     <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                      key={idx}
+                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
                                       onClick={() => {
-                                        // handleSelectLabour(type?.metalName);
-                                        setDropdownOpenLabour(false);
+                                        let updatedFieldSets = [...fieldSets];
+                                        updatedFieldSets[index].selectedTypeLabour = type?.metalName;
+                                        updatedFieldSets[index].dropdownOpenLabour = false;
+                                        setFieldSets(updatedFieldSets);
                                       }}
                                     >
                                       {type?.metalName}
@@ -833,11 +949,12 @@ bg-[#fff] "
                               )}
                             </AnimatePresence>
                           </div>
+
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
 bg-[#fff] ">
                             <label
                               htmlFor={`extra-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${ extraFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200  ${fieldSets[index]?.extra || fieldSets[index]?.extraFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -848,11 +965,28 @@ bg-[#fff] ">
                               type="text"
                               name="extraRate"
                               id={`extra-${index}`}
-                              onFocus={() => setExtraFocused(true)}
-                              onBlur={() => setExtraFocused(false)}
+                              // onFocus={() => setExtraFocused(true)}
+                              // onBlur={() => setExtraFocused(false)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              value={extra}
-                              onChange={(e) => setExtra(e.target.value)}
+                              value={fieldSets.extra}
+                              // onChange={(e) => setExtra(e.target.value)}
+
+
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].extraFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].extraFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].extra = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               autocomplete="naqsme"
                             />
                           </div>
@@ -862,7 +996,7 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`location-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${ locationFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.location || fieldSets[index]?.locationFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -873,10 +1007,25 @@ bg-[#fff] ">
                               type="number"
                               id={`location-${index}`}
                               name="location"
-                              value={location}
-                              onChange={(e) => setLocation(e.target.value)}
-                              onFocus={() => setLocationFocused(true)}
-                              onBlur={() => setLocationFocused(false)}
+                              value={fieldSets.location}
+                              // onChange={(e) => setLocation(e.target.value)}
+                              // onFocus={() => setLocationFocused(true)}
+                              // onBlur={() => setLocationFocused(false)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].locationFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].locationFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].location = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -886,7 +1035,7 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`pcs-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${pcsFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.pcs || fieldSets[index]?.pcsFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -897,67 +1046,78 @@ bg-[#fff] ">
                               type="number"
                               id={`pcs-${index}`}
                               name="pcs"
-                              value={pcs}
-                              onChange={(e) => setPcs(e.target.value)}
-                              onFocus={() => setPcsFocused(true)}
-                              onBlur={() => setPcsFocused(false)}
+                              value={fieldSets.pcs}
+                              // onChange={(e) => setPcs(e.target.value)}
+                              // onFocus={() => setPcsFocused(true)}
+                              // onBlur={() => setPcsFocused(false)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].pcsFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].pcsFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].pcs = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
                           </div>
-                          <div
-                            ref={dropdownMetalRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-bg-[#fff] "
-                          >
+                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
-                              htmlFor={`deisgn-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${ designFocused
-                                ? "text-[#000] -translate-y-[21px] hidden "
-                                : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                              htmlFor={`design-${index}`}
+                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
+      ${fieldSets[index]?.selectedTypeDesign ? "text-[#000] hidden -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Design
                             </label>
                             <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenDesign((prev) => !prev)
-                              } // Toggle dropdown on click
+                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                              onClick={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].dropdownOpenDesign = !updatedFieldSets[index].dropdownOpenDesign;
+                                setFieldSets(updatedFieldSets);
+                              }}
                             >
                               <input
                                 type="text"
-                                name="design"
-                                id={`deisgn-${index}`}
-                                value={selectedTypeDesign}
-                                onFocus={() => setDesignFocused(true)}
-                                onBlur={() => setDesignFocused(false)}
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                id={`design-${index}`}
+                                value={fieldSets[index]?.selectedTypeDesign || ""}
                                 readOnly
+                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
                                 className={
-                                  dropdownOpenMetal
+                                  fieldSets[index]?.dropdownOpenDesign
                                     ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                     : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                                 }
                               ></i>
                             </div>
+
                             <AnimatePresence>
-                              {dropdownOpenDesign && (
+                              {fieldSets[index]?.dropdownOpenDesign && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {designs.map((type, index) => (
+                                  {designs.map((type, idx) => (
                                     <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                      key={idx}
+                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
                                       onClick={() => {
-                                        handleSelectDesign(type?.designName);
-                                        setDropdownOpenDesign(false);
+                                        let updatedFieldSets = [...fieldSets];
+                                        updatedFieldSets[index].selectedTypeDesign = type?.designName;
+                                        updatedFieldSets[index].dropdownOpenDesign = false;
+                                        setFieldSets(updatedFieldSets);
                                       }}
                                     >
                                       {type?.designName}
@@ -967,76 +1127,84 @@ bg-[#fff] "
                               )}
                             </AnimatePresence>
                           </div>
-                          <div
-                            ref={dropdownMetalRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-bg-[#fff] "
-                          >
+
+                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
-                              htmlFor="addstockMetal"
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${sizeFocused
-                                ? "text-[#000] -translate-y-[21px] hidden "
-                                : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                              htmlFor={`size-${index}`}
+                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
+      ${fieldSets[index]?.selectedTypeSize || fieldSets[index]?.dropdownOpenSize ? "text-[#000] -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Size
                             </label>
                             <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenSize((prev) => !prev)
-                              } // Toggle dropdown on click
+                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                              onClick={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index] = {
+                                  ...updatedFieldSets[index],
+                                  dropdownOpenSize: !updatedFieldSets[index].dropdownOpenSize
+                                };
+                                setFieldSets(updatedFieldSets);
+                              }}
                             >
                               <input
                                 type="text"
-                                name="size"
                                 id={`size-${index}`}
-                                value={size}
-                                onChange={(e) => setSize(e.target.value)}
-                                onFocus={() => (true)}
-                                onBlur={() => setMetalFocused(false)}
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                value={fieldSets[index]?.selectedTypeSize || ""}
                                 readOnly
+                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
                                 className={
-                                  dropdownOpenSize
+                                  fieldSets[index]?.dropdownOpenSize
                                     ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                     : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                                 }
                               ></i>
                             </div>
+
                             <AnimatePresence>
-                              {dropdownOpenSize && (
+                              {fieldSets[index]?.dropdownOpenSize && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  className="absolute top-full left-[-16px] w-[300px] bg-white border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {metals.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        handleSelectMetal(type?.metalName);
-                                        setDropdownOpenSize(false);
-                                      }}
-                                    >
-                                      {type?.metalName}
-                                    </div>
-                                  ))}
+                                  {sizes.length > 0 ? (
+                                    sizes.map((type, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          let updatedFieldSets = [...fieldSets];
+                                          updatedFieldSets[index] = {
+                                            ...updatedFieldSets[index],
+                                            selectedTypeSize: type?.sizeName,
+                                            dropdownOpenSize: false
+                                          };
+                                          setFieldSets(updatedFieldSets);
+                                        }}
+                                      >
+                                        {type?.sizeName}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="px-4 py-2 text-center text-[#8f8f8f]"></div>
+                                  )}
                                 </motion.div>
                               )}
                             </AnimatePresence>
                           </div>
+
+
                         </div>
                         <div className=" flex w-[100%]  gap-[20px]">
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
 bg-[#fff] ">
                             <label
                               htmlFor={`moti-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${motiFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.moti || fieldSets[index]?.motiFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -1047,10 +1215,25 @@ bg-[#fff] ">
                               type="number"
                               id={`moti-${index}`}
                               name="moti"
-                              value={moti}
-                              onChange={(e) => setMoti(e.target.value)}
-                              onFocus={() => setMotiFocused(true)}
-                              onBlur={() => setMotiFocused(false)}
+                              value={fieldSets.moti}
+                              // onChange={(e) => setMoti(e.target.value)}
+                              // onFocus={() => setMotiFocused(true)}
+                              // onBlur={() => setMotiFocused(false)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].motiFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].motiFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].moti = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -1060,7 +1243,7 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`stone-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stoneFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.stone || fieldSets[index]?.stoneFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -1071,9 +1254,28 @@ bg-[#fff] ">
                               type="number"
                               name="stone"
                               id={`stone-${index}`}
-                              value={stone}
-                              onChange={(e) => setStone(e.target.value)}                              onFocus={() => setStoneFocused(true)}
-                              onBlur={() => setStoneFocused(false)}
+                              value={fieldSets.stone}
+                              // onChange={(e) => setStone(e.target.value)} onFocus={() => setStoneFocused(true)}
+                              // onBlur={() => setStoneFocused(false)}
+
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].stoneFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].stoneFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].stone = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+
+
+
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -1083,7 +1285,7 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`jatadr-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${jadatrFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.stone || fieldSets[index]?.jadatrFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -1094,11 +1296,31 @@ bg-[#fff] ">
                               type="text"
                               name="jadatr"
                               id={`jatadr-${index}`}
-                              onFocus={() => setJadatrFocused(true)}
-                              onBlur={() => setJadatrFocused(false)}
+                              // onFocus={() => setJadatrFocused(true)}
+                              // onBlur={() => setJadatrFocused(false)}
+
+
+
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].jadatrFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].jadatrFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].jadatr = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+
+
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              value={jadatr}
-                              onChange={(e) => setJadatr(e.target.value)}
+                              value={fieldSets.jadatr}
+
                               autocomplete="naqsme"
                             />
                           </div>
@@ -1106,7 +1328,8 @@ bg-[#fff] ">
 bg-[#fff] ">
                             <label
                               htmlFor={`huid-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${huidFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.huid || fieldSets[index]?.huidFocused
+
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -1117,81 +1340,106 @@ bg-[#fff] ">
                               type="text"
                               name="huid"
                               id={`huid-${index}`}
-                              onFocus={() => setHuidFocused(true)}
-                              onBlur={() => setHuidFocused(false)}
+                              // onFocus={() => setHuidFocused(true)}
+                              // onBlur={() => setHuidFocused(false)}
+
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].huidFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].huidFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].huid = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+
+
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               value={huid}
-                              onChange={(e) => setHuid(e.target.value)}
+
                               autocomplete="naqsme"
                             />
                           </div>
-                          <div
-                            ref={dropdownMetalRef}
-                            className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-bg-[#fff] "
-                          >
+                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
                               htmlFor={`huidrule-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${huidRuleFocused
-                                ? "text-[#000] -translate-y-[21px] hidden "
-                                : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
+      ${fieldSets[index]?.selectedTypeHuidRule || fieldSets[index]?.dropdownOpenHuid ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               HuidRule
                             </label>
                             <div
-                              className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenHuid((prev) => !prev)
-                              } // Toggle dropdown on click
+                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                              onClick={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index] = {
+                                  ...updatedFieldSets[index],
+                                  dropdownOpenHuid: !updatedFieldSets[index].dropdownOpenHuid
+                                };
+                                setFieldSets(updatedFieldSets);
+                              }}
                             >
                               <input
                                 type="text"
-                                name="huidRule"
                                 id={`huidrule-${index}`}
-                             
-                                onFocus={() => setHuidRuleFocused(true)}
-                                onBlur={() => setMetalFocused(false)}
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                value={fieldSets[index]?.selectedTypeHuidRule || ""}
                                 readOnly
+                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
                                 className={
-                                  dropdownOpenMetal
+                                  fieldSets[index]?.dropdownOpenHuid
                                     ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                     : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                                 }
                               ></i>
                             </div>
+
                             <AnimatePresence>
-                              {dropdownOpenHuid && (
+                              {fieldSets[index]?.dropdownOpenHuid && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[340px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                  className="absolute top-full left-[-16px] w-full bg-white border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {metals.map((type, index) => (
-                                    <div
-                                      key={index}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                   
-                                        setDropdownOpenMetal(false);
-                                      }}
-                                    >
-                                      {type?.metalName}
-                                    </div>
-                                  ))}
+                                  {metals.length > 0 ? (
+                                    metals.map((type, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          let updatedFieldSets = [...fieldSets];
+                                          updatedFieldSets[index] = {
+                                            ...updatedFieldSets[index],
+                                            selectedTypeHuidRule: type?.metalName,
+                                            dropdownOpenHuid: false
+                                          };
+                                          setFieldSets(updatedFieldSets);
+                                        }}
+                                      >
+                                        {type?.metalName}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="px-4 py-2 text-center text-[#8f8f8f]">No options available</div>
+                                  )}
                                 </motion.div>
                               )}
                             </AnimatePresence>
                           </div>
+
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
 bg-[#fff] ">
                             <label
                               htmlFor={`huidCharge-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${huidChargeFocused
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.huid || fieldSets[index]?.huidChargeFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                                 }`}
@@ -1202,10 +1450,26 @@ bg-[#fff] ">
                               type="number"
                               name="huidCharge"
                               id={`huidCharge-${index}`}
-                              onFocus={() => setHuidChargeFocused(true)}
-                              onBlur={() => setHuidChargeFocused(false)}
-                              value={huidCharge}
-                              onChange={(e) => setHuidCharge(e.target.value)}
+                              // onFocus={() => setHuidChargeFocused(true)}
+                              // onBlur={() => setHuidChargeFocused(false)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].huidChargeFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].huidChargeFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].huidCharge = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+
+                              value={fieldSets.huidCharge}
+                              // onChange={(e) => setHuidCharge(e.target.value)}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
                               autocomplete="naqsme"
                             />
@@ -1241,7 +1505,7 @@ bg-[#fff] ">
                         className=" flex  w-[150px] font-Poppins items-center justify-center gap-[6px] py-[8px] text-[20px] rounded-[8px] text-[#fff] bs-spj "
                         onClick={handleAddStock}
                       >
-                      Save
+                        Save
                       </button>
                     </div>
                   </div>

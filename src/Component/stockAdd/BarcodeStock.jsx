@@ -78,7 +78,7 @@ export default function BarcodeStock() {
 const navigate =useNavigate ()
 
  const handleaddstock=()=>{
-  navigate("/nonbar-stock")
+  navigate("/barcode-stock")
  }
   useEffect(() => {
     dispatch(getCategroyAction());
@@ -331,9 +331,9 @@ const navigate =useNavigate ()
           <div className=" flex">
             <div className="w-full h-full  mx-auto rounded-[10px]  mt-[10px]  relative">
 
-              <div className="bg-white w-[100%]  rounded-[10px] overflow-hidden shadow1-blue ">
+              <div className="bg-white   w-[100%] rounded-[10px] overflow-hidden shadow1-blue ">
                 {/* Table Header */}
-                <div className=" overflow-hidden bg-white  w-[100%]">
+                <div className=" overflow-scroll  bg-white !max-w-[3000px]">
                   <table className="w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 font-medium text-sm">
@@ -348,27 +348,63 @@ const navigate =useNavigate ()
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Carat
                         </th>
-                        <th className="py-3 px-4 text-center border-l   border-gray-300  font-[500] font-Poppins">
-                          Metal
-                        </th>
+                   
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Category
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          G.Weight
+                        To Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           L.Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          N.Weight
+                        Hsn Code
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          Fine Weight
+                        Group
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          Wastage
+                        Account
                         </th>
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Labour
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        ExtraRate
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Location
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Pcs
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        design
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        size
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Moti
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Stone
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Jadatr
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Huid
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Huid Rule
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        huidCharge
+                        </th>
+                       
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Action
                         </th>
@@ -409,6 +445,39 @@ const navigate =useNavigate ()
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {netWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {updatedFineWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {updatedFineWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {updatedFineWeight}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item?.westage || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {updatedFineWeight}

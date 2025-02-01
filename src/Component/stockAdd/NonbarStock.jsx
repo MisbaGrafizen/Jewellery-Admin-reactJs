@@ -11,6 +11,7 @@ import {
   getAllNonBarcodeProductAction,
   getnonBarcodeCategroyAction,
 } from "../../redux/action/landingManagement";
+import { useNavigate } from "react-router-dom";
 export default function NonbarStock() {
   const [isOpen, setIsOpen] = useState(false);
   const [deletemodalopen, setDeletemodalOpen] = useState(false);
@@ -77,7 +78,11 @@ export default function NonbarStock() {
     setDropdownOpenCategory(false);
   };
 
-  
+  const navigate=useNavigate()
+
+  const addnonbarstock=()=>{
+    navigate("/nonbarcode-stock")
+  }
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeMetal || !selectedTypeCategory) {
       alert("Please select Carat, Metal and Category.");
@@ -283,7 +288,7 @@ export default function NonbarStock() {
           <div className=" flex  justify-end w-[100%]">
             <button
               className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
-              onClick={handleStockModal}
+              onClick={addnonbarstock}
             
             >
               <i className="fa-solid fa-plus"></i>
@@ -374,9 +379,9 @@ export default function NonbarStock() {
               </div>
             </div> */}
 
-            <div className="bg-white w-[100%]  mt-[10px] rounded-[10px] overflow-hidden  shadow1-blue ">
+            <div className="bg-white max-w-[2000px]  w-[2000px] overflow-scroll mt-[10px] rounded-[10px]  shadow1-blue ">
               {/* Table Header */}
-              <div className="  bg-white  w-[100%]">
+              <div className="  bg-white  w-[2000px]">
                 <table className="w-full border-collapse  border-gray-300  font-Poppins">
                   <thead>
                     <tr className="bg-gray-100 text-gray-700 font-medium text-sm">
@@ -411,6 +416,21 @@ export default function NonbarStock() {
                       </th>
 
                       <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
+                        N.Weight
+                      </th>
+                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
+                        Total Weight
+                      </th>
+                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
+                        N.Weight
+                      </th>
+                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
+                        Total Weight
+                      </th>
+
+
+
+                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
                         Action
                       </th>
                     </tr>
@@ -431,6 +451,19 @@ export default function NonbarStock() {
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.groupItemId?.itemName || "-"}
                         </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.productName || "-"}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.pcs || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.netWeight || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.productName || "-"}
                         </td>

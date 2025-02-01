@@ -427,7 +427,7 @@ export default function NonBerCode() {
             )}
           </div>
 
-          <div className="flex flex-col gap-[6px]  mt-[30px] w-[100%]">
+          {/* <div className="flex flex-col gap-[6px]  mt-[30px] w-[100%]">
             <h1 className="flex pl-[6px] font-Poppins text-[18px] text-[#122f97]">Product Design</h1>
             <div className="w-[100%] flex flex-col gap-[15px]">
               <div className="flex gap-[20px]">
@@ -500,7 +500,7 @@ export default function NonBerCode() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
         </div>
       </div>

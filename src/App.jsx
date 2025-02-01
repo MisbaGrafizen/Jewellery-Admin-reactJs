@@ -120,7 +120,8 @@ import InvoicePage from "./pages/purches/InvoicePage";
 import ProtectedRoute from "./Component/ProtectedRoute";
 import StockAddPage from "./../src/pages/mainPages/StockMain/StockAddPage"
 import DashBoard from "./pages/dashBoard/DashBoard";
-import CreateNonBarStock from "./pages/NewStockCreate/CreateBarCodeStock";
+import CreateBarCodeStock from "./pages/NewStockCreate/CreateBarCodeStock";
+import CreateNonbarStock from "./pages/NewStockCreate/CreateNonbarStock";
 
 function App() {
 
@@ -142,8 +143,8 @@ function App() {
           <Route path="/add-stock" element={<StockAddPage />} />
           <Route path="/dashboard" element={<DashBoard />} />
           {/* New Page Of stock create */}
-          <Route path="/nonbar-stock" element={<CreateNonBarStock />} />
-
+          <Route path="/barcode-stock" element={<CreateBarCodeStock />} />
+          <Route path="/nonbarcode-stock" element={<CreateNonbarStock />} />
 
         </Routes>
       </div>
