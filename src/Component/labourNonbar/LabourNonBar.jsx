@@ -1,7 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import SideBar from "../../../Component/sidebar/SideBar";
-import Header from "../../../Component/header/Header";
-// import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
@@ -9,7 +6,7 @@ import {
   getCategroyAction,
   getGroupItemAction,
   getMetalAction,
-} from "../../../redux/action/landingManagement";
+} from "../../redux/action/landingManagement";
 import {
   addPercentageAction,
   addPerGramAction,
@@ -23,11 +20,15 @@ import {
   updatePercentageAction,
   updatePerGramAction,
   updateUchakAction,
-} from "../../../redux/action/generalManagement";
-import LabourNonBar from "../../../Component/labourNonbar/LabourNonBar";
+} from "../../redux/action/generalManagement";
 
-export default function LabourSetting() {
-  // const [labourModalopen, setlabourModalOpen] = useState(false);
+
+
+
+export default function LabourNonBar() {
+
+
+    // const [labourModalopen, setlabourModalOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [dropdownOpenMetal, setDropdownOpenMetal] = useState(false);
@@ -758,39 +759,8 @@ export default function LabourSetting() {
   };
 
   return (
-    <>
-      <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
-        <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
-          <Header pageName="Labour Setting" />
-          <div className="flex gap-[10px] w-[100%] h-[100%]">
-            <SideBar />
-            <div className="flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
-              <div className="flex flex-col gap-[15px] w-[100%]">
-                <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
-                  <div
-                    className={`absolute top-0 left-0 h-full w-[130px] bs-spj rounded-[8px] transition-transform duration-300 ${isBercodeVisible ? "translate-x-0" : "translate-x-[130px]"
-                      }`}
-                  ></div>
-                  <button
-                    onClick={handleBercodeClick}
-                    className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#fff]" : "[#000]"
-                      }`}
-                  >
-                    Barcode
-                  </button>
-                  <button
-                    onClick={handleNoneBercodeClick}
-                    className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[500] text-${isBercodeVisible ? "[#000]" : "[#fff]"
-                      }`}
-                  >
-                    None Barcode
-                  </button>
-                </div>
-
-
-
-                {isBercodeVisible ? (
-                <div className="  flex  flex-col gap-[20px]  w-[100%] ">
+<>
+<div className="  flex  flex-col gap-[20px]  w-[100%] ">
                   <div className=" flex  gap-[15px]  relative px-[15px] j rounded-[10px] py-[0px]  w-[100%]">
                     <div className=" flex  gap-[20px] ">
                       <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
@@ -2999,54 +2969,9 @@ export default function LabourSetting() {
                   </div>
 
                 </div>
-                ):(
-                  <>
-                    <LabourNonBar />
-                  </>
-                )}
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
 
-      <NextUIModal isOpen={deletemodalopen} onOpenChange={handleDeleteModalClose}>
-        <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px]  ">
-          {(handleDeleteModalClose) => (
-            <>
-              <div className="relative w-[100%] h-[100%] ">
-                <div className="relative  w-[100%] h-[100%]">
-                  <div className="w-[100%] flex gap-7 flex-col">
-                    <div className="w-[100%] mt-[30px] p-[10px] mx-auto flex justify-center s">
-                      <i className=" text-[80px] text-[red] shadow-delete-icon rounded-full fa-solid fa-circle-xmark"></i>
-                    </div>
-                    <div className=" mx-auto justify-center flex text-[28px] font-[500]  font-Montserrat ">
-                      <p>Are you sure ?</p>
-                    </div>
-                    <div className="absolute bottom-0 flex w-[100%]">
-                      <div
-                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[red] rounded-bl-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
-                        onClick={handleDelete}
 
-                      >
-                        <p>Delete</p>
-                      </div>
-                      <div
-                        className="w-[50%] cursor-pointer flex justify-center items-center py-[10px]  bg-[#26b955] rounded-br-[10px] text-[#fff] font-[600]  font-Montserrat  text-[20px]"
-                        onClick={handleDeleteModalClose}
-                      >
-                        <p>Cancel</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </ModalContent>
-      </NextUIModal>
-    </>
-  );
+</>
+  )
 }

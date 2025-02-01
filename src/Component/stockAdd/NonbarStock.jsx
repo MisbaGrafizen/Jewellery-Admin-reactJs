@@ -385,65 +385,88 @@ export default function NonbarStock() {
 
             <div className="bg-white max-w-[2000px]  w-[2000px] overflow-scroll mt-[10px] rounded-[10px]  shadow1-blue ">
               {/* Table Header */}
-              <div className="  bg-white  w-[2000px]">
+              <div className="  bg-white  w-[2800px]">
                 <table className="w-full border-collapse  border-gray-300  font-Poppins">
                   <thead>
-                    <tr className="bg-gray-100 text-gray-700 font-medium text-sm">
-                      <th className="py-3 px-2 text-left flex  border-gray-300">
-                        <input
-                          type="checkbox"
-                          id="check-all"
-                          className="w-4 !mb-[-4px] ml-[10px] h-4"
-                        />
-                        <span className="ml-2 font-[500]">Sr.</span>
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Carat
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Metal
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Category
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Product
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
+                  <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
+                        <th className="py-3 px-2 text-left  border-gray-300">
+                          <input
+                            type="checkbox"
+                            id="check-all"
+                            className="w-4 ml-2 mb-[-4px] h-4"
+                          />
+                          <span className="ml-2 font-[500]">Sr.</span>
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          Carat
+                        </th>
+                   
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          Category
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        To Weight
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Net Weight
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Fine Weight
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Group
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Account
+                        </th>
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Labour
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        ExtraRate
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Location
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Pcs
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        N.Weight
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Total Weight
-                      </th>
-
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        N.Weight
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Total Weight
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        N.Weight
-                      </th>
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Total Weight
-                      </th>
-
-
-
-                      <th className="py-3 px-4 text-center border-l border-gray-300  font-[500] font-Poppins">
-                        Action
-                      </th>
-                    </tr>
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        design
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        size
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Moti
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Stone
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Jadatr
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Huid
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Huid Rule
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        huidCharge
+                        </th>
+                       
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          Action
+                        </th>
+                      </tr>
                   </thead>
                   <tbody>
                     {products?.map((item, index) => (
                       <tr key={index} className="">
                         <td className="py-2 px-2 flex items-center  border-gray-300">
-                          <input type="checkbox" className="w-4 h-4 mr-2" />
+                          <input type="checkbox" className="w-4 h-4 mr-3  ml-[10px]" />
                           <span>{index + 1}</span>
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
@@ -476,6 +499,30 @@ export default function NonbarStock() {
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.netWeight || 0}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
+                        </td>
+                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          {item?.toWeight}
                         </td>
                         <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                           {item?.toWeight}

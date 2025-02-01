@@ -333,10 +333,10 @@ const navigate =useNavigate ()
 
               <div className="bg-white   w-[100%] rounded-[10px] overflow-hidden shadow1-blue ">
                 {/* Table Header */}
-                <div className=" overflow-scroll  bg-white !max-w-[3000px]">
-                  <table className="w-full border-collapse  border-gray-300  font-Poppins">
+                <div className="  overflow-x-auto  bg-white !max-w-[3500px] flex-shrink-0">
+                  <table className="min-w-[2000px] w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
-                      <tr className="bg-gray-100 text-gray-700 font-medium text-sm">
+                      <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
                         <th className="py-3 px-2 text-left  border-gray-300">
                           <input
                             type="checkbox"
