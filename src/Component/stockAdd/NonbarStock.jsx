@@ -631,7 +631,7 @@ export default function NonbarStock() {
                           </td>
                           <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item?.labour || 0}
-                          </td>
+                          </td>   
                           <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item?.calculatedMarketRate || 0}
                           </td>

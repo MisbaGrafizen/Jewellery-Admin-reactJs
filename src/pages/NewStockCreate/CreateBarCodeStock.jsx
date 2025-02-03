@@ -135,50 +135,41 @@ export default function CreateBarCodeStock() {
   };
 
   const handleSelectLabourType = async (labourType, index) => {
-    setFieldSets((prevFieldSets) => {
-      const updatedFieldSets = [...prevFieldSets];
-
-      // Ensure field exists before updating
-      if (!updatedFieldSets[index]) {
-        updatedFieldSets[index] = {};
-      }
-
-      updatedFieldSets[index].selectedTypeLabour = labourType;
-      updatedFieldSets[index].dropdownOpenLabour = false;
-
-      return updatedFieldSets;
-    });
-
+    console.log("Selected Labour Type:", labourType);
+  
+    let labourRate = 0;
+    let labourData = [];
+  
     try {
-      let labourRate = 0;
-
       if (labourType === "Uchak") {
-        const response = await dispatch(getAllUchakAction());
-        if (response && response.length > 0) {
-          labourRate = parseFloat(response[0].rate) || 0;
-        }
+        labourData = await dispatch(getAllUchakAction());
       } else if (labourType === "PerGram") {
-        const response = await dispatch(getPerGramAction());
-        if (response && response.length > 0) {
-          labourRate = parseFloat(response[0].rate) || 0;
-        }
+        labourData = await dispatch(getPerGramAction());
       } else if (labourType === "Percentage") {
-        const response = await dispatch(getPercentageAction());
-        if (response && response.length > 0) {
-          labourRate = parseFloat(response[0].rate) || 0;
-        }
+        labourData = await dispatch(getPercentageAction());
       }
-
+  
+      console.log(`Labour Data for ${labourType}:`, labourData);
+  
+      if (labourData && labourData.length > 0) {
+        labourRate = parseFloat(labourData[0].rate) || 0;
+      }
+  
+      console.log(`Calculated Labour Rate for ${labourType}:`, labourRate);
+  
       setFieldSets((prevFieldSets) => {
         const updatedFieldSets = [...prevFieldSets];
+        updatedFieldSets[index].selectedTypeLabour = labourType;
+        updatedFieldSets[index].dropdownOpenLabour = false;
         updatedFieldSets[index].labourRate = labourRate;
         return updatedFieldSets;
       });
-
+  
     } catch (error) {
       console.error("Error fetching labour rate:", error);
     }
   };
+  
 
 
   const handleFieldChange = (index, field, value) => {
@@ -299,59 +290,83 @@ export default function CreateBarCodeStock() {
   }, [fieldSets.grossWeight, fieldSets.lessWeight, selectedType, categories]);
 
 
-  const handleAddStock = async () => {
-    if (!selectedType || !selectedTypeCategory) {
-      alert("Please select Carat and Category.");
-      return;
-    }
+  const [matchedLabourRate, setMatchedLabourRate] = useState(null); // ✅ State to Store Matched Labour Rate
   
+  const handleAddStock = async () => {
+    console.log("Fetching labour data...");
+  
+    // ✅ Fetch Labour Data from Redux
+    const labourData = {
+      uchak: await dispatch(getAllUchakAction()),
+      perGram: await dispatch(getPerGramAction()),
+      percentage: await dispatch(getPercentageAction()),
+    };
+  
+    console.log("Labour Data Received:", labourData);
+  
+    // ✅ Find Selected Category (From Dropdown)
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
   
+    console.log("Selected Carat:", selectedCarat);
+    console.log("Selected Category:", selectedCategory);
+  
     if (!selectedCarat || !selectedCategory) {
-      alert("Invalid selection. Please select valid Carat and Category.");
+      alert("Please select a valid Carat and Category.");
       return;
     }
   
-    // ✅ Fetch Labour Data from Redux (Ensure Labour has categoryId matching selectedCategory)
-    const uchakLabours = await dispatch(getAllUchakAction());
-    const perGramLabours = await dispatch(getPerGramAction());
-    const percentageLabours = await dispatch(getPercentageAction());
+    let matchedRate = 0; // ✅ Variable to Store Matched Labour Rate
   
-    const productsArray = fieldSets.map((field) => {
+    // ✅ Prepare Stock Data Array
+    const productsArray = fieldSets.map((field, index) => {
       let labourAmount = 0;
       const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
   
-      console.log(`Calculating Labour for: ${field.selectedTypeLabour}`);
-      console.log("Net Weight:", netWeight);
+      console.log(`Processing field ${index}...`);
+      console.log(`Net Weight: ${netWeight}`);
+      console.log(`Selected Labour Type: ${field.selectedTypeLabour}`);
   
-      // ✅ Apply Labour ONLY if `categoryId` matches the selected category
+      // ✅ Match Labour with BOTH Group (Category) & Item
+      const matchLabour = (labourArray) =>
+        labourArray.find(
+          (labour) =>
+            String(labour.group._id).trim() === String(selectedCarat._id).trim() &&
+            String(labour.item._id).trim() === String(selectedCategory._id).trim()
+        );
+  
+      let matchedLabour = null;
+  
       if (field.selectedTypeLabour === "Uchak") {
-        const labourMatch = uchakLabours.find(labour => labour.categoryId === selectedCategory._id);
-        if (labourMatch) {
-          labourAmount = parseFloat(labourMatch.rate) || 0;
-        }
+        matchedLabour = matchLabour(labourData.uchak);
       } else if (field.selectedTypeLabour === "PerGram") {
-        const labourMatch = perGramLabours.find(labour => labour.categoryId === selectedCategory._id);
-        if (labourMatch) {
-          labourAmount = (parseFloat(labourMatch.rate) || 0) * netWeight;
-        }
+        matchedLabour = matchLabour(labourData.perGram);
       } else if (field.selectedTypeLabour === "Percentage") {
-        const labourMatch = percentageLabours.find(labour => labour.categoryId === selectedCategory._id);
-        if (labourMatch) {
-          labourAmount = (parseFloat(labourMatch.rate) / 100) * netWeight;
+        matchedLabour = matchLabour(labourData.percentage);
+      }
+  
+      console.log("✅ Matched Labour:", matchedLabour);
+  
+      if (matchedLabour) {
+        matchedRate = parseFloat(matchedLabour.rate) || 0; // ✅ Store Matched Rate
+        if (field.selectedTypeLabour === "PerGram") {
+          labourAmount = matchedRate * netWeight;
+        } else if (field.selectedTypeLabour === "Percentage") {
+          labourAmount = (matchedRate / 100) * netWeight;
+        } else {
+          labourAmount = matchedRate;
         }
       }
   
-      console.log("Final Labour Amount:", labourAmount);
-  
+      console.log(`Final Labour Amount for field ${index}: ${labourAmount}`);
+      
       return {
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
         toWeight: parseFloat(field.grossWeight) || 0,
         lessWeight: parseFloat(field.lessWeight) || 0,
         wastage: parseFloat(field.westage) || 0,
-        labour: labourAmount.toFixed(2), 
+        labour: labourAmount.toFixed(2),
         hsnCode: field.hsn ? field.hsn.toString() : "",
         extraRate: field.extra ? field.extra.toString() : "",
         group: field.group ? field.group.toString() : "",
@@ -369,8 +384,13 @@ export default function CreateBarCodeStock() {
       };
     });
   
+    // ✅ Update the State to Display Labour Rate
+    setMatchedLabourRate(matchedRate);
+    console.log("🔹 Final Matched Labour Rate:", matchedRate);
+  
     console.log("Final API Request Payload:", productsArray);
   
+    // ✅ Send Data to API (Redux Dispatch)
     try {
       const response = await dispatch(addStockAction({
         groupId: selectedCarat._id,
@@ -380,8 +400,8 @@ export default function CreateBarCodeStock() {
   
       if (response) {
         alert("Stock added successfully!");
-        navigate('/add-stock');
-        dispatch(getAllStockAction());
+        navigate('/add-stock'); // ✅ Redirect to Stock Page
+        dispatch(getAllStockAction()); // ✅ Refresh Stock Data
       } else {
         alert("Failed to add stock.");
       }
@@ -390,6 +410,8 @@ export default function CreateBarCodeStock() {
       alert("An error occurred while saving stock.");
     }
   };
+  
+  
   
 
   const handleOpenDeleteModal = (context, id) => {
@@ -993,7 +1015,7 @@ bg-[#fff] ">
                             <label
                               htmlFor={`design-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-      ${fieldSets[index]?.selectedTypeDesign ? "text-[#000] hidden -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+      ${fieldSets[index]?.selectedTypeDesign ||fieldSets[index]?.dropdownOpenDesign ? "text-[#000] hidden   -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Design
                             </label>
@@ -1052,7 +1074,7 @@ bg-[#fff] ">
                             <label
                               htmlFor={`size-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-      ${fieldSets[index]?.selectedTypeSize || fieldSets[index]?.dropdownOpenSize ? "text-[#000] -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+      ${fieldSets[index]?.selectedTypeSize || fieldSets[index]?.dropdownOpenSize ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Size
                             </label>
@@ -1089,7 +1111,7 @@ bg-[#fff] ">
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-full left-[-16px] w-[300px] bg-white border border-[#dedede] rounded-lg shadow-md z-10"
+                                  className="absolute top-full left-[-16px] mt-1 w-[300px] bg-white border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
                                   {sizes.length > 0 ? (
                                     sizes.map((type, idx) => (

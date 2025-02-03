@@ -9,12 +9,15 @@ import {
   addDesignAction,
   addGroupItemAction,
   addMetalAction,
+  addSizeAction,
   addStockAction,
   deleteCategoryAction,
   deleteDesignAction,
   deleteGroupItemAction,
   deleteMetalAction,
+  deleteSizeAction,
   deleteStockAction,
+  getAllSizeAction,
   getAllStockAction,
   getCategroyAction,
   getDesignAction,
@@ -23,6 +26,7 @@ import {
   updateCategoryAction,
   updateGroupItemAction,
   updateMetalAction,
+  updateSizeAction,
   updateStockAction,
 } from "../../redux/action/landingManagement";
 import NonBerCode from "../../Component/nonBercode/NonBerCode";
@@ -57,7 +61,7 @@ export default function InventoryCreate() {
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
 
   const [metal, setMetal] = useState([]);
-  const [metalName, setMetalName] = useState("");
+  const [sizeName, setSizeName] = useState("");
   const [editingMetal, setEditingMetal] = useState(null);
   const [editMetalName, setEditMetalName] = useState("");
   const [editingMetalId, setEditingMetalId] = useState(null);
@@ -91,7 +95,7 @@ export default function InventoryCreate() {
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.landing.getAllCategory);
-  const metals = useSelector((state) => state.landing.getMetal);
+  const metals = useSelector((state) => state.landing.getSize);
   const item = useSelector((state) => state.landing.getGroupItem);
   const design = useSelector((state) => state.landing.getDesign);
   const stocks = useSelector((state) => state.landing.getProduct);
@@ -144,13 +148,14 @@ export default function InventoryCreate() {
     dispatch(getMetalAction());
     dispatch(getGroupItemAction());
     dispatch(getDesignAction());
+    dispatch(getAllSizeAction());
     dispatch(getAllStockAction());
   }, [dispatch]);
 
   useEffect(() => {
     if (selectedStock) {
       setSelectedType(selectedStock.caratName || "");
-      setSelectedTypeMetal(selectedStock.metalName || "");
+      setSelectedTypeMetal(selectedStock.sizeName || "");
       setSelectedTypecategory(selectedStock.categoryName || "");
       setGrossWeight(selectedStock.toWeight || "");
       setLessWeight(selectedStock.lessWeight || "");
@@ -205,7 +210,7 @@ export default function InventoryCreate() {
           );
         }
       } else if (deleteContext === "metal") {
-        success = await dispatch(deleteMetalAction(caratIdToDelete));
+        success = await dispatch(deleteSizeAction(caratIdToDelete));
         if (success) {
           setMetal((prev) =>
             prev.filter((metal) => metal._id !== caratIdToDelete)
@@ -252,7 +257,7 @@ export default function InventoryCreate() {
         inputValue = action === "edit" ? editCaratName.trim() : name.trim();
       } else if (context === "metal") {
         inputValue =
-          action === "edit" ? editMetalName.trim() : metalName.trim();
+          action === "edit" ? editMetalName.trim() : sizeName.trim();
       } else if (context === "item") {
         inputValue = action === "edit" ? editItemName.trim() : itemName.trim();
       } else if (context === "design") {
@@ -274,7 +279,7 @@ export default function InventoryCreate() {
         if (context === "category") {
           action === "edit" ? setEditCaratName("") : setName("");
         } else if (context === "metal") {
-          action === "edit" ? setEditMetalName("") : setMetalName("");
+          action === "edit" ? setEditMetalName("") : setSizeName("");
         } else if (context === "item") {
           action === "edit" ? setEditItemName("") : setItemName("");
         } else if (context === "design") {
@@ -302,13 +307,14 @@ export default function InventoryCreate() {
           await dispatch(addCategoryAction(inputValue));
           await dispatch(getCategroyAction());
         } else if (context === "metal") {
-          await dispatch(addMetalAction({ metalName: inputValue }));
-          await dispatch(getMetalAction());
+          await dispatch(addSizeAction({ sizeName: inputValue }));
+          await dispatch(getAllSizeAction());
         } else if (context === "item") {
           await dispatch(addGroupItemAction({ itemName: inputValue }));
           await dispatch(getGroupItemAction());
         } else if (context === "design") {
           await dispatch(addDesignAction({ designName: inputValue}));
+          
           await dispatch(getDesignAction());
         }
       } else if (action === "edit" && id) {
@@ -316,8 +322,8 @@ export default function InventoryCreate() {
           await dispatch(updateCategoryAction(id, { name: inputValue }));
           await dispatch(getCategroyAction());
         } else if (context === "metal") {
-          await dispatch(updateMetalAction(id, { metalName: inputValue }));
-          await dispatch(getMetalAction());
+          await dispatch(updateSizeAction(id, { sizeName: inputValue }));
+          await dispatch(getAllSizeAction());
         } else if (context === "item") {
           await dispatch(updateGroupItemAction(id, { itemName: inputValue }));
           await dispatch(getGroupItemAction());
@@ -338,7 +344,7 @@ export default function InventoryCreate() {
       setEditingCaratId(item._id);
     } else if (context === "metal") {
       setEditingMetal(index);
-      setEditMetalName(item.metalName);
+      setEditMetalName(item.sizeName);
       setEditingMetalId(item._id);
     } else if (context === "item") {
       setEditingItem(index);
@@ -419,7 +425,7 @@ export default function InventoryCreate() {
       (carat) => carat.name === selectedType
     );
     const selectedMetal = metals.find(
-      (metal) => metal.metalName === selectedTypeMetal
+      (metal) => metal.sizeName === selectedTypeMetal
     );
     const selectedCategory = items.find(
       (data) => data.itemName === selectedTypeCategory
@@ -859,9 +865,9 @@ export default function InventoryCreate() {
                               <div className="flex border-[#122f97] border-dashed border-[1px] rounded-[8px] overflow-hidden">
                                 <input
                                   type="text"
-                                  name="metalName"
-                                  value={metalName}
-                                  onChange={(e) => setMetalName(e.target.value)}
+                                  name="sizeName"
+                                  value={sizeName}
+                                  onChange={(e) => setSizeName(e.target.value)}
                                   onKeyDown={(e) => handleKeyPress(e, "metal")}
                                   placeholder="Metals"
                                   className="px-[10px] outline-none  font-Poppins py-[5px] md150:w-[120px] md11:w-[120px]"
@@ -920,7 +926,7 @@ export default function InventoryCreate() {
                                       </div>
                                     </>
                                   ) : (
-                                    <p>{item.metalName}</p>
+                                    <p>{item.sizeName}</p>
                                   )}
                                 </div>
                               ))

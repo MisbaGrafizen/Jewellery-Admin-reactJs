@@ -408,7 +408,7 @@ export default function CreateCompany() {
                         <label
                           htmlFor="gst"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            user?.gstNumber || gstFocused
+                            formData?.gstNumber || gstFocused
                               ? "text-[#000] -translate-y-[21px] hidden "
                               : "text-[#8f8f8f] cursor-text flex"
                           }`}
@@ -427,11 +427,12 @@ export default function CreateCompany() {
                           className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
                         />
                       </div>
+
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="pannumber"
                           className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            user?.panNumber || panFocused
+                            formData?.panNumber|| panFocused
                               ? "text-[#000] -translate-y-[21px] hidden "
                               : "text-[#8f8f8f] cursor-text flex"
                           }`}
@@ -483,7 +484,7 @@ export default function CreateCompany() {
                                 height: "20px",
                                 backgroundColor: isChecked ? "#ff8000" : "#fff", // Change background on state
                                 borderRadius: "28%",
-                                border: "1px solid #ccc",
+                                border: "1px   solid #ccc",
                                 display: "inline-block",
                                 position: "relative",
                                 cursor: "pointer",
@@ -637,7 +638,7 @@ export default function CreateCompany() {
                           <label
                           htmlFor="Holdername"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                              user?.holderName || holderFocused
+                              formData?.holderName || holderFocused
                                 ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                             }`}
@@ -662,7 +663,7 @@ export default function CreateCompany() {
                           <label
                           htmlFor="accountno"
                             className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                              formData?.accountNo || accountFocused
+                              formData?.accountNo|| accountFocused
                                ? "text-[#000] -translate-y-[21px] hidden "
                                 : "text-[#8f8f8f] cursor-text flex"
                             }`}
