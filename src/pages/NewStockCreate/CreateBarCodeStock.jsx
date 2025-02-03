@@ -298,84 +298,7 @@ export default function CreateBarCodeStock() {
     }
   }, [fieldSets.grossWeight, fieldSets.lessWeight, selectedType, categories]);
 
-  // const handleAddStock = async () => {
-  //   if (!selectedType || !selectedTypeCategory) {
-  //     alert("Please select Carat and Category.");
-  //     return;
-  //   }
-  
-  //   const selectedCarat = categories.find((carat) => carat.name === selectedType);
-  //   const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-  
-  //   if (!selectedCarat || !selectedCategory) {
-  //     alert("Invalid selection. Please select valid Carat and Category.");
-  //     return;
-  //   }
-  
-  //   const productsArray = fieldSets.map((field) => {
-  //     let labourAmount = 0;
-  //     const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
-  
-  //     console.log(`Calculating Labour for: ${field.selectedTypeLabour}`);
-  //     console.log("Net Weight:", netWeight);
-  
-  //     if (field.selectedTypeLabour === "Uchak") {
-  //       labourAmount = parseFloat(field.labourRate) || 0;
-  //     } else if (field.selectedTypeLabour === "PerGram") {
-  //       labourAmount = (parseFloat(field.labourRate) || 0) * netWeight;
-  //     } else if (field.selectedTypeLabour === "Percentage") {
-  //       labourAmount = (parseFloat(field.labourRate) / 100);
-  //     }
-  
-  //     console.log("Final Labour Amount:", labourAmount);
-  
-  //     return {
-  //       groupId: selectedCarat._id, 
-  //       groupItemId: selectedCategory._id,
-  //       toWeight: parseFloat(field.grossWeight) || 0,
-  //       lessWeight: parseFloat(field.lessWeight) || 0,
-  //       wastage: parseFloat(field.westage) || 0,
-  //       labour: labourAmount.toFixed(2),
-  //       hsnCode: field.hsn ? field.hsn.toString() : "",
-  //       extraRate: field.extra ? field.extra.toString() : "",
-  //       group: field.group ? field.group.toString() : "",
-  //       account: field.account ? field.account.toString() : "",
-  //       location: field.location ? field.location.toString() : "",
-  //       design: field.selectedTypeDesign || null,
-  //       pcs: parseInt(field.pcs) || 1,
-  //       size: parseFloat(field.size) || null,
-  //       moti: parseFloat(field.moti) || 0,
-  //       stone: parseFloat(field.stone) || 0,
-  //       jadatr: parseFloat(field.jadatr) || 0,
-  //       huid: field.huid ? field.huid.toString() : "",
-  //       huidRule: field.huidRule ? field.huidRule.toString() : "",
-  //       huidCharge: parseFloat(field.huidCharge) || 0,
-  //     };
-  //   });
 
-  //   console.log("Final API Request Payload:", productsArray);
-
-  
-  //   try {
-  //     const response = await dispatch(addStockAction({
-  //       groupId: selectedCarat._id,
-  //       groupItemId: selectedCategory._id,
-  //       products: productsArray,
-  //     }));
-  
-  //     if (response) {
-  //       alert("Stock added successfully!");
-  //       navigate('/add-stock');
-  //       dispatch(getAllStockAction());
-  //     } else {
-  //       alert("Failed to add stock.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("An error occurred while saving stock.");
-  //   }
-  // };
-  
   const handleAddStock = async () => {
     if (!selectedType || !selectedTypeCategory) {
       alert("Please select Carat and Category.");
@@ -825,7 +748,7 @@ bg-[#fff] ">
                               Group
                             </label>
                             <input
-                              type="number"
+                              type="text"
                               id={`group-${index}`}
                               name="group"
                               value={fieldSets.group}
@@ -895,76 +818,6 @@ bg-[#fff] ">
                               autocomplete="naqsme"
                             />
                           </div>
-                          {/* <div
-                            className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]"
-                          >
-                            <label
-                              htmlFor={`labour-${index}`}
-                              className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-      ${fieldSets[index]?.selectedTypeLabour || fieldSets[index]?.labourFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
-                            >
-                              Labour
-                            </label>
-                            <div
-                              className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].dropdownOpenLabour = !updatedFieldSets[index].dropdownOpenLabour;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                            >
-                              <input
-                                type="text"
-                                id={`labour-${index}`}
-                                value={fieldSets[index]?.selectedTypeLabour || ""}
-                                readOnly
-                                onFocus={() => {
-                                  let updatedFieldSets = [...fieldSets];
-                                  updatedFieldSets[index].labourFocused = true;
-                                  setFieldSets(updatedFieldSets);
-                                }}
-                                onBlur={() => {
-                                  let updatedFieldSets = [...fieldSets];
-                                  updatedFieldSets[index].labourFocused = false;
-                                  setFieldSets(updatedFieldSets);
-                                }}
-                                className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                              />
-                              <i
-                                className={
-                                  fieldSets[index]?.dropdownOpenLabour
-                                    ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                    : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                }
-                              ></i>
-                            </div>
-
-                            <AnimatePresence>
-                              {fieldSets[index]?.dropdownOpenLabour && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                >
-                                  {metals.map((type, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        let updatedFieldSets = [...fieldSets];
-                                        updatedFieldSets[index].selectedTypeLabour = type?.metalName;
-                                        updatedFieldSets[index].dropdownOpenLabour = false;
-                                        setFieldSets(updatedFieldSets);
-                                      }}
-                                    >
-                                      {type?.metalName}
-                                    </div>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div> */}
                           <div
                             className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]"
                           >
@@ -1029,7 +882,7 @@ bg-[#fff] ">
                               Extra Rate
                             </label>
                             <input
-                              type="text"
+                              type="number"
                               name="extraRate"
                               id={`extra-${index}`}
                               // onFocus={() => setExtraFocused(true)}
@@ -1071,7 +924,7 @@ bg-[#fff] ">
                               Location
                             </label>
                             <input
-                              type="number"
+                              type="text"
                               id={`location-${index}`}
                               name="location"
                               value={fieldSets.location}

@@ -76,49 +76,49 @@ export default function NonbarStock() {
     setDropdownOpen(false);
   };
 
-   const handleDelete = async () => {
-      try {
-        let success = false;
-  
-        if (deleteContext === "category") {
-          success = await dispatch(deleteCategoryAction(caratIdToDelete));
-          if (success) {
-            setCarat((prev) =>
-              prev.filter((category) => category._id !== caratIdToDelete)
-            );
-          }
-        }  else if (deleteContext === "item") {
-          success = await dispatch(deleteGroupItemAction(caratIdToDelete));
-          if (success) {
-            setItems((prev) =>
-              prev.filter((item) => item._id !== caratIdToDelete)
-            );
-          }
-          window.location.reload();
-        } else if (deleteContext === "stock") {
-          success = await dispatch(deleteNonBarcodeProductAction(caratIdToDelete));
-          if (success) {
-            dispatch(getAllNonBarcodeProductAction());
-          }
-        }
-  
+  const handleDelete = async () => {
+    try {
+      let success = false;
+
+      if (deleteContext === "category") {
+        success = await dispatch(deleteCategoryAction(caratIdToDelete));
         if (success) {
-          setModalOpen(false);
-          setCaratIdToDelete(null);
-        } else {
-          alert(`Failed to delete ${deleteContext}.`);
+          setCarat((prev) =>
+            prev.filter((category) => category._id !== caratIdToDelete)
+          );
         }
-      } catch (error) {
-        console.error(`Error deleting ${deleteContext}:`, error);
+      } else if (deleteContext === "item") {
+        success = await dispatch(deleteGroupItemAction(caratIdToDelete));
+        if (success) {
+          setItems((prev) =>
+            prev.filter((item) => item._id !== caratIdToDelete)
+          );
+        }
+        window.location.reload();
+      } else if (deleteContext === "stock") {
+        success = await dispatch(deleteNonBarcodeProductAction(caratIdToDelete));
+        if (success) {
+          dispatch(getAllNonBarcodeProductAction());
+        }
+      }
+
+      if (success) {
+        setModalOpen(false);
+        setCaratIdToDelete(null);
+      } else {
         alert(`Failed to delete ${deleteContext}.`);
       }
-    };
+    } catch (error) {
+      console.error(`Error deleting ${deleteContext}:`, error);
+      alert(`Failed to delete ${deleteContext}.`);
+    }
+  };
 
-    const handleModalclose = () => {
-      setModalOpen(false);
-      setCaratIdToDelete(null);
-    };
-  
+  const handleModalclose = () => {
+    setModalOpen(false);
+    setCaratIdToDelete(null);
+  };
+
 
   const handleDeleteOpen = (type, id) => {
     setDeleteType(type);
@@ -530,40 +530,34 @@ export default function NonbarStock() {
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         G Rate
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         M Rate
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          M Rs
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                     G Rs
-                        </th>
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        M Rs
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        G Rs
+                      </th>
 
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                    Extra Rate
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Extra Rate
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         GME Amt
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                    GST 
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                    Amount
-                        </th>
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        GST
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        Amount
+                      </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Group
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Account
-                      </th>
-                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Labour
-                      </th>
-                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        ExtraRate
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Location
@@ -586,7 +580,7 @@ export default function NonbarStock() {
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Jadatr
                       </th>
-                    
+
 
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Action
@@ -594,116 +588,109 @@ export default function NonbarStock() {
                     </tr>
                   </thead>
                   <tbody>
-                  {products?.map((item, index) => {
-                        const netWeight = (
-                          Number(item?.toWeight || 0) -
-                          Number(item?.lessWeight || 0)
-                        ).toFixed(3);
-                        const percentage = item?.groupId?.percentage || 0;
-                        const updatedFineWeight = (
-                          netWeight *
-                          (percentage / 100)
-                        ).toFixed(3);
+                    {products?.map((item, index) => {
+                      const netWeight = (
+                        Number(item?.toWeight || 0) -
+                        Number(item?.lessWeight || 0)
+                      ).toFixed(3);
+                      const percentage = item?.groupId?.percentage || 0;
+                      const updatedFineWeight = (
+                        netWeight *
+                        (percentage / 100)
+                      ).toFixed(3);
 
-                        return (
-                      <tr key={index} className="">
-                        <td className="py-2 px-2 flex items-center  border-gray-300">
-                          <input type="checkbox" className="w-4 h-4 mr-3  ml-[10px]" />
-                          <span>{index + 1}</span>
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.groupId?.name}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.groupItemId?.itemName || "-"}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.productName || "-"}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.toWeight}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                           {netWeight}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {updatedFineWeight}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.labour || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.extraRate || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.labour || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.extraRate || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.labour || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.extraRate || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.labour || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.extraRate || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.group || "-"}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.account || 0}
-                        </td>
+                      return (
+                        <tr key={index} className="">
+                          <td className="py-2 px-2 flex items-center  border-gray-300">
+                            <input type="checkbox" className="w-4 h-4 mr-3  ml-[10px]" />
+                            <span>{index + 1}</span>
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.groupId?.name}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.groupItemId?.itemName || "-"}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.productName || "-"}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.toWeight}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {netWeight}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {updatedFineWeight}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.marketRateUsed || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.labour || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.labour || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.calculatedMarketRate || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item.extraRate || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.GMEPrice || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.gst || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.finalPrice || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.group || "-"}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.account || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.location || "-"}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.pcs || 1}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.design || "-"}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.size || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.moti || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.stone || 0}
+                          </td>
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            {item?.jadatr || 0}
+                          </td>
 
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.labour || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.extraRate || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.location || "-"}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.pcs || 1}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.design || "-"}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.size || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.moti || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.stone || 0}
-                        </td>
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          {item?.jadatr || 0}
-                        </td>
-               
 
-                        <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
-                          <i
-                            className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
-                            onClick={() => handleStockModalEdit(item)}
-                          ></i>
-                          <i
-                            className="fa-solid fa-trash text-red-500 cursor-pointer ml-4"
-                            onClick={() =>
-                              handleOpenDeleteModal("stock", item?._id)
-                            }
-                          ></i>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                            <i
+                              className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
+                              onClick={() => handleStockModalEdit(item)}
+                            ></i>
+                            <i
+                              className="fa-solid fa-trash text-red-500 cursor-pointer ml-4"
+                              onClick={() =>
+                                handleOpenDeleteModal("stock", item?._id)
+                              }
+                            ></i>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -792,8 +779,8 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstock"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Carat
@@ -850,8 +837,8 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockMetal"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Metal
@@ -914,8 +901,8 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockCategory"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Category
@@ -999,8 +986,8 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${pcs || ProductPcsFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Product Pcs
@@ -1023,8 +1010,8 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${netWeight || netWeghtFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Net Weight
@@ -1046,8 +1033,8 @@ export default function NonbarStock() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${toWeight || totalWeghtFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Total Weight

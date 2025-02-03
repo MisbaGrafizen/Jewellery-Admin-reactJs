@@ -411,12 +411,6 @@ const navigate =useNavigate ()
                     Amount
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Labour
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        ExtraRate
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         Group
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
@@ -482,43 +476,30 @@ const navigate =useNavigate ()
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {updatedFineWeight}
                             </td>
-
-
-
-
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {netWeight}
+                            {item?.marketRateUsed || 0}
                             </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {updatedFineWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {netWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {updatedFineWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {netWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {updatedFineWeight}
-                            </td>
-     
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {netWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {updatedFineWeight}
-                            </td>
-                                                                  
-     
-     
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item?.labour || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.labour || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.calculatedMarketRate || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item.extraRate || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.GMEPrice || 0}
+                            </td>
+     
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.gst || 0}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            {item?.finalPrice || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                             {item.group ||"-"}
