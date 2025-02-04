@@ -200,7 +200,7 @@ export default function Login() {
 
               <form>
                 {registerStep === 1 && (
-                  <div className="mt-[40px] space-y-6">
+                  <div onKeyDown={(e) => e.key === "Enter" && handleVerifyOtp()} className="mt-[40px] space-y-6">
                     {/* Name Input */}
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
@@ -364,7 +364,7 @@ export default function Login() {
                 )}
 
                 {registerStep === 2 && (
-                  <div className="mt-14 space-y-8">
+                  <div onKeyDown={(e) => e.key === "Enter" && handleSetPassword()} className="mt-14 space-y-8">
                     <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="password"
@@ -464,7 +464,7 @@ export default function Login() {
                 </h1>
               </div>
 
-              <form>
+              <form onKeyDown={(e) => e.key === "Enter" && handleLogin()}>
                 <div className="mt-14 space-y-8">
                   {/* Name Input */}
                   <div className="relative w-full border border-[#BCBCBC] py-4 px-4 rounded-lg flex items-center space-x-4 text-[#00000099]">
