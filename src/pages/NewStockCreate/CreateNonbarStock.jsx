@@ -86,13 +86,6 @@ export default function CreateNonbarStock() {
 
   console.log('item', item)                                                                   
 
-  const labourRates = [
-    ...uchakRates.map(rate => ({ type: "Uchak", rate: rate.rate, minWeight: rate.minWeight, maxWeight: rate.maxWeight })),
-    ...perGramRates.map(rate => ({ type: "PerGram", rate: rate.rate })),
-    ...percentageRates.map(rate => ({ type: "Percentage", rate: rate.rate })),
-  ];
-
-
   useEffect(() => {
     dispatch(getCategroyAction());
     dispatch(getnonBarcodeCategroyAction());
@@ -325,6 +318,7 @@ export default function CreateNonbarStock() {
       };
     });
 
+
     console.log("Final API Request Payload:", productsArray);
 
     try {
@@ -393,7 +387,8 @@ export default function CreateNonbarStock() {
   };
   useEffect(() => {
     setIsMounted(true)
-  }, [])
+  }, []);
+
 
   return (
     <>
