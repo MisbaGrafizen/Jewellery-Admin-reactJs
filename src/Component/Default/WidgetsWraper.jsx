@@ -4,26 +4,29 @@ import { Widgets2Data, Widgets2Data2, WidgetsData, WidgetsData2, WidgetsData3, W
 import Widgets1 from '../Common/CommonWidgets/Widgets1';
 import Widgets2 from '../Common/CommonWidgets/Widgets2';
 
-const WidgetsWrapper = ({ dashboardData }) => {
+const WidgetsWrapper = ({ data }) => {
+
+  if (!data) return <p>Loading widgets...</p>;
+
   return (
     <>
       <Col xxl='auto' xl='3' sm='6' className=' font-Poppins box-col-6'>
         <Row>
           <Col xl='12'>
-            <Widgets1 data={WidgetsData} />
+            <Widgets1 data={{ title: "Purchases", total: `${data?.totalPurchases}`, icon: "cart", color: "secondary", gros: 50 }} />
           </Col>
           <Col xl='12'>
-            <Widgets1 data={WidgetsData2} />
+            <Widgets1 data={{ title: "Today's Scan", total: `${data?.todaysScanLogs}`, icon: "return-box", color: "warning", gros: 20 }} />
           </Col>
         </Row>
       </Col>
       <Col xxl='auto' xl='3' sm='6' className='box-col-6'>
         <Row>
           <Col xl='12'>
-            <Widgets1 data={WidgetsData3} />
+            <Widgets1 data={{ title: "Sales", total: `${data?.totalSales}`, icon: "tag", color: "primary", gros: 70 }} />
           </Col>
           <Col xl='12'>
-            <Widgets1 data={WidgetsData4} />
+            <Widgets1 data={{ title: "Today's Invoice", total: `${data?.totalInvoicesToday}`, icon: "rate", color: "success", gros: 70 }} />
           </Col>
         </Row>
       </Col>

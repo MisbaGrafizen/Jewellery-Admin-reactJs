@@ -37,6 +37,8 @@ export default function DashBoard() {
     fetchDashboardData();
   }, []);
 
+  console.log('dashboardData', dashboardData)
+
   return (
     <>
 
