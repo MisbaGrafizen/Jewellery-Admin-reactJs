@@ -81,10 +81,10 @@ export default function PurchesInvoice() {
     setFinalTotal(0);
     setDiscountPercentage(0);
   }, []); // Run only once when the component mounts
-  
-  
-  
-  
+
+
+
+
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -95,7 +95,7 @@ export default function PurchesInvoice() {
       totalPrice: "",
     }
   ]);
-  
+
 
   const dispatch = useDispatch();
 
@@ -157,58 +157,58 @@ export default function PurchesInvoice() {
   //   }
   // };
 
-  
+
   const fetchProductDetails = async (productName, toWeight, index) => {
     try {
       const response = await ApiGet(
         `/admin/productDetails?productName=${productName}&toWeight=${toWeight}`
       );
-  
+
       console.log("Fetched Product Details:", response);
-  
+
       if (response) {
         setProducts((prevProducts) => {
           const updatedProducts = [...prevProducts];
-  
+
           const existingProduct = updatedProducts[index] || {}; // Get the current product
-  
+
           let barcodeVisibility = existingProduct.barcodeVisible ?? false; // Default to false for non-barcode products
-  
+
           let autoRefValue = "NonBarcodeCategory";
-  
+
           let productIdValue = response._id || existingProduct.productId || null;
-  
+
           let productGroupItemId = response.groupItemId || existingProduct.groupItemId;
-  
+
           updatedProducts[index] = {
             ...existingProduct,
             ...response,
-            barcodeVisible: barcodeVisibility, 
-            productId: productIdValue, 
+            barcodeVisible: barcodeVisibility,
+            productId: productIdValue,
             autoRef: autoRefValue,
             groupItemId: productGroupItemId,
           };
-  
+
           console.log("Updated Products:", updatedProducts);
           return updatedProducts;
         });
-  
+
         // Update totals correctly
         setTotals((prevTotals) => {
           const updatedTotals = { ...prevTotals };
-  
+
           const prevProduct = products[index] || {};
           const prevToWeight = parseFloat(prevProduct.toWeight || 0);
           const prevNetWeight = parseFloat(prevProduct.netWeight || 0);
           const prevTotalPrice = parseFloat(prevProduct.totalPrice || 0);
-  
+
           updatedTotals.grossQty =
             prevTotals.grossQty - prevToWeight + parseFloat(response.toWeight || 0);
           updatedTotals.netQty =
             prevTotals.netQty - prevNetWeight + parseFloat(response.netWeight || 0);
           updatedTotals.amount =
             prevTotals.amount - prevTotalPrice + parseFloat(response.totalPrice || 0);
-  
+
           return updatedTotals;
         });
       }
@@ -216,10 +216,10 @@ export default function PurchesInvoice() {
       console.error("Error fetching product details:", error);
     }
   };
-  
-  
-  
-  
+
+
+
+
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -296,25 +296,25 @@ export default function PurchesInvoice() {
     setProducts(updatedProducts);
   };
 
- const handleKeyDown = (e, index) => {
-  if (e.key === "Enter" && e.target.value.trim()) {
-    const inputValue = e.target.value.trim();
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Enter" && e.target.value.trim()) {
+      const inputValue = e.target.value.trim();
 
-    if (/^\d{5,}$/.test(inputValue)) {
-      fetchProductByBarcode(inputValue, index);
-    } else if (/^\d+(\.\d+)?$/.test(inputValue)) {
-      setProducts((prevProducts) => {
-        const updatedProducts = [...prevProducts];
-        updatedProducts[index].toWeight = inputValue;
-        return updatedProducts;
-      });
+      if (/^\d{5,}$/.test(inputValue)) {
+        fetchProductByBarcode(inputValue, index);
+      } else if (/^\d+(\.\d+)?$/.test(inputValue)) {
+        setProducts((prevProducts) => {
+          const updatedProducts = [...prevProducts];
+          updatedProducts[index].toWeight = inputValue;
+          return updatedProducts;
+        });
 
-      fetchProductDetails(products[index].productName, inputValue, index);
-    } else {
-      console.warn("Invalid input format");
+        fetchProductDetails(products[index].productName, inputValue, index);
+      } else {
+        console.warn("Invalid input format");
+      }
     }
-  }
-};
+  };
 
   const fetchUserDetails = async (userName) => {
     try {
@@ -347,27 +347,27 @@ export default function PurchesInvoice() {
     try {
       const response = await ApiGet(`/admin/product/${barcodeValue}`);
       const productData = response.product || {};
-  
+
       console.log("Fetched Barcode Product Data:", productData);
-  
+
       setProducts((prevProducts) =>
         prevProducts.map((product, index) =>
           index === productIndex
             ? {
-                ...product,
-                ...productData,
-                barcodeVisible: false, // Hide barcode input after fetching
-                productId: productData._id, // Ensure correct product reference
-                autoRef: "GroupItem", // Reference model type
-                groupItemId: productData.groupItemId || { itemName: "N/A" },
-                toWeight: productData.toWeight || "0",
-                netWeight: productData.netWeight || "0",
-                totalPrice: productData.totalPrice || "0",
-              }
+              ...product,
+              ...productData,
+              barcodeVisible: false, // Hide barcode input after fetching
+              productId: productData._id, // Ensure correct product reference
+              autoRef: "GroupItem", // Reference model type
+              groupItemId: productData.groupItemId || { itemName: "N/A" },
+              toWeight: productData.toWeight || "0",
+              netWeight: productData.netWeight || "0",
+              totalPrice: productData.totalPrice || "0",
+            }
             : product
         )
       );
-  
+
       // Update totals
       setTotals((prevTotals) => ({
         grossQty: prevTotals.grossQty + parseFloat(productData.toWeight || 0),
@@ -378,7 +378,7 @@ export default function PurchesInvoice() {
       console.error("Error fetching product by barcode:", error);
     }
   };
-  
+
 
   const handleAddProduct = () => {
     const newProduct = {
@@ -846,82 +846,82 @@ export default function PurchesInvoice() {
                       onMouseUp={handleMouseUp}
                       onMouseLeave={handleMouseUp}
                       className="overflow-x-auto  !max-w-[3500px] flex-shrink-0  bg-white rounded-lg w-[100%]">
-                      <table className=" min-w-[2300px]  w-full border-collapse">
+                      <table className=" min-w-[2400px]  w-full border-collapse">
                         <thead>
                           <tr className="bg-[#f0f1f364]">
                             <th className="py-4 px-2 text-left text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200">
                               Sr. No.
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-40 border-r border-gray-200">
-                            Product Name
+                              Product Name
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
-                            To Weight
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[115px]  border-r border-gray-200">
+                              To Weight
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
-                            HSN/SAC
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[108px] border-r border-gray-200">
+                              HSN/SAC
                             </th>
                             {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
                               To Weight
                             </th> */}
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[103px] border-r border-gray-200">
                               Net Weight
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Fine Weight
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[94px]  border-r border-gray-200">
                               G Rate
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[92px]  border-r border-gray-200">
                               M Rate
                             </th>
 
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[88px]  border-r border-gray-200">
                               M Rs
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[88px]  border-r border-gray-200">
                               G Rs
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[90px]  border-r border-gray-200">
                               Extra Rate
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px]   border-r border-gray-200">
                               GME Amt
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px] border-r border-gray-200">
                               GST
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[150px] border-r border-gray-200">
                               Amount
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[130px]  border-r border-gray-200">
                               Group
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px] border-r border-gray-200">
                               Account
                             </th>
 
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Location
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Pcs
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Design
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Size
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Moti
                             </th>
 
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Stone
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Jadatr
                             </th>
 
@@ -957,7 +957,7 @@ export default function PurchesInvoice() {
                                     autoFocus
                                   />
                                 ) : (
-                                  product.productName || product?.groupItemId?.itemName 
+                                  product.productName || product?.groupItemId?.itemName
                                 )}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
@@ -970,10 +970,10 @@ export default function PurchesInvoice() {
                                       updatedProducts[index].toWeight = e.target.value;
                                       return updatedProducts;
                                     });
-                                      }} 
-                                onKeyDown = {(e) => handleKeyDown(e, index)}
-                                className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
-                                autoFocus
+                                  }}
+                                  onKeyDown={(e) => handleKeyDown(e, index)}
+                                  className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
+                                  autoFocus
                                 />
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
@@ -991,8 +991,8 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                 {parseFloat(product.netWeight || 0).toFixed(2)}
-                              </td> 
+                                {parseFloat(product.netWeight || 0).toFixed(2)}
+                              </td>
                               {/* <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
@@ -1007,7 +1007,7 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                 {parseFloat(product.fineWeight || 0).toFixed(2)}
+                                {parseFloat(product.fineWeight || 0).toFixed(2)}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -1181,87 +1181,86 @@ export default function PurchesInvoice() {
 
                       {/* Total Row */}
 
-                      <div className="w-[100%]">
-                        <div className=" w-[100%]">
-                          <div className="bg-[#f0f1f364] h-[50px] flex min-w-[2300px]">
-                            <div className=" px-2  w-[80px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-                              Total ₹
-                            </div>
-                            <div className=" px-2  w-[160px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+                      <div className="min-w-[2400px]">
+                        <div className=" flex w-[100%]" >
+                          <tr className="bg-[#f0f1f364]   ">
+                            <th className="py-4 px-2 text-left text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200">
+                              Total
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[165px] border-r border-gray-200">
 
-                            </div>
-                            <div className=" px-2  w-[115px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[115px]  border-r border-gray-200">
+                
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[110px] border-r border-gray-200">
+                     
+                            </th>
+                            {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              To Weight
+                            </th> */}
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px] border-r border-gray-200">
+                        
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px]  border-r border-gray-200">
+                        
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[94px]  border-r border-gray-200">
+                            
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[96px]  border-r border-gray-200">
+                      
+                            </th>
 
-                            </div>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[88px]  border-r border-gray-200">
+                              
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[91px]  border-r border-gray-200">
+          
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[93px]  border-r border-gray-200">
+        
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px]   border-r border-gray-200">
+                          
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px] border-r border-gray-200">
+                      
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[150px] border-r border-gray-200">
+                     
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[135px]  border-r border-gray-200">
+                      
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[101px] border-r border-gray-200">
+                      
+                            </th>
 
-                            <div className=" px-2  w-[108px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[105px]  border-r border-gray-200">
+                         
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[102px]  border-r border-gray-200">
+             
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+     
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[103px]  border-r border-gray-200">
+            
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                        
+                            </th>
 
-                            </div>
-                            <div className=" px-2  w-[100px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px]  border-r border-gray-200">
+                              
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                              
+                            </th>
 
-                            </div>
-                            <div className=" px-2  w-[100px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[97px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[80px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[77px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[80px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-
-                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[85px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[83px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-
-                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-
-                            </div>
-                            <div className=" px-2  w-[94px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-gray-200">
-
-                            </div>
-
-
-                          </div>
+                          </tr>
                         </div>
 
                       </div>

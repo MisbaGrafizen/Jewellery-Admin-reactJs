@@ -77,7 +77,7 @@ export default function DashBoard() {
                       <PaperNote data={dashboardData} />
                     </Row>
                   ) : (
-                    <div className="text-center py-5">
+                    <div className="text-center font-Poppins py-5">
                       <p>Loading Dashboard Data...</p>
                     </div>
                   )}

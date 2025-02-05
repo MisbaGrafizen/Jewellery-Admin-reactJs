@@ -764,7 +764,7 @@ export default function LabourSetting() {
           <Header pageName="Labour Setting" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className="flex w-[100%] max-h-[93%] pb-[20px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
+            <div className="flex w-[100%] md:max-h-[90%] pb-[20px] pr-[15px]  gap-[30px] rounded-[10px]">
               <div className="flex flex-col gap-[15px] w-[100%]">
                 <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
                   <div
@@ -797,9 +797,9 @@ export default function LabourSetting() {
                         <h2 className="  flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Uchak
                         </h2>
-                        <div className=" flex gap-[25px]  overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
-                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
-                            <div className=" flex w-[100%] fle  gap-[5px]">
+                        <div className=" flex gap-[25px] md:max-h-[73vh]  2xl:max-h-[85vh]  overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                          <div className=" flex  bg-white border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                            <div className=" flex w-[100%] fle  gap-[10px]">
                               <div
                                 ref={dropdownRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -1055,7 +1055,7 @@ export default function LabourSetting() {
                               </AnimatePresence>
                             </div> */}
 
-                            <div className=" flex gap-[20px] w-[100%]">
+                            <div className=" flex gap-[10px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                                 <label
@@ -1142,7 +1142,7 @@ export default function LabourSetting() {
                           {isEditing ? (
                             // Editable Fields
                             <>
-                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                              <div className=" flex relative overflow-hidden border-[1px] bg-white flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                                 <div className=" flex w-[100%] fle  gap-[5px]">
                                   <div
                                     ref={dropdownEditRef}
@@ -1523,7 +1523,7 @@ export default function LabourSetting() {
                               {uchak?.map((item, index) => (
                                 <div
                                   key={index}
-                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
+                                  className=" flex bg-white relative min-h-[200px] overflow-hidden border-[1px] flex-col gap-[10px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
                                 >
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
@@ -1532,7 +1532,7 @@ export default function LabourSetting() {
                                     ></i>
                                     <i className="fa-solid cursor-pointer text-[#f00] fa-trash" onClick={() => handleDeleteUchak(item._id)} ></i>
                                   </div>
-                                  <div className=" flex w-[100%] fle  gap-[5px]">
+                                  <div className=" flex w-[100%] f  gap-[10px]">
                                     <div
                                       ref={dropdownRef}
                                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -1552,7 +1552,7 @@ export default function LabourSetting() {
                                       </div>
                                     </div>
 
-                                    <div
+                                    {/* <div
                                       ref={dropdownMetalRef}
                                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -1569,9 +1569,8 @@ export default function LabourSetting() {
                                           {item?.metal?.metalName}
                                         </p>
                                       </div>
-                                    </div>
-                                  </div>
-                                  <div
+                                    </div> */}
+                                    <div
                                     ref={dropdownCategoryRef}
                                     className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
@@ -1588,8 +1587,10 @@ export default function LabourSetting() {
                                       </p>
                                     </div>
                                   </div>
+                                  </div>
+                       
 
-                                  <div className=" flex gap-[20px] w-[100%]">
+                                  <div className=" flex gap-[10px] w-[100%]">
                                     <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                                       <label
@@ -1602,7 +1603,7 @@ export default function LabourSetting() {
                                         {item?.minWeight}
                                       </p>
                                     </div>
-                                    <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full   ] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
                                         className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1615,7 +1616,7 @@ export default function LabourSetting() {
                                     </div>
                                   </div>
                                   <div className=" flex-c ol flex gap-[20px] ">
-                                    <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full   border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
                                         className="bg-white hidden px-1 absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -1639,9 +1640,9 @@ export default function LabourSetting() {
                         <h2 className=" text-[#122f97] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Weight
                         </h2>
-                        <div className=" flex gap-[25px] h-] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
-                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
-                            <div className=" flex w-[100%] fle  gap-[5px]">
+                        <div className=" flex gap-[25px] md:max-h-[73vh]  2xl:max-h-[80vh] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                          <div className=" flex border-[1px] bg-white flex-col gap-[10px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                            <div className=" flex w-[100%] fle  gap-[10px]">
                               <div
                                 ref={dropdownWeightRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -1707,7 +1708,7 @@ export default function LabourSetting() {
                                   )}
                                 </AnimatePresence>
                               </div>
-
+{/* 
                               <div
                                 ref={dropdownMetalWeightRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -1776,9 +1777,8 @@ export default function LabourSetting() {
                                     </motion.div>
                                   )}
                                 </AnimatePresence>
-                              </div>
-                            </div>
-                            <div
+                              </div> */}
+                              <div
                               ref={dropdownCategoryWeightRef}
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
@@ -1846,8 +1846,10 @@ export default function LabourSetting() {
                                 )}
                               </AnimatePresence>
                             </div>
+                            </div>
+                         
 
-                            <div className=" flex gap-[20px] w-[100%]">
+                            <div className=" flex gap-[10px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                                 <label
@@ -1936,8 +1938,8 @@ export default function LabourSetting() {
                           {isEditingWeight ? (
                             // Editable Fields
                             <>
-                              <div className=" bg-white flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div className=" bg-white flex relative overflow-hidden border-[1px] flex-col gap-[10px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                                <div className=" flex w-[100%] fle  gap-[10px]">
                                   <div
                                     ref={dropdownEditWeightRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2008,84 +2010,7 @@ export default function LabourSetting() {
                                       )}
                                     </AnimatePresence>
                                   </div>
-
                                   <div
-                                    ref={dropdownEditMetalWeightRef}
-                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-   bg-[#fff] "
-                                  >
-                                    <label
-                                      htmlFor="metall"
-                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${editselectedTypeMetalWeight ||
-                                        editweightmetalFocused
-                                        ? "text-[#000] -translate-y-[21px] hidden"
-                                        : "text-[#8f8f8f] cursor-text flex "
-                                        }`}
-                                    >
-                                      Metal
-                                    </label>
-                                    <div
-                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                      onClick={() =>
-                                        setEditDropdownOpenMetalWeight(
-                                          (prev) => !prev
-                                        )
-                                      } // Toggle dropdown on click
-                                    >
-                                      <input
-                                        type="text"
-                                        name="metal"
-                                        id="metall"
-                                        value={editselectedTypeMetalWeight}
-                                        onFocus={() =>
-                                          setEditWeightMetalFocused(true)
-                                        }
-                                        onBlur={(e) =>
-                                          setEditWeightMetalFocused(
-                                            e.target.value !== ""
-                                          )
-                                        }
-                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                        readOnly
-                                      />
-                                      <i
-                                        className={
-                                          editdropdownOpenMetalWeight
-                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                        }
-                                      ></i>
-                                    </div>
-                                    <AnimatePresence>
-                                      {editdropdownOpenMetalWeight && (
-                                        <motion.div
-                                          initial={{ opacity: 0, y: -10 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          exit={{ opacity: 0, y: -10 }}
-                                          className="absolute top-[90%] left-[-16px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                        >
-                                          {metals.map((type, index) => (
-                                            <div
-                                              key={index}
-                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => {
-                                                handleSelectEditMetalWeight(
-                                                  type?.metalName
-                                                );
-                                                setDropdownOpenMetalWeight(
-                                                  false
-                                                );
-                                              }}
-                                            >
-                                              {type?.metalName}
-                                            </div>
-                                          ))}
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
-                                  </div>
-                                </div>
-                                <div
                                   ref={dropdownEditCategoryWeightRef}
                                   className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                 >
@@ -2161,8 +2086,85 @@ export default function LabourSetting() {
                                     )}
                                   </AnimatePresence>
                                 </div>
+                                  {/* <div
+                                    ref={dropdownEditMetalWeightRef}
+                                    className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] "
+                                  >
+                                    <label
+                                      htmlFor="metall"
+                                      className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${editselectedTypeMetalWeight ||
+                                        editweightmetalFocused
+                                        ? "text-[#000] -translate-y-[21px] hidden"
+                                        : "text-[#8f8f8f] cursor-text flex "
+                                        }`}
+                                    >
+                                      Metal
+                                    </label>
+                                    <div
+                                      className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
+                                      onClick={() =>
+                                        setEditDropdownOpenMetalWeight(
+                                          (prev) => !prev
+                                        )
+                                      } // Toggle dropdown on click
+                                    >
+                                      <input
+                                        type="text"
+                                        name="metal"
+                                        id="metall"
+                                        value={editselectedTypeMetalWeight}
+                                        onFocus={() =>
+                                          setEditWeightMetalFocused(true)
+                                        }
+                                        onBlur={(e) =>
+                                          setEditWeightMetalFocused(
+                                            e.target.value !== ""
+                                          )
+                                        }
+                                        className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                      />
+                                      <i
+                                        className={
+                                          editdropdownOpenMetalWeight
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
+                                        }
+                                      ></i>
+                                    </div>
+                                    <AnimatePresence>
+                                      {editdropdownOpenMetalWeight && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute top-[90%] left-[-16px]  mt-2 bg-white w-[160px] border border-[#dedede] rounded-lg shadow-md z-10"
+                                        >
+                                          {metals.map((type, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => {
+                                                handleSelectEditMetalWeight(
+                                                  type?.metalName
+                                                );
+                                                setDropdownOpenMetalWeight(
+                                                  false
+                                                );
+                                              }}
+                                            >
+                                              {type?.metalName}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div> */}
+                                </div>
+                         
 
-                                <div className=" flex gap-[20px] w-[100%]">
+                                <div className=" flex gap-[10px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                                     <label
@@ -2221,7 +2223,7 @@ export default function LabourSetting() {
                                     />
                                   </div>
                                 </div>
-                                <div className=" flex-col flex gap-[20px] ">
+                                <div className=" flex-col flex gap-[10px] ">
                                   <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                     <label
                                       htmlFor="editrateweigth"
@@ -2265,7 +2267,7 @@ export default function LabourSetting() {
                               {weight?.map((item, index) => (
                                 <div
                                   key={index}
-                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
+                                  className=" flex relative min-h-[200px] bg-white   overflow-hidden border-[1px] flex-col gap-[10px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
                                 >
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
@@ -2275,7 +2277,7 @@ export default function LabourSetting() {
                                     <i className="fa-solid cursor-pointer text-[#f00] fa-trash" onClick={() => handleDeleteWeight(item._id)}
                                     ></i>
                                   </div>
-                                  <div className=" flex w-[100%] fle  gap-[5px]">
+                                  <div className=" flex w-[100%] fle  gap-[10px]">
                                     <div
                                       ref={dropdownWeightRef}
                                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2294,7 +2296,7 @@ export default function LabourSetting() {
                                         </p>
                                       </div>
                                     </div>
-
+{/* 
                                     <div
                                       ref={dropdownMetalWeightRef}
                                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2312,9 +2314,8 @@ export default function LabourSetting() {
                                           {item?.metal?.metalName}
                                         </p>
                                       </div>
-                                    </div>
-                                  </div>
-                                  <div
+                                    </div> */}
+                                    <div
                                     ref={dropdownCategoryWeightRef}
                                     className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
@@ -2324,13 +2325,16 @@ export default function LabourSetting() {
                                     >
                                       Category
                                     </label>
-                                    <div className="relative w-full  rounded-lg  h-[40px] flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                    <div className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                       <p className=" text-[15px]    py-[9px] font-Poppins">
                                         {" "}
                                         {item?.item?.itemName}
                                       </p>
                                     </div>
                                   </div>
+
+                                  </div>
+                          
 
                                   <div className=" flex gap-[20px] w-[100%]">
                                     <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2345,7 +2349,7 @@ export default function LabourSetting() {
                                         {item?.minWeight}{" "}
                                       </p>
                                     </div>
-                                    <div className="relative w-full   h-[40px] border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full   border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
                                         className="bg-white px-1  hidden absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -2358,7 +2362,7 @@ export default function LabourSetting() {
                                     </div>
                                   </div>
                                   <div className=" flex-c ol flex gap-[20px] ">
-                                    <div className="relative w-full h-[40px]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
+                                    <div className="relative w-full   border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]">
                                       <label
                                         htmlFor="email"
                                         className="bg-white px-1 hidden  absolute left-[16px] text-[#000] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-[14px]  capitalize"
@@ -2377,15 +2381,15 @@ export default function LabourSetting() {
                           )}
                         </div>
                       </div>
-                      <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">
-                        <h2 className=" text-[#122f97] flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
+                      <div className=" flex flex-col gap-[10px]  relative overflow-hidden w-[400px]">
+                        <h2 className=" text-[#122f97]   flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Percentege
                         </h2>
                         <div  className=" flex">
                           
-                        <div className=" flex gap-[25px] overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
-                          <div className=" flex border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
-                            <div className=" flex w-[100%] fle  gap-[5px]">
+                        <div className=" flex gap-[25px] overflow-y-auto overflow-x-hidden flex-col md:max-h-[73vh]  2xl:max-h-[90vh] relative  px-[19px] w-[100%] ">
+                          <div className=" flex border-[1px] flex-col gap-[10px]  bg-white w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                            <div className=" flex w-[100%] fle  gap-[10px]">
                               <div
                                 ref={dropdownPercentageRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2450,7 +2454,7 @@ export default function LabourSetting() {
                                 </AnimatePresence>
                               </div>
 
-                              <div
+                              {/* <div
                                 ref={dropdownMetalPercentageRef}
                                 className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -2520,9 +2524,8 @@ export default function LabourSetting() {
                                     </motion.div>
                                   )}
                                 </AnimatePresence>
-                              </div>
-                            </div>
-                            <div
+                              </div> */}
+                              <div
                               ref={dropdownCategoryPercentageRef}
                               className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                             >
@@ -2591,8 +2594,10 @@ export default function LabourSetting() {
                                 )}
                               </AnimatePresence>
                             </div>
+                            </div>
+                       
 
-                            <div className=" flex gap-[20px] w-[100%]">
+                            <div className=" flex gap-[10px] w-[100%]">
                               <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
                                 <label
@@ -2682,8 +2687,8 @@ export default function LabourSetting() {
                           {isEditingPercentage ? (
                             // Editable Fields
                             <>
-                              <div className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
-                                <div className=" flex w-[100%] fle  gap-[5px]">
+                              <div className=" flex relative overflow-hidden  border-[1px] flex-col gap-[10px] w-[100%] bg-white py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
+                                <div className=" flex w-[100%] fle  gap-[10px]">
                                   <div
                                     ref={dropdownEditPercentageRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2754,7 +2759,7 @@ export default function LabourSetting() {
                                       )}
                                     </AnimatePresence>
                                   </div>
-
+{/* 
                                   <div
                                     ref={dropdownEditMetalPercentageRef}
                                     className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -2829,9 +2834,8 @@ export default function LabourSetting() {
                                         </motion.div>
                                       )}
                                     </AnimatePresence>
-                                  </div>
-                                </div>
-                                <div
+                                  </div> */}
+                                  <div
                                   ref={dropdownEditCategoryPercentageRef}
                                   className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                 >
@@ -2907,8 +2911,10 @@ export default function LabourSetting() {
                                     )}
                                   </AnimatePresence>
                                 </div>
+                                </div>
+                        
 
-                                <div className=" flex gap-[20px] w-[100%]">
+                                <div className=" flex gap-[10px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
 
@@ -3017,7 +3023,7 @@ export default function LabourSetting() {
                               {percentage?.map((item, index) => (
                                 <div
                                   key={index}
-                                  className=" flex relative overflow-hidden border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
+                                  className=" flex relative  min-h-[210px] overflow-hidden bg-white border-[1px] flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]"
                                 >
                                   <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                     <i
@@ -3047,7 +3053,7 @@ export default function LabourSetting() {
                                       </div>
                                     </div>
 
-                                    <div
+                                    {/* <div
                                       ref={dropdownMetalPercentageRef}
                                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -3064,9 +3070,8 @@ export default function LabourSetting() {
                                           {item?.metal?.metalName}
                                         </p>
                                       </div>
-                                    </div>
-                                  </div>
-                                  <div
+                                    </div> */}
+                                    <div
                                     ref={dropdownCategoryPercentageRef}
                                     className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
                                   >
@@ -3083,6 +3088,8 @@ export default function LabourSetting() {
                                       </p>
                                     </div>
                                   </div>
+                                  </div>
+                              
 
                                   <div className=" flex gap-[20px] w-[100%]">
                                     <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 

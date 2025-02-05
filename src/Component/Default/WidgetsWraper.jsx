@@ -6,8 +6,6 @@ import Widgets2 from '../Common/CommonWidgets/Widgets2';
 
 const WidgetsWrapper = ({ data }) => {
 
-  if (!data) return <p>Loading widgets...</p>;
-
   return (
     <>
       <Col xxl='auto' xl='3' sm='6' className=' font-Poppins box-col-6'>
