@@ -358,7 +358,7 @@ const navigate =useNavigate ()
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
                 className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
-                  <table className="min-w-[2300px] w-full border-collapse  border-gray-300  font-Poppins">
+                  <table className="min-w-[2400px] w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
                         <th className="py-3 px-2 text-left  border-gray-300">

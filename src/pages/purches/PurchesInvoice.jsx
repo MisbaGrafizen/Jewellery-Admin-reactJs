@@ -14,9 +14,9 @@ import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 
 import { X, CheckCircle } from "lucide-react"
+import { getAllNonBarcodeProductAction } from "../../redux/action/landingManagement";
 
 export default function PurchesInvoice() {
-  const [products, setProducts] = useState([]);
   const [nameFocused, setNameFocused] = useState(false);
   const dropdownRef = useRef(null);
   const [selectedType, setSelectedType] = useState("");
@@ -53,6 +53,51 @@ export default function PurchesInvoice() {
   const [gstNumber, setGstNumber] = useState("");
   const [panNumber, setPanNumber] = useState("");
   const [userState, setUserState] = useState("");
+  const scrollContainerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  useEffect(() => {
+    // Reset all states on page load
+    setSelectedType("");
+    setCustomerId(null);
+    setAddress("");
+    setGstNumber("");
+    setPanNumber("");
+    setUserState("");
+    setSelectedDate(new Date());
+    setDropdownOpen(false);
+    setProducts([]); // Reset products table to an empty array
+    setTotals({
+      grossQty: 0,
+      netQty: 0,
+      amount: 0,
+    });
+    setCgst(0);
+    setSgst(0);
+    setTotalTaxAmount(0);
+    setDiscountAmount(0);
+    setDiscountPrice(0);
+    setFinalTotal(0);
+    setDiscountPercentage(0);
+  }, []); // Run only once when the component mounts
+  
+  
+  
+  
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      barcodeVisible: true, // Ensure first row has visible barcode input
+      groupItemId: { itemName: "" }, // Placeholder for product name
+      toWeight: "",
+      netWeight: "",
+      totalPrice: "",
+    }
+  ]);
+  
+
+  const dispatch = useDispatch();
 
   const [totals, setTotals] = useState({
     grossQty: 0,
@@ -85,7 +130,7 @@ export default function PurchesInvoice() {
     email: "",
   });
 
-  const dispatch = useDispatch();
+
 
   const customers = useSelector((state) => state?.users?.getCustomer);
   const companyInfo = useSelector((state) => state?.general?.getCompanyInfo);
@@ -94,7 +139,106 @@ export default function PurchesInvoice() {
   useEffect(() => {
     dispatch(getAllCustomerAction());
     dispatch(getCompanyInfoAction());
+    // fetchInitialProducts();
   }, [dispatch]);
+
+  // const fetchInitialProducts = async () => {
+  //   try {
+  //     const response = await dispatch(getAllNonBarcodeProductAction());
+
+  //     if (Array.isArray(response)) {
+  //       setProducts(response);
+  //     } else {
+  //       setProducts([]); // ✅ Fallback to Empty Array if API returns Undefined or Null
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching initial products:", error);
+  //     setProducts([]); // ✅ Ensure `products` stays an array even on error
+  //   }
+  // };
+
+  
+  const fetchProductDetails = async (productName, toWeight, index) => {
+    try {
+      const response = await ApiGet(
+        `/admin/productDetails?productName=${productName}&toWeight=${toWeight}`
+      );
+  
+      console.log("Fetched Product Details:", response);
+  
+      if (response) {
+        setProducts((prevProducts) => {
+          const updatedProducts = [...prevProducts];
+  
+          const existingProduct = updatedProducts[index] || {}; // Get the current product
+  
+          let barcodeVisibility = existingProduct.barcodeVisible ?? false; // Default to false for non-barcode products
+  
+          let autoRefValue = "NonBarcodeCategory";
+  
+          let productIdValue = response._id || existingProduct.productId || null;
+  
+          let productGroupItemId = response.groupItemId || existingProduct.groupItemId;
+  
+          updatedProducts[index] = {
+            ...existingProduct,
+            ...response,
+            barcodeVisible: barcodeVisibility, 
+            productId: productIdValue, 
+            autoRef: autoRefValue,
+            groupItemId: productGroupItemId,
+          };
+  
+          console.log("Updated Products:", updatedProducts);
+          return updatedProducts;
+        });
+  
+        // Update totals correctly
+        setTotals((prevTotals) => {
+          const updatedTotals = { ...prevTotals };
+  
+          const prevProduct = products[index] || {};
+          const prevToWeight = parseFloat(prevProduct.toWeight || 0);
+          const prevNetWeight = parseFloat(prevProduct.netWeight || 0);
+          const prevTotalPrice = parseFloat(prevProduct.totalPrice || 0);
+  
+          updatedTotals.grossQty =
+            prevTotals.grossQty - prevToWeight + parseFloat(response.toWeight || 0);
+          updatedTotals.netQty =
+            prevTotals.netQty - prevNetWeight + parseFloat(response.netWeight || 0);
+          updatedTotals.amount =
+            prevTotals.amount - prevTotalPrice + parseFloat(response.totalPrice || 0);
+  
+          return updatedTotals;
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
+  
+  
+  
+  
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // Adjust the multiplier for speed
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
 
   console.log("companyInfo", companyInfo);
   const handlePartyModal = () => {
@@ -145,11 +289,33 @@ export default function PurchesInvoice() {
     }));
   };
 
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Enter" && e.target.value.trim()) {
-      fetchProductByBarcode(e.target.value.trim(), index);
-    }
+  const handleInputChange = (e, index, field) => {
+    const value = e.target.value;
+    const updatedProducts = [...products];
+    updatedProducts[index][field] = value;
+    setProducts(updatedProducts);
   };
+
+ const handleKeyDown = (e, index) => {
+  if (e.key === "Enter" && e.target.value.trim()) {
+    const inputValue = e.target.value.trim();
+
+    if (/^\d{5,}$/.test(inputValue)) {
+      fetchProductByBarcode(inputValue, index);
+    } else if (/^\d+(\.\d+)?$/.test(inputValue)) {
+      setProducts((prevProducts) => {
+        const updatedProducts = [...prevProducts];
+        updatedProducts[index].toWeight = inputValue;
+        return updatedProducts;
+      });
+
+      fetchProductDetails(products[index].productName, inputValue, index);
+    } else {
+      console.warn("Invalid input format");
+    }
+  }
+};
+
   const fetchUserDetails = async (userName) => {
     try {
       const response = await ApiGet(`/admin/customer-by-name/${userName}`);
@@ -181,15 +347,18 @@ export default function PurchesInvoice() {
     try {
       const response = await ApiGet(`/admin/product/${barcodeValue}`);
       const productData = response.product || {};
-      console.log("Fetched Product Data:", productData);
-
+  
+      console.log("Fetched Barcode Product Data:", productData);
+  
       setProducts((prevProducts) =>
         prevProducts.map((product, index) =>
           index === productIndex
             ? {
                 ...product,
                 ...productData,
-                barcodeVisible: false,
+                barcodeVisible: false, // Hide barcode input after fetching
+                productId: productData._id, // Ensure correct product reference
+                autoRef: "GroupItem", // Reference model type
                 groupItemId: productData.groupItemId || { itemName: "N/A" },
                 toWeight: productData.toWeight || "0",
                 netWeight: productData.netWeight || "0",
@@ -198,7 +367,7 @@ export default function PurchesInvoice() {
             : product
         )
       );
-
+  
       // Update totals
       setTotals((prevTotals) => ({
         grossQty: prevTotals.grossQty + parseFloat(productData.toWeight || 0),
@@ -209,10 +378,11 @@ export default function PurchesInvoice() {
       console.error("Error fetching product by barcode:", error);
     }
   };
+  
 
   const handleAddProduct = () => {
     const newProduct = {
-      id: products.length + 1,
+      id: products?.length + 1,
       barcodeVisible: true, // Show input for barcode
       groupItemId: { itemName: "" }, // Placeholder for product name
       toWeight: "",
@@ -292,7 +462,7 @@ export default function PurchesInvoice() {
       const payload = {
         customerId,
         products: products.map((product) => ({
-          productId: product?.groupItemId?._id,
+          productId: product?.groupItemId,
           hsnCode: product?.hsn || 0,
           gstRate: product?.gstRate || 0,
           grossQty: product?.toWeight || 0,
@@ -314,6 +484,8 @@ export default function PurchesInvoice() {
         paymentType: "cash",
       };
 
+      console.log('payload', payload)
+
       const response = await ApiPost("/admin/bill", payload);
       console.log("response", response);
       if (response.data.bill) {
@@ -330,13 +502,13 @@ export default function PurchesInvoice() {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleSubmit = async () => {
     try {
@@ -345,8 +517,8 @@ export default function PurchesInvoice() {
       setIsOpen(true)
       setTimeout(() => {
         setIsOpen(false);
-    }, 2000);
-    
+      }, 2000);
+
 
       // Reset form and close modal
       setFormData({
@@ -368,7 +540,6 @@ export default function PurchesInvoice() {
       alert("Failed to create party. Please try again.");
     }
   };
-
 
   const onClose = () => {
     setIsOpen(false); // Close the modal
@@ -414,11 +585,10 @@ export default function PurchesInvoice() {
                       >
                         <label
                           htmlFor="inname"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            selectedType || nameFocused
-                              ? "text-[#000] -translate-y-[21px] hidden "
-                              : "text-[#8f8f8f] cursor-text flex"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || nameFocused
+                            ? "text-[#000] -translate-y-[21px] hidden "
+                            : "text-[#8f8f8f] cursor-text flex"
+                            }`}
                         >
                           Name
                         </label>
@@ -474,11 +644,10 @@ export default function PurchesInvoice() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                         <label
                           htmlFor="address"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            addressFocused
-                              ? "text-[#000] -translate-y-[45px] hidden font-[]"
-                              : "  -translate-y-[27px] flex cursor-text "
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
+                            ? "text-[#000] -translate-y-[45px] hidden font-[]"
+                            : "  -translate-y-[27px] flex cursor-text "
+                            }`}
                         >
                           Address
                         </label>
@@ -502,11 +671,10 @@ export default function PurchesInvoice() {
                       <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="gst"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            gstFocused
-                              ? "text-[#000] -translate-y-[21px] hidden "
-                              : "text-[#8f8f8f] cursor-text flex"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${gstFocused
+                            ? "text-[#000] -translate-y-[21px] hidden "
+                            : "text-[#8f8f8f] cursor-text flex"
+                            }`}
                         >
                           GST Number
                         </label>
@@ -525,11 +693,10 @@ export default function PurchesInvoice() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="pan"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            panFocused
-                              ? "text-[#000] -translate-y-[21px] hidden "
-                              : "text-[#8f8f8f] cursor-text flex"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${panFocused
+                            ? "text-[#000] -translate-y-[21px] hidden "
+                            : "text-[#8f8f8f] cursor-text flex"
+                            }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
@@ -551,11 +718,10 @@ export default function PurchesInvoice() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                         <label
                           htmlFor="state"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                            stateFocused
-                              ? "text-[#000] -translate-y-[21px] hidden "
-                              : "text-[#8f8f8f] cursor-text flex"
-                          }`}
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${stateFocused
+                            ? "text-[#000] -translate-y-[21px] hidden "
+                            : "text-[#8f8f8f] cursor-text flex"
+                            }`}
                           onClick={() =>
                             document.getElementById("number").setPanFocused()
                           }
@@ -673,38 +839,97 @@ export default function PurchesInvoice() {
                   </div>
                   <div className="bg-white w-[100%]  rounded-lg shadow1-blue ">
                     {/* Table Header */}
-                    <div className="overflow-x-auto bg-white rounded-lg w-[100%]">
-                      <table className="w-[100%]">
+                    <div
+                      ref={scrollContainerRef}
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUp}
+                      onMouseLeave={handleMouseUp}
+                      className="overflow-x-auto  !max-w-[3500px] flex-shrink-0  bg-white rounded-lg w-[100%]">
+                      <table className=" min-w-[2300px]  w-full border-collapse">
                         <thead>
                           <tr className="bg-[#f0f1f364]">
-                            <th className="py-4 px-2 text-left   text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200">
+                            <th className="py-4 px-2 text-left text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200">
                               Sr. No.
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 border-r border-gray-200">
-                              Product Description
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-40 border-r border-gray-200">
+                            Product Name
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200">
-                              HSN/SAC
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            To Weight
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200">
-                              GST rate
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                            HSN/SAC
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200">
-                              Gross Qty in gm
+                            {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              To Weight
+                            </th> */}
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Net Weight
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200">
-                              Net Qty in gm
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Fine Weight
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200">
-                              Rate
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              G Rate
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-32">
-                              Amount(₹)
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              M Rate
                             </th>
+
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              M Rs
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              G Rs
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Extra Rate
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              GME Amt
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              GST
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Amount
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Group
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Account
+                            </th>
+
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Location
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Pcs
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Design
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Size
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Moti
+                            </th>
+
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Stone
+                            </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
+                              Jadatr
+                            </th>
+
                           </tr>
                         </thead>
                         <tbody>
-                          {products.map((product, index) => (
+
+                          {products?.map((product, index) => (
                             <tr
                               key={product.id}
                               className="border-t border-gray-200"
@@ -720,18 +945,45 @@ export default function PurchesInvoice() {
                                       (productNameInputRefs.current[index] = el)
                                     }
                                     onKeyDown={(e) => handleKeyDown(e, index)}
+                                    value={product.productName}
+                                    onChange={(e) => {
+                                      setProducts((prevProducts) => {
+                                        const updatedProducts = [...prevProducts];
+                                        updatedProducts[index].productName = e.target.value;
+                                        return updatedProducts;
+                                      });
+                                    }}
                                     className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                     autoFocus
                                   />
                                 ) : (
-                                  product?.groupItemId?.itemName
+                                  product.productName || product?.groupItemId?.itemName 
                                 )}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {product.hsn || 0}
+                                <input
+                                  type="number"
+                                  value={product.toWeight || ""}
+                                  onChange={(e) => {
+                                    setProducts((prevProducts) => {
+                                      const updatedProducts = [...prevProducts];
+                                      updatedProducts[index].toWeight = e.target.value;
+                                      return updatedProducts;
+                                    });
+                                      }} 
+                                onKeyDown = {(e) => handleKeyDown(e, index)}
+                                className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
+                                autoFocus
+                                />
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {product.gstRate || 0}%
+                                {/* <input
+                                  type="number"
+                                  name="category"
+                                  className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
+                                  autoFocus
+                                /> */}
+                                {product.hnsCode || "-"}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -739,7 +991,23 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.toWeight || 0}
+                                 {parseFloat(product.netWeight || 0).toFixed(2)}
+                              </td> 
+                              {/* <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td> */}
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                 {parseFloat(product.fineWeight || 0).toFixed(2)}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -747,7 +1015,7 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.netWeight || 0}
+                                {product?.marketRateUsed}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -755,16 +1023,131 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.extraRate || 0}
+                                {product?.labour}
                               </td>
-                              <td className="py-2 font-Poppins  px-4">
+
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.totalPrice || 0}
+                                {product?.labour}
                               </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                {parseFloat(product.calculatedMarketRate || 0).toFixed(2)}
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                {product?.extraRate}
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                {product?.GMEPrice}
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                {product?.gst}
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                {/* <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                /> */}
+                                {product?.finalPrice}
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                />
+
+                              </td>
+
+
                             </tr>
                           ))}
                         </tbody>
@@ -798,46 +1181,96 @@ export default function PurchesInvoice() {
 
                       {/* Total Row */}
 
-                      <table className="w-[100%]">
-                        <thead>
-                          <tr className="bg-[#F9FAFB]">
-                            <th className="text-left   text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32 border-r border-gray-200"></th>
-                            <th className="text-center text-[13px] font-medium font-Poppins text-gray-600 w-32"></th>
-                          </tr>
-                        </thead>
-                        <tfoot>
-                          <tr className="border- border-gray-200 bg-[#f0f1f364]">
-                            <td className="py-3 px-2 text-sm  font-Poppins font-medium text-gray-600 border-r border-gray-200">
+                      <div className="w-[100%]">
+                        <div className=" w-[100%]">
+                          <div className="bg-[#f0f1f364] h-[50px] flex min-w-[2300px]">
+                            <div className=" px-2  w-[80px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
                               Total ₹
-                            </td>
-                            <td className="border-r border-gray-200"></td>
-                            <td className="border-r border-gray-200"></td>
-                            <td className="border-r border-gray-200"></td>
-                            <td className="py-3 px-4 font-Poppins text-[17px] text-gray-600 border-r border-gray-200">
-                              {totals.grossQty.toFixed(2)}
-                            </td>
-                            <td className="py-3  font-Poppins px-4 text-[17px] text-gray-600 border-r border-gray-200">
-                              {totals.netQty.toFixed(2)}
-                            </td>
-                            <td className="border-r  border-gray-200"></td>
-                            <td className="py-3 px-4 font-Poppins text-[17px] text-gray-600">
-                              {totals.amount.toFixed(2)}
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
+                            </div>
+                            <div className=" px-2  w-[160px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[115px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+
+                            <div className=" px-2  w-[108px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[100px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[100px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[97px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[80px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[77px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[80px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+
+                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[85px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[102px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[83px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+
+                            <div className=" px-2  w-[88px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-r border-gray-200">
+
+                            </div>
+                            <div className=" px-2  w-[94px] text-left flex justify-center text-[13px] items-center  h-[100%] font-medium font-Poppins text-gray-600 border-gray-200">
+
+                            </div>
+
+
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
                   <div className=" flex w-[100%]  justify-between gap-[20px]  mt-[19px] mb-[20px]">
                     <div className="flex w-[50%]  flex-col gap-[15px] ">
                       <div className="bg-white  w-[100%] rounded-lg shadow1-blue  ">
-                        <div className="overflow-x-auto">
+                        {/* <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead>
                               <tr>
@@ -916,12 +1349,12 @@ export default function PurchesInvoice() {
                               </tr>
                             </tbody>
                           </table>
-                        </div>
+                        </div> */}
                       </div>
                       {companyInfo?.map((item, index) => (
                         <div key={index} className="grid md:grid-cols-2 gap-4">
                           {/* Bank Details Card */}
-                          <div className="bg-white rounded-lg shadow1-blue p-[20px] relative">
+                          <div className="bg-white rounded-lg shadow1-blue p-[30px] relative">
                             <div className="flex justify-between items-start mb-2">
                               <h2 className="text-[#FF6B35] font-Poppins text-[16px] font-[400]">
                                 Bank Details
@@ -1013,15 +1446,14 @@ export default function PurchesInvoice() {
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
                               Discount
                             </label>
-                            <div className="flex-1 max-w-[320px] grid grid-cols-2 gap-4">
+                            <div className="flex  w-[40.6%]   gap-4">
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <label
                                   htmlFor="indis"
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${
-                                    discountInFocused
-                                      ? "text-[#000] -translate-y-[19px] hidden "
-                                      : "text-[#8f8f8f] flex cursor-text"
-                                  }`}
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${discountInFocused
+                                    ? "text-[#000] -translate-y-[19px] hidden "
+                                    : "text-[#8f8f8f] flex cursor-text"
+                                    }`}
                                 >
                                   Discount- in %
                                 </label>
@@ -1042,11 +1474,10 @@ export default function PurchesInvoice() {
                               </div>
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <span
-                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${
-                                    discountAmount || outFocused
-                                      ? "text-[#000] -translate-y-[21px] "
-                                      : "text-[#000000] -translate-y-[21px] "
-                                  }`}
+                                  className={` absolute left-[13px] font-Poppins leading-3  px-[5px]  bg-[#fff] text-[13px]   transition-all duration-200 ${discountAmount || outFocused
+                                    ? "text-[#000] -translate-y-[21px] "
+                                    : "text-[#000000] -translate-y-[21px] "
+                                    }`}
                                 >
                                   Discount- Out ₹
                                 </span>
@@ -1211,11 +1642,10 @@ export default function PurchesInvoice() {
                       onClick={() => setCreateDropdownOpen((prev) => !prev)} // Toggle dropdown on click
                     >
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          createselectedType || groupFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${createselectedType || groupFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Party Group
                       </span>
@@ -1271,11 +1701,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="partyName"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyNameFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNameFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Party Name
                       </lavel>
@@ -1293,11 +1722,10 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyAddressFocused
-                            ? "text-[#000] -translate-y-[48px] font-[]"
-                            : "  -translate-y-[27px] "
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyAddressFocused
+                          ? "text-[#000] -translate-y-[48px] font-[]"
+                          : "  -translate-y-[27px] "
+                          }`}
                       >
                         Address
                       </span>
@@ -1318,11 +1746,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="gstNumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyGstFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyGstFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         GST Number
                       </lavel>
@@ -1341,11 +1768,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="PanParty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyPanFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f] cursor-text"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPanFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f] cursor-text"
+                          }`}
                       >
                         PAN Number
                       </label>
@@ -1371,11 +1797,10 @@ export default function PurchesInvoice() {
                     >
                       <label
                         htmlFor="selectFirm"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          firmselectedType || firmFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f]"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${firmselectedType || firmFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f]"
+                          }`}
                       >
                         Firm Type
                       </label>
@@ -1431,11 +1856,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyState"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyStateFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f] cursor-text"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyStateFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f] cursor-text"
+                          }`}
                       >
                         State Name
                       </label>
@@ -1454,11 +1878,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partycity"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyCityFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f] cursor-text"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyCityFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f] cursor-text"
+                          }`}
                       >
                         City Name
                       </label>
@@ -1477,11 +1900,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyPin"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyPinFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f] cursor-text"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPinFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f] cursor-text"
+                          }`}
                       >
                         Pin Code
                       </label>
@@ -1500,11 +1922,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partynumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyNumberFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f] cursor-text"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNumberFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f] cursor-text"
+                          }`}
                       >
                         Mobile Number
                       </label>
@@ -1523,11 +1944,10 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="emailparty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                          partyEmailFocused
-                            ? "text-[#000] -translate-y-[21px] "
-                            : "text-[#8f8f8f] cursor-text"
-                        }`}
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyEmailFocused
+                          ? "text-[#000] -translate-y-[21px] "
+                          : "text-[#8f8f8f] cursor-text"
+                          }`}
                       >
                         Email ID
                       </label>
@@ -1559,74 +1979,74 @@ export default function PurchesInvoice() {
 
 
       <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
-          aria-labelledby="modal-title"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
-            <motion.div
-              initial={{ scale: 0.5, rotateX: 90 }}
-              animate={{ scale: 1, rotateX: 0 }}
-              exit={{ scale: 0.5, rotateX: -90 }}
-              transition={{ type: "spring", damping: 15, stiffness: 100 }}
-              className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="flex justify-center mb-4"
+                initial={{ scale: 0.5, rotateX: 90 }}
+                animate={{ scale: 1, rotateX: 0 }}
+                exit={{ scale: 0.5, rotateX: -90 }}
+                transition={{ type: "spring", damping: 15, stiffness: 100 }}
+                className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
               >
-                <CheckCircle className="w-16 h-16 text-[#122f97]" />
-              </motion.div>
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
-                id="modal-title"
-              >
-                Stock {  selectedStock ? "Update" :" Added"} successfully!
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
-              >
-                Your information has been successfully saved to our database.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-6 flex justify-center"
-              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="flex justify-center mb-4"
+                >
+                  <CheckCircle className="w-16 h-16 text-[#122f97]" />
+                </motion.div>
+                <motion.h3
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
+                  id="modal-title"
+                >
+                  Stock {selectedStock ? "Update" : " Added"} successfully!
+                </motion.h3>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
+                >
+                  Your information has been successfully saved to our database.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mt-6 flex justify-center"
+                >
+                  <button
+                    onClick={onClose}
+                    className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-md hover:from-green-600 hover:to-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  >
+                    Close
+                  </button>
+                </motion.div>
                 <button
                   onClick={onClose}
-                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-md hover:from-green-600 hover:to-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
                 >
-                  Close
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
               </motion.div>
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
-              >
-                <X className="h-6 w-6" aria-hidden="true" />
-              </button>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

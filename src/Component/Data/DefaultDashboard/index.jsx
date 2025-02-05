@@ -1,6 +1,7 @@
 import { Widgets2ChartData, Widgets2ChartData2, Widgets2ChartData2Widgets, Widgets2ChartDataWidgets } from './Chart';
 
 export const WidgetsData = {
+
   title: 'Purchase',
   gros: 50,
   total: 10_000,
@@ -8,6 +9,7 @@ export const WidgetsData = {
   icon: 'cart',
 };
 export const WidgetsData2 = {
+
   title: 'Sales return',
   gros: 20,
   total: 7000,
@@ -15,6 +17,7 @@ export const WidgetsData2 = {
   icon: 'return-box',
 };
 export const WidgetsData3 = {
+  
   title: 'Sales',
   gros: 70,
   total: 4_200,

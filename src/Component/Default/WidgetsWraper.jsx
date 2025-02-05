@@ -4,7 +4,7 @@ import { Widgets2Data, Widgets2Data2, WidgetsData, WidgetsData2, WidgetsData3, W
 import Widgets1 from '../Common/CommonWidgets/Widgets1';
 import Widgets2 from '../Common/CommonWidgets/Widgets2';
 
-const WidgetsWrapper = () => {
+const WidgetsWrapper = ({ dashboardData }) => {
   return (
     <>
       <Col xxl='auto' xl='3' sm='6' className=' font-Poppins box-col-6'>

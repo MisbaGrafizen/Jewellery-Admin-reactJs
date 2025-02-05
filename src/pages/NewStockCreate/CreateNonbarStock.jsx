@@ -708,7 +708,7 @@ export default function CreateNonbarStock() {
 
 
                         </div>
-                        <div className=" flex w-[100%]  gap-[20px]">
+                        {/* <div className=" flex w-[100%]  gap-[20px]">
 
 
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -785,6 +785,86 @@ export default function CreateNonbarStock() {
                               onChange={(e) => {
                                 let updatedFieldSets = [...fieldSets];
                                 updatedFieldSets[index].account = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                              autocomplete="naqsme"
+                            />
+                          </div>
+                  
+                        </div> */}
+                        <div className=" flex w-[100%]  gap-[20px]">
+                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+  bg-[#fff] ">
+                            <label
+                              htmlFor={`location-${index}`}
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.location || fieldSets[index]?.locationFocused
+                                ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
+                                }`}
+                            >
+                              Location
+                            </label>
+                            <input
+                              type="string"
+                              id={`location-${index}`}
+                              name="location"
+                              value={fieldSets.location}
+                              // onChange={(e) => setLocation(e.target.value)}
+                              // onFocus={() => setLocationFocused(true)}
+                              // onBlur={() => setLocationFocused(false)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].locationFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].locationFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].location = e.target.value;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                              autocomplete="naqsme"
+                            />
+                          </div>
+
+                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+  bg-[#fff] ">
+                            <label
+                              htmlFor={`pcs-${index}`}
+                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.pcs || fieldSets[index]?.pcsFocused
+                                ? "text-[#000] -translate-y-[21px] hidden "
+                                : "text-[#8f8f8f] cursor-text flex"
+                                }`}
+                            >
+                              Pcs
+                            </label>
+                            <input
+                              type="number"
+                              id={`pcs-${index}`}
+                              name="pcs"
+                              value={fieldSets.pcs}
+                              // onChange={(e) => setPcs(e.target.value)}
+                              // onFocus={() => setPcsFocused(true)}
+                              // onBlur={() => setPcsFocused(false)}
+                              onFocus={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].pcsFocused = true;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onBlur={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].pcsFocused = false;
+                                setFieldSets(updatedFieldSets);
+                              }}
+                              onChange={(e) => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].pcs = e.target.value;
                                 setFieldSets(updatedFieldSets);
                               }}
                               className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
@@ -883,86 +963,7 @@ export default function CreateNonbarStock() {
                               autocomplete="naqsme"
                             />
                           </div>
-                        </div>
-                        <div className=" flex w-[100%]  gap-[20px]">
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-  bg-[#fff] ">
-                            <label
-                              htmlFor={`location-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.location || fieldSets[index]?.locationFocused
-                                ? "text-[#000] -translate-y-[21px] hidden "
-                                : "text-[#8f8f8f] cursor-text flex"
-                                }`}
-                            >
-                              Location
-                            </label>
-                            <input
-                              type="string"
-                              id={`location-${index}`}
-                              name="location"
-                              value={fieldSets.location}
-                              // onChange={(e) => setLocation(e.target.value)}
-                              // onFocus={() => setLocationFocused(true)}
-                              // onBlur={() => setLocationFocused(false)}
-                              onFocus={() => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].locationFocused = true;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                              onBlur={() => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].locationFocused = false;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                              onChange={(e) => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].location = e.target.value;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              autocomplete="naqsme"
-                            />
-                          </div>
-
-                          <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-  bg-[#fff] ">
-                            <label
-                              htmlFor={`pcs-${index}`}
-                              className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${fieldSets[index]?.pcs || fieldSets[index]?.pcsFocused
-                                ? "text-[#000] -translate-y-[21px] hidden "
-                                : "text-[#8f8f8f] cursor-text flex"
-                                }`}
-                            >
-                              Pcs
-                            </label>
-                            <input
-                              type="number"
-                              id={`pcs-${index}`}
-                              name="pcs"
-                              value={fieldSets.pcs}
-                              // onChange={(e) => setPcs(e.target.value)}
-                              // onFocus={() => setPcsFocused(true)}
-                              // onBlur={() => setPcsFocused(false)}
-                              onFocus={() => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].pcsFocused = true;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                              onBlur={() => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].pcsFocused = false;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                              onChange={(e) => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index].pcs = e.target.value;
-                                setFieldSets(updatedFieldSets);
-                              }}
-                              className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
-                              autocomplete="naqsme"
-                            />
-                          </div>
-                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
+                          {/* <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
                               htmlFor={`design-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
@@ -1019,8 +1020,8 @@ export default function CreateNonbarStock() {
                                 </motion.div>
                               )}
                             </AnimatePresence>
-                          </div>
-
+                          </div> */}
+{/* 
                           <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
                               htmlFor={`size-${index}`}
@@ -1088,11 +1089,11 @@ export default function CreateNonbarStock() {
                                 </motion.div>
                               )}
                             </AnimatePresence>
-                          </div>
+                          </div> */}
 
 
                         </div>
-                        <div className=" flex w-[100%]  gap-[20px]">
+                        {/* <div className=" flex w-[100%]  gap-[20px]">
                           <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
   bg-[#fff] ">
                             <label
@@ -1376,12 +1377,12 @@ export default function CreateNonbarStock() {
                           </div>
 
                           <i className="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
-                          {/* Right Side */}
+                     
                           <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-[#122f97]" />
                             <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     ))}
                     <div className=" flex w-[100%] justify-end ">
