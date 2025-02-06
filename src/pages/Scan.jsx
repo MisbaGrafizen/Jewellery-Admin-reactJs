@@ -27,6 +27,7 @@ const Scan = () => {
     try {
       console.log("Fetching product for barcode:", scannedBarcode);
       const response = await ApiGet(`/admin/product/${scannedBarcode}`);
+      console.log('response', response);
 
       if (response?.product) {
         setProduct(response.product);
@@ -44,6 +45,13 @@ const Scan = () => {
     setBarcode("");
   };
 
+  // Handle Enter Key Press
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      fetchProductDetails(barcode.trim());
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <h1 className="text-2xl font-bold mb-6">Barcode Scanner</h1>
@@ -53,6 +61,7 @@ const Scan = () => {
         type="text"
         value={barcode}
         onChange={(e) => setBarcode(e.target.value)}
+        onKeyDown={handleKeyDown} // Listening for Enter key
         placeholder="Scan barcode..."
         className="border border-gray-300 rounded p-2 mb-4 w-full max-w-md text-center"
         autoFocus
@@ -62,23 +71,32 @@ const Scan = () => {
 
       {/* Barcode Product Details Popup */}
       <NextUIModal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-        <ModalContent className="shadow-none z-[100] flex flex-col !bg-transparent max-w-[600px] h-auto">
-          {product ? (
-            <div className="relative w-full bg-white mt-[10px] rounded-2xl z-[100] flex justify-center !py-6 mx-auto h-auto p-6">
-              <h2 className="text-xl font-bold mb-4">Product Details</h2>
-              <p><strong>Barcode:</strong> {product.barCode}</p>
+        <ModalContent className="shadow-none flex flex-col bg-white max-w-[600px] mx-auto p-5 rounded-lg">
+          <h2 className="text-lg font-semibold mb-4">Product Details</h2>        {product ? (
+            <div>
+              <p><strong>Product ID:</strong> {product._id}</p>
               <p><strong>Group:</strong> {product.groupId?.name}</p>
               <p><strong>Item:</strong> {product.groupItemId?.itemName}</p>
-              <p><strong>Weight:</strong> {product.toWeight}g</p>
-              <p><strong>Net Weight:</strong> {product.netWeight}g</p>
-              <p><strong>Fine Weight:</strong> {product.fineWeight}</p>
-              <p><strong>Total Price:</strong> ₹{product.totalPrice}</p>
+              <p><strong>Barcode:</strong> {product.barCode}</p>
+              <p><strong>Weight:</strong> {product.netWeight}g</p>
+              <p><strong>Net Weight:</strong> {product.netWeight}</p>
+              <p><strong>Majuri:</strong> {product.labour}</p>
+              <p><strong>Extra Rate:</strong> {product.extraRate}</p>
+              <p><strong>G Rate:</strong> {product.marketRateUsed}</p>
+              <p><strong>G Rs:</strong> {product.calculatedMarketRate}</p>
+              <p><strong>GME Amount:</strong> {product.GMEPrice}</p>
+              <p><strong>GST:</strong> {product.gst}</p>
+              <p><strong>Final Price:</strong> ₹{product.finalPrice}</p>
               {product.barcodeImage && (
-                <img src={product.barcodeImage} alt="Barcode" className="mt-4" />
+                <img
+                  src={product.barcodeImage}
+                  alt="Barcode"
+                  className="w-40 mt-3"
+                />
               )}
             </div>
           ) : (
-            <p className="text-center">No product found.</p>
+            <p className="text-red-500">No product details available.</p>
           )}
         </ModalContent>
       </NextUIModal>
