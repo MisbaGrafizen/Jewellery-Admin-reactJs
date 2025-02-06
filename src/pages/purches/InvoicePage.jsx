@@ -105,6 +105,11 @@ export default function InvoicePage() {
         pdf.save(`Invoice_${id}.pdf`);
     };
 
+    const totalProductPrice = invoice?.products?.reduce(
+        (sum, item) => sum + (item?.totalPrice || 0),
+        0
+    );
+
 
     console.log('invoice', invoice)
 
@@ -118,13 +123,13 @@ export default function InvoicePage() {
                         <div className="flex w-[100%] max-h-[100%] pb-[50px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
 
                             <div className="max-w-[1200px] h-[110vh] mx-auto p-6 bg-gradient-to-br pb-[80px] from-gray-50 to-white">
-                                  <button
-                                onClick={downloadInvoice}
-                                className="absolute top-4 right-4 p-2 text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 flex items-center justify-center"
-                            >
-                                <i className="fa fa-download text-lg" />
-                            </button>
-                                <div ref={invoiceRef}  className="border h-fit !mb-[140px] border-gray-200 rounded-xl shadow-lg  bg-white overflow-hidden">
+                                <button
+                                    onClick={downloadInvoice}
+                                    className="absolute top-4 right-4 p-2 text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 flex items-center justify-center"
+                                >
+                                    <i className="fa fa-download text-lg" />
+                                </button>
+                                <div ref={invoiceRef} className="border h-fit !mb-[140px] border-gray-200 rounded-xl shadow-lg  bg-white overflow-hidden">
 
                                     <div className="bg-gradient-to-r from-[#8B4513]/10 to-[#8B4513]/5 p-6 border-b border-gray-200">
                                         <h1 className="text-[#8B4513] text-2xl font-semibold text-center font-Poppins mb-2">{invoice?.companyId?.firmName}</h1>
@@ -197,26 +202,34 @@ export default function InvoicePage() {
                                         </div>
 
                                         <div className="overflow-x-auto rounded-lg border border-gray-200">
-                                            {invoice?.products?.map((item, index) => (
-                                                <table key={index} className="w-full  font-Poppins   text-sm">
-                                                    <thead>
-                                                        <tr className="bg-gray-50 border-b border-gray-200">
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Sr.</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Item Name</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Ct.</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">HSN</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">PCS</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Gross Wt.</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Net Wt.</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Labour Rate</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Labour Rs.</th>
-                                                            <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Extra Rs.</th>
-                                                            <th className="p-2 font-medium text-gray-600">Amount</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr className="border-b border-gray-200">
+                                            <table className="w-full  font-Poppins   text-sm">
+                                                <thead>
+                                                    <tr className="bg-gray-50 border-b border-gray-200">
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Sr.</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Item Name</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Ct.</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">HSN</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">PCS</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Gross Wt.</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Net Wt.</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Labour Rate</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Labour Rs.</th>
+                                                        <th className="border-r border-gray-200 p-2 font-medium text-gray-600">Extra Rs.</th>
+                                                        <th className="p-2 font-medium text-gray-600">Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody >
+                                                    {invoice?.products?.map((item, index) => (
+
+                                                        <tr key={index} className="border-b border-gray-200">
                                                             <td className="border-r border-gray-200 p-2">{index + 1}</td>
+                                                            {/* <td className="border-r border-gray-200 p-2">
+                                                                {item?.autoRef === "GroupItem"
+                                                                    ? item?.productId?.itemName
+                                                                    : item?.autoRef === "NonBarcodeCategory"
+                                                                        ? item?.productName
+                                                                        : "N/A"}
+                                                            </td>                                                             */}
                                                             <td className="border-r border-gray-200 p-2">{item?.productId?.itemName}</td>
                                                             <td className="border-r border-gray-200 p-2">916</td>
                                                             <td className="border-r border-gray-200 p-2">{item?.hsnCode || 0}</td>
@@ -228,20 +241,21 @@ export default function InvoicePage() {
                                                             <td className="border-r border-gray-200 p-2">{item?.extraRate || 0}</td>
                                                             <td className="p-2">{item?.totalPrice}</td>
                                                         </tr>
-                                                        <tr className="bg-gray-50">
-                                                            <td colSpan="5" className="border-r border-gray-200 p-2 text-gray-600">
-                                                                Total :
-                                                            </td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.grossQty}</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.netQty}</td>
-                                                            <td className="border-r border-gray-200 p-2"></td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.labourPrice || 0}</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.extraRate || 0}</td>
-                                                            <td className="p-2 font-medium">{item?.totalPrice}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            ))}
+                                                    ))}
+                                                    <tr className="bg-gray-50">
+                                                        <td colSpan="5" className="border-r border-gray-200 p-2 text-gray-600">
+                                                            Total :
+                                                        </td>
+                                                        <td className="border-r border-gray-200 p-2"></td>
+                                                        <td className="border-r border-gray-200 p-2"></td>
+                                                        <td className="border-r border-gray-200 p-2"></td>
+                                                        <td className="border-r border-gray-200 p-2"></td>
+                                                        <td className="border-r border-gray-200 p-2"></td>
+                                                        <td className="p-2 font-medium">{totalProductPrice?.toFixed(2)}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
                                         </div>
 
                                         <div className="bg-gray-50  font-Poppins  rounded-lg p-4 space-y-2 text-sm text-gray-600">

@@ -457,6 +457,7 @@ const navigate =useNavigate ()
 
                         return (
                           <tr key={index} className="">
+                            
                             <td className="py-2 px-2 flex items-center  border-gray-300">
                               <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
                               <span>{index + 1}</span>

@@ -217,10 +217,6 @@ export default function PurchesInvoice() {
     }
   };
 
-
-
-
-
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
@@ -315,6 +311,7 @@ export default function PurchesInvoice() {
       }
     }
   };
+
 
   const fetchUserDetails = async (userName) => {
     try {

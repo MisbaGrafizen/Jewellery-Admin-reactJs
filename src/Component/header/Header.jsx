@@ -9,14 +9,20 @@ import {
 } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategroyAction } from "../../redux/action/landingManagement";
-import { ApiPost } from "../../helper/axios";
+import { ApiGet, ApiPost } from "../../helper/axios";
 import { getMarketRateAction } from "../../redux/action/generalManagement";
 
 export default function Header({ pageName = "" }) {
   const dropdownRef = useRef(null);
   const [nameFocused, setNameFocused] = useState(false);
   const [CaratModalopen, setCaratModalOpen] = useState(false);
+  const [barcodeModalOpen, setBarcodeModalOpen] = useState(false);
   const [categoryRates, setCategoryRates] = useState({});
+  const [productDetailsModalOpen, setProductDetailsModalOpen] = useState(false);
+  const [barcode, setBarcode] = useState("");
+  const [productDetails, setProductDetails] = useState(null);
+
+
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);
@@ -46,43 +52,23 @@ export default function Header({ pageName = "" }) {
     }));
   };
 
-  // const handleSaveRates = async () => {
-  //   const ratesToSave = Object.entries(categoryRates).map(([categoryId, price]) => ({
-  //     categoryId,
-  //     price,
-  //   }));
-
-
-  //   try {
-  //     const response = await ApiPost("/admin/market-rate", { rates: ratesToSave });
-  //     console.log('response', response)
-  //     if (response?.data) {
-  //       alert("Rates saved successfully!");
-  //       setCaratModalOpen(false);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving rates:", error);
-  //     alert("Failed to save rates.");
-  //   }
-  // };
-
   const handleSaveRates = async () => {
     const ratesToSave = Object.keys(categoryRates).map((categoryId) => ({
       categoryId,
       price: categoryRates[categoryId],
     }));
-  
+
     if (ratesToSave.length === 0) {
       alert("Please enter at least one rate before saving.");
       return;
     }
-  
+
     console.log("Sending to API:", ratesToSave);
-  
+
     try {
       // Directly send the array, NOT wrapped inside "rates"
       const response = await ApiPost("/admin/market-rate", ratesToSave);
-  
+
       if (response?.data) {
         alert("Rates saved successfully!");
         setCaratModalOpen(false);
@@ -93,8 +79,80 @@ export default function Header({ pageName = "" }) {
       alert("Failed to save rates. Please check your inputs and try again.");
     }
   };
-  
-  
+
+
+  const handleBarcodeModalOpen = () => {
+    setBarcodeModalOpen(true);
+  };
+  const handleBarcodeModalClose = () => {
+    setBarcodeModalOpen(false);
+    setBarcode(""); // Clear the barcode input when closing
+  };
+
+  const closeProductDetailsModal = () => {
+    setProductDetailsModalOpen(false);
+  };
+
+
+
+  // const handleProductDetailsModalClose = () => {
+  //   setProductDetailsModalOpen(false);
+  //   setProductDetails(null); // Clear product details
+  // };
+
+  // const fetchProductDetails = async (barcode) => {
+  //   try {
+  //     const response = await ApiGet(`/admin/product/${barcode}`);
+  //     console.log('response', response)
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("Error fetching product details:", error);
+  //     alert("Failed to fetch product details.");
+  //   }
+  // };
+
+
+  const handleBarcodeSubmit = async () => {
+    console.log("handleBarcodeSubmit called");
+
+    if (barcode.trim()) {
+      console.log("Barcode Sent to API:", barcode);
+
+      try {
+        // Call the API to fetch product details
+        const response = await ApiGet(`/admin/product/${barcode}`);
+
+        console.log("API Response:", response);
+        console.log("Extracted Product:", response.product);
+
+        if (response && response.product) {
+          setProductDetails(response.product);
+          setBarcodeModalOpen(false);
+          setProductDetailsModalOpen(true);
+          console.log("Product Details Modal Opened!");
+        } else {
+          console.warn("No product details found!");
+          alert("No product found for the entered barcode.");
+        }
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        alert("Failed to fetch product details. Please try again.");
+      }
+    } else {
+      alert("⚠️ Please enter a valid barcode.");
+    }
+  };
+
+
+
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleBarcodeSubmit();
+    }
+  };
+
+
 
   return (
     <>
@@ -140,7 +198,14 @@ export default function Header({ pageName = "" }) {
 
           </div>
 
+
           <div className=" items-center   w-fit pr-[10px] flex gap-[20px]">
+            <button
+              className="font-Poppins bg-[#005f94] text-white px-[15px] py-[8px] rounded-[7px] hover:bg-[#004875] justify-end transition duration-200"
+              onClick={handleBarcodeModalOpen}
+            >
+              Scan
+            </button>
             <div className=" flex gap-[13px] items-center w-fit">
               <div ref={dropdownRef}>
                 <i
@@ -246,6 +311,69 @@ export default function Header({ pageName = "" }) {
                 </div>
               </div>
             </>
+          )}
+        </ModalContent>
+      </NextUIModal>
+
+      {/* Barcode Modal */}
+      <NextUIModal isOpen={barcodeModalOpen} onClose={handleBarcodeModalClose}>
+        <ModalContent className="md:max-w-[300px] shadow-none justify-center !bg-transparent h-[300px]">
+          <div className="relative w-[100%] md:max-w-[450px]  mt-[10px] bg-white rounded-2xl z-[100] flex justify-center !py-0 mx-auto h-[150px]">
+            <div
+              className="absolute right-[-13px] top-[-14px] flex gap-[5px] z-[300] items-center cursor-pointer py-[5px] px-[5px]"
+              onClick={handleBarcodeModalClose}
+            >
+              <i className="text-[25px] text-[red] bg-white rounded-full fa-solid fa-circle-xmark"></i>
+            </div>
+            <div className="w-[90%] mx-auto flex flex-col gap-[10px]">
+              <h3 className="text-[#081a21] text-[20px] font-Poppins justify-center font-semibold text-center">
+                Enter Barcode
+              </h3>
+              <input
+                type="text"
+                placeholder="Enter Barcode"
+                value={barcode}
+                onChange={(e) => setBarcode(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full border-[1px] border-[#dedede] rounded-lg py-[10px] px-[15px] font-Poppins"
+              />
+            </div>
+          </div>
+        </ModalContent>
+      </NextUIModal>
+
+      {/* Product Details Modal */}
+      <NextUIModal
+        isOpen={productDetailsModalOpen}
+        onClose={closeProductDetailsModal}
+      >
+        <ModalContent className="shadow-none flex flex-col bg-white max-w-[600px] mx-auto p-5 rounded-lg">
+          <h2 className="text-lg font-semibold mb-4">Product Details</h2>
+          {productDetails ? (
+            <div>
+              <p><strong>Product ID:</strong> {productDetails._id}</p>
+              <p><strong>Group:</strong> {productDetails.groupId?.name}</p>
+              <p><strong>Item:</strong> {productDetails.groupItemId?.itemName}</p>
+              <p><strong>Barcode:</strong> {productDetails.barCode}</p>
+              <p><strong>Weight:</strong> {productDetails.netWeight}g</p>
+              <p><strong>Net Weight:</strong> {productDetails.netWeight}</p>
+              <p><strong>Majuri:</strong> {productDetails.labour}</p>
+              <p><strong>Extra Rate:</strong> {productDetails.extraRate}</p>
+              <p><strong>G Rate:</strong> {productDetails.marketRateUsed}</p>
+              <p><strong>G Rs:</strong> {productDetails.calculatedMarketRate}</p>
+              <p><strong>GME Amount:</strong> {productDetails.GMEPrice}</p>
+              <p><strong>GST:</strong> {productDetails.gst}</p>
+              <p><strong>Final Price:</strong> ₹{productDetails.finalPrice}</p>
+              {productDetails.barcodeImage && (
+                <img
+                  src={productDetails.barcodeImage}
+                  alt="Barcode"
+                  className="w-40 mt-3"
+                />
+              )}
+            </div>
+          ) : (
+            <p className="text-red-500">No product details available.</p>
           )}
         </ModalContent>
       </NextUIModal>

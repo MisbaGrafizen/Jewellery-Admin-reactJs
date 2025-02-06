@@ -170,8 +170,31 @@ export default function CreateBarCodeStock() {
     }
   };
   
-
-
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "+" || event.key === "Add") {
+        event.preventDefault(); // Prevent browser zooming or unwanted effects
+        setFieldSets((prevFieldSets) => [
+          ...prevFieldSets,
+          {
+            hsn: "", grossWeight: "", lessWeight: "", westage: "", group: "",
+            account: "", labour: "", location: "", pcs: "", size: "",
+            moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
+            huidCharge: "", selectedTypeDesign: "", selectedTypeHuidRule: "",
+            dropdownOpenDesign: false, dropdownOpenHuid: false,
+            selectedTypeLabour: "", dropdownOpenLabour: false,
+          }
+        ]);
+      }
+    };
+  
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
+  
+  
   const handleFieldChange = (index, field, value) => {
     setFieldSets(prevFieldSets => {
       const updatedFieldSets = [...prevFieldSets];
@@ -331,8 +354,8 @@ export default function CreateBarCodeStock() {
       const matchLabour = (labourArray) =>
         labourArray.find(
           (labour) =>
-            String(labour.group._id).trim() === String(selectedCarat._id).trim() &&
-            String(labour.item._id).trim() === String(selectedCategory._id).trim()
+            String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
+            String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
         );
   
       let matchedLabour = null;

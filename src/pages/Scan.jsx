@@ -1,66 +1,89 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { ApiGet } from '../helper/axios';
+import React, { useState, useEffect } from "react";
+import { ApiGet } from "../helper/axios";
+import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 
-const scan = () => {
-  const [barcode, setBarcode] = useState('');
+const Scan = () => {
+  const [barcode, setBarcode] = useState("");
   const [product, setProduct] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null); // Timeout for auto-submit
 
-  const handleScan = async (event) => {
-    if (event.key === 'Enter') { // Scanner typically sends Enter key after the barcode
-      try {
-        const response = await ApiGet(`/admin/product/${barcode}`);
-        console.log("response", response)
-        setProduct(response.product); // Store the fetched product details
-        setError('');
-      } catch (err) {
-        console.error('Error fetching product:', err);
-        setError('Product not found or an error occurred.');
-        setProduct(null);
-      }
-      setBarcode(''); // Clear the barcode input after processing
+  // Auto-submit barcode when scanner types fast
+  useEffect(() => {
+    if (barcode.length > 5) {
+      clearTimeout(typingTimeout);
+      const timeout = setTimeout(() => {
+        fetchProductDetails(barcode.trim());
+      }, 500); // 0.5-second delay before submitting
+      setTypingTimeout(timeout);
     }
+  }, [barcode]);
+
+  // Fetch product details
+  const fetchProductDetails = async (scannedBarcode) => {
+    if (!scannedBarcode || scannedBarcode === product?.barCode) return;
+
+    try {
+      console.log("Fetching product for barcode:", scannedBarcode);
+      const response = await ApiGet(`/admin/product/${scannedBarcode}`);
+
+      if (response?.product) {
+        setProduct(response.product);
+        setError("");
+        setIsPopupOpen(true);
+      } else {
+        throw new Error("Product not found");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching product:", err);
+      setError("Product not found or an error occurred.");
+      setProduct(null);
+    }
+
+    setBarcode("");
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <h1 className="text-2xl font-bold mb-6">Barcode Scanner</h1>
 
+      {/* Barcode input field */}
       <input
         type="text"
         value={barcode}
         onChange={(e) => setBarcode(e.target.value)}
-        onKeyDown={handleScan}
-        placeholder="Scan or Enter Barcode"
+        placeholder="Scan barcode..."
         className="border border-gray-300 rounded p-2 mb-4 w-full max-w-md text-center"
         autoFocus
       />
 
-      {error && (
-        <div className="text-red-500 font-medium mb-4">
-          {error}
-        </div>
-      )}
+      {error && <div className="text-red-500 font-medium mb-4">{error}</div>}
 
-      {product && (
-        <div className="bg-white rounded shadow p-6 w-full max-w-md">
-          <h2 className="text-xl font-bold mb-4">Product Details</h2>
-          <p><strong>Barcode:</strong> {product.barCode}</p>
-          <p><strong>Group:</strong> {product.groupId?.name}</p>
-          <p><strong>Item:</strong> {product.groupItemId?.itemName}</p>
-          <p><strong>Metal:</strong> {product.metalId?.metalName}</p>
-          <p><strong>Weight:</strong> {product.toWeight}</p>
-          <p><strong>Net Weight:</strong> {product.netWeight}</p>
-          <p><strong>Fine Weight:</strong> {product.fineWeight}</p>
-          <p><strong>Total Price:</strong> {product.totalPrice}</p>
-          {product.barcodeImage && (
-            <img src={product.barcodeImage} alt="Barcode" className="mt-4" />
+      {/* Barcode Product Details Popup */}
+      <NextUIModal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+        <ModalContent className="shadow-none z-[100] flex flex-col !bg-transparent max-w-[600px] h-auto">
+          {product ? (
+            <div className="relative w-full bg-white mt-[10px] rounded-2xl z-[100] flex justify-center !py-6 mx-auto h-auto p-6">
+              <h2 className="text-xl font-bold mb-4">Product Details</h2>
+              <p><strong>Barcode:</strong> {product.barCode}</p>
+              <p><strong>Group:</strong> {product.groupId?.name}</p>
+              <p><strong>Item:</strong> {product.groupItemId?.itemName}</p>
+              <p><strong>Weight:</strong> {product.toWeight}g</p>
+              <p><strong>Net Weight:</strong> {product.netWeight}g</p>
+              <p><strong>Fine Weight:</strong> {product.fineWeight}</p>
+              <p><strong>Total Price:</strong> ₹{product.totalPrice}</p>
+              {product.barcodeImage && (
+                <img src={product.barcodeImage} alt="Barcode" className="mt-4" />
+              )}
+            </div>
+          ) : (
+            <p className="text-center">No product found.</p>
           )}
-        </div>
-      )}
+        </ModalContent>
+      </NextUIModal>
     </div>
   );
 };
 
-export default scan;
+export default Scan;
