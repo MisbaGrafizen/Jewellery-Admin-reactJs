@@ -1442,7 +1442,7 @@ export default function PurchesInvoice() {
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
                               Discount
                             </label>
-                            <div className="flex  w-[40.6%]   gap-4">
+                            <div className="flex  w-[320px]   gap-2">
                               <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                                 <label
                                   htmlFor="indis"
