@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
+// import JsBarcode from "jsbarcode";
 
 import { X, CheckCircle } from "lucide-react"
 import {
@@ -24,10 +25,10 @@ import {
 } from "../../redux/action/landingManagement";
 import { useNavigate } from "react-router-dom";
 export default function BarcodeStock() {
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
   const [name, setName] = useState("");
-    const [isMounted, setIsMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const [editingCarat, setEditingCarat] = useState(null);
   const [editCaratName, setEditCaratName] = useState("");
   const [editingCaratId, setEditingCaratId] = useState(null);
@@ -75,11 +76,11 @@ export default function BarcodeStock() {
   //   setMetal(metals || []);
   //   setItems(item || []);
   // }, [categories, metals, item]);
-const navigate =useNavigate ()
+  const navigate = useNavigate()
 
- const handleaddstock=()=>{
-  navigate("/barcode-stock")
- }
+  const handleaddstock = () => {
+    navigate("/barcode-stock")
+  }
   useEffect(() => {
     dispatch(getCategroyAction());
     dispatch(getMetalAction());
@@ -143,7 +144,7 @@ const navigate =useNavigate ()
             prev.filter((category) => category._id !== caratIdToDelete)
           );
         }
-      }  else if (deleteContext === "item") {
+      } else if (deleteContext === "item") {
         success = await dispatch(deleteGroupItemAction(caratIdToDelete));
         if (success) {
           setItems((prev) =>
@@ -286,58 +287,154 @@ const navigate =useNavigate ()
 
 
 
-   const onClose = () => {
-      setIsOpen(false); // Close the modal
-    };
+  const onClose = () => {
+    setIsOpen(false); // Close the modal
+  };
+
+
+  const onAdd = () => {
+    setIsOpen(true); // Close the modal
+  };
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+
+
+  const scrollContainerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // Adjust the multiplier for speed
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+
+
+
+
+
+
+  // const printRef = useRef(null);
+
+  // const handlePrint = () => {
+  //   const printContent = printRef.current;
   
+  //   if (!printContent) {
+  //     console.error("Print content is not available");
+  //     return;
+  //   }
   
-    const onAdd = () => {
-      setIsOpen(true); // Close the modal
-    };
-    useEffect(() => {
-      setIsMounted(true)
-    }, [])
-
-
-
-    const scrollContainerRef = useRef(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
+  //   console.log("Print content:", printContent.outerHTML);
   
-    const handleMouseDown = (e) => {
-      setIsDragging(true);
-      setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
-      setScrollLeft(scrollContainerRef.current.scrollLeft);
-    };
+  //   const printWindow = window.open("", "_blank");
+  //   printWindow.document.write(`
+  //     <html>
+  //       <head>
+  //         <title>Print Labels</title>
+  //         <style>
+  //           body {
+  //             margin: 0;
+  //             padding: 0;
+  //             display: flex;
+  //             flex-wrap: wrap;
+  //             justify-content: center;
+  //           }
+  //           .label {
+  //             width: 50mm;
+  //             height: 25mm;
+  //             margin: 5mm;
+  //             display: flex;
+  //             flex-direction: column;
+  //             align-items: center;
+  //             justify-content: center;
+  //             border: 1px solid #ddd;
+  //             padding: 5px;
+  //             font-family: Arial, sans-serif;
+  //           }
+  //           .barcode {
+  //             width: 100%;
+  //             height: auto;
+  //           }
+  //           .stock-name, .stock-price {
+  //             font-size: 10px;
+  //             margin-top: 5px;
+  //           }
+  //         </style>
+  //       </head>
+  //       <body>
+  //         ${printContent.outerHTML}
+  //       </body>
+  //     </html>
+  //   `);
   
-    const handleMouseMove = (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const x = e.pageX - scrollContainerRef.current.offsetLeft;
-      const walk = (x - startX) * 1.5; // Adjust the multiplier for speed
-      scrollContainerRef.current.scrollLeft = scrollLeft - walk;
-    };
+  //   printWindow.document.close();
   
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
+  //   printWindow.onload = () => {
+  //     printWindow.print();
+  //     printWindow.close();
+  //   };
+  // };
   
 
+  const handleNavigateToPrint = () => {
+    navigate("/print-stocks");
+  };
 
 
 
 
 
 
-
-
-    
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
         <div className="flex flex-col gap-[6px] w-[100%]">
-          <div className=" flex  justify-end w-[100%]">
+          <div className=" flex  justify-between w-[100%]">
+
+
+            <button
+              className="font-Poppins bs-spj text-white px-[15px] py-[8px] rounded-[7px] w-fit hover:bg-[#004875] justify-end transition duration-200"
+              onClick={handleNavigateToPrint}
+
+            >
+              Print bercode
+            </button>
+
+
+     {/* <div ref={printRef}>
+              {stocks && stocks.length > 0 ? (
+                stocks.map((stock, index) => (
+                  <div key={index} className="label">
+                    <img
+                      className="barcode"
+                      src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${stock.id}&scale=2`}
+                      alt="Barcode"
+                    />
+                    <div className="stock-name">{stock.name}</div>
+                    <div className="stock-price">${stock.price?.toFixed(2)}</div>
+                  </div>
+                ))
+              ) : (
+                <p>No stocks available.</p>
+              )}
+            </div>  */}
+
             <button
               className=" flex  w-[130px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
               onClick={handleaddstock}
@@ -351,13 +448,13 @@ const navigate =useNavigate ()
 
               <div className="bg-white   w-[100%] rounded-[10px] overflow-hidden shadow1-blue ">
                 {/* Table Header */}
-                <div 
-                ref={scrollContainerRef}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
-                className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
+                <div
+                  ref={scrollContainerRef}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
                   <table className="min-w-[2400px] w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
@@ -372,72 +469,72 @@ const navigate =useNavigate ()
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Carat
                         </th>
-                   
+
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Category
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        To Weight
+                          To Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Net Weight
+                          Net Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Fine Weight
+                          Fine Weight
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        G Rate
+                          G Rate
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        M Rate
+                          M Rate
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           M Rs
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                     G Rs
+                          G Rs
                         </th>
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                    Extra Rate
+                          Extra Rate
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        GME Amt
+                          GME Amt
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                    GST 
+                          GST
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                    Amount
+                          Amount
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Group
+                          Group
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Account
+                          Account
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Location
+                          Location
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Pcs
+                          Pcs
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        design
+                          design
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        size
+                          size
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Moti
+                          Moti
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Stone
+                          Stone
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        Jadatr
+                          Jadatr
                         </th>
-             
+
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Action
                         </th>
@@ -457,7 +554,7 @@ const navigate =useNavigate ()
 
                         return (
                           <tr key={index} className="">
-                            
+
                             <td className="py-2 px-2 flex items-center  border-gray-300">
                               <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
                               <span>{index + 1}</span>
@@ -466,47 +563,47 @@ const navigate =useNavigate ()
                               {item?.groupId?.name || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.groupItemId?.itemName || "-"}
+                              {item?.groupItemId?.itemName || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.toWeight || 0}
+                              {item?.toWeight || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {netWeight}
+                              {netWeight}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {updatedFineWeight}
+                              {updatedFineWeight}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.marketRateUsed || 0}
+                              {item?.marketRateUsed || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.labour || 0}
+                              {item?.labour || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.labour || 0}
+                              {item?.labour || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.calculatedMarketRate || 0}
+                              {item?.calculatedMarketRate || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item.extraRate || 0}
+                              {item.extraRate || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.GMEPrice || 0}
+                              {item?.GMEPrice || 0}
                             </td>
-     
+
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.gst || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item?.finalPrice || 0}
+                              {item?.gst || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item.group ||"-"}
+                              {item?.finalPrice || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                            {item.account || 0}
+                              {item.group || "-"}
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              {item.account || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item?.location || "-"}
@@ -529,7 +626,7 @@ const navigate =useNavigate ()
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item.jadatr || 0}
                             </td>
-                  
+
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               <i
                                 className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
@@ -550,7 +647,7 @@ const navigate =useNavigate ()
 
 
 
-               
+
                 </div>
               </div>
             </div>
@@ -635,11 +732,10 @@ const navigate =useNavigate ()
                             >
                               <label
                                 htmlFor="addstock"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedType || caratFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Carat
                               </label>
@@ -693,11 +789,10 @@ const navigate =useNavigate ()
                             >
                               <label
                                 htmlFor="addstockCategory"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeCategory || categoryFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Category
                               </label>
@@ -757,7 +852,7 @@ const navigate =useNavigate ()
 
 
                           <div className=" flex w-[100%]  gap-[30px]">
-                        
+
 
 
 
@@ -768,11 +863,10 @@ const navigate =useNavigate ()
                             >
                               <label
                                 htmlFor="addstockMetal"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  selectedTypeMetal || metalFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Size
                               </label>
@@ -828,11 +922,10 @@ const navigate =useNavigate ()
    bg-[#fff] ">
                               <label
                                 htmlFor="addstockGross"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  grossWeight || grossFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${grossWeight || grossFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 G .Weight
                               </label>
@@ -854,11 +947,10 @@ const navigate =useNavigate ()
    bg-[#fff] ">
                               <label
                                 htmlFor="addstockLoss"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  lessWeight || lossFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${lessWeight || lossFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 L .Weight
                               </label>
@@ -879,11 +971,10 @@ const navigate =useNavigate ()
    bg-[#fff] ">
                               <label
                                 htmlFor="addstockWastage"
-                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${
-                                  westage || wastageFocused
+                                className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${westage || wastageFocused
                                     ? "text-[#000] -translate-y-[21px] hidden "
                                     : "text-[#8f8f8f] cursor-text flex"
-                                }`}
+                                  }`}
                               >
                                 Wastage
                               </label>
@@ -938,74 +1029,74 @@ const navigate =useNavigate ()
 
 
       <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
-          aria-labelledby="modal-title"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
-            <motion.div
-              initial={{ scale: 0.5, rotateX: 90 }}
-              animate={{ scale: 1, rotateX: 0 }}
-              exit={{ scale: 0.5, rotateX: -90 }}
-              transition={{ type: "spring", damping: 15, stiffness: 100 }}
-              className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 overflow-y-auto bg-[#9b9b9b] bg-opacity-50 backdrop-blur-sm"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-center relative justify-center min-h-screen px-4 text-center">
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="flex justify-center mb-4"
+                initial={{ scale: 0.5, rotateX: 90 }}
+                animate={{ scale: 1, rotateX: 0 }}
+                exit={{ scale: 0.5, rotateX: -90 }}
+                transition={{ type: "spring", damping: 15, stiffness: 100 }}
+                className="inline-block w-full relative max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-gradient-to-br bg-white shadow-xl rounded-2xl transform"
               >
-                <CheckCircle className="w-16 h-16 text-[#122f97]" />
-              </motion.div>
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
-                id="modal-title"
-              >
-                Stock {  selectedStock ? "Update" :" Added"} successfully!
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
-              >
-                Your information has been successfully saved to our database.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-6 flex justify-center"
-              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#122f97] to-[#02124e]"></div>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="flex justify-center mb-4"
+                >
+                  <CheckCircle className="w-16 h-16 text-[#122f97]" />
+                </motion.div>
+                <motion.h3
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
+                  id="modal-title"
+                >
+                  Stock {selectedStock ? "Update" : " Added"} successfully!
+                </motion.h3>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-center font-[400] font-Poppins  text-[#122f97] mb-4"
+                >
+                  Your information has been successfully saved to our database.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mt-6 flex justify-center"
+                >
+                  <button
+                    onClick={onClose}
+                    className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  >
+                    Close
+                  </button>
+                </motion.div>
                 <button
                   onClick={onClose}
-                  className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
                 >
-                  Close
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
               </motion.div>
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 text-[#122f97] hover:text-[#343fa0] transition-colors duration-200"
-              >
-                <X className="h-6 w-6" aria-hidden="true" />
-              </button>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

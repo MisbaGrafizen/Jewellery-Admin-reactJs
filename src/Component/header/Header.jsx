@@ -21,7 +21,55 @@ export default function Header({ pageName = "" }) {
   const [productDetailsModalOpen, setProductDetailsModalOpen] = useState(false);
   const [barcode, setBarcode] = useState("");
   const [productDetails, setProductDetails] = useState(null);
+  const [BercodeFocused, setBercodeFocused] = useState(false);
+  //  const [barcode, setBarcode] = useState("");
+  const [product, setProduct] = useState(null);
+  const [error, setError] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null); // Timeout for auto-submit
 
+  // Auto-submit barcode when scanner types fast
+  useEffect(() => {
+    if (barcode.length > 5) {
+      clearTimeout(typingTimeout);
+      const timeout = setTimeout(() => {
+        fetchProductDetails(barcode.trim());
+      }, 500); // 0.5-second delay before submitting
+      setTypingTimeout(timeout);
+    }
+  }, [barcode]);
+
+  // Fetch product details
+  const fetchProductDetails = async (scannedBarcode) => {
+    if (!scannedBarcode || scannedBarcode === product?.barCode) return;
+
+    try {
+      console.log("Fetching product for barcode:", scannedBarcode);
+      const response = await ApiGet(`/admin/product/${scannedBarcode}`);
+      console.log('response', response);
+
+      if (response?.product) {
+        setProduct(response.product);
+        setError("");
+        setIsPopupOpen(true);
+      } else {
+        throw new Error("Product not found");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching product:", err);
+      setError("Product not found or an error occurred.");
+      setProduct(null);
+    }
+
+    setBarcode("");
+  };
+
+  // Handle Enter Key Press
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      fetchProductDetails(barcode.trim());
+    }
+  };
 
   const navigate = useNavigate();
   const handleBack = () => {
@@ -146,11 +194,11 @@ export default function Header({ pageName = "" }) {
 
 
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleBarcodeSubmit();
-    }
-  };
+  // const handleKeyDown = (e) => {
+  //   if (e.key === "Enter") {
+  //     handleBarcodeSubmit();
+  //   }
+  // };
 
 
 
@@ -201,7 +249,7 @@ export default function Header({ pageName = "" }) {
 
           <div className=" items-center   w-fit pr-[10px] flex gap-[20px]">
             <button
-              className="font-Poppins bg-[#005f94] text-white px-[15px] py-[8px] rounded-[7px] hover:bg-[#004875] justify-end transition duration-200"
+              className="font-Poppins bs-spj text-white px-[15px] py-[8px] rounded-[7px] w-[100px] hover:bg-[#004875] justify-end transition duration-200"
               onClick={handleBarcodeModalOpen}
             >
               Scan
@@ -317,26 +365,68 @@ export default function Header({ pageName = "" }) {
 
       {/* Barcode Modal */}
       <NextUIModal isOpen={barcodeModalOpen} onClose={handleBarcodeModalClose}>
-        <ModalContent className="md:max-w-[300px] shadow-none justify-center !bg-transparent h-[300px]">
-          <div className="relative w-[100%] md:max-w-[450px]  mt-[10px] bg-white rounded-2xl z-[100] flex justify-center !py-0 mx-auto h-[150px]">
+        <ModalContent className="md:max-w-[600px] shadow-none justify-center !bg-transparent h-[600px]">
+          <div className="relative w-[100%] md:max-w-[450px]  mt-[10px] bg-white rounded-2xl z-[100] flex justify-center !py-0 mx-auto h-[300px]">
             <div
               className="absolute right-[-13px] top-[-14px] flex gap-[5px] z-[300] items-center cursor-pointer py-[5px] px-[5px]"
               onClick={handleBarcodeModalClose}
             >
               <i className="text-[25px] text-[red] bg-white rounded-full fa-solid fa-circle-xmark"></i>
             </div>
-            <div className="w-[90%] mx-auto flex flex-col gap-[10px]">
-              <h3 className="text-[#081a21] text-[20px] font-Poppins justify-center font-semibold text-center">
-                Enter Barcode
-              </h3>
-              <input
-                type="text"
-                placeholder="Enter Barcode"
-                value={barcode}
-                onChange={(e) => setBarcode(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="w-full border-[1px] border-[#dedede] rounded-lg py-[10px] px-[15px] font-Poppins"
-              />
+            <div className=" w-[80%] flex flex-col gap-[20px] ">
+              <div className=" flex flex-col mt-[10px]">
+                <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
+                  <p className=" text-[20px]">Search Stock</p>
+                </div>
+                <div className=" flex mt-[0px] mx-auto j">
+                  <div className="flex items-center gap-3">
+                    <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                    <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                  </div>
+
+                  <i className="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
+                  {/* Right Side */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                    <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+              <div className="relative w-full  border-[1px] h-[46px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
+   bg-[#fff] ">
+                <label
+                  htmlFor="addstockWastage"
+                  className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${barcode || BercodeFocused
+                    ? "text-[#000] -translate-y-[21px] hidden "
+                    : "text-[#8f8f8f] cursor-text flex"
+                    }`}
+                >
+                 Scan barcode/Enter Barcode
+                </label>
+                <input
+                  type="text"
+                  name="netWeight"
+                  id="addstockWastage"
+                  value={barcode}
+                  onFocus={() => setBercodeFocused(true)}
+                  onBlur={() => setBercodeFocused(false)}
+                  onChange={(e) => setBarcode(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="w-full outline-none text-[15px]   py-[9px] font-Poppins font-[400] bg-transparent"
+                  autocomplete="naqsme"
+                />
+              </div>
+
+
+
+
+
+              
             </div>
           </div>
         </ModalContent>
@@ -367,6 +457,36 @@ export default function Header({ pageName = "" }) {
               {productDetails.barcodeImage && (
                 <img
                   src={productDetails.barcodeImage}
+                  alt="Barcode"
+                  className="w-40 mt-3"
+                />
+              )}
+            </div>
+          ) : (
+            <p className="text-red-500">No product details available.</p>
+          )}
+        </ModalContent>
+      </NextUIModal>
+      <NextUIModal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+        <ModalContent className="shadow-none flex flex-col bg-white max-w-[600px] mx-auto p-5 rounded-lg">
+          <h2 className="text-lg font-semibold mb-4">Product Details</h2>        {product ? (
+            <div>
+              <p><strong>Product ID:</strong> {product._id}</p>
+              <p><strong>Group:</strong> {product.groupId?.name}</p>
+              <p><strong>Item:</strong> {product.groupItemId?.itemName}</p>
+              <p><strong>Barcode:</strong> {product.barCode}</p>
+              <p><strong>Weight:</strong> {product.netWeight}g</p>
+              <p><strong>Net Weight:</strong> {product.netWeight}</p>
+              <p><strong>Majuri:</strong> {product.labour}</p>
+              <p><strong>Extra Rate:</strong> {product.extraRate}</p>
+              <p><strong>G Rate:</strong> {product.marketRateUsed}</p>
+              <p><strong>G Rs:</strong> {product.calculatedMarketRate}</p>
+              <p><strong>GME Amount:</strong> {product.GMEPrice}</p>
+              <p><strong>GST:</strong> {product.gst}</p>
+              <p><strong>Final Price:</strong> ₹{product.finalPrice}</p>
+              {product.barcodeImage && (
+                <img
+                  src={product.barcodeImage}
                   alt="Barcode"
                   className="w-40 mt-3"
                 />

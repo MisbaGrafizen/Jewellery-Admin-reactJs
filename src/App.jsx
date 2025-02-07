@@ -122,6 +122,7 @@ import StockAddPage from "./../src/pages/mainPages/StockMain/StockAddPage"
 import DashBoard from "./pages/dashBoard/DashBoard";
 import CreateBarCodeStock from "./pages/NewStockCreate/CreateBarCodeStock";
 import CreateNonbarStock from "./pages/NewStockCreate/CreateNonbarStock";
+import PrintStocks from "./pages/PrintStocks";
 
 function App() {
 
@@ -142,6 +143,7 @@ function App() {
           <Route path="/scan" element={<Scan />}/>
           <Route path="/add-stock" element={<StockAddPage />} />
           <Route path="/dashboard" element={<DashBoard />} />
+          <Route path="/print-stocks" element={<PrintStocks />} />
           {/* New Page Of stock create */}
           <Route path="/barcode-stock" element={<CreateBarCodeStock />} />
           <Route path="/nonbarcode-stock" element={<CreateNonbarStock />} />
