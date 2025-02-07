@@ -1,9 +1,42 @@
 import { useSelector } from "react-redux";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Cookies from 'js-cookie';
 
 export default function PrintStocks() {
-  const stocks = useSelector((state) => state.landing.getProduct);
+  const [barcodes, setBarcodes] = useState([]);
   const printRef = useRef(null);
+
+  const token = Cookies.get("token");
+
+  useEffect(() => {
+    const fetchBarcodes = async () => {
+      if (!token) {
+        console.error("No authentication token found.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8000/api/v1/admin/barcodes", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, 
+          },
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setBarcodes(data.barcodes);
+        } else {
+          console.error("Failed to fetch barcodes:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching barcodes:", error);
+      }
+    };
+
+    fetchBarcodes();
+  }, [token]);
 
   const handlePrint = () => {
     const printContent = printRef.current;
@@ -63,20 +96,19 @@ export default function PrintStocks() {
         Print
       </button>
       <div ref={printRef}>
-        {stocks && stocks.length > 0 ? (
-          stocks.map((stock, index) => (
+      {barcodes.length > 0 ? (
+          barcodes.map((barcode, index) => (
             <div key={index} className="label">
               <img
                 className="barcode"
-                src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${stock.id}&scale=3`}
-                alt="Barcode"
+                src={barcode.barcodeImage} // Fetching barcode image from API
+                alt={`Barcode ${barcode.barCode}`}
               />
-              <div className="stock-name">{stock.name}</div>
-              <div className="stock-price">${stock.price?.toFixed(2)}</div>
+              <div className="stock-name">{barcode.barCode}</div>
             </div>
           ))
         ) : (
-          <p>No stocks available.</p>
+          <p>No barcodes available.</p>
         )}
       </div>
     </div>
