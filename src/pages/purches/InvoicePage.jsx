@@ -131,7 +131,7 @@ export default function InvoicePage() {
                                 </button>
                                 <div ref={invoiceRef} className="border h-fit !mb-[140px] border-gray-200 rounded-xl shadow-lg  bg-white overflow-hidden">
 
-                                    <div className="bg-gradient-to-r from-[#8B4513]/10 to-[#8B4513]/5 p-6 border-b border-gray-200">
+                                    <div className="bg-[#f0e3dac6] from-[#8B4513]/10 to-[#8B4513]/5 p-6 border-b border-gray-200">
                                         <h1 className="text-[#8B4513] text-2xl font-semibold text-center font-Poppins mb-2">{invoice?.companyId?.firmName}</h1>
                                         <p className="text-gray-600 text-center font-Poppins">{invoice?.companyId?.address}</p>
                                         <div className="flex flex-wrap justify-between text-sm mt-3 text-gray-600">
@@ -170,33 +170,33 @@ export default function InvoicePage() {
                                             <div className="space-y-2">
                                                 <div className="flex gap-2  font-Poppins ">
                                                     <span className="text-gray-600 font-medium ">Name:</span>
-                                                    <span>{invoice?.customerId?.name}</span>
+                                                    <span className=" flex  text-[#000]">{invoice?.customerId?.name}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">Address:</span>
-                                                    <span>{invoice?.customerId?.address}</span>
+                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.address}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">City:</span>
-                                                    <span>{invoice?.customerId?.city}</span>
+                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.city}</span>
                                                 </div>
                                             </div>
                                             <div className="space-y-2  font-Poppins ">
                                                 <div className="flex gap-2  font-Poppins ">
                                                     <span className="text-gray-600 font-medium">Mo:</span>
-                                                    <span>{invoice?.customerId?.phone}</span>
+                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.phone}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">PAN:</span>
-                                                    <span>{invoice?.customerId?.panNo}</span>
+                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.panNo}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">GST No:</span>
-                                                    <span>{invoice?.customerId?.GST}</span>
+                                                    <spa  className=" flex  text-[#000]">{invoice?.customerId?.GST}</spa>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">State & Code:</span>
-                                                    <span>24-{invoice?.customerId?.state}</span>
+                                                    <span  className=" flex  text-[#000]">24-{invoice?.customerId?.state}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -230,16 +230,16 @@ export default function InvoicePage() {
                                                                         ? item?.productName
                                                                         : "N/A"}
                                                             </td>                                                             */}
-                                                            <td className="border-r border-gray-200 p-2">{item?.productId?.itemName}</td>
-                                                            <td className="border-r border-gray-200 p-2">916</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.hsnCode || 0}</td>
-                                                            <td className="border-r border-gray-200 p-2">1</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.grossQty}</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.netQty}</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.labour || 0}</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.labourPrice || 0}</td>
-                                                            <td className="border-r border-gray-200 p-2">{item?.extraRate || 0}</td>
-                                                            <td className="p-2">{item?.totalPrice}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.productId?.itemName}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">916</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.hsnCode || 0}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">1</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.grossQty}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.netQty}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.labour || 0}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.labourPrice || 0}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.extraRate || 0}</td>
+                                                            <td className="p-2 text-[#000]">{item?.totalPrice}</td>
                                                         </tr>
                                                     ))}
                                                     <tr className="bg-gray-50">
@@ -251,7 +251,7 @@ export default function InvoicePage() {
                                                         <td className="border-r border-gray-200 p-2"></td>
                                                         <td className="border-r border-gray-200 p-2"></td>
                                                         <td className="border-r border-gray-200 p-2"></td>
-                                                        <td className="p-2 font-medium">{totalProductPrice?.toFixed(2)}</td>
+                                                        <td className="p-2 font-medium text-[#000]">{totalProductPrice?.toFixed(2)}</td>
                                                     </tr>
 
                                                 </tbody>
@@ -283,28 +283,28 @@ export default function InvoicePage() {
                                                 <table className="w-full text-sm">
                                                     <tbody className="space-y-2">
                                                         <tr className="flex justify-between py-1">
-                                                            <td className="text-gray-600">Less Discount ({invoice?.discount}%)</td>
-                                                            <td className="font-medium">₹{invoice?.discountAmount?.toFixed(2)}</td>
+                                                            <td className="text-gray-600 ">Less Discount ({invoice?.discount}%)</td>
+                                                            <td className="font-medium text-[#000]">₹{invoice?.discountAmount?.toFixed(2)}</td>
                                                         </tr>
                                                         <tr className="flex justify-between py-1">
                                                             <td className="text-gray-600">Total Amount Before Tax</td>
-                                                            <td className="font-medium">₹{invoice?.discountPrice?.toFixed(2)}</td>
+                                                            <td className="font-medium text-[#000]">₹{invoice?.discountPrice?.toFixed(2)}</td>
                                                         </tr>
                                                         <tr className="flex justify-between py-1">
                                                             <td className="text-gray-600">Add SGST @ 1.5%</td>
-                                                            <td className="font-medium">₹{invoice?.cgstAmount?.toFixed(2)}</td>
+                                                            <td className="font-medium text-[#000]">₹{invoice?.cgstAmount?.toFixed(2)}</td>
                                                         </tr>
                                                         <tr className="flex justify-between py-1">
                                                             <td className="text-gray-600">Add CGST @ 1.5%</td>
-                                                            <td className="font-medium">₹{invoice?.sgstAmount?.toFixed(2)}</td>
+                                                            <td className="font-medium text-[#000]">₹{invoice?.sgstAmount?.toFixed(2)}</td>
                                                         </tr>
                                                         <tr className="flex justify-between py-1">
                                                             <td className="text-gray-600">Tax Amount GST</td>
-                                                            <td className="font-medium">₹{invoice?.gstAmount?.toFixed(2)}</td>
+                                                            <td className="font-medium text-[#000]">₹{invoice?.gstAmount?.toFixed(2)}</td>
                                                         </tr>
                                                         <tr className="flex justify-between py-1">
                                                             <td className="text-gray-600">Round Off</td>
-                                                            <td className="font-medium">₹{invoice?.roundOff || 0}</td>
+                                                            <td className="font-medium text-[#000]">₹{invoice?.roundOff || 0}</td>
                                                         </tr>
                                                         <tr className="flex justify-between py-1 text-[#8B4513] font-medium">
                                                             <td>Total Amount After Tax</td>
