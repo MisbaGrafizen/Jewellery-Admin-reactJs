@@ -161,7 +161,7 @@ export default function PurchesInvoice() {
   const fetchProductDetails = async (productName, toWeight, index) => {
     try {
       const response = await ApiGet(
-        `/admin/productDetails?productName=${productName}&toWeight=${toWeight}`
+        `/admin/productDetails?productName=${productName}`
       );
 
       console.log("Fetched Product Details:", response);
@@ -178,15 +178,16 @@ export default function PurchesInvoice() {
 
           let productIdValue = response._id || existingProduct.productId || null;
 
-          let productGroupItemId = response.groupItemId || existingProduct.groupItemId;
+          let productGroupItemId = response.groupItemId || updatedProducts[index].groupItemId;
 
           updatedProducts[index] = {
             ...existingProduct,
             ...response,
             barcodeVisible: barcodeVisibility,
-            productId: productIdValue,
+            // productId: productIdValue,
             autoRef: autoRefValue,
-            groupItemId: productGroupItemId,
+            productId: productGroupItemId,
+            
           };
 
           console.log("Updated Products:", updatedProducts);
@@ -212,9 +213,25 @@ export default function PurchesInvoice() {
           return updatedTotals;
         });
       }
+      // if (response && response._id) {
+      //   console.log("✅ Product Found:", response);
+      //   assignProductId(response.groupItemId, index);
+      // }
+       else {
+        // ❌ If product does not exist, create a new one
+        createNewProduct(productName, toWeight, index);
+    }
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
+  };
+
+  const assignProductId = (productId, index) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product, i) =>
+        i === index ? { ...product, productId } : product
+      )
+    );
   };
 
   const handleMouseDown = (e) => {
@@ -235,8 +252,6 @@ export default function PurchesInvoice() {
     setIsDragging(false);
   };
 
-
-  console.log("companyInfo", companyInfo);
   const handlePartyModal = () => {
     setPartyModalOpen(true);
   };
@@ -292,25 +307,36 @@ export default function PurchesInvoice() {
     setProducts(updatedProducts);
   };
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
       const inputValue = e.target.value.trim();
-
+  
       if (/^\d{5,}$/.test(inputValue)) {
-        fetchProductByBarcode(inputValue, index);
-      } else if (/^\d+(\.\d+)?$/.test(inputValue)) {
-        setProducts((prevProducts) => {
-          const updatedProducts = [...prevProducts];
-          updatedProducts[index].toWeight = inputValue;
-          return updatedProducts;
-        });
-
-        fetchProductDetails(products[index].productName, inputValue, index);
+        // ✅ Fetch by Barcode
+        await fetchProductByBarcode(inputValue, index);
       } else {
-        console.warn("Invalid input format");
+        // ✅ Fetch by Product Name
+        fetchProductDetails(inputValue, index)
+          .then((productDetails) => {
+            if (productDetails) {
+              setProducts((prevProducts) => {
+                const updatedProducts = [...prevProducts];
+                updatedProducts[index] = {
+                  ...updatedProducts[index],
+                  productName: inputValue,
+                  // productId: productDetails?._id || updatedProducts[index].productId || "",
+                  productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
+                };
+                return updatedProducts;
+              });
+            }
+          })
+          .catch((error) => console.error("Error fetching product details:", error));
       }
     }
   };
+  
+  
 
 
   const fetchUserDetails = async (userName) => {
@@ -545,6 +571,17 @@ export default function PurchesInvoice() {
               finalPrice,
           } = calculateTax(totals.amount || 0, discountPercentage || 0);
 
+        //   updateTotalsAndApplyDiscount();
+
+        // // ✅ Get updated values from state
+        // const totalPrice = finalTotal;
+        // const discountAmt = discountAmount;
+        // const discountPrice = discountPrice;
+        // const calculatedCgst = cgst;
+        // const calculatedSgst = sgst;
+        // const totalTax = totalTaxAmount;
+        // const finalPrice = finalTotal;
+
           const payload = {
               customerId,
               products: products.map((product) => ({
@@ -631,16 +668,36 @@ export default function PurchesInvoice() {
             if (i === index) {
                 let updatedProduct = { ...product, [field]: value };
 
-                updatedProduct.productId = 
-                    product?.productId ||       
-                    product?.groupItemId?._id || 
-                    "";   
+                // updatedProduct.productId = 
+                //     product?.productId ||       
+                //     product?.groupItemId?._id || 
+                //     "";   
 
                 updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
-
-                if (field === "productName" && product?.groupItemId?._id) {
-                  updatedProduct.productId = product.groupItemId._id;
+             
+                if (field === "productName" || field === "toWeight") {
+                  fetchProductDetails(updatedProduct.productName, updatedProduct.toWeight, index);
               }
+
+              // if (field === "productName") {
+              //   fetchProductDetails(updatedProduct.productName, index)
+              //     .then((productDetails) => {
+              //       if (productDetails) {
+              //         setProducts((prevProducts) => {
+              //           const updatedProducts = [...prevProducts];
+              //           updatedProducts[index] = {
+              //             ...updatedProducts[index],
+              //             // productId: productDetails?._id || updatedProducts[index].productId || "",
+              //             productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
+              //             productName: response.productName || updatedProducts[index].productName,
+
+              //           };
+              //           return updatedProducts;
+              //         });
+              //       }
+              //     })
+              //     .catch((error) => console.error("Error fetching product details:", error));
+              // }
 
                 if (field === "marketRateUsed" || field === "netWeight") {
                     const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
@@ -676,14 +733,18 @@ export default function PurchesInvoice() {
                     const enteredPcs = parseInt(value) || 0; // Get sold pcs
                     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
                 }
-
+                console.log("📌 Updated product:", updatedProduct);
                 return updatedProduct;
             }
+            console.log('product', product)
             return product;
         });
     });
     updateTotalsAndApplyDiscount();
 };
+
+
+
 
 
   return (
