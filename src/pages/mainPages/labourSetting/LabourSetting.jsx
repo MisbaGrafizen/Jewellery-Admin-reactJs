@@ -487,7 +487,7 @@ export default function LabourSetting() {
       : item.find((data) => data.itemName === selectedTypeCategory);
 
 
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+    if (!selectedCarat || !selectedCategory) {
       alert(
         "Invalid selection. Please select valid Carat, Metal, and Category."
       );
@@ -496,7 +496,6 @@ export default function LabourSetting() {
 
     const uchakData = {
       group: selectedCarat?._id,
-      metal: selectedMetal?._id,
       item: selectedCategory?._id,
       minWeight: parseFloat(formData.minWeight) || 0,
       maxWeight: parseFloat(formData.maxWeight) || 0,
@@ -528,11 +527,10 @@ export default function LabourSetting() {
       setIsEditing(false);
       setFormData({
         carat: "",
-        metal: "",
         category: "",
         minWeight: 0,
-        maxWeight: 100,
-        rate: 50,
+        maxWeight: 0,
+        rate: 0,
       });
     } catch (error) {
       console.error("Error saving Uchak:", error);
@@ -554,7 +552,7 @@ export default function LabourSetting() {
       : item.find((data) => data.itemName === selectedTypeCategoryWeight);
 
 
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+    if (!selectedCarat  || !selectedCategory) {
       alert(
         "Invalid selection. Please select valid Carat, Metal, and Category."
       );
@@ -563,7 +561,6 @@ export default function LabourSetting() {
 
     const weightData = {
       group: selectedCarat?._id,
-      metal: selectedMetal?._id,
       item: selectedCategory?._id,
       minWeight: parseFloat(formDataWeight.minWeight) || 0,
       maxWeight: parseFloat(formDataWeight.maxWeight) || 0,
@@ -595,11 +592,10 @@ export default function LabourSetting() {
       setIsEditingWeight(false);
       setFormDataWeight({
         carat: "",
-        metal: "",
         category: "",
         minWeight: 0,
-        maxWeight: 100,
-        rate: 50,
+        maxWeight: 0,
+        rate: 0,
       });
     } catch (error) {
       console.error("Error saving Uchak:", error);
@@ -623,7 +619,7 @@ export default function LabourSetting() {
       : item.find((data) => data.itemName === selectedTypeCategoryPercentage);
 
 
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+    if (!selectedCarat  || !selectedCategory) {
       alert(
         "Invalid selection. Please select valid Carat, Metal, and Category."
       );
@@ -632,7 +628,6 @@ export default function LabourSetting() {
 
     const percentageData = {
       group: selectedCarat?._id,
-      metal: selectedMetal?._id,
       item: selectedCategory?._id,
       minWeight: parseFloat(formDataPercentage.minWeight) || 0,
       maxWeight: parseFloat(formDataPercentage.maxWeight) || 0,
@@ -664,11 +659,10 @@ export default function LabourSetting() {
       setIsEditingPercentage(false);
       setFormDataPercentage({
         carat: "",
-        metal: "",
         category: "",
         minWeight: 0,
-        maxWeight: 100,
-        rate: 50,
+        maxWeight: 0,
+        rate: 0,
       });
     } catch (error) {
       console.error("Error saving Uchak:", error);

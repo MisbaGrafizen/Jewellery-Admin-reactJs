@@ -384,6 +384,8 @@ export default function PurchesInvoice() {
       groupItemId: { itemName: "" }, // Placeholder for product name
       toWeight: "",
       netWeight: "",
+      marketRateUsed: "",
+      gTs: "",
       totalPrice: "",
     };
     setProducts([...products, newProduct]);
@@ -396,16 +398,40 @@ export default function PurchesInvoice() {
     }, 0);
   };
 
+  // const handleDiscountKeyPress = (event) => {
+  //   if (event.key === "Enter") {
+  //     console.log("Enter key pressed");
+  //     console.log("Current totals:", totals);
+  //     console.log("Discount Percentage:", discountPercentage);
+
+  //     const totalPrice = totals.amount || 0;
+  //     calculateTax(totalPrice, discountPercentage);
+  //   }
+  // };
+
+
   const handleDiscountKeyPress = (event) => {
     if (event.key === "Enter") {
-      console.log("Enter key pressed");
-      console.log("Current totals:", totals);
-      console.log("Discount Percentage:", discountPercentage);
-
-      const totalPrice = totals.amount || 0;
-      calculateTax(totalPrice, discountPercentage);
+      updateTotalsAndApplyDiscount();
     }
   };
+
+  const updateTotalsAndApplyDiscount = () => {
+    const totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
+    const discountAmt = (totalPrice * discountPercentage) / 100;
+    const discountPrice = totalPrice - discountAmt;
+    const calculatedCgst = (discountPrice * 1.5) / 100;
+    const calculatedSgst = (discountPrice * 1.5) / 100;
+    const totalTax = calculatedCgst + calculatedSgst;
+    const finalPrice = discountPrice + totalTax;
+
+    setDiscountAmount(discountAmt);
+    setCgst(calculatedCgst);
+    setSgst(calculatedSgst);
+    setTotalTaxAmount(totalTax);
+    setFinalTotal(finalPrice);
+  };
+
 
   const calculateTax = (totalPrice = 0, discountPercentage = 0) => {
     console.log("totalPrice:", totalPrice);
@@ -445,59 +471,59 @@ export default function PurchesInvoice() {
     return invoiceData;
   };
 
-  const handleSaveInvoice = async () => {
-    try {
-      const {
-        discountAmount,
-        discountPrice,
-        calculatedCgst,
-        calculatedSgst,
-        totalTax,
-        finalPrice,
-      } = calculateTax(totals.amount || 0, discountPercentage || 0);
+  // const handleSaveInvoice = async () => {
+  //   try {
+  //     const {
+  //       discountAmount,
+  //       discountPrice,
+  //       calculatedCgst,
+  //       calculatedSgst,
+  //       totalTax,
+  //       finalPrice,
+  //     } = calculateTax(totals.amount || 0, discountPercentage || 0);
 
-      const payload = {
-        customerId,
-        products: products.map((product) => ({
-          productId: product?.groupItemId,
-          hsnCode: product?.hsn || 0,
-          gstRate: product?.gstRate || 0,
-          grossQty: product?.toWeight || 0,
-          netQty: product?.netWeight || 0,
-          rate: product?.extraRate || 0,
-          totalPrice: product?.totalPrice || 0,
-        })),
-        billType: "estimate",
-        billNo: Date.now(),
-        date: selectedDate,
-        discount: discountPercentage || 0,
-        discountAmount: discountAmount,
-        discountPrice: discountPrice,
-        cgstAmount: calculatedCgst,
-        sgstAmount: calculatedSgst,
-        gstAmount: totalTax,
-        totalPrice: finalPrice,
-        companyId: companyInfo?.[0]?._id,
-        paymentType: "cash",
-      };
+  //     const payload = {
+  //       customerId,
+  //       products: products.map((product) => ({
+  //         productId: product?.groupItemId,
+  //         hsnCode: product?.hsn || 0,
+  //         gstRate: product?.gstRate || 0,
+  //         grossQty: product?.toWeight || 0,
+  //         netQty: product?.netWeight || 0,
+  //         rate: product?.extraRate || 0,
+  //         totalPrice: product?.totalPrice || 0,
+  //       })),
+  //       billType: "estimate",
+  //       billNo: Date.now(),
+  //       date: selectedDate,
+  //       discount: discountPercentage || 0,
+  //       discountAmount: discountAmount,
+  //       discountPrice: discountPrice,
+  //       cgstAmount: calculatedCgst,
+  //       sgstAmount: calculatedSgst,
+  //       gstAmount: totalTax,
+  //       totalPrice: finalPrice,
+  //       companyId: companyInfo?.[0]?._id,
+  //       paymentType: "cash",
+  //     };
 
-      console.log('payload', payload)
+  //     console.log('payload', payload)
 
-      const response = await ApiPost("/admin/bill", payload);
-      console.log("response", response);
-      if (response.data.bill) {
-        const createdInvoiceId = response.data.bill._id;
-        setCreatedInvoiceId(createdInvoiceId);
-        alert("Invoice created successfully!");
-        navigate(`/invoice-bill/${createdInvoiceId}`);
-      } else {
-        alert("Failed to create invoice!");
-      }
-    } catch (error) {
-      console.error("Error creating invoice:", error);
-      alert("An error occurred while creating the invoice.");
-    }
-  };
+  //     const response = await ApiPost("/admin/bill", payload);
+  //     console.log("response", response);
+  //     if (response.data.bill) {
+  //       const createdInvoiceId = response.data.bill._id;
+  //       setCreatedInvoiceId(createdInvoiceId);
+  //       alert("Invoice created successfully!");
+  //       navigate(`/invoice-bill/${createdInvoiceId}`);
+  //     } else {
+  //       alert("Failed to create invoice!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating invoice:", error);
+  //     alert("An error occurred while creating the invoice.");
+  //   }
+  // };
 
   // const handleInputChange = (e) => {
   //   const { name, value } = e.target;
@@ -506,6 +532,62 @@ export default function PurchesInvoice() {
   //     [name]: value,
   //   }));
   // };
+
+
+    const handleSaveInvoice = async () => {
+      try {
+          const {
+              discountAmount,
+              discountPrice,
+              calculatedCgst,
+              calculatedSgst,
+              totalTax,
+              finalPrice,
+          } = calculateTax(totals.amount || 0, discountPercentage || 0);
+
+          const payload = {
+              customerId,
+              products: products.map((product) => ({
+                  productId: product?.productId || "", // Ensure it's a valid ObjectId
+                  hsnCode: product?.hsn || 0,
+                  gstRate: product?.gstRate || 0,
+                  grossQty: product?.toWeight || 0,
+                  netQty: product?.netWeight || 0,
+                  rate: product?.extraRate || 0,
+                  totalPrice: product?.totalPrice || 0,
+              })),
+              billType: "estimate",
+              billNo: Date.now(),
+              date: selectedDate,
+              discount: discountPercentage || 0,
+              discountAmount: discountAmount,
+              discountPrice: discountPrice,
+              cgstAmount: calculatedCgst,
+              sgstAmount: calculatedSgst,
+              gstAmount: totalTax,
+              totalPrice: finalPrice,
+              companyId: companyInfo?.[0]?._id,
+              paymentType: "cash",
+          };
+
+          console.log('payload', payload);
+
+          const response = await ApiPost("/admin/bill", payload);
+          console.log("response", response);
+
+          if (response.data.bill) {
+              const createdInvoiceId = response.data.bill._id;
+              setCreatedInvoiceId(createdInvoiceId);
+              alert("Invoice created successfully!");
+              navigate(`/invoice-bill/${createdInvoiceId}`);
+          } else {
+              alert("Failed to create invoice!");
+          }
+      } catch (error) {
+          console.error("Error creating invoice:", error);
+          alert("An error occurred while creating the invoice.");
+      }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -541,6 +623,67 @@ export default function PurchesInvoice() {
   const onClose = () => {
     setIsOpen(false); // Close the modal
   };
+
+  const handleProductInputChange = (e, index, field) => {
+    const value = e.target.value;
+    setProducts((prevProducts) => {
+        return prevProducts.map((product, i) => {
+            if (i === index) {
+                let updatedProduct = { ...product, [field]: value };
+
+                updatedProduct.productId = 
+                    product?.productId ||       
+                    product?.groupItemId?._id || 
+                    "";   
+
+                updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+
+                if (field === "productName" && product?.groupItemId?._id) {
+                  updatedProduct.productId = product.groupItemId._id;
+              }
+
+                if (field === "marketRateUsed" || field === "netWeight") {
+                    const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+                    const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+                    updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+                }
+
+                // ✅ 2️⃣ Calculate Labour Rate (Labour * Net Weight)
+                if (field === "labour") {
+                    const labour = parseFloat(updatedProduct.labour) || 0;
+                    const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+                    updatedProduct.labourRate = labour * netWeight;
+                }
+
+                // ✅ 3️⃣ Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
+                if (field === "extraRate") {
+                    const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+                    const labourRate = parseFloat(updatedProduct.labourRate) || 0;
+                    const extraRate = parseFloat(updatedProduct.extraRate) || 0;
+                    updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
+                }
+
+                // ✅ 4️⃣ Add GST Directly (Not Percentage)
+                if (field === "gst") {
+                    const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
+                    const gstAmount = parseFloat(updatedProduct.gst) || 0;
+                    updatedProduct.finalPrice = GMEPrice + gstAmount;
+                }
+
+                // ✅ 5️⃣ Remove Sold Pcs from Remaining Stock
+                if (field === "pcs") {
+                    const totalPcs = product?.totalPcs || 0; // Get the total available stock
+                    const enteredPcs = parseInt(value) || 0; // Get sold pcs
+                    updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
+                }
+
+                return updatedProduct;
+            }
+            return product;
+        });
+    });
+    updateTotalsAndApplyDiscount();
+};
 
 
   return (
@@ -853,11 +996,10 @@ export default function PurchesInvoice() {
                               Product Name
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[115px]  border-r border-gray-200">
-                              To Weight
+                              Gross Weight
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[108px] border-r border-gray-200">
-                              HSN/SAC
-                            </th>
+                              Less Weight                            </th>
                             {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
                               To Weight
                             </th> */}
@@ -865,10 +1007,10 @@ export default function PurchesInvoice() {
                               Net Weight
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              Fine Weight
+                              G Rate
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[94px]  border-r border-gray-200">
-                              G Rate
+                              G Rs
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[92px]  border-r border-gray-200">
                               M Rate
@@ -878,7 +1020,7 @@ export default function PurchesInvoice() {
                               M Rs
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[88px]  border-r border-gray-200">
-                              G Rs
+                              HSN/SAC
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[90px]  border-r border-gray-200">
                               Extra Rate
@@ -961,34 +1103,31 @@ export default function PurchesInvoice() {
                                 <input
                                   type="number"
                                   value={product.toWeight || ""}
-                                  onChange={(e) => {
-                                    setProducts((prevProducts) => {
-                                      const updatedProducts = [...prevProducts];
-                                      updatedProducts[index].toWeight = e.target.value;
-                                      return updatedProducts;
-                                    });
-                                  }}
+                                  onChange={(e) => handleProductInputChange(e, index, "toWeight")}
                                   onKeyDown={(e) => handleKeyDown(e, index)}
                                   className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                   autoFocus
                                 />
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
-                                  name="category"
+                                  name="lessWeight"
+                                  value={product.lessWeight}
+                                  onChange={(e) => handleProductInputChange(e, index, "lessWeight")}
                                   className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                   autoFocus
-                                /> */}
-                                {product.hnsCode || "-"}
+                                />
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
+                                  name="netWeight"
+                                  value={product.netWeight}
+                                  onChange={(e) => handleProductInputChange(e, index, "netWeight")}
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                /> */}
-                                {parseFloat(product.netWeight || 0).toFixed(2)}
+                                />
                               </td>
                               {/* <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
@@ -999,12 +1138,13 @@ export default function PurchesInvoice() {
 
                               </td> */}
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
+                                  value={product.marketRateUsed}
+                                  onChange={(e) => handleProductInputChange(e, index, "marketRateUsed")}
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                /> */}
-                                {parseFloat(product.fineWeight || 0).toFixed(2)}
+                                />
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -1012,15 +1152,16 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.marketRateUsed}
+                                {product?.calculatedMarketRate}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
+                                  value={product.labour}
+                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                /> */}
-                                {product?.labour}
+                                />
                               </td>
 
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
@@ -1037,15 +1178,17 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {parseFloat(product.calculatedMarketRate || 0).toFixed(2)}
+                                {parseFloat(product.hsnCode || 0).toFixed(2)}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
+                                  value={product.extraRate}
+                                  onChange={(e) => handleProductInputChange(e, index, "extraRate")}
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                /> */}
-                                {product?.extraRate}
+                                />
+                                {/* {product?.extraRate} */}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -1056,12 +1199,14 @@ export default function PurchesInvoice() {
                                 {product?.GMEPrice}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
+                                  value={product.gst}
+                                  onChange={(e) => handleProductInputChange(e, index, "gst")}                        
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                /> */}
-                                {product?.gst}
+                                />
+                                {/* {product?.gst} */}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -1188,73 +1333,73 @@ export default function PurchesInvoice() {
 
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[115px]  border-r border-gray-200">
-                
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[110px] border-r border-gray-200">
-                     
+
                             </th>
                             {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
                               To Weight
                             </th> */}
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px] border-r border-gray-200">
-                        
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px]  border-r border-gray-200">
-                        
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[94px]  border-r border-gray-200">
-                            
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[96px]  border-r border-gray-200">
-                      
+
                             </th>
 
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[88px]  border-r border-gray-200">
-                              
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[91px]  border-r border-gray-200">
-          
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[93px]  border-r border-gray-200">
-        
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px]   border-r border-gray-200">
-                          
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px] border-r border-gray-200">
-                      
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[150px] border-r border-gray-200">
-                     
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[135px]  border-r border-gray-200">
-                      
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[101px] border-r border-gray-200">
-                      
+
                             </th>
 
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[105px]  border-r border-gray-200">
-                         
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[102px]  border-r border-gray-200">
-             
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-     
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[103px]  border-r border-gray-200">
-            
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                        
+
                             </th>
 
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px]  border-r border-gray-200">
-                              
+
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              
+
                             </th>
 
                           </tr>

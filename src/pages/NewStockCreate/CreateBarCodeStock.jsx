@@ -434,9 +434,6 @@ export default function CreateBarCodeStock() {
     }
   };
   
-  
-  
-
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
     setCaratIdToDelete(id);

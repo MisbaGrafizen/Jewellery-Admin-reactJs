@@ -115,7 +115,6 @@ export default function LabourNonBar() {
   const [isEditingWeight, setIsEditingWeight] = useState(false);
   const [formDataWeight, setFormDataWeight] = useState({
     carat: "Default Carat",
-    metal: "Default Metal",
     category: "Default Category",
     minWeight: "",
     maxWeight: "",
@@ -126,7 +125,6 @@ export default function LabourNonBar() {
   const [isEditingPercentage, setIsEditingPercentage] = useState(false);
   const [formDataPercentage, setFormDataPercentage] = useState({
     carat: "Default Carat",
-    metal: "Default Metal",
     category: "Default Category",
     minWeight: "",
     maxWeight: "",
@@ -484,7 +482,7 @@ export default function LabourNonBar() {
       : item.find((data) => data.itemName === selectedTypeCategory);
 
 
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+    if (!selectedCarat || !selectedCategory) {
       alert(
         "Invalid selection. Please select valid Carat, Metal, and Category."
       );
@@ -493,7 +491,6 @@ export default function LabourNonBar() {
 
     const uchakData = {
       group: selectedCarat?._id,
-      metal: selectedMetal?._id,
       item: selectedCategory?._id,
       minWeight: parseFloat(formData.minWeight) || 0,
       maxWeight: parseFloat(formData.maxWeight) || 0,
@@ -525,11 +522,10 @@ export default function LabourNonBar() {
       setIsEditing(false);
       setFormData({
         carat: "",
-        metal: "",
         category: "",
         minWeight: 0,
-        maxWeight: 100,
-        rate: 50,
+        maxWeight: 0,
+        rate: 0,
       });
     } catch (error) {
       console.error("Error saving Uchak:", error);
@@ -551,7 +547,7 @@ export default function LabourNonBar() {
       : item.find((data) => data.itemName === selectedTypeCategoryWeight);
 
 
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+    if (!selectedCarat || !selectedCategory) {
       alert(
         "Invalid selection. Please select valid Carat, Metal, and Category."
       );
@@ -560,7 +556,6 @@ export default function LabourNonBar() {
 
     const weightData = {
       group: selectedCarat?._id,
-      metal: selectedMetal?._id,
       item: selectedCategory?._id,
       minWeight: parseFloat(formDataWeight.minWeight) || 0,
       maxWeight: parseFloat(formDataWeight.maxWeight) || 0,
@@ -595,8 +590,8 @@ export default function LabourNonBar() {
         metal: "",
         category: "",
         minWeight: 0,
-        maxWeight: 100,
-        rate: 50,
+        maxWeight: 0,
+        rate: 0,
       });
     } catch (error) {
       console.error("Error saving Uchak:", error);
@@ -620,7 +615,7 @@ export default function LabourNonBar() {
       : item.find((data) => data.itemName === selectedTypeCategoryPercentage);
 
 
-    if (!selectedCarat || !selectedMetal || !selectedCategory) {
+    if (!selectedCarat || !selectedCategory) {
       alert(
         "Invalid selection. Please select valid Carat, Metal, and Category."
       );
@@ -629,7 +624,6 @@ export default function LabourNonBar() {
 
     const percentageData = {
       group: selectedCarat?._id,
-      metal: selectedMetal?._id,
       item: selectedCategory?._id,
       minWeight: parseFloat(formDataPercentage.minWeight) || 0,
       maxWeight: parseFloat(formDataPercentage.maxWeight) || 0,
@@ -661,7 +655,6 @@ export default function LabourNonBar() {
       setIsEditingPercentage(false);
       setFormDataPercentage({
         carat: "",
-        metal: "",
         category: "",
         minWeight: 0,
         maxWeight: 100,
@@ -830,7 +823,7 @@ export default function LabourNonBar() {
                       </AnimatePresence>
                     </div>
 
-                    <div
+                    {/* <div
                       ref={dropdownMetalRef}
                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -893,7 +886,7 @@ export default function LabourNonBar() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                    </div>
+                    </div> */}
                   </div>
                   <div
                     ref={dropdownCategoryRef}
@@ -1116,7 +1109,7 @@ export default function LabourNonBar() {
                           </AnimatePresence>
                         </div>
 
-                        <div
+                        {/* <div
                           ref={dropdownEditMetalRef}
                           className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -1188,7 +1181,7 @@ export default function LabourNonBar() {
                               </motion.div>
                             )}
                           </AnimatePresence>
-                        </div>
+                        </div> */}
                       </div>
                       <div
                         ref={dropdownCategoryRef}
@@ -1384,7 +1377,7 @@ export default function LabourNonBar() {
                             </div>
                           </div>
 
-                          <div
+                          {/* <div
                             ref={dropdownMetalRef}
                             className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -1401,7 +1394,7 @@ export default function LabourNonBar() {
                                 {item?.metal?.metalName}
                               </p>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div
                           ref={dropdownCategoryRef}
@@ -1539,7 +1532,7 @@ export default function LabourNonBar() {
                         )}
                       </AnimatePresence>
                     </div>
-
+{/* 
                     <div
                       ref={dropdownMetalWeightRef}
                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
@@ -1608,7 +1601,7 @@ export default function LabourNonBar() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                    </div>
+                    </div> */}
                   </div>
                   <div
                     ref={dropdownCategoryWeightRef}
@@ -1841,7 +1834,7 @@ export default function LabourNonBar() {
                           </AnimatePresence>
                         </div>
 
-                        <div
+                        {/* <div
                           ref={dropdownEditMetalWeightRef}
                           className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -1915,7 +1908,7 @@ export default function LabourNonBar() {
                               </motion.div>
                             )}
                           </AnimatePresence>
-                        </div>
+                        </div> */}
                       </div>
                       <div
                         ref={dropdownEditCategoryWeightRef}
@@ -2127,7 +2120,7 @@ export default function LabourNonBar() {
                             </div>
                           </div>
 
-                          <div
+                          {/* <div
                             ref={dropdownMetalWeightRef}
                             className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -2144,7 +2137,7 @@ export default function LabourNonBar() {
                                 {item?.metal?.metalName}
                               </p>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div
                           ref={dropdownCategoryWeightRef}
@@ -2280,7 +2273,7 @@ export default function LabourNonBar() {
                       </AnimatePresence>
                     </div>
 
-                    <div
+                    {/* <div
                       ref={dropdownMetalPercentageRef}
                       className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -2350,7 +2343,7 @@ export default function LabourNonBar() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                    </div>
+                    </div> */}
                   </div>
                   <div
                     ref={dropdownCategoryPercentageRef}
@@ -2585,7 +2578,7 @@ export default function LabourNonBar() {
                           </AnimatePresence>
                         </div>
 
-                        <div
+                        {/* <div
                           ref={dropdownEditMetalPercentageRef}
                           className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -2659,7 +2652,7 @@ export default function LabourNonBar() {
                               </motion.div>
                             )}
                           </AnimatePresence>
-                        </div>
+                        </div> */}
                       </div>
                       <div
                         ref={dropdownEditCategoryPercentageRef}
@@ -2877,7 +2870,7 @@ export default function LabourNonBar() {
                             </div>
                           </div>
 
-                          <div
+                          {/* <div
                             ref={dropdownMetalPercentageRef}
                             className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] "
@@ -2894,7 +2887,7 @@ export default function LabourNonBar() {
                                 {item?.metal?.metalName}
                               </p>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div
                           ref={dropdownCategoryPercentageRef}
