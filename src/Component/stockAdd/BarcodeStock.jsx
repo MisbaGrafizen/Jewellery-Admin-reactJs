@@ -408,13 +408,13 @@ export default function BarcodeStock() {
           <div className=" flex  justify-between w-[100%]">
 
 
-            <button
+            {/* <button
               className="font-Poppins bs-spj text-white px-[15px] py-[8px] rounded-[7px] w-fit hover:bg-[#004875] justify-end transition duration-200"
               onClick={handleNavigateToPrint}
 
             >
               Print bercode
-            </button>
+            </button> */}
 
 
      {/* <div ref={printRef}>
@@ -630,7 +630,7 @@ export default function BarcodeStock() {
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               <i
                                 className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
-                                onClick={() => handleStockModalEdit(item)}
+                             
                               ></i>
                               <i
                                 className="fa-solid fa-trash text-red-500 cursor-pointer ml-4"

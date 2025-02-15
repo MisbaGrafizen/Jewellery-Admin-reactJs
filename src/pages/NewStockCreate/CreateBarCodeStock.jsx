@@ -30,7 +30,9 @@ import { useNavigate } from "react-router-dom";
 import { getAllUchakAction, getPercentageAction, getPerGramAction } from "../../redux/action/generalManagement";
 
 export default function CreateBarCodeStock() {
-
+  const [barcodes, setBarcodes] = useState([])
+  const printRef = useRef(null)
+  const [recentlySavedStock, setRecentlySavedStock] = useState([]);
   const [fieldSets, setFieldSets] = useState([
     {
       hsn: "", grossWeight: "", lessWeight: "", westage: "", group: "",
@@ -41,12 +43,13 @@ export default function CreateBarCodeStock() {
       selectedTypeLabour: "", dropdownOpenLabour: false,
     }
   ]);
+
   const labourOptions = [
     { type: "Uchak", key: "uchakRate" },
     { type: "PerGram", key: "pergramRate" },
     { type: "Percentage", key: "percentageRate" }
   ];
-
+  const [isSaved, setIsSaved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
   const [name, setName] = useState("");
@@ -136,10 +139,10 @@ export default function CreateBarCodeStock() {
 
   const handleSelectLabourType = async (labourType, index) => {
     console.log("Selected Labour Type:", labourType);
-  
+
     let labourRate = 0;
     let labourData = [];
-  
+
     try {
       if (labourType === "Uchak") {
         labourData = await dispatch(getAllUchakAction());
@@ -148,15 +151,15 @@ export default function CreateBarCodeStock() {
       } else if (labourType === "Percentage") {
         labourData = await dispatch(getPercentageAction());
       }
-  
+
       console.log(`Labour Data for ${labourType}:`, labourData);
-  
+
       if (labourData && labourData.length > 0) {
         labourRate = parseFloat(labourData[0].rate) || 0;
       }
-  
+
       console.log(`Calculated Labour Rate for ${labourType}:`, labourRate);
-  
+
       setFieldSets((prevFieldSets) => {
         const updatedFieldSets = [...prevFieldSets];
         updatedFieldSets[index].selectedTypeLabour = labourType;
@@ -164,12 +167,12 @@ export default function CreateBarCodeStock() {
         updatedFieldSets[index].labourRate = labourRate;
         return updatedFieldSets;
       });
-  
+
     } catch (error) {
       console.error("Error fetching labour rate:", error);
     }
   };
-  
+
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === "+" || event.key === "Add") {
@@ -187,14 +190,14 @@ export default function CreateBarCodeStock() {
         ]);
       }
     };
-  
+
     document.addEventListener("keydown", handleKeyPress);
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
-  
-  
+
+
   const handleFieldChange = (index, field, value) => {
     setFieldSets(prevFieldSets => {
       const updatedFieldSets = [...prevFieldSets];
@@ -314,52 +317,160 @@ export default function CreateBarCodeStock() {
 
 
   const [matchedLabourRate, setMatchedLabourRate] = useState(null); // ✅ State to Store Matched Labour Rate
-  
+
+  // const handleAddStock = async () => {
+  //   console.log("Fetching labour data...");
+
+  //   // ✅ Fetch Labour Data from Redux
+  //   const labourData = {
+  //     uchak: await dispatch(getAllUchakAction()),
+  //     perGram: await dispatch(getPerGramAction()),
+  //     percentage: await dispatch(getPercentageAction()),
+  //   };
+
+  //   console.log("Labour Data Received:", labourData);
+
+  //   // ✅ Find Selected Category (From Dropdown)
+  //   const selectedCarat = categories.find((carat) => carat.name === selectedType);
+  //   const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
+
+  //   console.log("Selected Carat:", selectedCarat);
+  //   console.log("Selected Category:", selectedCategory);
+
+  //   if (!selectedCarat || !selectedCategory) {
+  //     alert("Please select a valid Carat and Category.");
+  //     return;
+  //   }
+
+  //   let matchedRate = 0; // ✅ Variable to Store Matched Labour Rate
+
+  //   // ✅ Prepare Stock Data Array
+  //   const productsArray = fieldSets.map((field, index) => {
+  //     let labourAmount = 0;
+  //     const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
+
+  //     console.log(`Processing field ${index}...`);
+  //     console.log(`Net Weight: ${netWeight}`);
+  //     console.log(`Selected Labour Type: ${field.selectedTypeLabour}`);
+
+  //     // ✅ Match Labour with BOTH Group (Category) & Item
+  //     const matchLabour = (labourArray) =>
+  //       labourArray.find(
+  //         (labour) =>
+  //           String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
+  //           String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
+  //       );
+
+  //     let matchedLabour = null;
+
+  //     if (field.selectedTypeLabour === "Uchak") {
+  //       matchedLabour = matchLabour(labourData.uchak);
+  //     } else if (field.selectedTypeLabour === "PerGram") {
+  //       matchedLabour = matchLabour(labourData.perGram);
+  //     } else if (field.selectedTypeLabour === "Percentage") {
+  //       matchedLabour = matchLabour(labourData.percentage);
+  //     }
+
+  //     console.log("✅ Matched Labour:", matchedLabour);
+
+  //     if (matchedLabour) {
+  //       matchedRate = parseFloat(matchedLabour.rate) || 0; // ✅ Store Matched Rate
+  //       if (field.selectedTypeLabour === "PerGram") {
+  //         labourAmount = matchedRate * netWeight;
+  //       } else if (field.selectedTypeLabour === "Percentage") {
+  //         labourAmount = (matchedRate / 100) * netWeight;
+  //       } else {
+  //         labourAmount = matchedRate;
+  //       }
+  //     }
+
+  //     console.log(`Final Labour Amount for field ${index}: ${labourAmount}`);
+
+  //     return {
+  //       groupId: selectedCarat._id,
+  //       groupItemId: selectedCategory._id,
+  //       toWeight: parseFloat(field.grossWeight) || 0,
+  //       lessWeight: parseFloat(field.lessWeight) || 0,
+  //       wastage: parseFloat(field.westage) || 0,
+  //       labour: labourAmount.toFixed(2),
+  //       hsnCode: field.hsn ? field.hsn.toString() : "",
+  //       extraRate: field.extra ? field.extra.toString() : "",
+  //       group: field.group ? field.group.toString() : "",
+  //       account: field.account ? field.account.toString() : "",
+  //       location: field.location ? field.location.toString() : "",
+  //       design: field.selectedTypeDesign || null,
+  //       pcs: parseInt(field.pcs) || 1,
+  //       size: parseFloat(field.size) || null,
+  //       moti: parseFloat(field.moti) || 0,
+  //       stone: parseFloat(field.stone) || 0,
+  //       jadatr: parseFloat(field.jadatr) || 0,
+  //       huid: field.huid ? field.huid.toString() : "",
+  //       huidRule: field.huidRule ? field.huidRule.toString() : "",
+  //       huidCharge: parseFloat(field.huidCharge) || 0,
+  //     };
+  //   });
+
+  //   // ✅ Update the State to Display Labour Rate
+  //   setMatchedLabourRate(matchedRate);
+  //   console.log("🔹 Final Matched Labour Rate:", matchedRate);
+
+  //   console.log("Final API Request Payload:", productsArray);
+
+  //   // ✅ Send Data to API (Redux Dispatch)
+  //   try {
+  //     const response = await dispatch(addStockAction({
+  //       groupId: selectedCarat._id,
+  //       groupItemId: selectedCategory._id,
+  //       products: productsArray,
+  //     }));
+
+  //     if (response) {
+  //       alert("Stock added successfully!");
+  //       navigate('/add-stock'); // ✅ Redirect to Stock Page
+  //       dispatch(getAllStockAction()); // ✅ Refresh Stock Data
+  //     } else {
+  //       alert("Failed to add stock.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     alert("An error occurred while saving stock.");
+  //   }
+  // };
+
   const handleAddStock = async () => {
     console.log("Fetching labour data...");
-  
-    // ✅ Fetch Labour Data from Redux
+
+    // ✅ Fetch Labour Data
     const labourData = {
       uchak: await dispatch(getAllUchakAction()),
       perGram: await dispatch(getPerGramAction()),
       percentage: await dispatch(getPercentageAction()),
     };
-  
+
     console.log("Labour Data Received:", labourData);
-  
+
     // ✅ Find Selected Category (From Dropdown)
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-  
-    console.log("Selected Carat:", selectedCarat);
-    console.log("Selected Category:", selectedCategory);
-  
+
     if (!selectedCarat || !selectedCategory) {
       alert("Please select a valid Carat and Category.");
       return;
     }
-  
-    let matchedRate = 0; // ✅ Variable to Store Matched Labour Rate
-  
-    // ✅ Prepare Stock Data Array
+
+    let matchedRate = 0;
     const productsArray = fieldSets.map((field, index) => {
       let labourAmount = 0;
       const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
-  
-      console.log(`Processing field ${index}...`);
-      console.log(`Net Weight: ${netWeight}`);
-      console.log(`Selected Labour Type: ${field.selectedTypeLabour}`);
-  
-      // ✅ Match Labour with BOTH Group (Category) & Item
+
       const matchLabour = (labourArray) =>
         labourArray.find(
           (labour) =>
             String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
             String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
         );
-  
+
       let matchedLabour = null;
-  
       if (field.selectedTypeLabour === "Uchak") {
         matchedLabour = matchLabour(labourData.uchak);
       } else if (field.selectedTypeLabour === "PerGram") {
@@ -367,11 +478,9 @@ export default function CreateBarCodeStock() {
       } else if (field.selectedTypeLabour === "Percentage") {
         matchedLabour = matchLabour(labourData.percentage);
       }
-  
-      console.log("✅ Matched Labour:", matchedLabour);
-  
+
       if (matchedLabour) {
-        matchedRate = parseFloat(matchedLabour.rate) || 0; // ✅ Store Matched Rate
+        matchedRate = parseFloat(matchedLabour.rate) || 0;
         if (field.selectedTypeLabour === "PerGram") {
           labourAmount = matchedRate * netWeight;
         } else if (field.selectedTypeLabour === "Percentage") {
@@ -380,9 +489,7 @@ export default function CreateBarCodeStock() {
           labourAmount = matchedRate;
         }
       }
-  
-      console.log(`Final Labour Amount for field ${index}: ${labourAmount}`);
-      
+
       return {
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
@@ -406,25 +513,21 @@ export default function CreateBarCodeStock() {
         huidCharge: parseFloat(field.huidCharge) || 0,
       };
     });
-  
-    // ✅ Update the State to Display Labour Rate
-    setMatchedLabourRate(matchedRate);
-    console.log("🔹 Final Matched Labour Rate:", matchedRate);
-  
-    console.log("Final API Request Payload:", productsArray);
-  
-    // ✅ Send Data to API (Redux Dispatch)
+
     try {
-      const response = await dispatch(addStockAction({
-        groupId: selectedCarat._id,
-        groupItemId: selectedCategory._id,
-        products: productsArray,
-      }));
-  
+      const response = await dispatch(
+        addStockAction({
+          groupId: selectedCarat._id,
+          groupItemId: selectedCategory._id,
+          products: productsArray,
+        })
+      );
+
       if (response) {
         alert("Stock added successfully!");
-        navigate('/add-stock'); // ✅ Redirect to Stock Page
-        dispatch(getAllStockAction()); // ✅ Refresh Stock Data
+        setIsSaved(true); // ✅ Enable Print Button
+        setRecentlySavedStock(productsArray); // ✅ Store recently saved stock data
+        dispatch(getAllStockAction());
       } else {
         alert("Failed to add stock.");
       }
@@ -433,7 +536,15 @@ export default function CreateBarCodeStock() {
       alert("An error occurred while saving stock.");
     }
   };
-  
+
+
+
+
+
+
+
+
+
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
     setCaratIdToDelete(id);
@@ -479,6 +590,114 @@ export default function CreateBarCodeStock() {
     setIsMounted(true)
   }, [])
 
+
+
+
+
+
+
+
+  const handlePrint = () => {
+    if (!recentlySavedStock.length) {
+      alert("No stock data available for printing.");
+      return;
+    }
+
+    const printWindow = window.open("", "/print-stocks");
+    printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Stocks</title>
+     <style>
+            @page {
+              size: auto;
+              margin: 0mm;
+            }
+            body {
+              margin: 0;
+              padding: 10mm;
+            }
+            .labels-container {
+              display: flex;
+              flex-direction: column;
+              gap: 0mm;
+            }
+            .label {
+              width: 81mm;
+              height: 12mm;
+              display: flex;
+              padding: 2mm 4mm;
+              background: white;
+              position: relative;
+               justify-content: center;
+
+           
+            }
+            .label-content {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              width: 100%;
+            }
+            .text-content {
+              display: flex;
+              flex-direction: column;
+              gap: 1mm;
+            }
+            .store-name {
+              font-family: Arial, sans-serif;
+              font-size: 12px;
+              font-weight: bold;
+            }
+            .price {
+              font-family: Arial, sans-serif;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            .barcode {
+              height: 12mm;
+              width: auto;
+            }
+            .barcode-number {
+              font-family: Arial, sans-serif;
+              font-size: 10px;
+              text-align: center;
+              margin-top: 1mm;
+            }
+          </style>
+      </head>
+      <body>
+        <div class="label-container">
+          ${recentlySavedStock
+        .map(
+          (stock) => `
+            <div class="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
+                          <div class="label-content">
+
+                            <div class="barcode-container">
+                              <img
+                                class="barcode w-[100px]"
+                                src="https://barcode.tec-it.com/barcode.ashx?data=${stock.hsnCode}" alt="Barcode"
+                           
+                              />
+
+                            </div>
+                          </div>
+                        </div>
+            `
+        )
+        .join("")}
+        </div>
+      </body>
+    </html>
+  `);
+
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close();
+    };
+  };
 
   return (
     <>
@@ -1035,7 +1254,7 @@ bg-[#fff] ">
                             <label
                               htmlFor={`design-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-      ${fieldSets[index]?.selectedTypeDesign ||fieldSets[index]?.dropdownOpenDesign ? "text-[#000] hidden   -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+      ${fieldSets[index]?.selectedTypeDesign || fieldSets[index]?.dropdownOpenDesign ? "text-[#000] hidden   -translate-y-[21px] scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Design
                             </label>
@@ -1450,23 +1669,68 @@ bg-[#fff] ">
                         </div>
                       </div>
                     ))}
-                    <div className=" flex w-[100%] justify-end ">
+                    <div className=" flex w-[100%] justify-between ">
+                      <div className=" flex  gap-[40px] justify-center ">
+                        <button
+                          className=" flex  w-[150px] font-Poppins items-center justify-center gap-[6px] py-[8px] text-[20px] rounded-[8px] text-[#fff] bs-spj "
+                          onClick={handleAddStock}
+                        >
+                          Save
+                        </button>
+
+
+                        {/* <button
+                        className=" gap-[10px] flex items-center  font-Poppins bs-spj text-white px-[15px] py-[8px]   text-[17px] rounded-[7px] w-fit hover:bg-[#004875] justify-end transition duration-200"
+                      // onClick={handleNavigateToPrint}
+
+                      >
+                        <i class="fa-regular fa-print"></i>
+                        Print  Barcode
+                      </button> */}
+
+                        <button
+                          className={`gap-[10px] flex items-center font-Poppins bs-spj text-white px-[15px] py-[8px] text-[17px] rounded-[7px] w-fit ${isSaved ? "hover:bg-[#004875] cursor-pointer" : "opacity-50 cursor-not-allowed"
+                            } transition duration-200`}
+                          disabled={!isSaved}
+                          onClick={handlePrint}
+                        >
+                          <i className="fa-regular fa-print"></i>
+                          Print Barcode
+                        </button>
+
+                        {/* <div ref={printRef} className="labels-container">
+                          {barcodes.length > 0 ? (
+                            barcodes.map((barcode, index) => (
+                              <div key={index} className="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
+                                <div className="label-content">
+
+                                  <div className="barcode-container">
+                                    <img
+                                      className="barcode w-[100px]"
+                                      src={barcode.barcodeImage || "/placeholder.svg"}
+                                      alt={`Barcode ${barcode.barCode}`}
+                                    />
+
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <p></p>
+                          )}
+                        </div> */}
+
+
+                      </div>
                       <button
-                        className=" flex  w-[150px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj "
+                        className=" flex  w-[130px] font-Poppins text-[12px] items-center justify-center gap-[6px] h-fit py-[8px] rounded-[6px] text-[#fff] bs-spj "
                         onClick={handleAddFieldSet}
                       >
                         <i className="fa-solid fa-plus"></i>
                         Add more Stock
                       </button>
                     </div>
-                    <div className=" flex w-[100%] justify-center ">
-                      <button
-                        className=" flex  w-[150px] font-Poppins items-center justify-center gap-[6px] py-[8px] text-[20px] rounded-[8px] text-[#fff] bs-spj "
-                        onClick={handleAddStock}
-                      >
-                        Save
-                      </button>
-                    </div>
+
                   </div>
                 </div>
               </div>

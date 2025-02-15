@@ -236,43 +236,43 @@ export default function PrintStocks() {
 
 
     <>
-       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
+      <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
         <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
           <Header pageName="Print Barcode" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
             <div className="flex w-[100%] md:max-h-[90%] pb-[20px] pr-[15px]  gap-[30px] rounded-[10px]">
               <div className="flex flex-col gap-[15px] w-[100%]">
-             
-              <div className="p-4">
-      <button
-        onClick={handlePrint}
-        className="mb-4 font-Poppins text-white px-4 py-2 rounded  bs-spj"
-      >
-        Print Labels
-      </button>
-      <div ref={printRef} className="labels-container">
-        {barcodes.length > 0 ? (
-          barcodes.map((barcode, index) => (
-            <div key={index} className="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
-              <div className="label-content">
-    
-                <div className="barcode-container">
-                  <img
-                    className="barcode w-[100px]"
-                    src={barcode.barcodeImage || "/placeholder.svg"}
-                    alt={`Barcode ${barcode.barCode}`}
-                  />
-                 
+
+                <div className="p-4">
+                  <button
+                    onClick={handlePrint}
+                    className="mb-4 font-Poppins text-white px-4 py-2 rounded  bs-spj"
+                  >
+                    Print Labels
+                  </button>
+                  <div ref={printRef} className="labels-container">
+                    {barcodes.length > 0 ? (
+                      barcodes.map((barcode, index) => (
+                        <div key={index} className="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
+                          <div className="label-content">
+
+                            <div className="barcode-container">
+                              <img
+                                className="barcode w-[100px]"
+                                src={barcode.barcodeImage || "/placeholder.svg"}
+                                alt={`Barcode ${barcode.barCode}`}
+                              />
+
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No barcodes available.</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No barcodes available.</p>
-        )}
-      </div>
-    </div>
               </div>
             </div>
           </div>
@@ -283,9 +283,9 @@ export default function PrintStocks() {
 
 
 
-   
+
     </>
-  
+
 
 
 

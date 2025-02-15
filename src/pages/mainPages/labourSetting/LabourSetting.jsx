@@ -25,6 +25,7 @@ import {
   updateUchakAction,
 } from "../../../redux/action/generalManagement";
 import LabourNonBar from "../../../Component/labourNonbar/LabourNonBar";
+import { Sidebar } from "lucide-react";
 
 export default function LabourSetting() {
   // const [labourModalopen, setlabourModalOpen] = useState(false);
@@ -757,7 +758,7 @@ export default function LabourSetting() {
         <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
           <Header pageName="Labour Setting" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
-            <SideBar />
+<SideBar />
             <div className="flex w-[100%] md:max-h-[90%] pb-[20px] pr-[15px]  gap-[30px] rounded-[10px]">
               <div className="flex flex-col gap-[15px] w-[100%]">
                 <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">

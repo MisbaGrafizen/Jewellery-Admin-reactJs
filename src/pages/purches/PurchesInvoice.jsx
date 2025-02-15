@@ -47,6 +47,9 @@ export default function PurchesInvoice() {
   const [partyNumberFocused, setPartyNumberFocused] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [createdInvoiceId, setCreatedInvoiceId] = useState(null);
+  const [dropdownTypeOpen, setDropdownTypeOpen] = useState(false);
+  const [selectedLabourType, setSelectedLabourType] = useState("");
+  const [labourFocused, setLabourFocused] = useState(false);
 
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
@@ -224,45 +227,45 @@ export default function PurchesInvoice() {
 
   const fetchProductDetails = async (productName, index) => {
     try {
-        const response = await ApiGet(`/admin/productDetails?productName=${productName}`);
-        console.log("Fetched Product Details:", response);
+      const response = await ApiGet(`/admin/productDetails?productName=${productName}`);
+      console.log("Fetched Product Details:", response);
 
-        if (response) {
-            setProducts((prevProducts) => {
-                const updatedProducts = [...prevProducts];
+      if (response) {
+        setProducts((prevProducts) => {
+          const updatedProducts = [...prevProducts];
 
-                // ✅ Ensure we are updating the existing product at the given index
-                updatedProducts[index] = {
-                    ...prevProducts[index], // Preserve any manually entered data
-                    productId: response._id, // ✅ Ensure productId is correctly assigned
-                    productName: response.productName,
-                    availableStock: response.toWeight,
-                    remainingStock: response.toWeight,
-                    availablePcs: response.pcs,
-                    remainingPcs: response.pcs,
-                    grossWeight: response.toWeight || 0,
-                    netWeight: (response.toWeight || 0) - (prevProducts[index]?.lessWeight || 0),
-                    barcodeVisible: response.barcodeVisible ?? false,
-                    pcs: response.pcs || 0,
+          // ✅ Ensure we are updating the existing product at the given index
+          updatedProducts[index] = {
+            ...prevProducts[index], // Preserve any manually entered data
+            productId: response._id, // ✅ Ensure productId is correctly assigned
+            productName: response.productName,
+            availableStock: response.toWeight,
+            remainingStock: response.toWeight,
+            availablePcs: response.pcs,
+            remainingPcs: response.pcs,
+            grossWeight: response.toWeight || 0,
+            netWeight: (response.toWeight || 0) - (prevProducts[index]?.lessWeight || 0),
+            barcodeVisible: response.barcodeVisible ?? false,
+            pcs: response.pcs || 0,
 
-                    // marketRateUsed: response.marketRateUsed || 0,
-                    extraRate: response.extraRate || 0,
-                    labour: response.labour || 0,
-                    gst: response.gst || 0,
-                    gRate: response.marketRateUsed || 0, // ✅ Assuming G Rate = marketRateUsed
-                    gRs: response.calculatedMarketRate || 0, // ✅ Ensure this gets the correct value
-                    GMEAmount: response.GMEPrice || (response.calculatedMarketRate + response.extraRate) || 0,
-                    totalPrice: response.totalPrice || response.finalPrice || 0,
-                };
+            // marketRateUsed: response.marketRateUsed || 0,
+            extraRate: response.extraRate || 0,
+            labour: response.labour || 0,
+            gst: response.gst || 0,
+            gRate: response.marketRateUsed || 0, // ✅ Assuming G Rate = marketRateUsed
+            gRs: response.calculatedMarketRate || 0, // ✅ Ensure this gets the correct value
+            GMEAmount: response.GMEPrice || (response.calculatedMarketRate + response.extraRate) || 0,
+            totalPrice: response.totalPrice || response.finalPrice || 0,
+          };
 
-                console.log("✅ Updated Products:", updatedProducts);
-                return updatedProducts; // ✅ Ensure we return the correctly formatted array
-            });
-        }
+          console.log("✅ Updated Products:", updatedProducts);
+          return updatedProducts; // ✅ Ensure we return the correctly formatted array
+        });
+      }
     } catch (error) {
-        console.error("Error fetching product details:", error);
+      console.error("Error fetching product details:", error);
     }
-};
+  };
 
 
   const assignProductId = (productId, index) => {
@@ -316,6 +319,12 @@ export default function PurchesInvoice() {
       ) {
         setFirmDropdownOpen(false);
       }
+      if (
+        labourDropdownRef.current &&
+        !labourDropdownRef.current.contains(event.target)
+      ) {
+        setDropdownTypeOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -349,7 +358,7 @@ export default function PurchesInvoice() {
   // const handleKeyDown = async (e, index) => {
   //   if (e.key === "Enter" && e.target.value.trim()) {
   //     const inputValue = e.target.value.trim();
-  
+
   //     if (/^\d{5,}$/.test(inputValue)) {
   //       // ✅ Fetch by Barcode
   //       await fetchProductByBarcode(inputValue, index);
@@ -374,12 +383,12 @@ export default function PurchesInvoice() {
   //     }
   //   }
   // };
-  
+
 
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
       const inputValue = e.target.value.trim();
-  
+
       if (/^\d{5,}$/.test(inputValue)) {
         // ✅ Fetch by Barcode
         await fetchProductByBarcode(inputValue, index);
@@ -483,30 +492,30 @@ export default function PurchesInvoice() {
     }
   };
 
-const calculateInvoiceTotals = (products = [], discountPercentage = 0) => {
-  if (!products.length) return null;
+  const calculateInvoiceTotals = (products = [], discountPercentage = 0) => {
+    if (!products.length) return null;
 
-  console.log("📌 Calculating Invoice Totals...");
+    console.log("📌 Calculating Invoice Totals...");
 
-  let totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
-  console.log('✅ Total Price Before Discount:', totalPrice);
+    let totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
+    console.log('✅ Total Price Before Discount:', totalPrice);
 
-  // ✅ Step 1: Apply Discount (if any)
-  const discountAmount = discountPercentage ? (totalPrice * discountPercentage) / 100 : 0;
-  const discountPrice = totalPrice - discountAmount;
-  console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
+    // ✅ Step 1: Apply Discount (if any)
+    const discountAmount = discountPercentage ? (totalPrice * discountPercentage) / 100 : 0;
+    const discountPrice = totalPrice - discountAmount;
+    console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
 
-  // ✅ Step 2: Calculate GST (CGST & SGST) at 1.5% each
-  const calculatedCgst = (discountPrice * 1.5) / 100;
-  const calculatedSgst = (discountPrice * 1.5) / 100;
-  const totalTax = calculatedCgst + calculatedSgst;
-  console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
+    // ✅ Step 2: Calculate GST (CGST & SGST) at 1.5% each
+    const calculatedCgst = (discountPrice * 1.5) / 100;
+    const calculatedSgst = (discountPrice * 1.5) / 100;
+    const totalTax = calculatedCgst + calculatedSgst;
+    console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
 
-  // ✅ Step 3: Calculate Final Invoice Amount
-  const finalPrice = discountPrice + totalTax;
-  console.log("✅ Final Invoice Amount:", finalPrice);
+    // ✅ Step 3: Calculate Final Invoice Amount
+    const finalPrice = discountPrice + totalTax;
+    console.log("✅ Final Invoice Amount:", finalPrice);
 
-  return {
+    return {
       totalPrice,
       discountPercentage,
       discountAmount,
@@ -515,86 +524,86 @@ const calculateInvoiceTotals = (products = [], discountPercentage = 0) => {
       sgst: calculatedSgst,
       totalTax,
       finalPrice,
+    };
   };
-};
 
-// ✅ Function to Update State with Calculated Values
-const updateTotalsAndApplyDiscount = () => {
-  const invoiceData = calculateInvoiceTotals(products, discountPercentage);
+  // ✅ Function to Update State with Calculated Values
+  const updateTotalsAndApplyDiscount = () => {
+    const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
-  if (!invoiceData) {
+    if (!invoiceData) {
       console.error("❌ Error: Invoice Data is undefined!");
       return;
-  }
+    }
 
-  setDiscountAmount(invoiceData.discountAmount);
-  setDiscountPrice(invoiceData.discountPrice);
-  setCgst(invoiceData.cgst);
-  setSgst(invoiceData.sgst);
-  setTotalTaxAmount(invoiceData.totalTax);
-  setFinalTotal(invoiceData.finalPrice);
+    setDiscountAmount(invoiceData.discountAmount);
+    setDiscountPrice(invoiceData.discountPrice);
+    setCgst(invoiceData.cgst);
+    setSgst(invoiceData.sgst);
+    setTotalTaxAmount(invoiceData.totalTax);
+    setFinalTotal(invoiceData.finalPrice);
 
-  console.log("✅ Updated Invoice Totals in State:", invoiceData);
-};
+    console.log("✅ Updated Invoice Totals in State:", invoiceData);
+  };
 
 
 
   const handleSaveInvoice = async () => {
     try {
-        // ✅ Get calculated invoice totals
-        const invoiceData = calculateInvoiceTotals(products, discountPercentage);
+      // ✅ Get calculated invoice totals
+      const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
-        if (!invoiceData) {
-            console.error("❌ Error: Invoice Data calculation failed!");
-            return;
-        }
+      if (!invoiceData) {
+        console.error("❌ Error: Invoice Data calculation failed!");
+        return;
+      }
 
-        // ✅ Prepare Payload with Calculated Values
-        const payload = {
-            customerId, 
-            products: products.map((product) => ({
-                productId: product?.productId || "",
-                hsnCode: product?.hsn || 0,
-                gstRate: product?.gstRate || 0,
-                grossWeight: product?.toWeight || 0,
-                netWeight: product?.netWeight || 0,
-                labour: product?.labour || 0,
-                labourRate: product?.labourRate || 0,
-                extraRs: product?.extraRate || 0,
-                totalPrice: product?.finalPrice || 0,
-                pcs: Number(product?.pcs) || 0,
-            })),
-            billType: "estimate",
-            billNo: Date.now(),
-            date: selectedDate,
-            discount: discountPercentage || 0,
-            discountAmount: invoiceData.discountAmount,
-            discountPrice: invoiceData.discountPrice,
-            cgstAmount: invoiceData.cgst,
-            sgstAmount: invoiceData.sgst,
-            gstAmount: invoiceData.totalTax,
-            totalPrice: invoiceData.finalPrice,
-            companyId: companyInfo?.[0]?._id,
-            paymentType: "cash",
-        };
+      // ✅ Prepare Payload with Calculated Values
+      const payload = {
+        customerId,
+        products: products.map((product) => ({
+          productId: product?.productId || "",
+          hsnCode: product?.hsn || 0,
+          gstRate: product?.gstRate || 0,
+          grossWeight: product?.toWeight || 0,
+          netWeight: product?.netWeight || 0,
+          labour: product?.labour || 0,
+          labourRate: product?.labourRate || 0,
+          extraRs: product?.extraRate || 0,
+          totalPrice: product?.finalPrice || 0,
+          pcs: Number(product?.pcs) || 0,
+        })),
+        billType: "estimate",
+        billNo: Date.now(),
+        date: selectedDate,
+        discount: discountPercentage || 0,
+        discountAmount: invoiceData.discountAmount,
+        discountPrice: invoiceData.discountPrice,
+        cgstAmount: invoiceData.cgst,
+        sgstAmount: invoiceData.sgst,
+        gstAmount: invoiceData.totalTax,
+        totalPrice: invoiceData.finalPrice,
+        companyId: companyInfo?.[0]?._id,
+        paymentType: "cash",
+      };
 
-        console.log("📌 Invoice Payload:", payload);
+      console.log("📌 Invoice Payload:", payload);
 
-        const response = await ApiPost("/admin/bill", payload);
-        console.log("✅ Response:", response);
+      const response = await ApiPost("/admin/bill", payload);
+      console.log("✅ Response:", response);
 
-        if (response.data.bill) {
-            setCreatedInvoiceId(response.data.bill._id);
-            alert("Invoice created successfully!");
-            navigate(`/invoice-bill/${response.data.bill._id}`);
-        } else {
-            alert("Failed to create invoice!");
-        }
+      if (response.data.bill) {
+        setCreatedInvoiceId(response.data.bill._id);
+        alert("Invoice created successfully!");
+        navigate(`/invoice-bill/${response.data.bill._id}`);
+      } else {
+        alert("Failed to create invoice!");
+      }
     } catch (error) {
-        console.error("❌ Error creating invoice:", error);
-        alert("An error occurred while creating the invoice.");
+      console.error("❌ Error creating invoice:", error);
+      alert("An error occurred while creating the invoice.");
     }
-};
+  };
 
 
 
@@ -636,71 +645,88 @@ const updateTotalsAndApplyDiscount = () => {
   const handleProductInputChange = (e, index, field) => {
     const value = e.target.value;
     setProducts((prevProducts) => {
-        return prevProducts.map((product, i) => {
-            if (i === index) {
-                let updatedProduct = { ...product, [field]: value };
+      return prevProducts.map((product, i) => {
+        if (i === index) {
+          let updatedProduct = { ...product, [field]: value };
 
-                updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+          updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
 
-                if (field === "productName") {
-                  fetchProductDetails(value, index);
-                }
+          if (field === "productName") {
+            fetchProductDetails(value, index);
+          }
 
-              if (field === "grossWeight") {
-                updatedProduct.grossWeight = parseFloat(value) || 0;
-                updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
-                updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
-              }
-    
-              if (field === "marketRateUsed" || field === "netWeight") {
-                const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-                const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-                updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
-              }
+          if (field === "grossWeight") {
+            updatedProduct.grossWeight = parseFloat(value) || 0;
+            updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
+            updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
+          }
 
-                //Calculate Labour Rate (Labour * Net Weight)
-                if (field === "labour") {
-                    const labour = parseFloat(updatedProduct.labour) || 0;
-                    const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-                    updatedProduct.labourRate = labour * netWeight;
-                }
+          if (field === "marketRateUsed" || field === "netWeight") {
+            const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+            const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+            updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+          }
 
-                //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
-                if (field === "extraRate") {
-                    const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
-                    const labourRate = parseFloat(updatedProduct.labourRate) || 0;
-                    const extraRate = parseFloat(updatedProduct.extraRate) || 0;
-                    updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
-                }
+          //Calculate Labour Rate (Labour * Net Weight)
+          if (field === "labour") {
+            const labour = parseFloat(updatedProduct.labour) || 0;
+            const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+            updatedProduct.labourRate = labour * netWeight;
+          }
 
-                //Add GST Directly (Not Percentage)
-                if (field === "gst") {
-                    const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
-                    const gstAmount = parseFloat(updatedProduct.gst) || 0;
-                    updatedProduct.finalPrice = GMEPrice + gstAmount;
-                }
+          //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
+          if (field === "extraRate") {
+            const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+            const labourRate = parseFloat(updatedProduct.labourRate) || 0;
+            const extraRate = parseFloat(updatedProduct.extraRate) || 0;
+            updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
+          }
 
-                //Remove Sold Pcs from Remaining Stock
-                // if (field === "pcs") {
-                //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
-                //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
-                //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
-                // }
+          //Add GST Directly (Not Percentage)
+          if (field === "gst") {
+            const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
+            const gstAmount = parseFloat(updatedProduct.gst) || 0;
+            updatedProduct.finalPrice = GMEPrice + gstAmount;
+          }
 
-                if (field === "pcs") {
-                  updatedProduct.pcs = parseFloat(value) || 0;
-                  updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
-                }
-                console.log("📌 Updated product:", updatedProduct);
-                return updatedProduct;
-            }
-            console.log('product', product)
-            return product;
-        });
+          //Remove Sold Pcs from Remaining Stock
+          // if (field === "pcs") {
+          //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
+          //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
+          //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
+          // }
+
+          if (field === "pcs") {
+            updatedProduct.pcs = parseFloat(value) || 0;
+            updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
+          }
+          console.log("📌 Updated product:", updatedProduct);
+          return updatedProduct;
+        }
+        console.log('product', product)
+        return product;
+      });
     });
     updateTotalsAndApplyDiscount();
-};
-  
+  };
+
+  const labourDropdownRef = useRef(null);
+
+  // Labour Types
+  const labourTypes = [
+    { type: "PP" },
+    { type: "GM" },
+    { type: "per" },
+    { type: "FX"}
+  ];
+
+  // Function to handle selection
+  const handleSelectLabourType = (labour) => {
+    setSelectedLabourType(labour.type);
+    setDropdownTypeOpen(false);
+  };
+
+
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
@@ -1030,7 +1056,7 @@ const updateTotalsAndApplyDiscount = () => {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[94px]  border-r border-gray-200">
                               G Rs
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[92px]  border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[146px]  border-r border-gray-200">
                               M Rate
                             </th>
 
@@ -1099,7 +1125,7 @@ const updateTotalsAndApplyDiscount = () => {
                                     onKeyDown={(e) => handleKeyDown(e, index)}
                                     value={product.productName}
                                     onChange={(e) => handleProductInputChange(e, index, "productName")}
-                                    
+
                                     className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                     autoFocus
                                   />
@@ -1171,14 +1197,82 @@ const updateTotalsAndApplyDiscount = () => {
                                 /> */}
                                 {product?.calculatedMarketRate}
                               </td>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                              <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
                                 <input
                                   type="number"
                                   value={product.labour}
                                   onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  className="w-[50%] border-0 pl-[4px] outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 />
+                                <div
+                                  ref={labourDropdownRef}
+                                  className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
+                                  onClick={() => setDropdownTypeOpen((prev) => !prev)}
+                                >
+                                  <label
+                                    htmlFor="labourType"
+                                    className={`absolute left-[13px] font-Poppins pl-[10px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
+                                      ? "text-[#000] -translate-y-[21px] hidden "
+                                      : "text-[#8f8f8f] cursor-text flex"
+                                      }`}
+                                  >
+                                    Type
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="labourType"
+                                    id="labourType"
+                                    value={selectedLabourType}
+                                    className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                    readOnly
+                                    onFocus={() => setLabourFocused(true)}
+                                    onBlur={() => setLabourFocused(false)}
+                                  />
+                                  <i
+                                    className={
+                                      dropdownTypeOpen
+                                        ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                        : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                    }
+                                  ></i>
+                                </div>
+
+                                {/* Dropdown Menu */}
+                                <AnimatePresence>
+                                  {dropdownTypeOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute mt-2 bg-white w-[140px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                    >
+                                      {labourTypes.map((labour, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => handleSelectLabourType(labour)}
+                                        >
+                                          {labour.type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               </td>
 
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
@@ -1219,7 +1313,7 @@ const updateTotalsAndApplyDiscount = () => {
                                 <input
                                   type="number"
                                   value={product.gst}
-                                  onChange={(e) => handleProductInputChange(e, index, "gst")}                        
+                                  onChange={(e) => handleProductInputChange(e, index, "gst")}
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 />
@@ -1364,7 +1458,7 @@ const updateTotalsAndApplyDiscount = () => {
 
                             </th>
 
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[88px]  border-r border-gray-200">
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[120px]  border-r border-gray-200">
 
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[91px]  border-r border-gray-200">
