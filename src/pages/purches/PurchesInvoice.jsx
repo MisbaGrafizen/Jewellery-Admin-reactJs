@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import SideBar from "../../Component/sidebar/SideBar";
 import Header from "../../Component/header/Header";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,7 +14,6 @@ import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 
 import { X, CheckCircle } from "lucide-react"
-import { getAllNonBarcodeProductAction } from "../../redux/action/landingManagement";
 
 export default function PurchesInvoice() {
   const [nameFocused, setNameFocused] = useState(false);
@@ -158,73 +157,113 @@ export default function PurchesInvoice() {
   // };
 
 
-  const fetchProductDetails = async (productName, toWeight, index) => {
+  // const fetchProductDetails = async (productName, toWeight, index) => {
+  //   try {
+  //     const response = await ApiGet(
+  //       `/admin/productDetails?productName=${productName}`
+  //     );
+
+  //     console.log("Fetched Product Details:", response);
+
+  //     if (response) {
+  //       setProducts((prevProducts) => {
+  //         const updatedProducts = [...prevProducts];
+
+  //         const existingProduct = updatedProducts[index] || {};
+
+  //         updatedProducts[index] = {
+  //           ...existingProduct,
+  //           ...response,
+  //           barcodeVisible:  existingProduct.barcodeVisible ?? false,
+  //           // productId: productIdValue,
+  //           autoRef: "SPJNonBarcodeProduct",
+  //           productId: response._id,
+  //           availableStock: response.toWeight,
+  //           remainingStock: response.toWeight,
+  //           availablePcs: response.pcs,
+  //           remainingPcs: response.pcs,
+  //           grossWeight: response.toWeight || 0, // Preserve manual input or set default
+  //           netWeight: response.toWeight || 0, // Initialize net weight
+  //         };
+
+  //         console.log("Updated Products:", updatedProducts);
+  //         return updatedProducts;
+  //       });
+
+  //       // Update totals correctly
+  //       setTotals((prevTotals) => {
+  //         const updatedTotals = { ...prevTotals };
+
+  //         const prevProduct = products[index] || {};
+  //         const prevToWeight = parseFloat(prevProduct.toWeight || 0);
+  //         const prevNetWeight = parseFloat(prevProduct.netWeight || 0);
+  //         const prevTotalPrice = parseFloat(prevProduct.totalPrice || 0);
+
+  //         updatedTotals.grossQty =
+  //           prevTotals.grossQty - prevToWeight + parseFloat(response.toWeight || 0);
+  //         updatedTotals.netQty =
+  //           prevTotals.netQty - prevNetWeight + parseFloat(response.netWeight || 0);
+  //         updatedTotals.amount =
+  //           prevTotals.amount - prevTotalPrice + parseFloat(response.totalPrice || 0);
+
+  //         return updatedTotals;
+  //       });
+  //     }
+  //     // if (response && response._id) {
+  //     //   console.log("✅ Product Found:", response);
+  //     //   assignProductId(response.groupItemId, index);
+  //     // }
+  //      else {
+  //       // ❌ If product does not exist, create a new one
+  //       createNewProduct(productName, toWeight, index);
+  //   }
+  //   } catch (error) {
+  //     console.error("Error fetching product details:", error);
+  //   }
+  // };
+
+  const fetchProductDetails = async (productName, index) => {
     try {
-      const response = await ApiGet(
-        `/admin/productDetails?productName=${productName}`
-      );
+        const response = await ApiGet(`/admin/productDetails?productName=${productName}`);
+        console.log("Fetched Product Details:", response);
 
-      console.log("Fetched Product Details:", response);
+        if (response) {
+            setProducts((prevProducts) => {
+                const updatedProducts = [...prevProducts];
 
-      if (response) {
-        setProducts((prevProducts) => {
-          const updatedProducts = [...prevProducts];
+                // ✅ Ensure we are updating the existing product at the given index
+                updatedProducts[index] = {
+                    ...prevProducts[index], // Preserve any manually entered data
+                    productId: response._id, // ✅ Ensure productId is correctly assigned
+                    productName: response.productName,
+                    availableStock: response.toWeight,
+                    remainingStock: response.toWeight,
+                    availablePcs: response.pcs,
+                    remainingPcs: response.pcs,
+                    grossWeight: response.toWeight || 0,
+                    netWeight: (response.toWeight || 0) - (prevProducts[index]?.lessWeight || 0),
+                    barcodeVisible: response.barcodeVisible ?? false,
+                    pcs: response.pcs || 0,
 
-          const existingProduct = updatedProducts[index] || {}; // Get the current product
+                    // marketRateUsed: response.marketRateUsed || 0,
+                    extraRate: response.extraRate || 0,
+                    labour: response.labour || 0,
+                    gst: response.gst || 0,
+                    gRate: response.marketRateUsed || 0, // ✅ Assuming G Rate = marketRateUsed
+                    gRs: response.calculatedMarketRate || 0, // ✅ Ensure this gets the correct value
+                    GMEAmount: response.GMEPrice || (response.calculatedMarketRate + response.extraRate) || 0,
+                    totalPrice: response.totalPrice || response.finalPrice || 0,
+                };
 
-          let barcodeVisibility = existingProduct.barcodeVisible ?? false; // Default to false for non-barcode products
-
-          let autoRefValue = "NonBarcodeCategory";
-
-          let productIdValue = response._id || existingProduct.productId || null;
-
-          let productGroupItemId = response.groupItemId || updatedProducts[index].groupItemId;
-
-          updatedProducts[index] = {
-            ...existingProduct,
-            ...response,
-            barcodeVisible: barcodeVisibility,
-            // productId: productIdValue,
-            autoRef: autoRefValue,
-            productId: productGroupItemId,
-            
-          };
-
-          console.log("Updated Products:", updatedProducts);
-          return updatedProducts;
-        });
-
-        // Update totals correctly
-        setTotals((prevTotals) => {
-          const updatedTotals = { ...prevTotals };
-
-          const prevProduct = products[index] || {};
-          const prevToWeight = parseFloat(prevProduct.toWeight || 0);
-          const prevNetWeight = parseFloat(prevProduct.netWeight || 0);
-          const prevTotalPrice = parseFloat(prevProduct.totalPrice || 0);
-
-          updatedTotals.grossQty =
-            prevTotals.grossQty - prevToWeight + parseFloat(response.toWeight || 0);
-          updatedTotals.netQty =
-            prevTotals.netQty - prevNetWeight + parseFloat(response.netWeight || 0);
-          updatedTotals.amount =
-            prevTotals.amount - prevTotalPrice + parseFloat(response.totalPrice || 0);
-
-          return updatedTotals;
-        });
-      }
-      // if (response && response._id) {
-      //   console.log("✅ Product Found:", response);
-      //   assignProductId(response.groupItemId, index);
-      // }
-       else {
-        // ❌ If product does not exist, create a new one
-        createNewProduct(productName, toWeight, index);
-    }
+                console.log("✅ Updated Products:", updatedProducts);
+                return updatedProducts; // ✅ Ensure we return the correctly formatted array
+            });
+        }
     } catch (error) {
-      console.error("Error fetching product details:", error);
+        console.error("Error fetching product details:", error);
     }
-  };
+};
+
 
   const assignProductId = (productId, index) => {
     setProducts((prevProducts) =>
@@ -307,6 +346,36 @@ export default function PurchesInvoice() {
     setProducts(updatedProducts);
   };
 
+  // const handleKeyDown = async (e, index) => {
+  //   if (e.key === "Enter" && e.target.value.trim()) {
+  //     const inputValue = e.target.value.trim();
+  
+  //     if (/^\d{5,}$/.test(inputValue)) {
+  //       // ✅ Fetch by Barcode
+  //       await fetchProductByBarcode(inputValue, index);
+  //     } else {
+  //       // ✅ Fetch by Product Name
+  //       fetchProductDetails(inputValue, index)
+  //         .then((productDetails) => {
+  //           if (productDetails) {
+  //             setProducts((prevProducts) => {
+  //               const updatedProducts = [...prevProducts];
+  //               updatedProducts[index] = {
+  //                 ...updatedProducts[index],
+  //                 productName: inputValue,
+  //                 // productId: productDetails?._id || updatedProducts[index].productId || "",
+  //                 productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
+  //               };
+  //               return updatedProducts;
+  //             });
+  //           }
+  //         })
+  //         .catch((error) => console.error("Error fetching product details:", error));
+  //     }
+  //   }
+  // };
+  
+
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
       const inputValue = e.target.value.trim();
@@ -316,27 +385,10 @@ export default function PurchesInvoice() {
         await fetchProductByBarcode(inputValue, index);
       } else {
         // ✅ Fetch by Product Name
-        fetchProductDetails(inputValue, index)
-          .then((productDetails) => {
-            if (productDetails) {
-              setProducts((prevProducts) => {
-                const updatedProducts = [...prevProducts];
-                updatedProducts[index] = {
-                  ...updatedProducts[index],
-                  productName: inputValue,
-                  // productId: productDetails?._id || updatedProducts[index].productId || "",
-                  productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
-                };
-                return updatedProducts;
-              });
-            }
-          })
-          .catch((error) => console.error("Error fetching product details:", error));
+        fetchProductDetails(inputValue, index);
       }
     }
   };
-  
-  
 
 
   const fetchUserDetails = async (userName) => {
@@ -381,11 +433,11 @@ export default function PurchesInvoice() {
               ...productData,
               barcodeVisible: false, // Hide barcode input after fetching
               productId: productData._id, // Ensure correct product reference
-              autoRef: "GroupItem", // Reference model type
+              autoRef: "SPJProduct", // Reference model type
               groupItemId: productData.groupItemId || { itemName: "N/A" },
               toWeight: productData.toWeight || "0",
               netWeight: productData.netWeight || "0",
-              totalPrice: productData.totalPrice || "0",
+              totalPrice: productData.finalPrice || "0",
             }
             : product
         )
@@ -424,17 +476,6 @@ export default function PurchesInvoice() {
     }, 0);
   };
 
-  // const handleDiscountKeyPress = (event) => {
-  //   if (event.key === "Enter") {
-  //     console.log("Enter key pressed");
-  //     console.log("Current totals:", totals);
-  //     console.log("Discount Percentage:", discountPercentage);
-
-  //     const totalPrice = totals.amount || 0;
-  //     calculateTax(totalPrice, discountPercentage);
-  //   }
-  // };
-
 
   const handleDiscountKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -442,47 +483,30 @@ export default function PurchesInvoice() {
     }
   };
 
-  const updateTotalsAndApplyDiscount = () => {
-    const totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
-    const discountAmt = (totalPrice * discountPercentage) / 100;
-    const discountPrice = totalPrice - discountAmt;
-    const calculatedCgst = (discountPrice * 1.5) / 100;
-    const calculatedSgst = (discountPrice * 1.5) / 100;
-    const totalTax = calculatedCgst + calculatedSgst;
-    const finalPrice = discountPrice + totalTax;
+const calculateInvoiceTotals = (products = [], discountPercentage = 0) => {
+  if (!products.length) return null;
 
-    setDiscountAmount(discountAmt);
-    setCgst(calculatedCgst);
-    setSgst(calculatedSgst);
-    setTotalTaxAmount(totalTax);
-    setFinalTotal(finalPrice);
-  };
+  console.log("📌 Calculating Invoice Totals...");
 
+  let totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
+  console.log('✅ Total Price Before Discount:', totalPrice);
 
-  const calculateTax = (totalPrice = 0, discountPercentage = 0) => {
-    console.log("totalPrice:", totalPrice);
-    console.log("discountPercentage:", discountPercentage);
+  // ✅ Step 1: Apply Discount (if any)
+  const discountAmount = discountPercentage ? (totalPrice * discountPercentage) / 100 : 0;
+  const discountPrice = totalPrice - discountAmount;
+  console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
 
-    const discountAmount = (totalPrice * discountPercentage) / 100;
-    const discountPrice = totalPrice - discountAmount;
-    const calculatedCgst = (discountPrice * 1.5) / 100;
-    const calculatedSgst = (discountPrice * 1.5) / 100;
-    const totalTax = calculatedCgst + calculatedSgst;
+  // ✅ Step 2: Calculate GST (CGST & SGST) at 1.5% each
+  const calculatedCgst = (discountPrice * 1.5) / 100;
+  const calculatedSgst = (discountPrice * 1.5) / 100;
+  const totalTax = calculatedCgst + calculatedSgst;
+  console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
 
-    const finalPrice = discountPrice + totalTax;
+  // ✅ Step 3: Calculate Final Invoice Amount
+  const finalPrice = discountPrice + totalTax;
+  console.log("✅ Final Invoice Amount:", finalPrice);
 
-    setCgst(calculatedCgst);
-    setSgst(calculatedSgst);
-    setTotalTaxAmount(calculatedCgst + calculatedSgst);
-    setDiscountAmount(discountAmount);
-    setDiscountPrice(discountPrice);
-    setFinalTotal(finalPrice);
-
-    console.log("discountPrice", discountPrice);
-    console.log("Discount Amount:", discountAmount);
-    console.log("Final Price:", finalPrice);
-
-    const invoiceData = {
+  return {
       totalPrice,
       discountPercentage,
       discountAmount,
@@ -491,140 +515,88 @@ export default function PurchesInvoice() {
       sgst: calculatedSgst,
       totalTax,
       finalPrice,
-    };
-
-    console.log("Calculated Invoice Data:", invoiceData);
-    return invoiceData;
   };
+};
 
-  // const handleSaveInvoice = async () => {
-  //   try {
-  //     const {
-  //       discountAmount,
-  //       discountPrice,
-  //       calculatedCgst,
-  //       calculatedSgst,
-  //       totalTax,
-  //       finalPrice,
-  //     } = calculateTax(totals.amount || 0, discountPercentage || 0);
+// ✅ Function to Update State with Calculated Values
+const updateTotalsAndApplyDiscount = () => {
+  const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
-  //     const payload = {
-  //       customerId,
-  //       products: products.map((product) => ({
-  //         productId: product?.groupItemId,
-  //         hsnCode: product?.hsn || 0,
-  //         gstRate: product?.gstRate || 0,
-  //         grossQty: product?.toWeight || 0,
-  //         netQty: product?.netWeight || 0,
-  //         rate: product?.extraRate || 0,
-  //         totalPrice: product?.totalPrice || 0,
-  //       })),
-  //       billType: "estimate",
-  //       billNo: Date.now(),
-  //       date: selectedDate,
-  //       discount: discountPercentage || 0,
-  //       discountAmount: discountAmount,
-  //       discountPrice: discountPrice,
-  //       cgstAmount: calculatedCgst,
-  //       sgstAmount: calculatedSgst,
-  //       gstAmount: totalTax,
-  //       totalPrice: finalPrice,
-  //       companyId: companyInfo?.[0]?._id,
-  //       paymentType: "cash",
-  //     };
+  if (!invoiceData) {
+      console.error("❌ Error: Invoice Data is undefined!");
+      return;
+  }
 
-  //     console.log('payload', payload)
+  setDiscountAmount(invoiceData.discountAmount);
+  setDiscountPrice(invoiceData.discountPrice);
+  setCgst(invoiceData.cgst);
+  setSgst(invoiceData.sgst);
+  setTotalTaxAmount(invoiceData.totalTax);
+  setFinalTotal(invoiceData.finalPrice);
 
-  //     const response = await ApiPost("/admin/bill", payload);
-  //     console.log("response", response);
-  //     if (response.data.bill) {
-  //       const createdInvoiceId = response.data.bill._id;
-  //       setCreatedInvoiceId(createdInvoiceId);
-  //       alert("Invoice created successfully!");
-  //       navigate(`/invoice-bill/${createdInvoiceId}`);
-  //     } else {
-  //       alert("Failed to create invoice!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating invoice:", error);
-  //     alert("An error occurred while creating the invoice.");
-  //   }
-  // };
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
+  console.log("✅ Updated Invoice Totals in State:", invoiceData);
+};
 
 
-    const handleSaveInvoice = async () => {
-      try {
-          const {
-              discountAmount,
-              discountPrice,
-              calculatedCgst,
-              calculatedSgst,
-              totalTax,
-              finalPrice,
-          } = calculateTax(totals.amount || 0, discountPercentage || 0);
 
-        //   updateTotalsAndApplyDiscount();
+  const handleSaveInvoice = async () => {
+    try {
+        // ✅ Get calculated invoice totals
+        const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
-        // // ✅ Get updated values from state
-        // const totalPrice = finalTotal;
-        // const discountAmt = discountAmount;
-        // const discountPrice = discountPrice;
-        // const calculatedCgst = cgst;
-        // const calculatedSgst = sgst;
-        // const totalTax = totalTaxAmount;
-        // const finalPrice = finalTotal;
+        if (!invoiceData) {
+            console.error("❌ Error: Invoice Data calculation failed!");
+            return;
+        }
 
-          const payload = {
-              customerId,
-              products: products.map((product) => ({
-                  productId: product?.productId || "", // Ensure it's a valid ObjectId
-                  hsnCode: product?.hsn || 0,
-                  gstRate: product?.gstRate || 0,
-                  grossQty: product?.toWeight || 0,
-                  netQty: product?.netWeight || 0,
-                  rate: product?.extraRate || 0,
-                  totalPrice: product?.totalPrice || 0,
-              })),
-              billType: "estimate",
-              billNo: Date.now(),
-              date: selectedDate,
-              discount: discountPercentage || 0,
-              discountAmount: discountAmount,
-              discountPrice: discountPrice,
-              cgstAmount: calculatedCgst,
-              sgstAmount: calculatedSgst,
-              gstAmount: totalTax,
-              totalPrice: finalPrice,
-              companyId: companyInfo?.[0]?._id,
-              paymentType: "cash",
-          };
+        // ✅ Prepare Payload with Calculated Values
+        const payload = {
+            customerId, 
+            products: products.map((product) => ({
+                productId: product?.productId || "",
+                hsnCode: product?.hsn || 0,
+                gstRate: product?.gstRate || 0,
+                grossWeight: product?.toWeight || 0,
+                netWeight: product?.netWeight || 0,
+                labour: product?.labour || 0,
+                labourRate: product?.labourRate || 0,
+                extraRs: product?.extraRate || 0,
+                totalPrice: product?.finalPrice || 0,
+                pcs: Number(product?.pcs) || 0,
+            })),
+            billType: "estimate",
+            billNo: Date.now(),
+            date: selectedDate,
+            discount: discountPercentage || 0,
+            discountAmount: invoiceData.discountAmount,
+            discountPrice: invoiceData.discountPrice,
+            cgstAmount: invoiceData.cgst,
+            sgstAmount: invoiceData.sgst,
+            gstAmount: invoiceData.totalTax,
+            totalPrice: invoiceData.finalPrice,
+            companyId: companyInfo?.[0]?._id,
+            paymentType: "cash",
+        };
 
-          console.log('payload', payload);
+        console.log("📌 Invoice Payload:", payload);
 
-          const response = await ApiPost("/admin/bill", payload);
-          console.log("response", response);
+        const response = await ApiPost("/admin/bill", payload);
+        console.log("✅ Response:", response);
 
-          if (response.data.bill) {
-              const createdInvoiceId = response.data.bill._id;
-              setCreatedInvoiceId(createdInvoiceId);
-              alert("Invoice created successfully!");
-              navigate(`/invoice-bill/${createdInvoiceId}`);
-          } else {
-              alert("Failed to create invoice!");
-          }
-      } catch (error) {
-          console.error("Error creating invoice:", error);
-          alert("An error occurred while creating the invoice.");
-      }
-  };
+        if (response.data.bill) {
+            setCreatedInvoiceId(response.data.bill._id);
+            alert("Invoice created successfully!");
+            navigate(`/invoice-bill/${response.data.bill._id}`);
+        } else {
+            alert("Failed to create invoice!");
+        }
+    } catch (error) {
+        console.error("❌ Error creating invoice:", error);
+        alert("An error occurred while creating the invoice.");
+    }
+};
+
+
 
   const handleSubmit = async () => {
     try {
@@ -668,51 +640,32 @@ export default function PurchesInvoice() {
             if (i === index) {
                 let updatedProduct = { ...product, [field]: value };
 
-                // updatedProduct.productId = 
-                //     product?.productId ||       
-                //     product?.groupItemId?._id || 
-                //     "";   
-
                 updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
-             
-                if (field === "productName" || field === "toWeight") {
-                  fetchProductDetails(updatedProduct.productName, updatedProduct.toWeight, index);
-              }
 
-              // if (field === "productName") {
-              //   fetchProductDetails(updatedProduct.productName, index)
-              //     .then((productDetails) => {
-              //       if (productDetails) {
-              //         setProducts((prevProducts) => {
-              //           const updatedProducts = [...prevProducts];
-              //           updatedProducts[index] = {
-              //             ...updatedProducts[index],
-              //             // productId: productDetails?._id || updatedProducts[index].productId || "",
-              //             productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
-              //             productName: response.productName || updatedProducts[index].productName,
-
-              //           };
-              //           return updatedProducts;
-              //         });
-              //       }
-              //     })
-              //     .catch((error) => console.error("Error fetching product details:", error));
-              // }
-
-                if (field === "marketRateUsed" || field === "netWeight") {
-                    const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-                    const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-                    updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+                if (field === "productName") {
+                  fetchProductDetails(value, index);
                 }
 
-                // ✅ 2️⃣ Calculate Labour Rate (Labour * Net Weight)
+              if (field === "grossWeight") {
+                updatedProduct.grossWeight = parseFloat(value) || 0;
+                updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
+                updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
+              }
+    
+              if (field === "marketRateUsed" || field === "netWeight") {
+                const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+                const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+                updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+              }
+
+                //Calculate Labour Rate (Labour * Net Weight)
                 if (field === "labour") {
                     const labour = parseFloat(updatedProduct.labour) || 0;
                     const netWeight = parseFloat(updatedProduct.netWeight) || 0;
                     updatedProduct.labourRate = labour * netWeight;
                 }
 
-                // ✅ 3️⃣ Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
+                //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
                 if (field === "extraRate") {
                     const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
                     const labourRate = parseFloat(updatedProduct.labourRate) || 0;
@@ -720,18 +673,23 @@ export default function PurchesInvoice() {
                     updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
                 }
 
-                // ✅ 4️⃣ Add GST Directly (Not Percentage)
+                //Add GST Directly (Not Percentage)
                 if (field === "gst") {
                     const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
                     const gstAmount = parseFloat(updatedProduct.gst) || 0;
                     updatedProduct.finalPrice = GMEPrice + gstAmount;
                 }
 
-                // ✅ 5️⃣ Remove Sold Pcs from Remaining Stock
+                //Remove Sold Pcs from Remaining Stock
+                // if (field === "pcs") {
+                //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
+                //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
+                //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
+                // }
+
                 if (field === "pcs") {
-                    const totalPcs = product?.totalPcs || 0; // Get the total available stock
-                    const enteredPcs = parseInt(value) || 0; // Get sold pcs
-                    updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
+                  updatedProduct.pcs = parseFloat(value) || 0;
+                  updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
                 }
                 console.log("📌 Updated product:", updatedProduct);
                 return updatedProduct;
@@ -742,11 +700,7 @@ export default function PurchesInvoice() {
     });
     updateTotalsAndApplyDiscount();
 };
-
-
-
-
-
+  
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
@@ -1056,6 +1010,9 @@ export default function PurchesInvoice() {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-40 border-r border-gray-200">
                               Product Name
                             </th>
+                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                              Pcs
+                            </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[115px]  border-r border-gray-200">
                               Gross Weight
                             </th>
@@ -1106,9 +1063,6 @@ export default function PurchesInvoice() {
                               Location
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              Pcs
-                            </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Design
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
@@ -1131,7 +1085,7 @@ export default function PurchesInvoice() {
 
                           {products?.map((product, index) => (
                             <tr
-                              key={product.id}
+                              key={product.id || index}
                               className="border-t border-gray-200"
                             >
                               <td className="py-2 px-4 text-sm text-gray-600 font-Poppins border-r border-gray-200">
@@ -1141,18 +1095,11 @@ export default function PurchesInvoice() {
                                 {product.barcodeVisible ? (
                                   <input
                                     type="text"
-                                    ref={(el) =>
-                                      (productNameInputRefs.current[index] = el)
-                                    }
+                                    ref={(el) => (productNameInputRefs.current[index] = el)}
                                     onKeyDown={(e) => handleKeyDown(e, index)}
                                     value={product.productName}
-                                    onChange={(e) => {
-                                      setProducts((prevProducts) => {
-                                        const updatedProducts = [...prevProducts];
-                                        updatedProducts[index].productName = e.target.value;
-                                        return updatedProducts;
-                                      });
-                                    }}
+                                    onChange={(e) => handleProductInputChange(e, index, "productName")}
+                                    
                                     className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                     autoFocus
                                   />
@@ -1163,9 +1110,18 @@ export default function PurchesInvoice() {
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
+                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                  placeholder="0.00"
+                                  value={product.pcs}
+                                  onChange={(e) => handleProductInputChange(e, index, "pcs")}
+                                />
+                              </td>
+                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                <input
+                                  type="number"
                                   value={product.toWeight || ""}
                                   onChange={(e) => handleProductInputChange(e, index, "toWeight")}
-                                  onKeyDown={(e) => handleKeyDown(e, index)}
+                                  // onKeyDown={(e) => handleKeyDown(e, index)}
                                   className="w-full border-0 outline-none font-Poppins focus:ring-0 text-sm"
                                   autoFocus
                                 />
@@ -1301,14 +1257,7 @@ export default function PurchesInvoice() {
                                 />
 
                               </td>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                <input
-                                  type="number"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                />
 
-                              </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"

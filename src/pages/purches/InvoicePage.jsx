@@ -221,24 +221,24 @@ export default function InvoicePage() {
                                                 <tbody >
                                                     {invoice?.products?.map((item, index) => (
 
-                                                        <tr key={index} className="border-b border-gray-200">
-                                                            <td className="border-r border-gray-200 p-2">{index + 1}</td>
-                                                            {/* <td className="border-r border-gray-200 p-2">
-                                                                {item?.autoRef === "GroupItem"
-                                                                    ? item?.productId?.itemName
-                                                                    : item?.autoRef === "NonBarcodeCategory"
-                                                                        ? item?.productName
+                                                        <tr key={index} className="border-b text-[#000] border-gray-200">
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{index + 1}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">
+                                                                {item?.autoRef === "SPJProduct"
+                                                                    ? item?.productId?.groupItemId?.itemName
+                                                                    : item?.autoRef === "SPJNonBarcodeProduct"
+                                                                        ? item?.productId?.productName
                                                                         : "N/A"}
-                                                            </td>                                                             */}
-                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.productId?.itemName}</td>
+                                                            </td>                                                            
+                                                            {/* <td className="border-r text-[#000] border-gray-200 p-2">{item?.productId?.productName}</td> */}
                                                             <td className="border-r text-[#000] border-gray-200 p-2">916</td>
                                                             <td className="border-r text-[#000] border-gray-200 p-2">{item?.hsnCode || 0}</td>
                                                             <td className="border-r text-[#000] border-gray-200 p-2">1</td>
-                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.grossQty}</td>
-                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.netQty}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.grossWeight}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.netWeight}</td>
                                                             <td className="border-r text-[#000] border-gray-200 p-2">{item?.labour || 0}</td>
-                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.labourPrice || 0}</td>
-                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.extraRate || 0}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.labourRate || 0}</td>
+                                                            <td className="border-r text-[#000] border-gray-200 p-2">{item?.extraRs || 0}</td>
                                                             <td className="p-2 text-[#000]">{item?.totalPrice}</td>
                                                         </tr>
                                                     ))}
@@ -308,7 +308,7 @@ export default function InvoicePage() {
                                                         </tr>
                                                         <tr className="flex justify-between py-1 text-[#8B4513] font-medium">
                                                             <td>Total Amount After Tax</td>
-                                                            <td>₹{invoice?.finalAmount?.toFixed(2)}</td>
+                                                            <td>₹{invoice?.totalPrice?.toFixed(2)}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
