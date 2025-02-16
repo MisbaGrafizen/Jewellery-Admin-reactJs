@@ -223,9 +223,9 @@ export default function Header({ pageName = "" }) {
             <div className="flex pl-[40px] gap-[20px]">
               {categories && categories.length > 0 ? (
                 categories.map((category, index) => {
-                  const matchedRate = rates.find(
-                    (rate) => rate.categoryId?._id === category?._id
-                  );
+                  const matchedRate = Array.isArray(rates)
+                    ? rates.find(rate => rate?.categoryId?._id === category?._id)
+                    : null;
 
                   return (
                     <div key={index} className="flex gap-[20px] font-Poppins">
@@ -406,7 +406,7 @@ export default function Header({ pageName = "" }) {
                     : "text-[#8f8f8f] cursor-text flex"
                     }`}
                 >
-                 Scan barcode/Enter Barcode
+                  Scan barcode/Enter Barcode
                 </label>
                 <input
                   type="text"
@@ -426,7 +426,7 @@ export default function Header({ pageName = "" }) {
 
 
 
-              
+
             </div>
           </div>
         </ModalContent>

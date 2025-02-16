@@ -132,7 +132,7 @@ export default function PrintStocks() {
       }
 
       try {
-        const response = await fetch("http://localhost:8000/api/v1/admin/barcodes", {
+        const response = await fetch("https://server.grafixen.in/api/v2/spj/admin/barcodes", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

@@ -45,7 +45,7 @@ export default function Login() {
     setLoading(true);
     try {
       const registerResponse = await axios.post(
-        "http://localhost:8000/api/v1/auth/user/register",
+        "https://server.grafizen.in/api/v2/spj/auth/user/register",
         {
           name: userName,
           email,
@@ -56,7 +56,7 @@ export default function Login() {
 
       // Step 2: Send OTP
       const sendOtpResponse = await axios.post(
-        "http://localhost:8000/api/v1/auth/send-otp",
+        "https://server.grafizen.in/api/v2/spj/auth/send-otp",
         {
           mobileNumber,
         }
@@ -85,7 +85,7 @@ export default function Login() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/user/login",
+        "https://server.grafizen.in/api/v2/spj/auth/user/login",
         {
           name: userName,
           password: password,
@@ -138,7 +138,7 @@ export default function Login() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/verify-otp",
+        "https://server.grafizen.in/api/v2/spj/auth/verify-otp",
         {
           mobileNumber,
           otp: otpValue,
@@ -167,7 +167,7 @@ export default function Login() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/set-password",
+        "https://server.grafizen.in/api/v2/spj/auth/set-password",
         {
           mobileNumber,
           password,

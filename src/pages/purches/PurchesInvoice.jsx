@@ -642,73 +642,194 @@ export default function PurchesInvoice() {
     setIsOpen(false); // Close the modal
   };
 
-  const handleProductInputChange = (e, index, field) => {
-    const value = e.target.value;
-    setProducts((prevProducts) => {
-      return prevProducts.map((product, i) => {
-        if (i === index) {
-          let updatedProduct = { ...product, [field]: value };
+  // const handleProductInputChange = (e, index, field) => {
+  //   const value = e.target.value;
+  //   setProducts((prevProducts) => {
+  //     return prevProducts.map((product, i) => {
+  //       if (i === index) {
+  //         let updatedProduct = { ...product, [field]: value };
 
-          updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+  //         updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
 
-          if (field === "productName") {
-            fetchProductDetails(value, index);
-          }
+  //         if (field === "productName") {
+  //           fetchProductDetails(value, index);
+  //         }
 
-          if (field === "grossWeight") {
-            updatedProduct.grossWeight = parseFloat(value) || 0;
-            updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
-            updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
-          }
+  //         if (field === "grossWeight") {
+  //           updatedProduct.grossWeight = parseFloat(value) || 0;
+  //           updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
+  //           updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
+  //         }
 
-          if (field === "marketRateUsed" || field === "netWeight") {
-            const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-            const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-            updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
-          }
+  //         if (field === "marketRateUsed" || field === "netWeight") {
+  //           const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+  //           const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+  //           updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+  //         }
 
-          //Calculate Labour Rate (Labour * Net Weight)
-          if (field === "labour") {
-            const labour = parseFloat(updatedProduct.labour) || 0;
-            const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-            updatedProduct.labourRate = labour * netWeight;
-          }
+  //         //Calculate Labour Rate (Labour * Net Weight)
+  //         if (field === "labour" || field === "pcs" || field === "netWeight" || field === "totalPrice") {
+  //           let labourValue = parseFloat(updatedProduct.labour) || 0;
+  //           let pcs = parseFloat(updatedProduct.pcs) || 1;
+  //           let netWeight = parseFloat(updatedProduct.netWeight) || 1;
+  //           let totalPrice = parseFloat(updatedProduct.totalPrice) || 0;
+  
+  //           if (selectedLabourType === "PP") {
+  //             updatedProduct.labourRate = labourValue * pcs; // Per Piece
+  //           } else if (selectedLabourType === "%") {
+  //             updatedProduct.labourRate = (netWeight * labourValue) / 100; // ✅ Apply % on netWeight
+  //           } else if (selectedLabourType === "GM") {
+  //             updatedProduct.labourRate = labourValue * netWeight; // Per Gram
+  //           } else if (selectedLabourType === "FX") {
+  //             updatedProduct.labourRate = labourValue; // Fixed amount, no calculation
+  //           }
+  //         }
+  
+  //         //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
+  //         if (field === "extraRate") {
+  //           const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+  //           const labourRate = parseFloat(updatedProduct.labourRate) || 0;
+  //           const extraRate = parseFloat(updatedProduct.extraRate) || 0;
+  //           updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
+  //         }
 
-          //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
-          if (field === "extraRate") {
-            const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
-            const labourRate = parseFloat(updatedProduct.labourRate) || 0;
-            const extraRate = parseFloat(updatedProduct.extraRate) || 0;
-            updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
-          }
+  //         //Add GST Directly (Not Percentage)
+  //         if (field === "gst") {
+  //           const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
+  //           const gstAmount = parseFloat(updatedProduct.gst) || 0;
+  //           updatedProduct.finalPrice = GMEPrice + gstAmount;
+  //         }
 
-          //Add GST Directly (Not Percentage)
-          if (field === "gst") {
-            const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
-            const gstAmount = parseFloat(updatedProduct.gst) || 0;
-            updatedProduct.finalPrice = GMEPrice + gstAmount;
-          }
+  //         //Remove Sold Pcs from Remaining Stock
+  //         // if (field === "pcs") {
+  //         //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
+  //         //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
+  //         //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
+  //         // }
 
-          //Remove Sold Pcs from Remaining Stock
-          // if (field === "pcs") {
-          //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
-          //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
-          //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
-          // }
+  //         if (field === "pcs") {
+  //           updatedProduct.pcs = parseFloat(value) || 0;
+  //           updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
+  //         }
+  //         console.log("📌 Updated product:", updatedProduct);
+  //         return updatedProduct;
+  //       }
+  //       console.log('product', product)
+  //       return product;
+  //     });
+  //   });
+  //   updateTotalsAndApplyDiscount();
+  // };
 
-          if (field === "pcs") {
-            updatedProduct.pcs = parseFloat(value) || 0;
-            updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
-          }
-          console.log("📌 Updated product:", updatedProduct);
-          return updatedProduct;
+
+const handleProductInputChange = (e, index, field) => {
+  const value = e.target.value;
+
+  setProducts((prevProducts) => {
+    return prevProducts.map((product, i) => {
+      if (i === index) {
+        let updatedProduct = { ...product, [field]: value };
+
+        updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+
+        if (field === "productName") {
+          fetchProductDetails(value, index);
         }
-        console.log('product', product)
-        return product;
-      });
+
+        if (field === "grossWeight") {
+          updatedProduct.grossWeight = parseFloat(value) || 0;
+          updatedProduct.availableStock = updatedProduct.grossWeight;
+          updatedProduct.netWeight = updatedProduct.grossWeight;
+        }
+
+        if (field === "marketRateUsed" || field === "netWeight") {
+          const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+          const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+          updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+        }
+
+        // ✅ Move Labour Calculation to a Function
+        updatedProduct.labourRate = calculateLabourRate(
+          selectedLabourType,
+          updatedProduct.labour,
+          updatedProduct.pcs,
+          updatedProduct.netWeight,
+          updatedProduct.totalPrice
+        );
+
+        // ✅ Update GME Price
+        const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+        const labourRate = parseFloat(updatedProduct.labourRate) || 0;
+        const extraRate = parseFloat(updatedProduct.extraRate) || 0;
+        updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
+
+        // ✅ Add GST Directly (Not as Percentage)
+        const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
+        const gstAmount = parseFloat(updatedProduct.gst) || 0;
+        updatedProduct.finalPrice = GMEPrice + gstAmount;
+
+        if (field === "pcs") {
+          updatedProduct.pcs = parseFloat(value) || 0;
+          updatedProduct.availablePcs = updatedProduct.pcs;
+        }
+
+        console.log("📌 Updated product:", updatedProduct);
+        return updatedProduct;
+      }
+      return product;
     });
-    updateTotalsAndApplyDiscount();
-  };
+  });
+
+  updateTotalsAndApplyDiscount();
+};
+
+// ✅ Function to Dynamically Calculate Labour Based on Selected Type
+const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice) => {
+  let labourValue = parseFloat(labour) || 0;
+  let totalPcs = parseFloat(pcs) || 1;
+  let weight = parseFloat(netWeight) || 1;
+  let price = parseFloat(totalPrice) || 0;
+
+  if (labourType === "PP") {
+    return labourValue * totalPcs; // Per Piece
+  } else if (labourType === "%") {
+    return (labourValue * weight) / 100; // Percentage on Net Weight
+  } else if (labourType === "GM") {
+    return labourValue * weight; // Per Gram
+  } else if (labourType === "FX") {
+    return labourValue; // Fixed amount
+  }
+  return 0;
+};
+
+// ✅ UseEffect to Instantly Apply New Labour Type Calculation
+useEffect(() => {
+  setProducts((prevProducts) =>
+    prevProducts.map((product) => ({
+      ...product,
+      labourRate: calculateLabourRate(
+        selectedLabourType,
+        product.labour,
+        product.pcs,
+        product.netWeight,
+        product.totalPrice
+      ),
+      GMEPrice:
+        (parseFloat(product.calculatedMarketRate) || 0) +
+        (parseFloat(calculateLabourRate(
+          selectedLabourType,
+          product.labour,
+          product.pcs,
+          product.netWeight,
+          product.totalPrice
+        )) || 0) +
+        (parseFloat(product.extraRate) || 0),
+      finalPrice:
+        (parseFloat(product.GMEPrice) || 0) +
+        (parseFloat(product.gst) || 0),
+    }))
+  );
+}, [selectedLabourType]); // ✅ Runs whenever Labour Type changes
 
   const labourDropdownRef = useRef(null);
 
@@ -716,7 +837,7 @@ export default function PurchesInvoice() {
   const labourTypes = [
     { type: "PP" },
     { type: "GM" },
-    { type: "per" },
+    { type: "%" },
     { type: "FX"}
   ];
 
@@ -1245,7 +1366,7 @@ export default function PurchesInvoice() {
                                       initial={{ opacity: 0, y: -10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -10 }}
-                                      className="absolute mt-2 bg-white w-[140px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                      className="absolute  mt-5 ml-[30px] bg-white w-[100px] border border-[#dedede] rounded-lg shadow-md z-50"
                                     >
                                       {labourTypes.map((labour, index) => (
                                         <div
@@ -1281,7 +1402,7 @@ export default function PurchesInvoice() {
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 /> */}
-                                {product?.labour}
+                                {product?.labourRate}
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input

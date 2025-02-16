@@ -161,8 +161,8 @@ export default function NonBerCode() {
       const token = Cookies.get("token");
 
       const url = selectedStock
-        ? `http://localhost:8000/api/v1/admin/non-barcode/product/${selectedStock._id}` // URL for PUT
-        : "http://localhost:8000/api/v1/admin/non-barcode/product"; // URL for POST
+        ? `https://server.grafizen.server.in/api/v2/spj/admin/non-barcode/product/${selectedStock._id}` // URL for PUT
+        : "https://server.grafizen.server.in/api/v2/spj/admin/non-barcode/product"; // URL for POST
 
       const method = selectedStock ? "PUT" : "POST";
 
