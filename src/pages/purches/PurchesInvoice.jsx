@@ -673,7 +673,7 @@ export default function PurchesInvoice() {
   //           let pcs = parseFloat(updatedProduct.pcs) || 1;
   //           let netWeight = parseFloat(updatedProduct.netWeight) || 1;
   //           let totalPrice = parseFloat(updatedProduct.totalPrice) || 0;
-  
+
   //           if (selectedLabourType === "PP") {
   //             updatedProduct.labourRate = labourValue * pcs; // Per Piece
   //           } else if (selectedLabourType === "%") {
@@ -684,7 +684,7 @@ export default function PurchesInvoice() {
   //             updatedProduct.labourRate = labourValue; // Fixed amount, no calculation
   //           }
   //         }
-  
+
   //         //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
   //         if (field === "extraRate") {
   //           const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
@@ -722,114 +722,114 @@ export default function PurchesInvoice() {
   // };
 
 
-const handleProductInputChange = (e, index, field) => {
-  const value = e.target.value;
+  const handleProductInputChange = (e, index, field) => {
+    const value = e.target.value;
 
-  setProducts((prevProducts) => {
-    return prevProducts.map((product, i) => {
-      if (i === index) {
-        let updatedProduct = { ...product, [field]: value };
+    setProducts((prevProducts) => {
+      return prevProducts.map((product, i) => {
+        if (i === index) {
+          let updatedProduct = { ...product, [field]: value };
 
-        updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+          updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
 
-        if (field === "productName") {
-          fetchProductDetails(value, index);
+          if (field === "productName") {
+            fetchProductDetails(value, index);
+          }
+
+          if (field === "grossWeight") {
+            updatedProduct.grossWeight = parseFloat(value) || 0;
+            updatedProduct.availableStock = updatedProduct.grossWeight;
+            updatedProduct.netWeight = updatedProduct.grossWeight;
+          }
+
+          if (field === "marketRateUsed" || field === "netWeight") {
+            const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+            const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+            updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+          }
+
+          // ✅ Move Labour Calculation to a Function
+          updatedProduct.labourRate = calculateLabourRate(
+            selectedLabourType,
+            updatedProduct.labour,
+            updatedProduct.pcs,
+            updatedProduct.netWeight,
+            updatedProduct.totalPrice
+          );
+
+          // ✅ Update GME Price
+          const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+          const labourRate = parseFloat(updatedProduct.labourRate) || 0;
+          const extraRate = parseFloat(updatedProduct.extraRate) || 0;
+          updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
+
+          // ✅ Add GST Directly (Not as Percentage)
+          const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
+          const gstAmount = parseFloat(updatedProduct.gst) || 0;
+          updatedProduct.finalPrice = GMEPrice + gstAmount;
+
+          if (field === "pcs") {
+            updatedProduct.pcs = parseFloat(value) || 0;
+            updatedProduct.availablePcs = updatedProduct.pcs;
+          }
+
+          console.log("📌 Updated product:", updatedProduct);
+          return updatedProduct;
         }
-
-        if (field === "grossWeight") {
-          updatedProduct.grossWeight = parseFloat(value) || 0;
-          updatedProduct.availableStock = updatedProduct.grossWeight;
-          updatedProduct.netWeight = updatedProduct.grossWeight;
-        }
-
-        if (field === "marketRateUsed" || field === "netWeight") {
-          const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-          const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-          updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
-        }
-
-        // ✅ Move Labour Calculation to a Function
-        updatedProduct.labourRate = calculateLabourRate(
-          selectedLabourType,
-          updatedProduct.labour,
-          updatedProduct.pcs,
-          updatedProduct.netWeight,
-          updatedProduct.totalPrice
-        );
-
-        // ✅ Update GME Price
-        const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
-        const labourRate = parseFloat(updatedProduct.labourRate) || 0;
-        const extraRate = parseFloat(updatedProduct.extraRate) || 0;
-        updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
-
-        // ✅ Add GST Directly (Not as Percentage)
-        const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
-        const gstAmount = parseFloat(updatedProduct.gst) || 0;
-        updatedProduct.finalPrice = GMEPrice + gstAmount;
-
-        if (field === "pcs") {
-          updatedProduct.pcs = parseFloat(value) || 0;
-          updatedProduct.availablePcs = updatedProduct.pcs;
-        }
-
-        console.log("📌 Updated product:", updatedProduct);
-        return updatedProduct;
-      }
-      return product;
+        return product;
+      });
     });
-  });
 
-  updateTotalsAndApplyDiscount();
-};
+    updateTotalsAndApplyDiscount();
+  };
 
-// ✅ Function to Dynamically Calculate Labour Based on Selected Type
-const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice) => {
-  let labourValue = parseFloat(labour) || 0;
-  let totalPcs = parseFloat(pcs) || 1;
-  let weight = parseFloat(netWeight) || 1;
-  let price = parseFloat(totalPrice) || 0;
+  // ✅ Function to Dynamically Calculate Labour Based on Selected Type
+  const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice) => {
+    let labourValue = parseFloat(labour) || 0;
+    let totalPcs = parseFloat(pcs) || 1;
+    let weight = parseFloat(netWeight) || 1;
+    let price = parseFloat(totalPrice) || 0;
 
-  if (labourType === "PP") {
-    return labourValue * totalPcs; // Per Piece
-  } else if (labourType === "%") {
-    return (labourValue * weight) / 100; // Percentage on Net Weight
-  } else if (labourType === "GM") {
-    return labourValue * weight; // Per Gram
-  } else if (labourType === "FX") {
-    return labourValue; // Fixed amount
-  }
-  return 0;
-};
+    if (labourType === "PP") {
+      return labourValue * totalPcs; // Per Piece
+    } else if (labourType === "%") {
+      return (labourValue * weight) / 100; // Percentage on Net Weight
+    } else if (labourType === "GM") {
+      return labourValue * weight; // Per Gram
+    } else if (labourType === "FX") {
+      return labourValue; // Fixed amount
+    }
+    return 0;
+  };
 
-// ✅ UseEffect to Instantly Apply New Labour Type Calculation
-useEffect(() => {
-  setProducts((prevProducts) =>
-    prevProducts.map((product) => ({
-      ...product,
-      labourRate: calculateLabourRate(
-        selectedLabourType,
-        product.labour,
-        product.pcs,
-        product.netWeight,
-        product.totalPrice
-      ),
-      GMEPrice:
-        (parseFloat(product.calculatedMarketRate) || 0) +
-        (parseFloat(calculateLabourRate(
+  // ✅ UseEffect to Instantly Apply New Labour Type Calculation
+  useEffect(() => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => ({
+        ...product,
+        labourRate: calculateLabourRate(
           selectedLabourType,
           product.labour,
           product.pcs,
           product.netWeight,
           product.totalPrice
-        )) || 0) +
-        (parseFloat(product.extraRate) || 0),
-      finalPrice:
-        (parseFloat(product.GMEPrice) || 0) +
-        (parseFloat(product.gst) || 0),
-    }))
-  );
-}, [selectedLabourType]); // ✅ Runs whenever Labour Type changes
+        ),
+        GMEPrice:
+          (parseFloat(product.calculatedMarketRate) || 0) +
+          (parseFloat(calculateLabourRate(
+            selectedLabourType,
+            product.labour,
+            product.pcs,
+            product.netWeight,
+            product.totalPrice
+          )) || 0) +
+          (parseFloat(product.extraRate) || 0),
+        finalPrice:
+          (parseFloat(product.GMEPrice) || 0) +
+          (parseFloat(product.gst) || 0),
+      }))
+    );
+  }, [selectedLabourType]); // ✅ Runs whenever Labour Type changes
 
   const labourDropdownRef = useRef(null);
 
@@ -838,7 +838,7 @@ useEffect(() => {
     { type: "PP" },
     { type: "GM" },
     { type: "%" },
-    { type: "FX"}
+    { type: "FX" }
   ];
 
   // Function to handle selection
@@ -847,6 +847,23 @@ useEffect(() => {
     setDropdownTypeOpen(false);
   };
 
+
+
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setDropdownTypeOpen(false); // Close dropdown when scrolling
+    };
+  
+    window.addEventListener("scroll", handleScroll); // Attach listener
+  
+    return () => {
+      window.removeEventListener("scroll", handleScroll); // Cleanup
+    };
+  }, []);
+
+  
 
   return (
     <>
@@ -1139,7 +1156,7 @@ useEffect(() => {
                       </label>
                     </div>
                   </div>
-                  <div className="bg-white w-[100%]  rounded-lg shadow1-blue ">
+                  <div className="bg-white w-[100%] relative  rounded-lg shadow1-blue ">
                     {/* Table Header */}
                     <div
                       ref={scrollContainerRef}
@@ -1209,12 +1226,21 @@ useEffect(() => {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Location
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              Design
-                            </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              Size
-                            </th>
+                            {products.every((product) => product.barcodeVisible) && (
+                              <>
+
+
+                                <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                                  Design
+                                </th>
+                                <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                                  Size
+                                </th>
+                              </>
+
+                            )}
+
+
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Moti
                             </th>
@@ -1233,7 +1259,7 @@ useEffect(() => {
                           {products?.map((product, index) => (
                             <tr
                               key={product.id || index}
-                              className="border-t border-gray-200"
+                              className="border-t relative border-gray-200"
                             >
                               <td className="py-2 px-4 text-sm text-gray-600 font-Poppins border-r border-gray-200">
                                 {index + 1}
@@ -1326,73 +1352,65 @@ useEffect(() => {
                                   className="w-[50%] border-0 pl-[4px] outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
                                 />
-                                <div
-                                  ref={labourDropdownRef}
-                                  className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
-                                  onClick={() => setDropdownTypeOpen((prev) => !prev)}
-                                >
-                                  <label
-                                    htmlFor="labourType"
-                                    className={`absolute left-[13px] font-Poppins pl-[10px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
-                                      ? "text-[#000] -translate-y-[21px] hidden "
-                                      : "text-[#8f8f8f] cursor-text flex"
-                                      }`}
-                                  >
-                                    Type
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="labourType"
-                                    id="labourType"
-                                    value={selectedLabourType}
-                                    className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                    readOnly
-                                    onFocus={() => setLabourFocused(true)}
-                                    onBlur={() => setLabourFocused(false)}
-                                  />
-                                  <i
-                                    className={
-                                      dropdownTypeOpen
-                                        ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                        : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                    }
-                                  ></i>
-                                </div>
 
-                                {/* Dropdown Menu */}
-                                <AnimatePresence>
-                                  {dropdownTypeOpen && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -10 }}
-                                      className="absolute  mt-5 ml-[30px] bg-white w-[100px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                {!product.barcodeVisible && (
+                                  <>
+                                    <div
+                                      ref={labourDropdownRef}
+                                      className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
+                                      onClick={() => setDropdownTypeOpen((prev) => !prev)}
                                     >
-                                      {labourTypes.map((labour, index) => (
-                                        <div
-                                          key={index}
-                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => handleSelectLabourType(labour)}
+                                      <label
+                                        htmlFor="labourType"
+                                        className={`absolute left-[13px] font-Poppins pl-[10px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
+                                          ? "text-[#000] -translate-y-[21px] hidden "
+                                          : "text-[#8f8f8f] cursor-text flex"
+                                          }`}
+                                      >
+                                        Type
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name="labourType"
+                                        id="labourType"
+                                        value={selectedLabourType}
+                                        className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                        onFocus={() => setLabourFocused(true)}
+                                        onBlur={() => setLabourFocused(false)}
+                                      />
+                                      <i
+                                        className={
+                                          dropdownTypeOpen
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                        }
+                                      ></i>
+                                    </div>
+
+                                    {/* Dropdown Menu */}
+                                    <AnimatePresence>
+                                      {dropdownTypeOpen && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className=" absolute  mt-5 ml-[30px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
                                         >
-                                          {labour.type}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                          {labourTypes.map((labour, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => handleSelectLabourType(labour)}
+                                            >
+                                              {labour.type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </>
+                                )}
 
                               </td>
 
@@ -1472,7 +1490,8 @@ useEffect(() => {
                                 />
 
                               </td>
-
+                              {products.every((p) => p.barcodeVisible) && (
+                                <>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
@@ -1489,6 +1508,13 @@ useEffect(() => {
                                 />
 
                               </td>
+                              </>
+                            )}
+
+
+
+
+
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"

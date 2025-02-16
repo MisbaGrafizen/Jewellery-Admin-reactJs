@@ -679,7 +679,7 @@ export default function NonbarStock() {
                           <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
                             <i
                               className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
-                              onClick={() => handleStockModalEdit(item)}
+
                             ></i>
                             <i
                               className="fa-solid fa-trash text-red-500 cursor-pointer ml-4"
