@@ -123,6 +123,7 @@ import DashBoard from "./pages/dashBoard/DashBoard";
 import CreateBarCodeStock from "./pages/NewStockCreate/CreateBarCodeStock";
 import CreateNonbarStock from "./pages/NewStockCreate/CreateNonbarStock";
 import PrintStocks from "./pages/PrintStocks";
+import SaleInvoice from "./pages/purches/SaleInvoice";
 
 function App() {
 
@@ -136,6 +137,7 @@ function App() {
           <Route path="/create-account" element={<CreateCompany /> } />
           {/* purches screen */}
           <Route path="/purches-invoice" element={<PurchesInvoice />} />
+          <Route path="/sales-invoice" element={<SaleInvoice />} />
           <Route path="/inventory" element={<InventoryCreate />} />
           <Route path="/labour" element={<LabourSetting />} />
 

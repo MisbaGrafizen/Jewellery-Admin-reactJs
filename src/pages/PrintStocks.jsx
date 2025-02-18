@@ -118,41 +118,52 @@ import { useEffect, useRef, useState } from "react"
 import Cookies from "js-cookie"
 import SideBar from "../Component/sidebar/SideBar"
 import Header from "../Component/header/Header"
+import { useLocation } from "react-router-dom"
 
 export default function PrintStocks() {
-  const [barcodes, setBarcodes] = useState([])
+  // const [barcodes, setBarcodes] = useState([])
   const printRef = useRef(null)
   const token = Cookies.get("token")
+  const location = useLocation();
+  const barcodes = location.state?.barcodes || [];
+
+  // useEffect(() => {
+  //   const fetchBarcodes = async () => {
+  //     if (!token) {
+  //       console.error("No authentication token found.")
+  //       return
+  //     }
+
+  //     try {
+  //       const response = await fetch("https://server.grafixen.in/api/v2/spj/admin/barcodes", {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+
+  //       const data = await response.json()
+  //       if (data.success) {
+  //         setBarcodes(data.barcodes)
+  //       } else {
+  //         console.error("Failed to fetch barcodes:", data.message)
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching barcodes:", error)
+  //     }
+  //   }
+
+  //   fetchBarcodes()
+  // }, [token])
+
+
 
   useEffect(() => {
-    const fetchBarcodes = async () => {
-      if (!token) {
-        console.error("No authentication token found.")
-        return
-      }
-
-      try {
-        const response = await fetch("https://server.grafixen.in/api/v2/spj/admin/barcodes", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        const data = await response.json()
-        if (data.success) {
-          setBarcodes(data.barcodes)
-        } else {
-          console.error("Failed to fetch barcodes:", data.message)
-        }
-      } catch (error) {
-        console.error("Error fetching barcodes:", error)
-      }
+    if (!barcodes.length) {
+      alert("No barcodes available for printing.");
     }
-
-    fetchBarcodes()
-  }, [token])
+  }, [barcodes]);
 
   const handlePrint = () => {
     const printContent = printRef.current
