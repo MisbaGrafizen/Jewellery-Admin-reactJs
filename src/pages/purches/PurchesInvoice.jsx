@@ -855,15 +855,18 @@ export default function PurchesInvoice() {
     const handleScroll = () => {
       setDropdownTypeOpen(false); // Close dropdown when scrolling
     };
-  
+
     window.addEventListener("scroll", handleScroll); // Attach listener
-  
+
     return () => {
       window.removeEventListener("scroll", handleScroll); // Cleanup
     };
   }, []);
 
-  
+  const [formData1, setFormData1] = useState({
+    taxType: "tax", // Set default to "Tax"
+  });
+
 
   return (
     <>
@@ -1061,9 +1064,62 @@ export default function PurchesInvoice() {
                       </div>
                     </div>
                   </div>
-                  <div className=" p-1">
+
+                  <div className="flex">
+                    <label className="flex cursor-pointer flex-col justify-start">
+                      <div className="flex justify-between w-full gap-[20px]">
+                        <label className="flex items-center gap-[5px] cursor-pointer group">
+                          <div className="relative flex items-center justify-center w-7 h-7">
+                            <input
+                              type="radio"
+                              name="taxType"
+                              value="estimate"
+                              checked={formData1.taxType === "estimate"}
+                              onChange={(e) =>
+                                setFormData1((prev) => ({
+                                  ...prev,
+                                  taxType: e.target.value,
+                                }))
+                              }
+                              className="sr-only peer"
+                            />
+                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                          </div>
+                          <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
+                            Estimate
+                          </span>
+                        </label>
+
+                        <label className="flex items-center gap-[5px] cursor-pointer group">
+                          <div className="relative flex items-center justify-center w-7 h-7">
+                            <input
+                              type="radio"
+                              name="taxType"
+                              value="tax"
+                              checked={formData1.taxType === "tax"}
+                              onChange={(e) =>
+                                setFormData1((prev) => ({
+                                  ...prev,
+                                  taxType: e.target.value,
+                                }))
+                              }
+                              className="sr-only peer"
+                            />
+                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                          </div>
+                          <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
+                            Tax
+                          </span>
+                        </label>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* <div className=" p-1">
                     <div className="flex flex-wrap items-center gap-6">
-                      {/* Gross Qty Checkbox */}
+            
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1086,7 +1142,7 @@ export default function PurchesInvoice() {
                         </span>
                       </label>
 
-                      {/* Net Qty Checkbox */}
+       
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1109,7 +1165,7 @@ export default function PurchesInvoice() {
                         </span>
                       </label>
 
-                      {/* Discount Checkbox */}
+    
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1132,7 +1188,7 @@ export default function PurchesInvoice() {
                         </span>
                       </label>
 
-                      {/* Rate Checkbox */}
+
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1155,7 +1211,7 @@ export default function PurchesInvoice() {
                         </span>
                       </label>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="bg-white w-[100%] relative  rounded-lg shadow1-blue ">
                     {/* Table Header */}
                     <div
@@ -1210,9 +1266,11 @@ export default function PurchesInvoice() {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px]   border-r border-gray-200">
                               GME Amt
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px] border-r border-gray-200">
-                              GST
-                            </th>
+                            {formData1.taxType === "tax" && (
+                              <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[80px] border-r border-gray-200">
+                                GST
+                              </th>
+                            )}
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[150px] border-r border-gray-200">
                               Amount
                             </th>
@@ -1448,6 +1506,7 @@ export default function PurchesInvoice() {
                                 /> */}
                                 {product?.GMEPrice}
                               </td>
+                              {formData1.taxType === "tax" && (
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
@@ -1458,6 +1517,7 @@ export default function PurchesInvoice() {
                                 />
                                 {/* {product?.gst} */}
                               </td>
+                              )}
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
@@ -1492,24 +1552,24 @@ export default function PurchesInvoice() {
                               </td>
                               {products.every((p) => p.barcodeVisible) && (
                                 <>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                <input
-                                  type="number"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                />
+                                  <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                    <input
+                                      type="number"
+                                      className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                      placeholder="0.00"
+                                    />
 
-                              </td>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                <input
-                                  type="number"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                />
+                                  </td>
+                                  <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                    <input
+                                      type="number"
+                                      className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                      placeholder="0.00"
+                                    />
 
-                              </td>
-                              </>
-                            )}
+                                  </td>
+                                </>
+                              )}
 
 
 
