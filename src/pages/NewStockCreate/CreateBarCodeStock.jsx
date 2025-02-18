@@ -437,110 +437,108 @@ export default function CreateBarCodeStock() {
   //   }
   // };
 
-const handleAddStock = async () => {
-  console.log("Fetching labour data...");
+  const handleAddStock = async () => {
+    console.log("Fetching labour data...");
 
-  // ✅ Fetch Labour Data
-  const labourData = {
-    uchak: await dispatch(getAllUchakAction()),
-    perGram: await dispatch(getPerGramAction()),
-    percentage: await dispatch(getPercentageAction()),
-  };
-
-  console.log("Labour Data Received:", labourData);
-
-  // ✅ Find Selected Category (From Dropdown)
-  const selectedCarat = categories.find((carat) => carat.name === selectedType);
-  const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-
-  if (!selectedCarat || !selectedCategory) {
-    alert("Please select a valid Carat and Category.");
-    return;
-  }
-
-  let matchedRate = 0;
-  const productsArray = fieldSets.map((field, index) => {
-    let labourAmount = 0;
-    const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
-
-    const matchLabour = (labourArray) =>
-      labourArray.find(
-        (labour) =>
-          String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
-          String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
-      );
-
-    let matchedLabour = null;
-    if (field.selectedTypeLabour === "Uchak") {
-      matchedLabour = matchLabour(labourData.uchak);
-    } else if (field.selectedTypeLabour === "PerGram") {
-      matchedLabour = matchLabour(labourData.perGram);
-    } else if (field.selectedTypeLabour === "Percentage") {
-      matchedLabour = matchLabour(labourData.percentage);
-    }
-
-    if (matchedLabour) {
-      matchedRate = parseFloat(matchedLabour.rate) || 0;
-      if (field.selectedTypeLabour === "PerGram") {
-        labourAmount = matchedRate * netWeight;
-      } else if (field.selectedTypeLabour === "Percentage") {
-        labourAmount = (matchedRate / 100) * netWeight;
-      } else {
-        labourAmount = matchedRate;
-      }
-    }
-
-    return {
-      groupId: selectedCarat._id,
-      groupItemId: selectedCategory._id,
-      toWeight: parseFloat(field.grossWeight) || 0,
-      lessWeight: parseFloat(field.lessWeight) || 0,
-      wastage: parseFloat(field.westage) || 0,
-      labour: labourAmount.toFixed(2),
-      hsnCode: field.hsn ? field.hsn.toString() : "",
-      extraRate: field.extra ? field.extra.toString() : "",
-      group: field.group ? field.group.toString() : "",
-      account: field.account ? field.account.toString() : "",
-      location: field.location ? field.location.toString() : "",
-      design: field.selectedTypeDesign || null,
-      pcs: parseInt(field.pcs) || 1,
-      size: parseFloat(field.size) || null,
-      moti: parseFloat(field.moti) || 0,
-      stone: parseFloat(field.stone) || 0,
-      jadatr: parseFloat(field.jadatr) || 0,
-      huid: field.huid ? field.huid.toString() : "",
-      huidRule: field.huidRule ? field.huidRule.toString() : "",
-      huidCharge: parseFloat(field.huidCharge) || 0,
+    // ✅ Fetch Labour Data
+    const labourData = {
+      uchak: await dispatch(getAllUchakAction()),
+      perGram: await dispatch(getPerGramAction()),
+      percentage: await dispatch(getPercentageAction()),
     };
-  });
 
-  try {
-    const response = await dispatch(
-      addStockAction({
+    console.log("Labour Data Received:", labourData);
+
+    // ✅ Find Selected Category (From Dropdown)
+    const selectedCarat = categories.find((carat) => carat.name === selectedType);
+    const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
+
+    if (!selectedCarat || !selectedCategory) {
+      alert("Please select a valid Carat and Category.");
+      return;
+    }
+
+    let matchedRate = 0;
+    const productsArray = fieldSets.map((field, index) => {
+      let labourAmount = 0;
+      const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
+
+      const matchLabour = (labourArray) =>
+        labourArray.find(
+          (labour) =>
+            String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
+            String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
+        );
+
+      let matchedLabour = null;
+      if (field.selectedTypeLabour === "Uchak") {
+        matchedLabour = matchLabour(labourData.uchak);
+      } else if (field.selectedTypeLabour === "PerGram") {
+        matchedLabour = matchLabour(labourData.perGram);
+      } else if (field.selectedTypeLabour === "Percentage") {
+        matchedLabour = matchLabour(labourData.percentage);
+      }
+
+      if (matchedLabour) {
+        matchedRate = parseFloat(matchedLabour.rate) || 0;
+        if (field.selectedTypeLabour === "PerGram") {
+          labourAmount = matchedRate * netWeight;
+        } else if (field.selectedTypeLabour === "Percentage") {
+          labourAmount = (matchedRate / 100) * netWeight;
+        } else {
+          labourAmount = matchedRate;
+        }
+      }
+
+      return {
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
-        products: productsArray,
-      })
-    );
+        toWeight: parseFloat(field.grossWeight) || 0,
+        lessWeight: parseFloat(field.lessWeight) || 0,
+        wastage: parseFloat(field.westage) || 0,
+        labour: labourAmount.toFixed(2),
+        hsnCode: field.hsn ? field.hsn.toString() : "",
+        extraRate: field.extra ? field.extra.toString() : "",
+        group: field.group ? field.group.toString() : "",
+        account: field.account ? field.account.toString() : "",
+        location: field.location ? field.location.toString() : "",
+        design: field.selectedTypeDesign || null,
+        pcs: parseInt(field.pcs) || 1,
+        size: parseFloat(field.size) || null,
+        moti: parseFloat(field.moti) || 0,
+        stone: parseFloat(field.stone) || 0,
+        jadatr: parseFloat(field.jadatr) || 0,
+        huid: field.huid ? field.huid.toString() : "",
+        huidRule: field.huidRule ? field.huidRule.toString() : "",
+        huidCharge: parseFloat(field.huidCharge) || 0,
+      };
+    });
 
-    console.log('response', response)
+    try {
+      const response = await dispatch(
+        addStockAction({
+          groupId: selectedCarat._id,
+          groupItemId: selectedCategory._id,
+          products: productsArray,
+        })
+      );
 
-    if (response && response.data) {
-      alert("Stock added successfully!");
-      setIsSaved(true);
-      setRecentlySavedStock(response.data);  // ✅ Store barcode data here
-      dispatch(getAllStockAction());
-
-      // ✅ Navigate to Print Page
-      navigate("/print-stocks", { state: { barcodes: response.data } });
-    } else {
-      alert("Failed to add stock.");
+      if (response) {
+        alert("Stock added successfully!");
+        setIsSaved(true);
+        setRecentlySavedStock(response);  // ✅ Store barcode data here
+        dispatch(getAllStockAction());
+  
+        // ✅ Navigate to Print Page
+        navigate("/print-stocks", { state: { barcodes: response } });
+      } else {
+        alert("Failed to add stock.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while saving stock.");
     }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("An error occurred while saving stock.");
-  }
-};
+  };
 
 
   const handleOpenDeleteModal = (context, id) => {
@@ -589,117 +587,114 @@ const handleAddStock = async () => {
   }, [])
 
 
-  // const handlePrint = () => {
-  //   if (!recentlySavedStock.length) {
-  //     alert("No stock data available for printing.");
-  //     return;
-  //   }
 
-  //   const printWindow = window.open("", "/print-stocks",  { state: { barcodes: recentlySavedStock } });
-  //   printWindow.document.write(`
-  //   <html>
-  //     <head>
-  //       <title>Print Stocks</title>
-  //    <style>
-  //           @page {
-  //             size: auto;
-  //             margin: 0mm;
-  //           }
-  //           body {
-  //             margin: 0;
-  //             padding: 10mm;
-  //           }
-  //           .labels-container {
-  //             display: flex;
-  //             flex-direction: column;
-  //             gap: 0mm;
-  //           }
-  //           .label {
-  //             width: 81mm;
-  //             height: 12mm;
-  //             display: flex;
-  //             padding: 2mm 4mm;
-  //             background: white;
-  //             position: relative;
-  //              justify-content: center;
 
-           
-  //           }
-  //           .label-content {
-  //             display: flex;
-  //             justify-content: space-between;
-  //             align-items: center;
-  //             width: 100%;
-  //           }
-  //           .text-content {
-  //             display: flex;
-  //             flex-direction: column;
-  //             gap: 1mm;
-  //           }
-  //           .store-name {
-  //             font-family: Arial, sans-serif;
-  //             font-size: 12px;
-  //             font-weight: bold;
-  //           }
-  //           .price {
-  //             font-family: Arial, sans-serif;
-  //             font-size: 14px;
-  //             font-weight: bold;
-  //           }
-  //           .barcode {
-  //             height: 12mm;
-  //             width: auto;
-  //           }
-  //           .barcode-number {
-  //             font-family: Arial, sans-serif;
-  //             font-size: 10px;
-  //             text-align: center;
-  //             margin-top: 1mm;
-  //           }
-  //         </style>
-  //     </head>
-  //     <body>
-  //       <div class="label-container">
-  //         ${recentlySavedStock
-  //       .map(
-  //         (stock) => `
-  //           <div class="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
-  //                         <div class="label-content">
 
-  //                           <div class="barcode-container">
-  //                             <img
-  //                               class="barcode w-[100px]"
-  //                               src="https://barcode.tec-it.com/barcode.ashx?data=${stock.hsnCode}" alt="Barcode"
-                           
-  //                             />
 
-  //                           </div>
-  //                         </div>
-  //                       </div>
-  //           `
-  //       )
-  //       .join("")}
-  //       </div>
-  //     </body>
-  //   </html>
-  // `);
-
-  //   printWindow.document.close();
-  //   printWindow.onload = () => {
-  //     printWindow.print();
-  //     printWindow.close();
-  //   };
-  // };
 
 
   const handlePrint = () => {
     if (!recentlySavedStock.length) {
-      alert("No stock data available for printing.")
-      return
+      alert("No stock data available for printing.");
+      return;
     }
-    console.log('recentlySavedStock', recentlySavedStock)
-    navigate("/print-stocks", { state: { barcodes: recentlySavedStock } }) 
-  }
+
+    const printWindow = window.open("", "/print-stocks");
+    printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Stocks</title>
+     <style>
+            @page {
+              size: auto;
+              margin: 0mm;
+            }
+            body {
+              margin: 0;
+              padding: 10mm;
+            }
+            .labels-container {
+              display: flex;
+              flex-direction: column;
+              gap: 0mm;
+            }
+            .label {
+              width: 81mm;
+              height: 12mm;
+              display: flex;
+              padding: 2mm 4mm;
+              background: white;
+              position: relative;
+               justify-content: center;
+
+           
+            }
+            .label-content {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              width: 100%;
+            }
+            .text-content {
+              display: flex;
+              flex-direction: column;
+              gap: 1mm;
+            }
+            .store-name {
+              font-family: Arial, sans-serif;
+              font-size: 12px;
+              font-weight: bold;
+            }
+            .price {
+              font-family: Arial, sans-serif;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            .barcode {
+              height: 12mm;
+              width: auto;
+            }
+            .barcode-number {
+              font-family: Arial, sans-serif;
+              font-size: 10px;
+              text-align: center;
+              margin-top: 1mm;
+            }
+          </style>
+      </head>
+      <body>
+        <div class="label-container">
+          ${recentlySavedStock
+        .map(
+          (stock) => `
+            <div class="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
+                          <div class="label-content">
+
+                            <div class="barcode-container">
+                              <img
+                                class="barcode w-[100px]"
+                                src="https://barcode.tec-it.com/barcode.ashx?data=${stock.hsnCode}" alt="Barcode"
+                           
+                              />
+
+                            </div>
+                          </div>
+                        </div>
+            `
+        )
+        .join("")}
+        </div>
+      </body>
+    </html>
+  `);
+
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close();
+    };
+  };
+
   return (
     <>
 
@@ -1730,7 +1725,7 @@ bg-[#fff] ">
                         <i className="fa-solid fa-plus"></i>
                         Add more Stock
                       </button>
-                    </div>
+                    </div> 
 
                   </div>
                 </div>
@@ -1740,9 +1735,7 @@ bg-[#fff] ">
         </div>
       </section>
 
-
     </>
-
 
 
   )
