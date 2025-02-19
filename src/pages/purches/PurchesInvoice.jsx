@@ -268,14 +268,6 @@ export default function PurchesInvoice() {
   };
 
 
-  const assignProductId = (productId, index) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product, i) =>
-        i === index ? { ...product, productId } : product
-      )
-    );
-  };
-
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
@@ -467,8 +459,8 @@ export default function PurchesInvoice() {
   const handleAddProduct = () => {
     const newProduct = {
       id: products?.length + 1,
-      barcodeVisible: true, // Show input for barcode
-      groupItemId: { itemName: "" }, // Placeholder for product name
+      barcodeVisible: true, 
+      groupItemId: { itemName: "" }, 
       toWeight: "",
       netWeight: "",
       marketRateUsed: "",
@@ -558,6 +550,16 @@ export default function PurchesInvoice() {
         return;
       }
 
+      const isTaxApplied = formData1.taxType === "tax";
+
+      const cgstAmount = isTaxApplied ? invoiceData.cgst : 0;
+      const sgstAmount = isTaxApplied ? invoiceData.sgst : 0;
+      const totalGstAmount = isTaxApplied ? invoiceData.totalTax : 0;
+      const finalPrice = isTaxApplied ? invoiceData.finalPrice : invoiceData.discountPrice;
+
+      console.log('invoiceData.cgst', invoiceData.cgst)
+
+
       // ✅ Prepare Payload with Calculated Values
       const payload = {
         customerId,
@@ -573,16 +575,16 @@ export default function PurchesInvoice() {
           totalPrice: product?.finalPrice || 0,
           pcs: Number(product?.pcs) || 0,
         })),
-        billType: "estimate",
+        billType: isTaxApplied ? "tax" : "estimate",
         billNo: Date.now(),
         date: selectedDate,
         discount: discountPercentage || 0,
         discountAmount: invoiceData.discountAmount,
         discountPrice: invoiceData.discountPrice,
-        cgstAmount: invoiceData.cgst,
-        sgstAmount: invoiceData.sgst,
-        gstAmount: invoiceData.totalTax,
-        totalPrice: invoiceData.finalPrice,
+        cgstAmount: cgstAmount,
+        sgstAmount: sgstAmount,
+        gstAmount: totalGstAmount,
+        totalPrice: finalPrice,
         companyId: companyInfo?.[0]?._id,
         paymentType: "cash",
       };
@@ -595,7 +597,7 @@ export default function PurchesInvoice() {
       if (response.data.bill) {
         setCreatedInvoiceId(response.data.bill._id);
         alert("Invoice created successfully!");
-        navigate(`/invoice-bill/${response.data.bill._id}`);
+        navigate(`/invoice-bill/${response.data.bill._id}?type=purchase`);
       } else {
         alert("Failed to create invoice!");
       }
@@ -641,86 +643,6 @@ export default function PurchesInvoice() {
   const onClose = () => {
     setIsOpen(false); // Close the modal
   };
-
-  // const handleProductInputChange = (e, index, field) => {
-  //   const value = e.target.value;
-  //   setProducts((prevProducts) => {
-  //     return prevProducts.map((product, i) => {
-  //       if (i === index) {
-  //         let updatedProduct = { ...product, [field]: value };
-
-  //         updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
-
-  //         if (field === "productName") {
-  //           fetchProductDetails(value, index);
-  //         }
-
-  //         if (field === "grossWeight") {
-  //           updatedProduct.grossWeight = parseFloat(value) || 0;
-  //           updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
-  //           updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
-  //         }
-
-  //         if (field === "marketRateUsed" || field === "netWeight") {
-  //           const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-  //           const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-  //           updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
-  //         }
-
-  //         //Calculate Labour Rate (Labour * Net Weight)
-  //         if (field === "labour" || field === "pcs" || field === "netWeight" || field === "totalPrice") {
-  //           let labourValue = parseFloat(updatedProduct.labour) || 0;
-  //           let pcs = parseFloat(updatedProduct.pcs) || 1;
-  //           let netWeight = parseFloat(updatedProduct.netWeight) || 1;
-  //           let totalPrice = parseFloat(updatedProduct.totalPrice) || 0;
-
-  //           if (selectedLabourType === "PP") {
-  //             updatedProduct.labourRate = labourValue * pcs; // Per Piece
-  //           } else if (selectedLabourType === "%") {
-  //             updatedProduct.labourRate = (netWeight * labourValue) / 100; // ✅ Apply % on netWeight
-  //           } else if (selectedLabourType === "GM") {
-  //             updatedProduct.labourRate = labourValue * netWeight; // Per Gram
-  //           } else if (selectedLabourType === "FX") {
-  //             updatedProduct.labourRate = labourValue; // Fixed amount, no calculation
-  //           }
-  //         }
-
-  //         //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
-  //         if (field === "extraRate") {
-  //           const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
-  //           const labourRate = parseFloat(updatedProduct.labourRate) || 0;
-  //           const extraRate = parseFloat(updatedProduct.extraRate) || 0;
-  //           updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
-  //         }
-
-  //         //Add GST Directly (Not Percentage)
-  //         if (field === "gst") {
-  //           const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
-  //           const gstAmount = parseFloat(updatedProduct.gst) || 0;
-  //           updatedProduct.finalPrice = GMEPrice + gstAmount;
-  //         }
-
-  //         //Remove Sold Pcs from Remaining Stock
-  //         // if (field === "pcs") {
-  //         //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
-  //         //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
-  //         //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
-  //         // }
-
-  //         if (field === "pcs") {
-  //           updatedProduct.pcs = parseFloat(value) || 0;
-  //           updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
-  //         }
-  //         console.log("📌 Updated product:", updatedProduct);
-  //         return updatedProduct;
-  //       }
-  //       console.log('product', product)
-  //       return product;
-  //     });
-  //   });
-  //   updateTotalsAndApplyDiscount();
-  // };
-
 
   const handleProductInputChange = (e, index, field) => {
     const value = e.target.value;
@@ -1507,16 +1429,16 @@ export default function PurchesInvoice() {
                                 {product?.GMEPrice}
                               </td>
                               {formData1.taxType === "tax" && (
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                <input
-                                  type="number"
-                                  value={product.gst}
-                                  onChange={(e) => handleProductInputChange(e, index, "gst")}
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                />
-                                {/* {product?.gst} */}
-                              </td>
+                                <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                  <input
+                                    type="number"
+                                    value={product.gst}
+                                    onChange={(e) => handleProductInputChange(e, index, "gst")}
+                                    className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                    placeholder="0.00"
+                                  />
+                                  {/* {product?.gst} */}
+                                </td>
                               )}
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -1570,11 +1492,6 @@ export default function PurchesInvoice() {
                                   </td>
                                 </>
                               )}
-
-
-
-
-
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
@@ -1956,8 +1873,9 @@ export default function PurchesInvoice() {
                               CGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full font-Poppins px-[15px] h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{cgst.toFixed(2)}</p>
+                              <div className={`relative w-full font-Poppins px-[15px] h-10 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 
+      ${formData1.taxType === "estimate" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "text-[#00000099]"}`}>
+                                <p>{formData1.taxType === "tax" ? cgst.toFixed(2) : "-"}</p>
                               </div>
                             </div>
                           </div>
@@ -1968,14 +1886,15 @@ export default function PurchesInvoice() {
                               SGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]   font-Poppins px-[15px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{sgst.toFixed(2)}</p>
+                              <div className={`relative w-full font-Poppins px-[15px] h-10 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 
+      ${formData1.taxType === "estimate" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "text-[#00000099]"}`}>
+                                <p>{formData1.taxType === "tax" ? sgst.toFixed(2) : "-"}</p>
                               </div>
                             </div>
                           </div>
 
                           {/* IGST */}
-                          <div className="flex items-center justify-between gap-4">
+                          {/* <div className="flex items-center justify-between gap-4">
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
                               IGST
                             </label>
@@ -1984,7 +1903,7 @@ export default function PurchesInvoice() {
                                 <p></p>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
 
                           {/* Total Tax Amount */}
                           <div className="flex items-center justify-between gap-4">
@@ -1992,8 +1911,9 @@ export default function PurchesInvoice() {
                               Total Tax Amount
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{totalTaxAmount.toFixed(2)}</p>
+                              <div className={`relative w-full font-Poppins px-[15px] h-10 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 
+      ${formData1.taxType === "estimate" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "text-[#00000099]"}`}>
+                                <p>{formData1.taxType === "tax" ? totalTaxAmount.toFixed(2) : "-"}</p>
                               </div>
                             </div>
                           </div>

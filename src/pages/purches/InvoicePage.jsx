@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import SideBar from "../../Component/sidebar/SideBar";
 import Header from "../../Component/header/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { getInvoiceByIdAction } from "../../redux/action/generalManagement";
+import { getInvoiceByIdAction, getSaleInvoiceByIdAction } from "../../redux/action/generalManagement";
 import { useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -12,15 +12,27 @@ export default function InvoicePage() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const invoiceRef = useRef(null);
+    const queryParams = new URLSearchParams(location.search);
+    const type = queryParams.get("type");
 
 
-    const invoice = useSelector((state) => state.general.getBillById);
+    const purchaseInvoice = useSelector((state) => state.general.getBillById);
+    const saleInvoice = useSelector((state) => state.general.getSaleBillById);
+
+    const invoice = type === "purchase" ? purchaseInvoice : saleInvoice;
 
     useEffect(() => {
         if (id) {
-            dispatch(getInvoiceByIdAction(id));
+            if (type === "purchase") {
+                dispatch(getInvoiceByIdAction(id)); // Fetch Purchase Invoice
+            } else if (type === "sale") {
+                dispatch(getSaleInvoiceByIdAction(id)); // Fetch Sale Invoice
+            }
         }
-    }, [dispatch]);
+    }, [dispatch, id, type]);
+
+    
+    console.log('invoice', invoice)
 
     const formatDate = (date) => {
         if (!date) return '';
@@ -174,29 +186,29 @@ export default function InvoicePage() {
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">Address:</span>
-                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.address}</span>
+                                                    <span className=" flex  text-[#000]">{invoice?.customerId?.address}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">City:</span>
-                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.city}</span>
+                                                    <span className=" flex  text-[#000]">{invoice?.customerId?.city}</span>
                                                 </div>
                                             </div>
                                             <div className="space-y-2  font-Poppins ">
                                                 <div className="flex gap-2  font-Poppins ">
                                                     <span className="text-gray-600 font-medium">Mo:</span>
-                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.phone}</span>
+                                                    <span className=" flex  text-[#000]">{invoice?.customerId?.phone}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">PAN:</span>
-                                                    <span  className=" flex  text-[#000]">{invoice?.customerId?.panNo}</span>
+                                                    <span className=" flex  text-[#000]">{invoice?.customerId?.panNo}</span>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">GST No:</span>
-                                                    <spa  className=" flex  text-[#000]">{invoice?.customerId?.GST}</spa>
+                                                    <spa className=" flex  text-[#000]">{invoice?.customerId?.GST}</spa>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <span className="text-gray-600 font-medium">State & Code:</span>
-                                                    <span  className=" flex  text-[#000]">24-{invoice?.customerId?.state}</span>
+                                                    <span className=" flex  text-[#000]">24-{invoice?.customerId?.state}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -229,7 +241,7 @@ export default function InvoicePage() {
                                                                     : item?.autoRef === "SPJNonBarcodeProduct"
                                                                         ? item?.productId?.productName
                                                                         : "N/A"}
-                                                            </td>                                                            
+                                                            </td>
                                                             {/* <td className="border-r text-[#000] border-gray-200 p-2">{item?.productId?.productName}</td> */}
                                                             <td className="border-r text-[#000] border-gray-200 p-2">916</td>
                                                             <td className="border-r text-[#000] border-gray-200 p-2">{item?.hsnCode || 0}</td>

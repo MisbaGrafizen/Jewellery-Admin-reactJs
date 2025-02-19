@@ -595,7 +595,7 @@ export default function SaleInvoice() {
       if (response.data.bill) {
         setCreatedInvoiceId(response.data.bill._id);
         alert("Invoice created successfully!");
-        navigate(`/invoice-bill/${response.data.bill._id}`);
+        navigate(`/invoice-bill/${response.data.bill._id}?type=sale`);
       } else {
         alert("Failed to create invoice!");
       }

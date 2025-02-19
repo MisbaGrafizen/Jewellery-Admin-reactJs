@@ -584,20 +584,19 @@ export default function BarcodeStock() {
                               {item?.labour || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.calculatedMarketRate || 0}
+                              {item?.calculatedMarketRate?.toFixed(2) || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item.extraRate || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.GMEPrice || 0}
+                              {item?.GMEPrice?.toFixed(2) || 0}
                             </td>
-
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item?.gst || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.finalPrice || 0}
+                              {item?.totalPrice?.toFixed(2) || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item.group || "-"}

@@ -9,11 +9,11 @@ import {
     ApiPut,
     ApiPutWithId,
 } from '../../helper/axios';
-import { GET_UCHAK, ADD_UCHAK,UPDATE_NON_UCHAK,UPDATE_NON_PERCENTAGE, DELETE_NON_PERGRAM, UPDATE_NON_PERGRAM, ADD_NON_PERGRAM, GET_NON_PERGRAM, DELETE_NON_PERCENTAGE, ADD_NON_PERCENTAGE, GET_NON_PERCENTAGE, DELETE_NON_UCHAK, UPDATE_UCHAK, ADD_NON_UCHAK, GET_NON_UCHAK, DELETE_UCHAK, GET_BILL_BY_ID, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
+import { GET_UCHAK, ADD_UCHAK,UPDATE_NON_UCHAK,UPDATE_NON_PERCENTAGE, DELETE_NON_PERGRAM, GET_SALE_BILL_BY_ID, UPDATE_NON_PERGRAM, ADD_NON_PERGRAM, GET_NON_PERGRAM, DELETE_NON_PERCENTAGE, ADD_NON_PERCENTAGE, GET_NON_PERCENTAGE, DELETE_NON_UCHAK, UPDATE_UCHAK, ADD_NON_UCHAK, GET_NON_UCHAK, DELETE_UCHAK, GET_BILL_BY_ID, GET_COMPANY_INFO, ADD_COMPANY_INFO, UPDATE_BRAND, DELETE_BRAND, GET_PERCENTAGE, ADD_PERCENTAGE, UPDATE_PERCENTAGE, DELETE_PERCENTAGE, GET_PERGRAM,ADD_PERGRAM,UPDATE_PERGRAM,DELETE_PERGRAM, GET_MARKET_RATE, ADD_MARKET_RATE, UPDATE_ATTRIBUTE, DELETE_ATTRIBUTE} from '../type';
 
 export const getInvoiceByIdAction = (invoiceId) => {
   return (dispatch) => {
-      return ApiGet(`/admin/bill/${invoiceId}`)
+      return ApiGet(`/admin/purchase-bill/${invoiceId}`)
     .then((res) => {
       console.log('res', res);
       if (res.bill) {
@@ -27,6 +27,28 @@ export const getInvoiceByIdAction = (invoiceId) => {
     .catch((error) => {
       dispatch({
         type: GET_BILL_BY_ID,
+        payload: error,
+      });
+    });
+};
+};
+
+export const getSaleInvoiceByIdAction = (invoiceId) => {
+  return (dispatch) => {
+      return ApiGet(`/admin/bill/${invoiceId}`)
+    .then((res) => {
+      console.log('res', res);
+      if (res.bill) {
+        dispatch({
+          type: GET_SALE_BILL_BY_ID,
+          payload: res.bill,
+        });
+        return res.bill;
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_SALE_BILL_BY_ID,
         payload: error,
       });
     });

@@ -588,11 +588,6 @@ export default function CreateBarCodeStock() {
 
 
 
-
-
-
-
-
   const handlePrint = () => {
     if (!recentlySavedStock.length) {
       alert("No stock data available for printing.");

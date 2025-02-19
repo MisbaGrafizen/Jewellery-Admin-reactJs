@@ -60,6 +60,7 @@ export const DELETE_ATTRIBUTE = "DELETE_ATTRIBUTE";
 export const DELETE_BRAND = "DELETE_BRAND";
 export const DELETE_PERGRAM = "DELETE_PERGRAM";
 export const GET_BILL_BY_ID = "GET_BILL_BY_ID";
+export const GET_SALE_BILL_BY_ID = "GET_SALE_BILL_BY_ID";
 export const GET_NON_UCHAK = "GET_NON_UCHAK";
 export const ADD_NON_UCHAK = "ADD_NON_UCHAK";
 export const UPDATE_NON_UCHAK = "UPDATE_NON_UCHAK";
