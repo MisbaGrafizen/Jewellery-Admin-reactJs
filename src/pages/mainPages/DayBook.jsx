@@ -8,50 +8,97 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 export default function DayBook() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-const [datemodalopen,setDateModalOpen] =useState(true)
+    const [datemodalopen, setDateModalOpen] = useState(true)
     const [isDayVisible, setIsDayVisible] = useState(true);
 
     const [data, setData] = useState([]);
 
-    const getTodayDate = () => {
-        const today = new Date();
-        return today.toISOString().split("T")[0];
+    // const getTodayDate = () => {
+    //     const today = new Date();
+    //     return today.toISOString().split("T")[0];
+    // };
+
+    const formatDate = (date) => {
+        return date.toISOString().split("T")[0];
     };
 
-const handledatemodalclose=()=>{
-    setDateModalOpen(false)
+    // ✅ Function to get **previous day's date**
+    const getPreviousDate = (date) => {
+        const prevDate = new Date(date);
+        prevDate.setDate(prevDate.getDate() + 1); // Subtracts 1 day
+        return formatDate(prevDate);
+    };
+    // ✅ Function to close date modal
+    const handleDateModalClose = () => {
+        setDateModalOpen(false);
+    };
+
+
+    const handledatemodalclose = () => {
+        setDateModalOpen(false)
     }
+
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+
+    //             const today = getTodayDate();
+    //             console.log('today', today)
+
+    //             const response = await ApiGet(`/admin/day-book?startDate=${today}&endDate=${today}`);
+    //             console.log('response', response)
+
+    //             const mergedData = [
+    //                 ...(response.data.sales || []).map((item) => ({
+    //                     ...item,
+    //                     type: "sale",
+    //                 })),
+    //                 ...(response.data.purchases || []).map((item) => ({
+    //                     ...item,
+    //                     type: "purchase",
+    //                 })),
+    //             ];
+
+    //             setData(mergedData);
+    //         } catch (error) {
+    //             console.error("Error fetching visa packages:", error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []); 
 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const previousDate = getPreviousDate(selectedDate); // Get previous day's data
+                console.log(`Selected Date: ${formatDate(selectedDate)} (Showing)`);
+                console.log(`Fetching Data for Previous Date: ${previousDate} (Backend Query)`);
 
-                const today = getTodayDate();
-                console.log('today', today)
 
-                const response = await ApiGet(`/admin/day-book?startDate=${today}&endDate=${today}`);
-                console.log('response', response)
+                // ✅ API request with selected date as startDate & endDate
+                const response = await ApiGet(`/admin/day-book?startDate=${previousDate}&endDate=${previousDate}`);
+                console.log('API Response:', response);
 
+                // ✅ Merge sales & purchases data
                 const mergedData = [
-                    ...(response.data.sales || []).map((item) => ({
-                        ...item,
-                        type: "sale",
-                    })),
-                    ...(response.data.purchases || []).map((item) => ({
-                        ...item,
-                        type: "purchase",
-                    })),
+                    ...(response.data.sales || []).map((item) => ({ ...item, type: "sale" })),
+                    ...(response.data.purchases || []).map((item) => ({ ...item, type: "purchase" })),
                 ];
 
                 setData(mergedData);
             } catch (error) {
-                console.error("Error fetching visa packages:", error);
+                console.error("Error fetching day book data:", error);
             }
         };
 
         fetchData();
-    }, []); const handleDayClick = () => {
+    }, [selectedDate]);
+
+
+    const handleDayClick = () => {
         setIsDayVisible(true);
     };
 
@@ -194,35 +241,35 @@ const handledatemodalclose=()=>{
                                             <tfoot>
                                                 <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
                                                     <th className="py-2 px-3 text-left  flex items-center border-gray-300">
-                                               Total :
+                                                        Total :
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                               
+
                                                     </th>
 
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                       
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                   
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                  
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                  
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                   
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                     
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                           
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                            
+
                                                     </th>
 
 
@@ -326,38 +373,38 @@ const handledatemodalclose=()=>{
                                             <tfoot>
                                                 <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
                                                     <th className="py-2 px-3 text-left  flex items-center border-gray-300">
-                                               Total :
+                                                        Total :
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                               
+
                                                     </th>
 
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                       
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                   
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                  
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                  
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                   
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                     
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                     
-                                                     </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                           
+
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                            
+
+                                                    </th>
+                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
                                                     </th>
 
 
@@ -397,53 +444,61 @@ const handledatemodalclose=()=>{
 
 
 
-      <NextUIModal isOpen={datemodalopen} >
-        <ModalContent className="md:max-w-[700px] shadow-none justify-center !bg-transparent h-[800px]">
-          <div className="relative w-[100%] md:max-w-[600px]  mt-[10px] bg-white rounded-2xl z-[100] flex justify-center !py-0 mx-auto h-[400px]">
-            <div
-              className="absolute right-[-13px] top-[-14px] flex gap-[5px] z-[300] items-center cursor-pointer py-[5px] px-[5px]"
-              onClick={handledatemodalclose}
-            >
-              <i className="text-[25px] text-[red] bg-white rounded-full fa-solid fa-circle-xmark"></i>
-            </div>
-            <div className=" w-[80%] flex flex-col gap-[20px] ">
-              <div className=" flex flex-col mt-[10px]">
-                <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
-                  <p className=" text-[20px]">Please Select Date</p>
-                </div>
-                <div className=" flex mt-[0px] mx-auto j">
-                  <div className="flex items-center gap-3">
-                    <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
-                    <div className="w-2 h-2 rounded-full bg-[#122f97]" />
-                  </div>
+            <NextUIModal isOpen={datemodalopen} >
+                <ModalContent className="md:max-w-[700px] shadow-none justify-center !bg-transparent h-[800px]">
+                    <div className="relative w-[100%] md:max-w-[600px]  mt-[10px] bg-white rounded-2xl z-[100] flex justify-center !py-0 mx-auto h-[400px]">
+                        <div
+                            className="absolute right-[-13px] top-[-14px] flex gap-[5px] z-[300] items-center cursor-pointer py-[5px] px-[5px]"
+                            onClick={handledatemodalclose}
+                        >
+                            <i className="text-[25px] text-[red] bg-white rounded-full fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <div className=" w-[80%] flex flex-col gap-[20px] ">
+                            <div className=" flex flex-col mt-[10px]">
+                                <div className=" mx-auto  text-[#081a21] justify-center flex text-[28px] font-[500]  font-Poppins ">
+                                    <p className=" text-[20px]">Please Select Date</p>
+                                </div>
+                                <div className=" flex mt-[0px] mx-auto j">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                                        <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                                    </div>
 
-                  <i className="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
-                  {/* Right Side */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#122f97]" />
-                    <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
-                  </div>
-                </div>
-              </div>
+                                    <i className="fa-solid fa-xmark text-[#122f97] mx-[10px]"></i>
+                                    {/* Right Side */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[#122f97]" />
+                                        <div className="h-[2px] w-24 md:w-32 bg-[#122f97]" />
+                                    </div>
+                                </div>
+                            </div>
 
-<div>
-<div className=" flex  w-[300px]  items-center  justify-center mx-auto border-[1.4px] border-[#122f97] rounded-[8px] mt-[20px] p-[8px] gap-[10px]">
-                      <p className=" flex font-Poppins text-[20px]  w-[80px]">Date :</p>
-                      <div className=" flex  items-center">
-                        <DatePicker
-                          selected={selectedDate}
-                          onChange={(date) => setSelectedDate(date)}
-                                 dateFormat="dd/MM/yyyy"
-                          className=" flex  w-[100px]  text-[20px] border"
-                        />
-                        <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
-                      </div>
+                            <div>
+                                <div className=" flex  w-[300px]  items-center  justify-center mx-auto border-[1.4px] border-[#122f97] rounded-[8px] mt-[20px] p-[8px] gap-[10px]">
+                                    <p className=" flex font-Poppins text-[20px]  w-[80px]">Date :</p>
+                                    <div className=" flex  items-center">
+                                        <DatePicker
+                                            selected={selectedDate}
+                                            onChange={(date) => setSelectedDate(date)}
+                                            dateFormat="dd/MM/yyyy"
+                                            className=" flex  w-[100px]  text-[20px] border"
+                                        />
+                                        <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
+                                    </div>
+                                </div>
+                                <div className="flex justify-center mt-[20px]">
+                                    <button
+                                        onClick={() => setDateModalOpen(false)} // Closes the modal
+                                        className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
+                                    >
+                                        Confirm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-</div>
-            </div>
-          </div>
-        </ModalContent>
-      </NextUIModal>
+                </ModalContent>
+            </NextUIModal>
 
 
         </>
