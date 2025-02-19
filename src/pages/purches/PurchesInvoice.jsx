@@ -785,10 +785,7 @@ export default function PurchesInvoice() {
     };
   }, []);
 
-  const [formData1, setFormData1] = useState({
-    taxType: "tax", // Set default to "Tax"
-  });
-
+  const [formData1, setFormData1] = useState({ taxType: '' });  
 
   return (
     <>
@@ -990,51 +987,32 @@ export default function PurchesInvoice() {
                   <div className="flex">
                     <label className="flex cursor-pointer flex-col justify-start">
                       <div className="flex justify-between w-full gap-[20px]">
-                        <label className="flex items-center gap-[5px] cursor-pointer group">
-                          <div className="relative flex items-center justify-center w-7 h-7">
-                            <input
-                              type="radio"
-                              name="taxType"
-                              value="estimate"
-                              checked={formData1.taxType === "estimate"}
-                              onChange={(e) =>
-                                setFormData1((prev) => ({
-                                  ...prev,
-                                  taxType: e.target.value,
-                                }))
-                              }
-                              className="sr-only peer"
-                            />
-                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
-                          </div>
-                          <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
-                            Estimate
-                          </span>
-                        </label>
+                     
 
-                        <label className="flex items-center gap-[5px] cursor-pointer group">
-                          <div className="relative flex items-center justify-center w-7 h-7">
-                            <input
-                              type="radio"
-                              name="taxType"
-                              value="tax"
-                              checked={formData1.taxType === "tax"}
-                              onChange={(e) =>
-                                setFormData1((prev) => ({
-                                  ...prev,
-                                  taxType: e.target.value,
-                                }))
-                              }
-                              className="sr-only peer"
-                            />
-                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
-                          </div>
-                          <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
-                            Tax
-                          </span>
-                        </label>
+                      <label className="flex items-center gap-[5px] cursor-pointer group">
+  <div className="relative flex items-center justify-center w-7 h-7">
+    <input
+      type="radio"
+      name="taxType"
+      value="tax"
+      checked={formData1.taxType === "tax"}
+      onClick={(e) => {
+        // Toggle behavior: deselect if already selected.
+        if (formData1.taxType === "tax") {
+          setFormData1((prev) => ({ ...prev, taxType: "" }));
+        } else {
+          setFormData1((prev) => ({ ...prev, taxType: "tax" }));
+        }
+      }}
+      className="sr-only peer"
+    />
+    <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+    <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+  </div>
+  <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
+    Tax
+  </span>
+</label>
                       </div>
                     </label>
                   </div>

@@ -1758,7 +1758,7 @@ width:100%
 
 :where(.css-dev-only-do-not-override-49qm).ant-picker .ant-picker-input >input {
 
-  font-size: 14px;
+  font-size: 19px !important;
     padding: 10px px;
     height: 30px;
     display: flex;
@@ -1855,11 +1855,11 @@ background-color: #175a2d;
 
 :where(.css-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-selected:not(.ant-picker-cell-disabled) .ant-picker-cell-inner, :where(.css-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-disabled) .ant-picker-cell-inner, :where(.css-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
 
-  background-color: #ff8000 !important;
+  background-color: #122f97 !important;
 }
 
 :where(.css-dev-only-do-not-override-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-selected:not(.ant-picker-cell-disabled) .ant-picker-cell-inner, :where(.css-dev-only-do-not-override-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-disabled) .ant-picker-cell-inner, :where(.css-dev-only-do-not-override-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
-  background-color: #ff8000 !important;
+  background-color: #122f97 !important;
 }
 :where(.css-dev-only-do-not-override-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range:not(.ant-picker-cell-disabled):before, :where(.css-dev-only-do-not-override-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-disabled):before, :where(.css-dev-only-do-not-override-1x0dypw).ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-disabled):before {
   background-color: #12c31847 !important;
@@ -1868,6 +1868,16 @@ background-color: #175a2d;
 
 }
 
+
+:where(.css-dev-only-do-not-override-1x0dypw).ant-picker .ant-picker-input >input {
+
+
+  font-size: 20px !important;
+
+
+  color: #122f97 !important;
+
+}
 
 .jersey-25-regular {
   font-family: "Jersey 25", serif;
