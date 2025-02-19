@@ -326,7 +326,7 @@ export default function DayBook() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {data?.purchases?.map((item, index) => (
+                                                {data?.map((item, index) => (
                                                     <tr key={index} className="">
                                                         <td className="py-2 px-2 flex items-center  border-gray-300">
                                                             <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
@@ -365,7 +365,7 @@ export default function DayBook() {
                                                             </td>
                                                         ))}
                                                         <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                                                            -{data?.amount}
+                                                            {data?.amount}
                                                         </td>
                                                     </tr>
                                                 ))}
