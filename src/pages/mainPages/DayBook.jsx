@@ -486,10 +486,10 @@ export default function DayBook() {
                                         <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
                                     </div>
                                 </div>
-                                <div className="flex justify-center mt-[20px]">
+                                <div className="flex justify-center mt-[70px]">
                                     <button
                                         onClick={() => setDateModalOpen(false)} // Closes the modal
-                                        className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
+                                        className="  w-[130px] text-[20px]   py-[10px] bs-spj font-Poppins text-white font-[500] rounded-lg shadow-md hover:bg-blue-600 transition"
                                     >
                                         Confirm
                                     </button>
