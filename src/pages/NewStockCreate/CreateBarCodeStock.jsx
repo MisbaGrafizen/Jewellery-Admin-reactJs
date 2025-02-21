@@ -522,13 +522,14 @@ export default function CreateBarCodeStock() {
           products: productsArray,
         })
       );
+      console.log('response', response)
 
       if (response) {
         alert("Stock added successfully!");
         setIsSaved(true);
         setRecentlySavedStock(response);  // ✅ Store barcode data here
         dispatch(getAllStockAction());
-  
+
         // ✅ Navigate to Print Page
         navigate("/print-stocks", { state: { barcodes: response } });
       } else {
@@ -748,15 +749,19 @@ export default function CreateBarCodeStock() {
                               exit={{ opacity: 0, y: -10 }}
                               className="absolute top-[90%]  mt-2  left-[-16px] bg-white w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                             >
-                              {categories.map((type, index) => (
-                                <div
-                                  key={index}
-                                  className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                  onClick={() => handleSelect(type?.name)}
-                                >
-                                  {type?.name}
-                                </div>
-                              ))}
+                              {Array.isArray(categories) && categories.length > 0 ? (
+                                categories.map((type, index) => (
+                                  <div
+                                    key={index}
+                                    className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
+                                    onClick={() => handleSelect(type?.name)}
+                                  >
+                                    {type?.name}
+                                  </div>
+                                ))
+                              ) : (
+                                <p>No categories available</p> // ✅ Fallback message
+                              )}
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -807,8 +812,8 @@ export default function CreateBarCodeStock() {
                               exit={{ opacity: 0, y: -10 }}
                               className="absolute top-[90%]  mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                             >
-                              {item.map((type, index) => (
-                                <div
+                              {Array.isArray(item) && item.length > 0 ? (
+                                item.map((type, index) => (<div
                                   key={index}
                                   className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
                                   onClick={() => {
@@ -818,7 +823,10 @@ export default function CreateBarCodeStock() {
                                 >
                                   {type?.itemName}
                                 </div>
-                              ))}
+                                ))
+                              ) : (
+                                <p>No items available</p> // ✅ Fallback message
+                              )}
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -1720,7 +1728,7 @@ bg-[#fff] ">
                         <i className="fa-solid fa-plus"></i>
                         Add more Stock
                       </button>
-                    </div> 
+                    </div>
 
                   </div>
                 </div>

@@ -347,36 +347,6 @@ export default function PurchesInvoice() {
     setProducts(updatedProducts);
   };
 
-  // const handleKeyDown = async (e, index) => {
-  //   if (e.key === "Enter" && e.target.value.trim()) {
-  //     const inputValue = e.target.value.trim();
-
-  //     if (/^\d{5,}$/.test(inputValue)) {
-  //       // ✅ Fetch by Barcode
-  //       await fetchProductByBarcode(inputValue, index);
-  //     } else {
-  //       // ✅ Fetch by Product Name
-  //       fetchProductDetails(inputValue, index)
-  //         .then((productDetails) => {
-  //           if (productDetails) {
-  //             setProducts((prevProducts) => {
-  //               const updatedProducts = [...prevProducts];
-  //               updatedProducts[index] = {
-  //                 ...updatedProducts[index],
-  //                 productName: inputValue,
-  //                 // productId: productDetails?._id || updatedProducts[index].productId || "",
-  //                 productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
-  //               };
-  //               return updatedProducts;
-  //             });
-  //           }
-  //         })
-  //         .catch((error) => console.error("Error fetching product details:", error));
-  //     }
-  //   }
-  // };
-
-
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
       const inputValue = e.target.value.trim();
@@ -459,8 +429,8 @@ export default function PurchesInvoice() {
   const handleAddProduct = () => {
     const newProduct = {
       id: products?.length + 1,
-      barcodeVisible: true, 
-      groupItemId: { itemName: "" }, 
+      barcodeVisible: true,
+      groupItemId: { itemName: "" },
       toWeight: "",
       netWeight: "",
       marketRateUsed: "",
@@ -542,7 +512,6 @@ export default function PurchesInvoice() {
 
   const handleSaveInvoice = async () => {
     try {
-      // ✅ Get calculated invoice totals
       const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
       if (!invoiceData) {
@@ -560,7 +529,6 @@ export default function PurchesInvoice() {
       console.log('invoiceData.cgst', invoiceData.cgst)
 
 
-      // ✅ Prepare Payload with Calculated Values
       const payload = {
         customerId,
         products: products.map((product) => ({
@@ -608,8 +576,8 @@ export default function PurchesInvoice() {
   };
 
 
-
-  const handleSubmit = async () => {
+  const handleSubmit = async () => 
+    {
     try {
       const response = await ApiPost("/admin/customer", formData);
       console.log("response", response);
@@ -678,6 +646,21 @@ export default function PurchesInvoice() {
             updatedProduct.netWeight,
             updatedProduct.totalPrice
           );
+
+          if (field === "totalPrice") {
+            updatedProduct.totalPrice = parseFloat(value) || 0;
+  
+            // Get GoldRs (Market Price Calculation)
+            const goldRs = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+  
+            // Calculate Labour as the Difference Between totalPrice & goldRs
+            updatedProduct.labour = updatedProduct.totalPrice - goldRs;
+            
+            // Set Labour Type to FX (Fixed) if there's any labour applied
+            if (updatedProduct.labour !== 0) {
+              updatedProduct.labourType = "FX";
+            }
+          }
 
           // ✅ Update GME Price
           const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
@@ -785,7 +768,7 @@ export default function PurchesInvoice() {
     };
   }, []);
 
-  const [formData1, setFormData1] = useState({ taxType: '' });  
+  const [formData1, setFormData1] = useState({ taxType: '' });
 
   return (
     <>
@@ -987,32 +970,32 @@ export default function PurchesInvoice() {
                   <div className="flex">
                     <label className="flex cursor-pointer flex-col justify-start">
                       <div className="flex justify-between w-full gap-[20px]">
-                     
 
-                      <label className="flex items-center gap-[5px] cursor-pointer group">
-  <div className="relative flex items-center justify-center w-7 h-7">
-    <input
-      type="radio"
-      name="taxType"
-      value="tax"
-      checked={formData1.taxType === "tax"}
-      onClick={(e) => {
-        // Toggle behavior: deselect if already selected.
-        if (formData1.taxType === "tax") {
-          setFormData1((prev) => ({ ...prev, taxType: "" }));
-        } else {
-          setFormData1((prev) => ({ ...prev, taxType: "tax" }));
-        }
-      }}
-      className="sr-only peer"
-    />
-    <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
-    <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
-  </div>
-  <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
-    Tax
-  </span>
-</label>
+
+                        <label className="flex items-center gap-[5px] cursor-pointer group">
+                          <div className="relative flex items-center justify-center w-7 h-7">
+                            <input
+                              type="radio"
+                              name="taxType"
+                              value="tax"
+                              checked={formData1.taxType === "tax"}
+                              onClick={(e) => {
+                                // Toggle behavior: deselect if already selected.
+                                if (formData1.taxType === "tax") {
+                                  setFormData1((prev) => ({ ...prev, taxType: "" }));
+                                } else {
+                                  setFormData1((prev) => ({ ...prev, taxType: "tax" }));
+                                }
+                              }}
+                              className="sr-only peer"
+                            />
+                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                          </div>
+                          <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
+                            Tax
+                          </span>
+                        </label>
                       </div>
                     </label>
                   </div>
@@ -1419,12 +1402,13 @@ export default function PurchesInvoice() {
                                 </td>
                               )}
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
+                                <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
-                                /> */}
-                                {product?.finalPrice}
+                                  value={product.totalPrice}
+                                  onChange={(e) => handleProductInputChange(e, index, "totalPrice")}
+                                />
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input

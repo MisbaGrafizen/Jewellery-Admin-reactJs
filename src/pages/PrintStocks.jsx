@@ -12,6 +12,8 @@ export default function PrintStocks() {
   const location = useLocation();
   const barcodes = location.state?.barcodes || [];
 
+  console.log('barcodes', barcodes)
+
   // useEffect(() => {
   //   const fetchBarcodes = async () => {
   //     if (!token) {
@@ -282,8 +284,8 @@ export default function PrintStocks() {
           // align-items: center;
         }
         .label {
-          width: 230px;
-          height: 60px;
+          width: 5.5cm;
+          height: 1.2cm;
           background: white;
           border: 1px solid #e5e7eb;
           border-radius: 5px;
@@ -417,22 +419,22 @@ margin:20px 0px;
                               <div className=" font-Poppins main1 flex gap-[10px]">
                                 <div className="flex main-text flex-col">
                                   <p className="  text-black text-content leading-3   font-[600] text-[9px] flex ">
-                                    Chain
+                                    {barcode.groupItemId?.itemName}
                                   </p>
 
                                   <p className="  text-black text-content1    leading-[10px]   font-[500] text-[7px] flex  ">
-                                    G.W: 10.00 GM
+                                    G.W: {barcode?.toWeight} GM
                                   </p>
 
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[7px] flex ">
-                                    DIA: 1.2 CT
+                                  L.W: {((barcode?.toWeight || 0) - (barcode?.netWeight || 0)).toFixed(2)} GM
                                   </p>
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[7px] flex  ">
-                                    N.W: 9.760 GM
+                                    N.W: {barcode?.netWeight} GM
                                   </p>
                                 </div>
                                 <p className="  text-black text-content12  leading-3   font-[500] text-[7px] flex  ">
-                                  22k
+                                  {barcode?.groupId?.name}
                                 </p>
                               </div>
                               <div className=" flex flex-col  items-center gap-[8px]">
