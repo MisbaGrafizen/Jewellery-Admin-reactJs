@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import SideBar from "../../Component/sidebar/SideBar";
 import Header from "../../Component/header/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import { DatePicker } from "antd";
+import { DatePicker } from "antd";  
 import { Check } from "lucide-react";
 import { Plus, Scan, Pencil } from "lucide-react";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
@@ -50,6 +50,7 @@ export default function PurchesInvoice() {
   const [dropdownTypeOpen, setDropdownTypeOpen] = useState(false);
   const [selectedLabourType, setSelectedLabourType] = useState("");
   const [labourFocused, setLabourFocused] = useState(false);
+  const [customTotalPrice, setCustomTotalPrice] = useState(null);
 
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
@@ -488,26 +489,47 @@ export default function PurchesInvoice() {
       finalPrice,
     };
   };
+  
 
   // ✅ Function to Update State with Calculated Values
   const updateTotalsAndApplyDiscount = () => {
-    const invoiceData = calculateInvoiceTotals(products, discountPercentage);
-
-    if (!invoiceData) {
-      console.error("❌ Error: Invoice Data is undefined!");
-      return;
-    }
-
-    setDiscountAmount(invoiceData.discountAmount);
-    setDiscountPrice(invoiceData.discountPrice);
-    setCgst(invoiceData.cgst);
-    setSgst(invoiceData.sgst);
-    setTotalTaxAmount(invoiceData.totalTax);
-    setFinalTotal(invoiceData.finalPrice);
-
-    console.log("✅ Updated Invoice Totals in State:", invoiceData);
+    setProducts((prevProducts) => {
+      let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+  
+      // ✅ Step 1: Apply Discount
+      const discountAmount = (totalPrice * discountPercentage) / 100;
+      const discountedPrice = totalPrice - discountAmount;
+  
+      // ✅ Step 2: Apply GST (CGST & SGST at 1.5% each)
+      const cgst = (discountedPrice * 1.5) / 100;
+      const sgst = (discountedPrice * 1.5) / 100;
+      const totalTax = cgst + sgst;
+  
+      // ✅ Step 3: Calculate Final Price
+      const finalPrice = discountedPrice + totalTax;
+  
+      // ✅ Update invoice state
+      setDiscountAmount(discountAmount);
+      setDiscountPrice(discountedPrice);
+      setCgst(cgst);
+      setSgst(sgst);
+      setTotalTaxAmount(totalTax);
+      setFinalTotal(finalPrice);
+  
+      console.log("✅ Updated Invoice Totals:", {
+        totalPrice,
+        discountAmount,
+        discountedPrice,
+        cgst,
+        sgst,
+        totalTax,
+        finalPrice,
+      });
+  
+      return prevProducts;
+    });
   };
-
+  
 
 
   const handleSaveInvoice = async () => {
@@ -648,15 +670,32 @@ export default function PurchesInvoice() {
           );
 
           if (field === "totalPrice") {
-            updatedProduct.totalPrice = parseFloat(value) || 0;
+            updatedProduct.totalPrice = value;
   
-            // Get GoldRs (Market Price Calculation)
+            // ✅ Step 1: Apply Discount
+            const discountAmount = (value * discountPercentage) / 100;
+            const discountedPrice = value - discountAmount;
+  
+            // ✅ Step 2: Calculate GST (CGST & SGST at 1.5% each)
+            const cgst = (discountedPrice * 1.5) / 100;
+            const sgst = (discountedPrice * 1.5) / 100;
+            const totalTax = cgst + sgst;
+  
+            // ✅ Step 3: Calculate Final Invoice Amount
+            const finalPrice = discountedPrice + totalTax;
+  
+            // ✅ Assign Calculated Values
+            updatedProduct.discountAmount = discountAmount;
+            updatedProduct.discountedPrice = discountedPrice;
+            updatedProduct.cgst = cgst;
+            updatedProduct.sgst = sgst;
+            updatedProduct.totalTax = totalTax;
+            updatedProduct.finalPrice = finalPrice;
+  
+            // ✅ Labour Calculation
             const goldRs = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+            updatedProduct.labour = value - goldRs;
   
-            // Calculate Labour as the Difference Between totalPrice & goldRs
-            updatedProduct.labour = updatedProduct.totalPrice - goldRs;
-            
-            // Set Labour Type to FX (Fixed) if there's any labour applied
             if (updatedProduct.labour !== 0) {
               updatedProduct.labourType = "FX";
             }
@@ -979,13 +1018,11 @@ export default function PurchesInvoice() {
                               name="taxType"
                               value="tax"
                               checked={formData1.taxType === "tax"}
-                              onClick={(e) => {
-                                // Toggle behavior: deselect if already selected.
-                                if (formData1.taxType === "tax") {
-                                  setFormData1((prev) => ({ ...prev, taxType: "" }));
-                                } else {
-                                  setFormData1((prev) => ({ ...prev, taxType: "tax" }));
-                                }
+                              onChange={(e) => {
+                                setFormData1((prev) => ({
+                                  ...prev,
+                                  taxType: prev.taxType === "tax" ? "" : "tax", 
+                                }));
                               }}
                               className="sr-only peer"
                             />

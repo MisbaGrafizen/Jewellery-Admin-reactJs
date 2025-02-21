@@ -131,6 +131,7 @@ export default function CreateBarCodeStock() {
   const dropdownRef = useRef(null);
   const dropdownMetalRef = useRef(null);
   const dropdownCategoryRef = useRef(null);
+  const dropdownSizeRef = useRef(null);
 
   const handleSelect = (type) => {
     setSelectedType(type);
@@ -219,6 +220,10 @@ export default function CreateBarCodeStock() {
   const handleSelectDesign = (type) => {
     setSelectedTypeDesign(type);
     setDropdownOpenDesign(false);
+  };
+  const handleSelectSize = (type) => {
+    setSelectedTypeSize(type);
+    setDropdownOpenSize(false);
   };
 
   const handleSelectCategory = (type) => {
@@ -452,6 +457,8 @@ export default function CreateBarCodeStock() {
     // ✅ Find Selected Category (From Dropdown)
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
+    const selectedSize  = sizes.find((item) => item.sizeName === selectedTypeSize);
+    const selectedDesign = designs.find((item) => item.designName === selectedTypeDesign);
 
     if (!selectedCarat || !selectedCategory) {
       alert("Please select a valid Carat and Category.");
@@ -490,6 +497,8 @@ export default function CreateBarCodeStock() {
         }
       }
 
+      console.log('selectedSize', selectedSize)
+
       return {
         groupId: selectedCarat._id,
         groupItemId: selectedCategory._id,
@@ -504,7 +513,8 @@ export default function CreateBarCodeStock() {
         location: field.location ? field.location.toString() : "",
         design: field.selectedTypeDesign || null,
         pcs: parseInt(field.pcs) || 1,
-        size: parseFloat(field.size) || null,
+        size: selectedSize?._id,
+        design: selectedDesign?._id,
         moti: parseFloat(field.moti) || 0,
         stone: parseFloat(field.stone) || 0,
         jadatr: parseFloat(field.jadatr) || 0,
@@ -513,6 +523,8 @@ export default function CreateBarCodeStock() {
         huidCharge: parseFloat(field.huidCharge) || 0,
       };
     });
+
+    console.log('productsArray', productsArray)
 
     try {
       const response = await dispatch(
@@ -568,6 +580,12 @@ export default function CreateBarCodeStock() {
         !dropdownCategoryRef.current.contains(event.target)
       ) {
         setDropdownOpenCategory(false);
+      }
+      if (
+        dropdownSizeRef.current &&
+        !dropdownSizeRef.current.contains(event.target)
+      ) {
+        setDropdownOpenSize(false);
       }
     };
 
@@ -1308,35 +1326,33 @@ bg-[#fff] ">
                             </AnimatePresence>
                           </div>
 
-                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
+                          <div 
+                           ref={dropdownSizeRef}
+                          className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
                               htmlFor={`size-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-      ${fieldSets[index]?.selectedTypeSize || fieldSets[index]?.dropdownOpenSize ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+                                ${selectedTypeSize || sizeFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Size
                             </label>
                             <div
                               className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() => {
-                                let updatedFieldSets = [...fieldSets];
-                                updatedFieldSets[index] = {
-                                  ...updatedFieldSets[index],
-                                  dropdownOpenSize: !updatedFieldSets[index].dropdownOpenSize
-                                };
-                                setFieldSets(updatedFieldSets);
-                              }}
+                              onClick={() =>
+                                setDropdownOpenSize((prev) => !prev)
+                              } 
                             >
                               <input
                                 type="text"
                                 id={`size-${index}`}
-                                value={fieldSets[index]?.selectedTypeSize || ""}
+                                name="size"
+                                value={selectedTypeSize}
                                 readOnly
                                 className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
                                 className={
-                                  fieldSets[index]?.dropdownOpenSize
+                                  dropdownOpenSize
                                     ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                     : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                                 }
@@ -1344,7 +1360,7 @@ bg-[#fff] ">
                             </div>
 
                             <AnimatePresence>
-                              {fieldSets[index]?.dropdownOpenSize && (
+                              {dropdownOpenSize && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
@@ -1357,13 +1373,8 @@ bg-[#fff] ">
                                         key={idx}
                                         className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
                                         onClick={() => {
-                                          let updatedFieldSets = [...fieldSets];
-                                          updatedFieldSets[index] = {
-                                            ...updatedFieldSets[index],
-                                            selectedTypeSize: type?.sizeName,
-                                            dropdownOpenSize: false
-                                          };
-                                          setFieldSets(updatedFieldSets);
+                                          handleSelectSize(type?.sizeName);
+                                          setDropdownOpenSize(false);
                                         }}
                                       >
                                         {type?.sizeName}

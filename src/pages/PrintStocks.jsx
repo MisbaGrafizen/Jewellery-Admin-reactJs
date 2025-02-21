@@ -456,9 +456,12 @@ margin:20px 0px;
                                     {barcode?.groupId?.name}
                                   </p>
 
-                                  <p className="  text-black text-content123  leading-3   font-[500] text-[7px] flex  ">
-                                    SZ: 9
-                                  </p>
+                                  {barcode?.size?.sizeName && (
+                                    <p className="text-black text-content123 leading-3 font-[500] text-[7px] flex">
+                                      SZ: {barcode.size?.sizeName}
+                                    </p>
+                                  )}
+
                                 </div>
                               </div>
                               <div className=" flex flex-col  items-center gap-[8px]">
