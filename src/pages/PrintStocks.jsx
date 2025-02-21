@@ -284,8 +284,8 @@ export default function PrintStocks() {
           // align-items: center;
         }
         .label {
-          width: 5.5cm;
-          height: 1.2cm;
+          width: 5.3cm;
+          height: 1.3cm;
           background: white;
           border: 1px solid #e5e7eb;
           border-radius: 5px;
