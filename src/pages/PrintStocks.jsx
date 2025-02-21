@@ -306,7 +306,9 @@ margin:20px 0px;
 
           .main1{
                  display:flex ;
-           gap:10px
+           gap:10px;
+           width:70px;
+
           }
         .label-content {
           display: flex;
@@ -323,32 +325,41 @@ margin:20px 0px;
         .text-content {
           display: flex;
           flex-direction: ;
-          font-size: 9px;
+          font-size: 8px;
           font-weight: 600;
           color: black;
           line-height: 2px;
-          margin-top:5px;
+          margin-top:8px;
         }
 
 
                 .text-content1 {
           display: flex;
           flex-direction: ;
-          font-size: 7px;
+          font-size: 6px;
           font-weight: 500;
           color: black;
           line-height: 2px;
-                    margin-top:2px;
+                    margin-top:0px;
         }
 
                 .text-content12 {
                   display: flex;
                   flex-direction: ;
-                  font-size: 7px;
+                  font-size: 6px;
                   font-weight: 500;
                   color: black;
                   line-height: 2px;
-                            margin-top:25px;
+                            margin-top:29px;
+                }
+                                     .text-content123 {
+                  display: flex;
+                  flex-direction: ;
+                  font-size: 6px;
+                  font-weight: 500;
+                  color: black;
+                  line-height: 2px;
+                  
                 }
 
         .text-content p:first-child {
@@ -356,7 +367,7 @@ margin:20px 0px;
           font-size: 9px;
         }
         .store-name {
-          font-size: 9px;
+          font-size: 8px;
           font-weight: 600;
           margin-top:0px;
         }
@@ -374,7 +385,12 @@ margin:20px 0px;
          justify-content: space-between;
          gap:10px;
          padding: 0px 6px;
+         margin-top:-4px;
         }
+         .size{
+                     display: flex;
+                              flex-direction: column ;
+         }
       </style>
     </head>
     <body>
@@ -427,15 +443,23 @@ margin:20px 0px;
                                   </p>
 
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[7px] flex ">
-                                  L.W: {((barcode?.toWeight || 0) - (barcode?.netWeight || 0)).toFixed(2)} GM
+                                    L.W: {((barcode?.toWeight || 0) - (barcode?.netWeight || 0)).toFixed(2)} GM
                                   </p>
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[7px] flex  ">
                                     N.W: {barcode?.netWeight} GM
                                   </p>
                                 </div>
-                                <p className="  text-black text-content12  leading-3   font-[500] text-[7px] flex  ">
-                                  {barcode?.groupId?.name}
-                                </p>
+                                <div className=" flex flex-col size">
+
+
+                                  <p className="  text-black text-content12  leading-3   font-[500] text-[7px] flex  ">
+                                    {barcode?.groupId?.name}
+                                  </p>
+
+                                  <p className="  text-black text-content123  leading-3   font-[500] text-[7px] flex  ">
+                                    SZ: 9
+                                  </p>
+                                </div>
                               </div>
                               <div className=" flex flex-col  items-center gap-[8px]">
                                 <p className=" font-Poppins store-name  text-black   leading-[10px]   font-[600] text-[8px] flex ">
