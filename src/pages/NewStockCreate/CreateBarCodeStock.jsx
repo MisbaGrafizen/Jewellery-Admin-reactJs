@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
+import mongoose from 'mongoose';
 
-import { X, CheckCircle } from "lucide-react"
+
 import {
   addCategoryAction,
   addGroupItemAction,
@@ -40,6 +40,7 @@ export default function CreateBarCodeStock() {
       moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
       huidCharge: "", selectedTypeDesign: "", selectedTypeHuidRule: "",
       dropdownOpenDesign: false, dropdownOpenHuid: false,
+      dropdownOpenSize: false, selectedTypeDesign: "",
       selectedTypeLabour: "", dropdownOpenLabour: false,
     }
   ]);
@@ -247,6 +248,26 @@ export default function CreateBarCodeStock() {
     setInputVisible(true);
   };
 
+
+  const handleFieldSetChange = (index, field, value) => {
+    setFieldSets((prevFieldSets) => {
+      return prevFieldSets.map((set, i) => {
+        if (i === index) {
+          let updatedSet = { ...set, [field]: value };
+
+          // ✅ Ensure `size` is a valid ObjectId or set to `null`
+          if (field === "size") {
+            updatedSet.size = mongoose.Types.ObjectId.isValid(value) ? value : null;
+          }
+
+          return updatedSet;
+        }
+        return set;
+      });
+    });
+  };
+
+
   const handleDelete = async () => {
     try {
       let success = false;
@@ -292,17 +313,6 @@ export default function CreateBarCodeStock() {
     }
   };
 
-  const handleCategoryClick = (index) => {
-    setSelectedCaratIndex(index);
-  };
-
-  const handleMetalClick = (index) => {
-    setSelectedMetalIndex(index);
-  };
-
-  const handleItemClick = (index) => {
-    setSelectedItemIndex(index);
-  };
 
   useEffect(() => {
     if (fieldSets.grossWeight && fieldSets.lessWeight && selectedType) {
@@ -320,128 +330,6 @@ export default function CreateBarCodeStock() {
     }
   }, [fieldSets.grossWeight, fieldSets.lessWeight, selectedType, categories]);
 
-
-  const [matchedLabourRate, setMatchedLabourRate] = useState(null); // ✅ State to Store Matched Labour Rate
-
-  // const handleAddStock = async () => {
-  //   console.log("Fetching labour data...");
-
-  //   // ✅ Fetch Labour Data from Redux
-  //   const labourData = {
-  //     uchak: await dispatch(getAllUchakAction()),
-  //     perGram: await dispatch(getPerGramAction()),
-  //     percentage: await dispatch(getPercentageAction()),
-  //   };
-
-  //   console.log("Labour Data Received:", labourData);
-
-  //   // ✅ Find Selected Category (From Dropdown)
-  //   const selectedCarat = categories.find((carat) => carat.name === selectedType);
-  //   const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-
-  //   console.log("Selected Carat:", selectedCarat);
-  //   console.log("Selected Category:", selectedCategory);
-
-  //   if (!selectedCarat || !selectedCategory) {
-  //     alert("Please select a valid Carat and Category.");
-  //     return;
-  //   }
-
-  //   let matchedRate = 0; // ✅ Variable to Store Matched Labour Rate
-
-  //   // ✅ Prepare Stock Data Array
-  //   const productsArray = fieldSets.map((field, index) => {
-  //     let labourAmount = 0;
-  //     const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
-
-  //     console.log(`Processing field ${index}...`);
-  //     console.log(`Net Weight: ${netWeight}`);
-  //     console.log(`Selected Labour Type: ${field.selectedTypeLabour}`);
-
-  //     // ✅ Match Labour with BOTH Group (Category) & Item
-  //     const matchLabour = (labourArray) =>
-  //       labourArray.find(
-  //         (labour) =>
-  //           String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
-  //           String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
-  //       );
-
-  //     let matchedLabour = null;
-
-  //     if (field.selectedTypeLabour === "Uchak") {
-  //       matchedLabour = matchLabour(labourData.uchak);
-  //     } else if (field.selectedTypeLabour === "PerGram") {
-  //       matchedLabour = matchLabour(labourData.perGram);
-  //     } else if (field.selectedTypeLabour === "Percentage") {
-  //       matchedLabour = matchLabour(labourData.percentage);
-  //     }
-
-  //     console.log("✅ Matched Labour:", matchedLabour);
-
-  //     if (matchedLabour) {
-  //       matchedRate = parseFloat(matchedLabour.rate) || 0; // ✅ Store Matched Rate
-  //       if (field.selectedTypeLabour === "PerGram") {
-  //         labourAmount = matchedRate * netWeight;
-  //       } else if (field.selectedTypeLabour === "Percentage") {
-  //         labourAmount = (matchedRate / 100) * netWeight;
-  //       } else {
-  //         labourAmount = matchedRate;
-  //       }
-  //     }
-
-  //     console.log(`Final Labour Amount for field ${index}: ${labourAmount}`);
-
-  //     return {
-  //       groupId: selectedCarat._id,
-  //       groupItemId: selectedCategory._id,
-  //       toWeight: parseFloat(field.grossWeight) || 0,
-  //       lessWeight: parseFloat(field.lessWeight) || 0,
-  //       wastage: parseFloat(field.westage) || 0,
-  //       labour: labourAmount.toFixed(2),
-  //       hsnCode: field.hsn ? field.hsn.toString() : "",
-  //       extraRate: field.extra ? field.extra.toString() : "",
-  //       group: field.group ? field.group.toString() : "",
-  //       account: field.account ? field.account.toString() : "",
-  //       location: field.location ? field.location.toString() : "",
-  //       design: field.selectedTypeDesign || null,
-  //       pcs: parseInt(field.pcs) || 1,
-  //       size: parseFloat(field.size) || null,
-  //       moti: parseFloat(field.moti) || 0,
-  //       stone: parseFloat(field.stone) || 0,
-  //       jadatr: parseFloat(field.jadatr) || 0,
-  //       huid: field.huid ? field.huid.toString() : "",
-  //       huidRule: field.huidRule ? field.huidRule.toString() : "",
-  //       huidCharge: parseFloat(field.huidCharge) || 0,
-  //     };
-  //   });
-
-  //   // ✅ Update the State to Display Labour Rate
-  //   setMatchedLabourRate(matchedRate);
-  //   console.log("🔹 Final Matched Labour Rate:", matchedRate);
-
-  //   console.log("Final API Request Payload:", productsArray);
-
-  //   // ✅ Send Data to API (Redux Dispatch)
-  //   try {
-  //     const response = await dispatch(addStockAction({
-  //       groupId: selectedCarat._id,
-  //       groupItemId: selectedCategory._id,
-  //       products: productsArray,
-  //     }));
-
-  //     if (response) {
-  //       alert("Stock added successfully!");
-  //       navigate('/add-stock'); // ✅ Redirect to Stock Page
-  //       dispatch(getAllStockAction()); // ✅ Refresh Stock Data
-  //     } else {
-  //       alert("Failed to add stock.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("An error occurred while saving stock.");
-  //   }
-  // };
-
   const handleAddStock = async () => {
     console.log("Fetching labour data...");
 
@@ -457,7 +345,7 @@ export default function CreateBarCodeStock() {
     // ✅ Find Selected Category (From Dropdown)
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-    const selectedSize  = sizes.find((item) => item.sizeName === selectedTypeSize);
+    const selectedSize = sizes.find((item) => item.sizeName === selectedTypeSize);
     const selectedDesign = designs.find((item) => item.designName === selectedTypeDesign);
 
     if (!selectedCarat || !selectedCategory) {
@@ -513,7 +401,7 @@ export default function CreateBarCodeStock() {
         location: field.location ? field.location.toString() : "",
         design: field.selectedTypeDesign || null,
         pcs: parseInt(field.pcs) || 1,
-        size: selectedSize?._id,
+        size: mongoose.Types.ObjectId.isValid(field.size) ? field.size : null,
         design: selectedDesign?._id,
         moti: parseFloat(field.moti) || 0,
         stone: parseFloat(field.stone) || 0,
@@ -1360,7 +1248,7 @@ bg-[#fff] ">
                             </div>
 
                             <AnimatePresence>
-                            {fieldSets[index]?.dropdownOpenSize && (
+                              {fieldSets[index]?.dropdownOpenSize && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
@@ -1374,10 +1262,12 @@ bg-[#fff] ">
                                         className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
                                         onClick={() => {
                                           let updatedFieldSets = [...fieldSets];
-                                          updatedFieldSets[index].selectedTypeSize = type?.sizeName;
+                                          updatedFieldSets[index].selectedTypeSize = type?.sizeName; // ✅ Store sizeName
+                                          updatedFieldSets[index].size = type?._id || null; // ✅ Store ObjectId
                                           updatedFieldSets[index].dropdownOpenSize = false;
                                           setFieldSets(updatedFieldSets);
                                         }}
+                                      
                                       >
                                         {type?.sizeName}
                                       </div>
