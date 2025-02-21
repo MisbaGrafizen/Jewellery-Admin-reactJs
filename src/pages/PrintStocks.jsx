@@ -379,18 +379,17 @@ margin:20px 0px;
           height: 20px;
           width: 30px;
         }
-
         .barimage{
-            display: flex;
-         justify-content: space-between;
-         gap:10px;
-         padding: 0px 6px;
-         margin-top:-4px;
+          display: flex;
+          justify-content: space-between;
+          gap:10px;
+          padding: 0px 6px;
+          margin-top:-4px;
         }
-         .size{
-                     display: flex;
-                              flex-direction: column ;
-         }
+        .size{
+          display: flex;
+          flex-direction: column ;
+        }
       </style>
     </head>
     <body>

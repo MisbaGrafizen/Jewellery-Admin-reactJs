@@ -1326,33 +1326,33 @@ bg-[#fff] ">
                             </AnimatePresence>
                           </div>
 
-                          <div 
-                           ref={dropdownSizeRef}
-                          className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
+                          <div className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff]">
                             <label
                               htmlFor={`size-${index}`}
                               className={`absolute left-[13px] font-Poppins px-[5px] bg-[#fff] text-[14px] transition-all duration-200 
-                                ${selectedTypeSize || sizeFocused ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
+                               ${fieldSets[index]?.selectedTypeSize || fieldSets[index]?.dropdownOpenSize ? "text-[#000] -translate-y-[21px] hidden scale-90" : "text-[#8f8f8f] cursor-text flex"}`}
                             >
                               Size
                             </label>
                             <div
                               className="relative w-full rounded-lg flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                              onClick={() =>
-                                setDropdownOpenSize((prev) => !prev)
-                              } 
+                              onClick={() => {
+                                let updatedFieldSets = [...fieldSets];
+                                updatedFieldSets[index].dropdownOpenSize = !updatedFieldSets[index].dropdownOpenSize;
+                                setFieldSets(updatedFieldSets);
+                              }}
                             >
                               <input
                                 type="text"
                                 id={`size-${index}`}
                                 name="size"
-                                value={selectedTypeSize}
+                                value={fieldSets[index]?.selectedTypeSize || ""}
                                 readOnly
                                 className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
                               />
                               <i
                                 className={
-                                  dropdownOpenSize
+                                  fieldSets[index]?.dropdownOpenSize
                                     ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
                                     : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                                 }
@@ -1360,7 +1360,7 @@ bg-[#fff] ">
                             </div>
 
                             <AnimatePresence>
-                              {dropdownOpenSize && (
+                            {fieldSets[index]?.dropdownOpenSize && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
@@ -1373,8 +1373,10 @@ bg-[#fff] ">
                                         key={idx}
                                         className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
                                         onClick={() => {
-                                          handleSelectSize(type?.sizeName);
-                                          setDropdownOpenSize(false);
+                                          let updatedFieldSets = [...fieldSets];
+                                          updatedFieldSets[index].selectedTypeSize = type?.sizeName;
+                                          updatedFieldSets[index].dropdownOpenSize = false;
+                                          setFieldSets(updatedFieldSets);
                                         }}
                                       >
                                         {type?.sizeName}
