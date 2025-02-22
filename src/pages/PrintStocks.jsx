@@ -265,44 +265,86 @@ export default function PrintStocks() {
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-        @page {
-          size: auto;
-          margin: 0mm;
+//      @page {
+//             size: 81mm 12mm; /* Exact label size */
+//             margin: 0; /* No extra margin */
+//         }
+//         body {
+//           margin: 0;
+//    width: 81mm;
+//             height: 12mm;
+//           padding: 2mm;
+//           font-family: 'Poppins', sans-serif;
+//           // display: flex;
+//           // justify-content: center;
+//           // align-items: center;
+//         }
+//         .labels-container {
+//           display: flex;
+//           flex-direction: column;
+//           gap: 10px;
+//           // align-items: center;
+//         }
+//         .label {
+//           // width: 5.3cm;
+//           // height: 1.3cm;
+//              width: 81mm;
+//             height: 12mm;
+//           background: white;
+//           border: 1px solid #e5e7eb;
+//           border-radius: 5px;
+//           display: flex;
+//           align-items: center;
+//           justify-content: space-between;
+//           padding: 6px;
+//           box-sizing: border-box;
+//         }
+//           .main-text{
+//           display:flex ;
+//            flex-direction: column;
+//           gap:0px
+// ;        
+// margin:20px 0px;
+//           line-height: 2px;    
+//           }
+
+
+
+
+
+
+ @page {
+          size: 81mm 12mm; /* Exact label size */
+          margin: 0; /* No extra margin */
         }
+        
         body {
           margin: 0;
-          padding: 10mm;
+          width: 81mm;
+          height: 10mm;
+          // padding: 2mm;
           font-family: 'Poppins', sans-serif;
-          // display: flex;
-          // justify-content: center;
-          // align-items: center;
         }
+
         .labels-container {
           display: flex;
           flex-direction: column;
-          gap: 10px;
-          // align-items: center;
+          align-items: center;
+          gap: 5px;
         }
+        
         .label {
-          width: 5.3cm;
-          height: 1.3cm;
+          width: 81mm;
+          height: 12mm;
           background: white;
           border: 1px solid #e5e7eb;
           border-radius: 5px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 6px;
+          padding: 4px;
           box-sizing: border-box;
         }
-          .main-text{
-          display:flex ;
-           flex-direction: column;
-          gap:0px
-;        
-margin:20px 0px;
-          line-height: 2px;    
-          }
 
           .main1{
                  display:flex ;
@@ -329,7 +371,7 @@ margin:20px 0px;
           font-weight: 600;
           color: black;
           line-height: 2px;
-          margin-top:8px;
+          margin-top:px;
         }
 
 
