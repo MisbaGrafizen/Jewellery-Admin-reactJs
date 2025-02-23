@@ -1327,7 +1327,7 @@ export default function PurchesInvoice() {
                                   type="number"
                                   value={product.labour}
                                   onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className="w-[50%] border-0 pl-[4px] outline-none font-Poppins focus:ring-0 text-sm"
+                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]":"w-[40%]"}`}
                                   placeholder="0.00"
                                 />
 
@@ -1340,7 +1340,7 @@ export default function PurchesInvoice() {
                                     >
                                       <label
                                         htmlFor="labourType"
-                                        className={`absolute left-[13px] font-Poppins pl-[10px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
+                                        className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
                                           ? "text-[#000] -translate-y-[21px] hidden "
                                           : "text-[#8f8f8f] cursor-text flex"
                                           }`}
@@ -1373,7 +1373,7 @@ export default function PurchesInvoice() {
                                           initial={{ opacity: 0, y: -10 }}
                                           animate={{ opacity: 1, y: 0 }}
                                           exit={{ opacity: 0, y: -10 }}
-                                          className=" absolute  mt-5 ml-[30px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                          className=" absolute  mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
                                         >
                                           {labourTypes.map((labour, index) => (
                                             <div
@@ -1550,7 +1550,7 @@ export default function PurchesInvoice() {
 
                       {/* Total Row */}
 
-                      <div className="min-w-[2400px]">
+       <div className="min-w-[2400px]">
                         <div className=" flex w-[100%]" >
                           <tr className="bg-[#f0f1f364]   ">
                             <th className="py-4 px-2 text-left text-[13px] font-medium font-Poppins text-gray-600 w-20 border-r border-gray-200">
@@ -1565,9 +1565,7 @@ export default function PurchesInvoice() {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[110px] border-r border-gray-200">
 
                             </th>
-                            {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
-                              To Weight
-                            </th> */}
+               
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px] border-r border-gray-200">
 
                             </th>
@@ -1632,7 +1630,7 @@ export default function PurchesInvoice() {
                           </tr>
                         </div>
 
-                      </div>
+                      </div> 
                     </div>
                   </div>
                   <div className=" flex w-[100%]  justify-between gap-[20px]  mt-[19px] mb-[20px]">

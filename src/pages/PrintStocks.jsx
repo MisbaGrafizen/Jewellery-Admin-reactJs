@@ -263,7 +263,10 @@ export default function PrintStocks() {
       <style>
 
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
 
 //      @page {
 //             size: 81mm 12mm; /* Exact label size */
@@ -274,7 +277,7 @@ export default function PrintStocks() {
 //    width: 81mm;
 //             height: 12mm;
 //           padding: 2mm;
-//           font-family: 'Poppins', sans-serif;
+//           font-family: 'Open Sans', serif;
 //           // display: flex;
 //           // justify-content: center;
 //           // align-items: center;
@@ -312,6 +315,7 @@ export default function PrintStocks() {
 
 
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
  @page {
           size: 81mm 12mm; /* Exact label size */
@@ -323,33 +327,33 @@ export default function PrintStocks() {
           width: 81mm;
           height: 10mm;
           // padding: 2mm;
-          font-family: 'Poppins', sans-serif;
+          font-family: Open Sans, serif;
         }
 
         .labels-container {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 5px;
+
         }
         
         .label {
           width: 81mm;
           height: 12mm;
           background: white;
-          border: 1px solid #e5e7eb;
+          // border: 1px solid #e5e7eb;
           border-radius: 5px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 4px;
+          padding-left: 4px;
           box-sizing: border-box;
         }
 
           .main1{
                  display:flex ;
            gap:10px;
-           width:70px;
+           width:78px;
 
           }
         .label-content {
@@ -371,34 +375,34 @@ export default function PrintStocks() {
           font-weight: 600;
           color: black;
           line-height: 2px;
-          margin-top:px;
+          margin-top:3px;
         }
 
 
                 .text-content1 {
           display: flex;
           flex-direction: ;
-          font-size: 6px;
-          font-weight: 500;
+          font-size: 9px;
+          font-weight: 800;
           color: black;
-          line-height: 2px;
-                    margin-top:0px;
+          line-height: 3px;
+                    margin-top:2px;
         }
 
                 .text-content12 {
                   display: flex;
                   flex-direction: ;
-                  font-size: 6px;
-                  font-weight: 500;
+                  font-size: 7px;
+                  font-weight: 700;
                   color: black;
                   line-height: 2px;
-                            margin-top:29px;
+                            margin-top:9px;
                 }
                                      .text-content123 {
                   display: flex;
                   flex-direction: ;
-                  font-size: 6px;
-                  font-weight: 500;
+                  font-size: 7px;
+                  font-weight: 700;
                   color: black;
                   line-height: 2px;
                   
@@ -409,17 +413,22 @@ export default function PrintStocks() {
           font-size: 9px;
         }
         .store-name {
-          font-size: 8px;
-          font-weight: 600;
-          margin-top:0px;
+          font-size: 7px;
+          font-weight: 700;
+          margin-top:-5px;
         }
         .barcode {
-          width: 54px;
-          height: 23px;
+          width: 60px;
+          height: 28px;
+          // width:2.5cm
+          // height: 0.5cm;
+
+          margin-top:3px;
         }
         .holmark {
-          height: 20px;
-          width: 30px;
+          height: 19px;
+          width: 25px;
+             margin-top:3px;
         }
         .barimage{
           display: flex;
@@ -428,10 +437,30 @@ export default function PrintStocks() {
           padding: 0px 6px;
           margin-top:-4px;
         }
+          .barcode-number {
+              font-size: 7px;
+              font-weight: bold;
+              margin: 2px 0;
+              padding:1px 2px ;
+              background-color:white;
+              position:absolute;
+              top:25px;
+              left:0px;
+              right:0px; 
+              width:fit-content;
+              margin:0px auto;
+            }
+              .imagenumber{
+                   display: flex;
+          flex-direction: column ;
+position:relative;
+
+              }
         .size{
           display: flex;
           flex-direction: column ;
         }
+
       </style>
     </head>
     <body>
@@ -469,31 +498,31 @@ export default function PrintStocks() {
                       barcodes.map((barcode, index) => (
                         <div
                           key={index}
-                          className="label bg-white border w-[230px] mb-[10px] rounded-[5px] flex-wrap  h-[60px] justify-center flex py-[4px] border-gray-200"
+                          className="label bg-white border w-[230px] mb-[10px] rounded-[5px] flex-wrap  h-[60px] justify-between px-[10px] flex py-[4px] border-gray-200"
                         >
                           <div className="label-content">
-                            <div className="barcode-container  justify-between mt-[2px] gap-[12px] w-[100%] flex   ">
+                            <div className="barcode-container  relative justify-between  gap-[12px] w-[100%] flex   ">
                               <div className=" font-Poppins main1 flex gap-[10px]">
-                                <div className="flex main-text flex-col">
-                                  <p className="  text-black text-content leading-3   font-[600] text-[9px] flex ">
+                                <div className="flex main-text gap-[4px] mt-[6px] w-[90px] flex-col">
+                                  {/* <p className="  text-black text-content leading-3   font-[600] text-[9px] flex ">
                                     {barcode.groupItemId?.itemName}
-                                  </p>
+                                  </p> */}
 
-                                  <p className="  text-black text-content1    leading-[10px]   font-[500] text-[7px] flex  ">
+                                  <p className="  text-black text-content1    leading-[10px]   font-[500] text-[10px] flex  ">
                                     G.W: {barcode?.toWeight} GM
                                   </p>
 
-                                  <p className="  text-black text-content1   leading-[10px]   font-[500] text-[7px] flex ">
+                                  <p className="  text-black text-content1   leading-[10px]   font-[500] text-[10px] flex ">
                                     L.W: {((barcode?.toWeight || 0) - (barcode?.netWeight || 0)).toFixed(2)} GM
                                   </p>
-                                  <p className="  text-black text-content1   leading-[10px]   font-[500] text-[7px] flex  ">
+                                  <p className="  text-black text-content1   leading-[10px]   font-[500] text-[10px] flex  ">
                                     N.W: {barcode?.netWeight} GM
                                   </p>
                                 </div>
                                 <div className=" flex flex-col size">
 
 
-                                  <p className="  text-black text-content12  leading-3   font-[500] text-[7px] flex  ">
+                                  {/* <p className="  text-black text-content12  leading-3   font-[500] text-[7px] flex  ">
                                     {barcode?.groupId?.name}
                                   </p>
 
@@ -501,26 +530,33 @@ export default function PrintStocks() {
                                     <p className="text-black text-content123 leading-3 font-[500] text-[7px] flex">
                                       SZ: {barcode.size?.sizeName}
                                     </p>
-                                  )}
+                                  )} */}
 
                                 </div>
                               </div>
-                              <div className=" flex flex-col  items-center gap-[8px]">
-                                <p className=" font-Poppins store-name  text-black   leading-[10px]   font-[600] text-[8px] flex ">
+                              <div className=" flex flex-col  items-center mt-[10px] gap-[8px]">
+                                {/* <p className=" font-Poppins store-name  text-black   leading-[10px]   font-[600] text-[8px] flex ">
                                   Soni Pintu Bhai Jewellers
-                                </p>
+                                </p> */}
                                 <div className=" barimage flex  w-[100%] justify-between px-[6px] gap-[10px]">
-                                  <img
-                                    className="barcode w-[57px] h-[25px]"
-                                    src={
-                                      barcode.barcodeImage || "/placeholder.svg"
-                                    }
-                                    alt={`Barcode ${barcode.barCode}`}
-                                  />
-                                  <img
+                                  <div className="  relative imagenumber">
+
+
+                                    <img
+                                      className="barcode w-[69px] h-[34px]"
+                                      src={
+                                        barcode.barcodeImage || "/placeholder.svg"
+                                      }
+                                      alt={`Barcode ${barcode.barCode}`}
+                                    />
+                                    <p className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px]  left-[16px] font-[500] bg-white w-fit text-black">
+                                      {barcode.barCode}
+                                    </p>
+                                  </div>
+                                  {/* <img
                                     className=" flex  h-[20px] holmark w-[30px]"
                                     src={holmark}
-                                  />
+                                  /> */}
                                 </div>
                               </div>
                             </div>
