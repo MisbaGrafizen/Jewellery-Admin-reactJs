@@ -539,6 +539,88 @@ export default function BarcodeStock() {
                           Action
                         </th>
                       </tr>
+                      <tr className=" border-b text-gray-700 font-medium text-sm ">
+                        <th className="py-3 px-2 text-left  border-gray-300">
+                          {/* <input
+                            type="checkbox"
+                            id="check-all"
+                            className="w-4 ml-2 mb-[-4px] h-4"
+                          />
+                          <span className="ml-2 font-[500]">Sr.</span> */}
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+             <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[70px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[70px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[70px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[85px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[70px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[70px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        </th>
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          Action
+                        </th>
+                      </tr>
                     </thead>
                     <tbody>
                       {stocks?.map((item, index) => {

@@ -1382,8 +1382,7 @@ export default function PurchesInvoice() {
                                   placeholder="0.00"
                                 />
 
-{/*                    
-                                    <div
+                          {/* <div
                                       ref={labourDropdownRef}
                                       className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
                                       onClick={() => setDropdownTypeOpen((prev) => !prev)}
@@ -1416,7 +1415,7 @@ export default function PurchesInvoice() {
                                       ></i>
                                     </div>
 
-                                  
+                      
                                     <AnimatePresence>
                                       {dropdownTypeOpen && (
                                         <motion.div
@@ -1437,6 +1436,7 @@ export default function PurchesInvoice() {
                                         </motion.div>
                                       )}
                                     </AnimatePresence> */}
+                    
                                   </>
                                 ) : (
                                   <>
@@ -1449,9 +1449,9 @@ export default function PurchesInvoice() {
                                 />
 
                    
-                                    <div
+                              <div
                                       ref={labourDropdownRef}
-                                      className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
+                                      className={`relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow  items-center text-[#00000099] cursor-pointer ${product.barcodeVisible ? "hidden" : "flex"}`}
                                       onClick={() => setDropdownTypeOpen((prev) => !prev)}
                                     >
                                       <label
@@ -1482,7 +1482,7 @@ export default function PurchesInvoice() {
                                       ></i>
                                     </div>
 
-                                    {/* Dropdown Menu */}
+                      
                                     <AnimatePresence>
                                       {dropdownTypeOpen && (
                                         <motion.div
@@ -2105,7 +2105,7 @@ export default function PurchesInvoice() {
       </section>
 
       <NextUIModal isOpen={partyModalopen}>
-        <ModalContent className="md:max-w-[760px] max-w-[740px] shadow-none relative  bg-transparent rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[510px]  ">
+        <ModalContent className="md:max-w-[760px] max-w-[740px] shadow-none relative  bg-transparent rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[450px]  ">
           <>
             <div className="relative w-[100%] max-w-[730px] mt-[10px]   bg-white  rounded-2xl z-[100] flex justify-center !py-0 mx-auto  h-[96%]">
               <div
@@ -2122,7 +2122,7 @@ export default function PurchesInvoice() {
                 </div>
                 <div className="  flex w-[100%] gap-[15px]">
                   <div className=" flex w-[50%] flex-col gap-[16px]">
-                    <div
+                    {/* <div
                       ref={createdropdownRef}
                       className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                       onClick={() => setCreateDropdownOpen((prev) => !prev)} // Toggle dropdown on click
@@ -2152,7 +2152,7 @@ export default function PurchesInvoice() {
                             : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                         }
                       ></i>
-                    </div>
+                    </div> */}
 
                     <AnimatePresence>
                       {createdropdownOpen && (
@@ -2276,7 +2276,7 @@ export default function PurchesInvoice() {
                   </div>
 
                   <div className=" flex w-[50%] gap-[16px] flex-col ">
-                    <div
+                    {/* <div
                       ref={firmdropdownRef}
                       className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                       onClick={() => setFirmDropdownOpen((prev) => !prev)} // Toggle dropdown on click
@@ -2338,7 +2338,7 @@ export default function PurchesInvoice() {
                           ))}
                         </motion.div>
                       )}
-                    </AnimatePresence>
+                    </AnimatePresence> */}
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyState"

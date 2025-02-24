@@ -522,6 +522,9 @@ export default function DayBook() {
                                                         Dr Rs
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                      Bank
+                                                    </th>
+                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
                                                         Cash
                                                     </th>
                                                 </tr>
@@ -560,6 +563,10 @@ export default function DayBook() {
                                                         <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                                                             -
                                                         </td>
+                                                        <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                            -
+                                                        </td>
+
                                                         {item?.products?.map((data, index) => (
                                                             <td key={index} className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                                                                 {data?.amount}
@@ -604,6 +611,9 @@ export default function DayBook() {
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
 
                                                     </th>
+                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+</th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
 
                                                     </th>
