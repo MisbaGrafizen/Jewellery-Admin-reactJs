@@ -10,7 +10,7 @@ export default function DayBook() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [datemodalopen, setDateModalOpen] = useState(true)
     const [isDayVisible, setIsDayVisible] = useState(true);
-
+    const [isPurchese, setIsPurchese] = useState(true);
     const [data, setData] = useState([]);
 
     // const getTodayDate = () => {
@@ -105,6 +105,13 @@ export default function DayBook() {
     const handleTodaySaleClick = () => {
         setIsDayVisible(false);
     };
+    const handlePurcheseClick = () => {
+        setIsPurchese(true);
+    };
+
+    const handleSellClick = () => {
+        setIsPurchese(false);
+    };
 
     return (
         <>
@@ -138,145 +145,339 @@ export default function DayBook() {
                             </div>
                             {isDayVisible ? (
                                 <>
-                                    <div
-                                        className="    bg-white w-[100%] rounded-[10px] overflow-hidden shadow1-blue flex-shrink-0">
-                                        <table className=" w-full border-collapse  border-gray-300  font-Poppins">
-                                            <thead>
-                                                <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
-                                                    <th className="py-2 px-2 text-left  flex items-center border-gray-300">
-                                                        <input
-                                                            type="checkbox"
-                                                            id="check-all"
-                                                            className="w-4 ml-2  h-4"
-                                                        />
-                                                        <span className="ml-2  font-[600]">Sr.</span>
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        No
-                                                    </th>
-
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        Group
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        Name
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        G. weight
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        L. weight
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        N. weight
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        Cr. Rs
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        Dr. Rs
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                                        Cash
-                                                    </th>
 
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {data?.map((item, index) => (
-                                                    <tr key={index} className="">
-                                                        <td className="py-2 px-2 flex items-center  border-gray-300">
-                                                            <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
-                                                            <span className={item.type === "sale" ? "text-green-600" : "text-red-600"}>
-                                                                {index + 1}
-                                                            </span>
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.billNo}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.customerId?.city || "N/A"}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.customerId?.name || "N/A"}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.products?.reduce((sum, p) => sum + (p.grossWeight || 0), 0)}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.products?.reduce((sum, p) => sum + (p.lessWeight || 0), 0)}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.products?.reduce((sum, p) => sum + (p.netWeight || 0), 0)}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins  ${item.type === "sale" ? "text-green-600" : "text-transparent"
-                                                            }`}>
-                                                            {item.type === "sale" ? `${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
-                                                            }`}>
-                                                            {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
-                                                        </td>
-                                                        <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
-                                                            }`}
-                                                        >
-                                                            {item?.products?.reduce((sum, p) => sum + (p.amount || 0), 0)}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                            <tfoot>
-                                                <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
-                                                    <th className="py-2 px-3 text-left  flex items-center border-gray-300">
-                                                        Total :
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
 
-                                                    </th>
+                                    <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
+                                        <div
+                                            className={`absolute top-0 left-0 h-full w-[110px]  rounded-[8px] transition-transform duration-300 ${isPurchese ? "translate-x-0 bg-[#28c723]  " : "  bg-[#ff8000] translate-x-[117px]"
+                                                }`}
+                                        ></div>
+                                        <button
+                                            onClick={handlePurcheseClick}
+                                            className={`flex w-[110px] py-[8px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${isPurchese ? "[#fff]" : "[#000]"
+                                                }`}
+                                        >
+                                            Purchese
 
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-                                                    <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-
-                                                    </th>
-
-
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                        </button>
+                                        <button
+                                            onClick={handleSellClick}
+                                            className={`flex w-[110px] pl-[] py-[8px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${isPurchese ? "[#000]" : "[#fff]"
+                                                }`}
+                                        >
+                                            Sell
+                                        </button>
                                     </div>
+                                    {isPurchese ? (
+                                        <>
+
+                                            <div
+                                                className="    bg-white w-[100%] rounded-[10px] overflow-hidden shadow1-blue flex-shrink-0">
+                                                <table className=" w-full border-collapse  border-gray-300  font-Poppins">
+                                                    <thead>
+                                                        <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
+                                                            <th className="py-2 px-2 text-left  flex items-center border-gray-300">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    id="check-all"
+                                                                    className="w-4 ml-2  h-4"
+                                                                />
+                                                                <span className="ml-2  font-[600]">Sr.</span>
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                No
+                                                            </th>
+
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Group
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Name
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                G. weight
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                L. weight
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                N. weight
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Cr. Rs
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Dr. Rs
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Bank
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Cash
+                                                            </th>
+
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {data?.map((item, index) => (
+                                                            <tr key={index} className="">
+                                                                <td className="py-2 px-2 flex items-center  border-gray-300">
+                                                                    <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
+                                                                    <span className={item.type === "sale" ? "text-green-600" : "text-red-600"}>
+                                                                        {index + 1}
+                                                                    </span>
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.billNo}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.customerId?.city || "N/A"}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.customerId?.name || "N/A"}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.grossWeight || 0), 0)}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.lessWeight || 0), 0)}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.netWeight || 0), 0)}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins  ${item.type === "sale" ? "text-green-600" : "text-transparent"
+                                                                    }`}>
+                                                                    {item.type === "sale" ? `${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
+                                                                    }`}>
+                                                                    {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
+                                                                    }`}>
+                                                                    {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.amount || 0), 0)}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
+                                                            <th className="py-2 px-3 text-left  flex items-center border-gray-300">
+                                                                Total :
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+
+
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </>
+
+                                    ) : (
+                                        <>
+                                            <div
+                                                className="    bg-white w-[100%] rounded-[10px] overflow-hidden shadow1-blue flex-shrink-0">
+                                                <table className=" w-full border-collapse  border-gray-300  font-Poppins">
+                                                    <thead>
+                                                        <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
+                                                            <th className="py-2 px-2 text-left  flex items-center border-gray-300">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    id="check-all"
+                                                                    className="w-4 ml-2  h-4"
+                                                                />
+                                                                <span className="ml-2  font-[600]">Sr.</span>
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                No
+                                                            </th>
+
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Group
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Name
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                G. weight
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                L. weight
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                N. weight
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Cr. Rs
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Dr. Rs
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Bank
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+                                                                Cash
+                                                            </th>
+
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {data?.map((item, index) => (
+                                                            <tr key={index} className="">
+                                                                <td className="py-2 px-2 flex items-center  border-gray-300">
+                                                                    <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
+                                                                    <span className={item.type === "sale" ? "text-green-600" : "text-red-600"}>
+                                                                        {index + 1}
+                                                                    </span>
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.billNo}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.customerId?.city || "N/A"}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.customerId?.name || "N/A"}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.grossWeight || 0), 0)}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.lessWeight || 0), 0)}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.netWeight || 0), 0)}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins  ${item.type === "sale" ? "text-green-600" : "text-transparent"
+                                                                    }`}>
+                                                                    {item.type === "sale" ? `${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
+                                                                    }`}>
+                                                                    {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
+                                                                    }`}>
+                                                                    {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
+                                                                </td>
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                    }`}
+                                                                >
+                                                                    {item?.products?.reduce((sum, p) => sum + (p.amount || 0), 0)}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr className="bg-gray-100 text-gray-600 font-medium text-sm ">
+                                                            <th className="py-2 px-3 text-left  flex items-center border-gray-300">
+                                                                Total :
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+                                                            <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
+
+                                                            </th>
+
+
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                        </>
+                                    )}
+
                                 </>
                             ) : (
                                 <>

@@ -7,7 +7,7 @@
     url("https://db.onlinewebfonts.com/t/03faac845595b6173775ad083ee592dc.ttf")format("truetype"),
     url("https://db.onlinewebfonts.com/t/03faac845595b6173775ad083ee592dc.svg#ParalucentStencil W00 Medium")format("svg");
 }
-
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 .fontStyle {
   font-family: "ParalucentStencil W00 Medium";
   font-weight: 100 !important;
