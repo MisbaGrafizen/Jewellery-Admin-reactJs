@@ -44,7 +44,7 @@ import {
   getProductsByCalculatedMarketRateAction,
   getProductsByGMEPriceAction,
   getProductsByGstAction,
-  getProductsByFinalPriceAction,  
+  getProductsByFinalPriceAction,
   updateCategoryAction,
   updateGroupItemAction,
   updateMetalAction,
@@ -71,7 +71,7 @@ export default function BarcodeStock() {
   const [grossFocused, setGrossFocused] = useState(false);
   const [lossFocused, setLossFocused] = useState(false);
   const [wastageFocused, setWastegeFocused] = useState(false);
-
+const navigate=useNavigate()
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
   const [deleteContext, setDeleteContext] = useState(null);
@@ -113,7 +113,7 @@ export default function BarcodeStock() {
   const item = useSelector((state) => state.landing.getGroupItem);
   const stocks = useSelector((state) => state.landing.getProduct);
 
-  const navigate = useNavigate()
+
 
   const handleaddstock = () => {
     navigate("/barcode-stock")
@@ -202,7 +202,7 @@ export default function BarcodeStock() {
   }, [group, dispatch]);
 
   useEffect(() => {
-    if(groupId.trim()) {
+    if (groupId.trim()) {
       dispatch(getProductsByGroupAction(groupId));
     }
   }, [groupId, dispatch]);
@@ -465,7 +465,7 @@ export default function BarcodeStock() {
         }
       }
 
-      setStockModalOpen(false); 
+      setStockModalOpen(false);
     } catch (error) {
       console.error("Error saving stock:", error);
       alert("An error occurred while saving stock.");
@@ -507,7 +507,10 @@ export default function BarcodeStock() {
 
 
 
+const handleEdit = ()=>{
+  navigate("/barcode-stock")
 
+}
 
   const onClose = () => {
     setIsOpen(false); // Close the modal
@@ -550,14 +553,14 @@ export default function BarcodeStock() {
 
   // const handlePrint = () => {
   //   const printContent = printRef.current;
-  
+
   //   if (!printContent) {
   //     console.error("Print content is not available");
   //     return;
   //   }
-  
+
   //   console.log("Print content:", printContent.outerHTML);
-  
+
   //   const printWindow = window.open("", "_blank");
   //   printWindow.document.write(`
   //     <html>
@@ -598,15 +601,15 @@ export default function BarcodeStock() {
   //       </body>
   //     </html>
   //   `);
-  
+
   //   printWindow.document.close();
-  
+
   //   printWindow.onload = () => {
   //     printWindow.print();
   //     printWindow.close();
   //   };
   // };
-  
+
 
   const handleNavigateToPrint = () => {
     navigate("/print-stocks");
@@ -633,7 +636,7 @@ export default function BarcodeStock() {
             </button> */}
 
 
-     {/* <div ref={printRef}>
+            {/* <div ref={printRef}>
               {stocks && stocks.length > 0 ? (
                 stocks.map((stock, index) => (
                   <div key={index} className="label">
@@ -671,7 +674,7 @@ export default function BarcodeStock() {
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
                   className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
-                  <table className="min-w-[2400px] w-full border-collapse  border-gray-300  font-Poppins">
+                  <table className="min-w-[2420px] w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
                         <th className="py-3 px-2 text-left  border-gray-300">
@@ -681,6 +684,9 @@ export default function BarcodeStock() {
                             className="w-4 ml-2 mb-[-4px] h-4"
                           />
                           <span className="ml-2 font-[500]">Sr.</span>
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          Barcode
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Carat
@@ -765,157 +771,163 @@ export default function BarcodeStock() {
                           <span className="ml-2 font-[500]">Sr.</span> */}
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-             <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" 
-              value={groupId}
-              onChange={(e) => setGroupId(e.target.value)}
-             />
-                        </th>
+                          <input className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
 
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
-                        value={groupItemId}
-                        onChange={(e) => setGroupItemId(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" 
-                        placeholder="Search..." 
-                        value={toWeight}
-                        onChange={(e) => setToWeight(e.target.value)}
-                        type="text" />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" 
-                        placeholder="Search..." 
-                        type="text"
-                        value={netWeight}
-                        onChange={(e) => setNetWeight(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
-                        value={fineWeight}
-                        onChange={(e) => setFineWeight(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" 
-                        placeholder="Search..."
-                         type="text" 
-                         value={marketRateUsed}
-                         onChange={(e) => setMarketRateUsed(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[80px] font-[500]" 
-                        placeholder="Search..." 
-                        type="text" 
-                        value={labour}
-                        onChange={(e) => setLabour(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[60px] font-[500]" 
-                        placeholder="Search..." 
-                        type="text" 
-                        value={calculatedMarketRate} 
-                        onChange={(e) => setCalculatedMarketRate(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[85px] font-[500]"
-                         placeholder="Search..." 
-                         type="text" 
-                         value={extraRate}
-                         onChange={(e) => setExtraRate(e.target.value)}
-                         />
-                        </th>
 
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" 
-                        placeholder="Serch..." 
-                        type="text" 
-                        value={GMEPrice}
-                        onChange={(e) => setGMEPrice(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]"
-                         placeholder="Serch..."
-                         type="text" 
-                         value={gst}
-                         onChange={(e) => setGst(e.target.value)}
                           />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]"
-                         placeholder="Serch..." 
-                         type="text" 
-                          value={totalPrice}
-                          onChange={(e) => setTotalPrice(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
-                          value={group}
-                          onChange={(e) => setGroup(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" 
-                        placeholder="Serch..." 
-                        type="text" 
-                        value={account}
-                        onChange={(e) => setAccount(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
-                          value={pcs}
-                          onChange={(e) => setPcs(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
-                          value={design}
-                          onChange={(e) => setDesign(e.target.value)}
-                        />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
-                        value={size}
-                        onChange={(e) => setSize(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
-                        value={moti}
-                        onChange={(e) => setMoti(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
-                        value={stone}
-                        onChange={(e) => setStone(e.target.value)}
-                         />
-                        </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]"
-                         placeholder="Serch..." type="text"
-                         value={jadatr}
-                         onChange={(e) => setJadatr(e.target.value)}
+                          <input className=" flex w-[60px] font-[500]" placeholder="Search..." type="text"
+                            value={groupId}
+                            onChange={(e) => setGroupId(e.target.value)}
                           />
                         </th>
-                        
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
+                            value={groupItemId}
+                            onChange={(e) => setGroupItemId(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[70px] font-[500]"
+                            placeholder="Search..."
+                            value={toWeight}
+                            onChange={(e) => setToWeight(e.target.value)}
+                            type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[70px] font-[500]"
+                            placeholder="Search..."
+                            type="text"
+                            value={netWeight}
+                            onChange={(e) => setNetWeight(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={fineWeight}
+                            onChange={(e) => setFineWeight(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[70px] font-[500]"
+                            placeholder="Search..."
+                            type="text"
+                            value={marketRateUsed}
+                            onChange={(e) => setMarketRateUsed(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[80px] font-[500]"
+                            placeholder="Search..."
+                            type="text"
+                            value={labour}
+                            onChange={(e) => setLabour(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[60px] font-[500]"
+                            placeholder="Search..."
+                            type="text"
+                            value={calculatedMarketRate}
+                            onChange={(e) => setCalculatedMarketRate(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[85px] font-[500]"
+                            placeholder="Search..."
+                            type="text"
+                            value={extraRate}
+                            onChange={(e) => setExtraRate(e.target.value)}
+                          />
+                        </th>
+
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[70px] font-[500]"
+                            placeholder="Serch..."
+                            type="text"
+                            value={GMEPrice}
+                            onChange={(e) => setGMEPrice(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[70px] font-[500]"
+                            placeholder="Serch..."
+                            type="text"
+                            value={gst}
+                            onChange={(e) => setGst(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]"
+                            placeholder="Serch..."
+                            type="text"
+                            value={totalPrice}
+                            onChange={(e) => setTotalPrice(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={group}
+                            onChange={(e) => setGroup(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]"
+                            placeholder="Serch..."
+                            type="text"
+                            value={account}
+                            onChange={(e) => setAccount(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={pcs}
+                            onChange={(e) => setPcs(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={design}
+                            onChange={(e) => setDesign(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={size}
+                            onChange={(e) => setSize(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={moti}
+                            onChange={(e) => setMoti(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                            value={stone}
+                            onChange={(e) => setStone(e.target.value)}
+                          />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                          <input className=" flex w-[50px] font-[500]"
+                            placeholder="Serch..." type="text"
+                            value={jadatr}
+                            onChange={(e) => setJadatr(e.target.value)}
+                          />
+                        </th>
+
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Action
@@ -940,6 +952,9 @@ export default function BarcodeStock() {
                             <td className="py-2 px-2 flex items-center  border-gray-300">
                               <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
                               <span>{index + 1}</span>
+                            </td>
+                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                              2222
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item?.groupId?.name || "-"}
@@ -1008,13 +1023,14 @@ export default function BarcodeStock() {
                               {item.jadatr || 0}
                             </td>
 
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                            <td className="py-3 px-  justify-center gap-[6px] text-center border-l flex  border-gray-300 text-[14px]  font-Poppins">
+                              <i className="fa-solid mr-[2px]  cursor-pointer text-blue-500  fa-print" onClick={handleNavigateToPrint}></i>
                               <i
                                 className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
-                             
+onClick={handleEdit}
                               ></i>
                               <i
-                                className="fa-solid fa-trash text-red-500 cursor-pointer ml-4"
+                                className="fa-solid fa-trash text-red-500 cursor-pointer "
                                 onClick={() =>
                                   handleOpenDeleteModal("stock", item?._id)
                                 }
@@ -1114,8 +1130,8 @@ export default function BarcodeStock() {
                               <label
                                 htmlFor="addstock"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedType || caratFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Carat
@@ -1171,8 +1187,8 @@ export default function BarcodeStock() {
                               <label
                                 htmlFor="addstockCategory"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeCategory || categoryFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Category
@@ -1245,8 +1261,8 @@ export default function BarcodeStock() {
                               <label
                                 htmlFor="addstockMetal"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${selectedTypeMetal || metalFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Size
@@ -1304,8 +1320,8 @@ export default function BarcodeStock() {
                               <label
                                 htmlFor="addstockGross"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${grossWeight || grossFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 G .Weight
@@ -1329,8 +1345,8 @@ export default function BarcodeStock() {
                               <label
                                 htmlFor="addstockLoss"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${lessWeight || lossFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 L .Weight
@@ -1353,8 +1369,8 @@ export default function BarcodeStock() {
                               <label
                                 htmlFor="addstockWastage"
                                 className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${westage || wastageFocused
-                                    ? "text-[#000] -translate-y-[21px] hidden "
-                                    : "text-[#8f8f8f] cursor-text flex"
+                                  ? "text-[#000] -translate-y-[21px] hidden "
+                                  : "text-[#8f8f8f] cursor-text flex"
                                   }`}
                               >
                                 Wastage
