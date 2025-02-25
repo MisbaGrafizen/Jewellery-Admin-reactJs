@@ -1,4 +1,10 @@
-import { RESET_GLOBAL_STATE, GET_CATEGORY, DELETE_SIZE, DELETE_DESIGN, UPDATE_SIZE, UPDATE_DESIGN, ADD_SIZE, ADD_DESIGN, GET_SIZE, GET_DESIGN, GET_NON_BARCODE_PRODUCT, ADD_NON_BARCODE_PRODUCT, DELETE_NON_BARCODE_PRODUCT,GET_GROUP_ITEM, DELETE_CATEGORY, DELETE_NON_BARCODE_CATEGORY, UPDATE_NON_BARCODE_CATEGORY, ADD_NON_BARCODE_CATEGORY, GET_NON_BARCODE_CATEGORY, DELETE_GROUP_ITEM, UPDATE_GROUP_ITEM, ADD_GROUP_ITEM, GET_PRODUCT, ADD_PRODUCT, GET_ORDER_LIST, GET_ORDER_BY_ID, GET_METAL, ADD_CATEGORY, ADD_METAL, UPDATE_CATEGORY, UPDATE_METAL, DELETE_PRODUCT, DELETE_METAL } from '../type';
+import { RESET_GLOBAL_STATE, GET_CATEGORY, DELETE_SIZE, DELETE_DESIGN, UPDATE_SIZE, UPDATE_DESIGN, ADD_SIZE, ADD_DESIGN, GET_SIZE, GET_DESIGN, GET_NON_BARCODE_PRODUCT, ADD_NON_BARCODE_PRODUCT, DELETE_NON_BARCODE_PRODUCT,GET_GROUP_ITEM, DELETE_CATEGORY, DELETE_NON_BARCODE_CATEGORY, UPDATE_NON_BARCODE_CATEGORY, ADD_NON_BARCODE_CATEGORY, GET_NON_BARCODE_CATEGORY, DELETE_GROUP_ITEM, UPDATE_GROUP_ITEM, ADD_GROUP_ITEM, GET_PRODUCT, ADD_PRODUCT, GET_ORDER_LIST, GET_ORDER_BY_ID, GET_METAL, ADD_CATEGORY, ADD_METAL, UPDATE_CATEGORY, UPDATE_METAL, DELETE_PRODUCT, DELETE_METAL,
+    GET_PRODUCTS_BY_TOWEIGHT, GET_PRODUCTS_BY_FINEWEIGHT, GET_PRODUCTS_BY_NETWEIGHT, GET_PRODUCTS_BY_GROUP,
+    GET_PRODUCTS_BY_GROUPITEMID, GET_PRODUCTS_BY_WASTAGE, GET_PRODUCTS_BY_HSNCODE,GET_PRODUCTS_BY_SILVERRATE, GET_PRODUCTS_BY_ACCOUNT,
+    GET_PRODUCTS_BY_LABOUR, GET_PRODUCTS_BY_LOCATION, GET_PRODUCTS_BY_PCS,GET_PRODUCTS_BY_DESIGN, GET_PRODUCTS_BY_SIZE, GET_PRODUCTS_BY_GST,GET_PRODUCTS_BY_FINALPRICE, GET_PRODUCTS_BY_CALCULATEDMARKETRATE,
+    GET_PRODUCTS_BY_EXTRARATE,GET_PRODUCTS_BY_GMEPRICE,GET_PRODUCTS_BY_HUID,GET_PRODUCTS_BY_HUIDCHARGE,GET_PRODUCTS_BY_HUIDRULE,GET_PRODUCTS_BY_JADATR,
+    GET_PRODUCTS_BY_MARKETRATEUSED,GET_PRODUCTS_BY_MOTI,GET_PRODUCTS_BY_STONE,GET_PRODUCTS_BY_TOTALPRICE, GET_PRODUCTS_BY_GROUPNAME,
+ } from '../type';
 
 const initialState = {
     getAllCategory: [],
@@ -32,7 +38,8 @@ const initialState = {
     getSize: [],
     addSize: [],
     updateSize: [],
-    deleteSize: [],                                                                                   
+    deleteSize: [], 
+    products: [],                                                                                  
 };
 
 
@@ -53,11 +60,11 @@ const landingManagementReducer = (state = initialState, action) => {
                 ...state,
                 getGroupItem: action.payload,
             };
-        case GET_PRODUCT: 
-         return {
-            ...state,
-            getProduct: action.payload,
-         };
+        // case GET_PRODUCT: 
+        //  return {
+        //     ...state,
+        //     getProduct: action.payload,
+        //  };
          case ADD_PRODUCT:
             return {
            
@@ -209,6 +216,36 @@ const landingManagementReducer = (state = initialState, action) => {
             ...state,
             deleteSize: action.payload,
         };
+        case GET_PRODUCTS_BY_TOWEIGHT:
+            case GET_PRODUCTS_BY_FINEWEIGHT:
+            case GET_PRODUCTS_BY_NETWEIGHT:
+            case GET_PRODUCTS_BY_GROUP:
+            case GET_PRODUCTS_BY_SIZE:
+            case GET_PRODUCTS_BY_ACCOUNT:
+            case GET_PRODUCTS_BY_DESIGN:
+            case GET_PRODUCTS_BY_FINALPRICE:
+            case GET_PRODUCTS_BY_GROUPITEMID:
+            case GET_PRODUCTS_BY_GST:
+            case GET_PRODUCTS_BY_HSNCODE:
+            case GET_PRODUCTS_BY_LABOUR:
+            case GET_PRODUCTS_BY_LOCATION:
+            case GET_PRODUCTS_BY_PCS:
+            case GET_PRODUCTS_BY_SILVERRATE:
+            case GET_PRODUCTS_BY_WASTAGE:
+            case GET_PRODUCTS_BY_CALCULATEDMARKETRATE:
+            case GET_PRODUCTS_BY_EXTRARATE:
+            case GET_PRODUCTS_BY_GMEPRICE:
+            case GET_PRODUCTS_BY_HUID:
+            case GET_PRODUCTS_BY_HUIDCHARGE:
+            case GET_PRODUCTS_BY_HUIDRULE:
+            case GET_PRODUCTS_BY_JADATR:
+            case GET_PRODUCTS_BY_MARKETRATEUSED:
+            case GET_PRODUCTS_BY_MOTI:
+            case GET_PRODUCTS_BY_STONE:
+            case GET_PRODUCTS_BY_GROUPNAME:
+            case GET_PRODUCTS_BY_TOTALPRICE:
+            case GET_PRODUCT: 
+                return { ...state, getProduct: action.payload };
         case RESET_GLOBAL_STATE:
             return initialState;
         default:

@@ -23,6 +23,7 @@ import {
 } from "../../redux/action/landingManagement";
 import { getAllNonUchakAction, getMarketRateAction, getNonPercentageAction, getNonPerGramAction } from '../../redux/action/generalManagement';
 import { useNavigate } from 'react-router-dom';
+import { ApiGet } from '../../helper/axios';
 
 
 export default function CreateNonbarStock() {
@@ -68,6 +69,8 @@ export default function CreateNonbarStock() {
   const [selectedTypeHuid, setSelectedTypeHuid] = useState("");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
+  const [appliedMarketPrice, setAppliedMarketPrice] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null); 
   const [items, setItems] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [stockModalopen, setStockModalOpen] = useState(false);
@@ -100,9 +103,46 @@ export default function CreateNonbarStock() {
   const dropdownCategoryRef = useRef(null);
 
   const handleSelect = (type) => {
-    setSelectedType(type);
+    setSelectedType(type?.name);
+    setSelectedCategory(type);
     setDropdownOpen(false);
   };
+
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    async function fetchMarketRate() {
+      try {
+        if (!selectedCategory?._id) {
+          console.error("Error: selectedCategory._id is undefined");
+          return 0;
+        }
+  
+        const response = await ApiGet(`/admin/market-rates?categoryId=${selectedCategory?._id}`);
+  
+        console.log("Market Rate Response:", response); // Log full response
+  
+        const marketRate = response?.[0]?.price || 0;
+  
+        console.log("Extracted Price:", marketRate);
+  
+        return parseFloat(marketRate);
+      } catch (error) {
+        console.error("Error fetching market rate:", error);
+        return 0;
+      }
+    }
+    
+    useEffect(() => {
+      if (selectedCategory && selectedCategory._id) {
+        fetchMarketRate().then((rate) => {
+          setAppliedMarketPrice(rate);
+          console.log("Applied Market Price:", rate);
+        });
+      } else {
+        setAppliedMarketPrice(0);
+        console.log("Applied Market Price Reset to 0");
+      }
+    }, [fetchMarketRate, selectedCategory]);
 
   const handleSelectLabourType = async (labourType, index) => {
     setFieldSets((prevFieldSets) => {
@@ -288,7 +328,7 @@ export default function CreateNonbarStock() {
       } else if (field.selectedTypeLabour === "PerGram") {
         labourAmount = (parseFloat(field.labourRate) || 0) * netWeight;
       } else if (field.selectedTypeLabour === "Percentage") {
-        labourAmount = (parseFloat(field.labourRate) / 100);
+        labourAmount = (netWeight * appliedMarketPrice * parseFloat(field.labourRate)) / 100;
       }
 
       console.log("Final Labour Amount:", labourAmount);
@@ -452,7 +492,7 @@ export default function CreateNonbarStock() {
                                 <div
                                   key={index}
                                   className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                  onClick={() => handleSelect(type?.name)}
+                                  onClick={() => handleSelect(type)}
                                 >
                                   {type?.name}
                                 </div>

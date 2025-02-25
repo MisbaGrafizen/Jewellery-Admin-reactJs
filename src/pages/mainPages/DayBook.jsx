@@ -225,41 +225,41 @@ export default function DayBook() {
                                                             <tr key={index} className="">
                                                                 <td className="py-2 px-2 flex items-center  border-gray-300">
                                                                     <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
-                                                                    <span className={item.type === "sale" ? "text-green-600" : "text-red-600"}>
+                                                                    <span className={item.type === "sale" ? "text-red-600" : "text-transparent"}>
                                                                         {index + 1}
                                                                     </span>
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purcase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.billNo}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.customerId?.city || "N/A"}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.customerId?.name || "N/A"}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.grossWeight || 0), 0)}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.lessWeight || 0), 0)}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.netWeight || 0), 0)}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins  ${item.type === "sale" ? "text-green-600" : "text-transparent"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins  ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}>
                                                                     {item.type === "sale" ? `${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
                                                                 </td>
@@ -271,7 +271,7 @@ export default function DayBook() {
                                                                     }`}>
                                                                     {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.amount || 0), 0)}
@@ -378,36 +378,36 @@ export default function DayBook() {
                                                             <tr key={index} className="">
                                                                 <td className="py-2 px-2 flex items-center  border-gray-300">
                                                                     <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
-                                                                    <span className={item.type === "sale" ? "text-green-600" : "text-red-600"}>
+                                                                    <span className={item.type === "sale" ? "text-green-600" : "text-transparent"}>
                                                                         {index + 1}
                                                                     </span>
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.billNo}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.customerId?.city || "N/A"}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.customerId?.name || "N/A"}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.grossWeight || 0), 0)}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.lessWeight || 0), 0)}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.netWeight || 0), 0)}
@@ -416,15 +416,15 @@ export default function DayBook() {
                                                                     }`}>
                                                                     {item.type === "sale" ? `${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-green-600" : "text-transparent"
                                                                     }`}>
                                                                     {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-red-600" : "text-transparent"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "purchase" ? "text-green-600" : "text-transparent"
                                                                     }`}>
                                                                     {item.type === "purchase" ? `-${item?.products?.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)}` : ""}
                                                                 </td>
-                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-red-600"
+                                                                <td className={`py-2 px-4 text-center border-l border-gray-300 text-[14px] font-Poppins ${item.type === "sale" ? "text-green-600" : "text-transparent"
                                                                     }`}
                                                                 >
                                                                     {item?.products?.reduce((sum, p) => sum + (p.amount || 0), 0)}

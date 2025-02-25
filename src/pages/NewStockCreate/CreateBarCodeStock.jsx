@@ -28,6 +28,7 @@ import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
 import { useNavigate } from "react-router-dom";
 import { getAllUchakAction, getPercentageAction, getPerGramAction } from "../../redux/action/generalManagement";
+import { ApiGet } from "../../helper/axios";
 
 export default function CreateBarCodeStock() {
   const [barcodes, setBarcodes] = useState([])
@@ -102,6 +103,8 @@ export default function CreateBarCodeStock() {
   const [selectedTypeHuid, setSelectedTypeHuid] = useState("");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
+  const [appliedMarketPrice, setAppliedMarketPrice] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null); 
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
 
@@ -135,10 +138,49 @@ export default function CreateBarCodeStock() {
   const dropdownSizeRef = useRef(null);
 
   const handleSelect = (type) => {
-    setSelectedType(type);
+    setSelectedType(type?.name);
+    setSelectedCategory(type);
     setDropdownOpen(false);
   };
+  console.log("categoryId", selectedCategory);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  async function fetchMarketRate() {
+    try {
+      if (!selectedCategory?._id) {
+        console.error("Error: selectedCategory._id is undefined");
+        return 0;
+      }
+
+      const response = await ApiGet(`/admin/market-rates?categoryId=${selectedCategory?._id}`);
+
+      console.log("Market Rate Response:", response); // Log full response
+
+      const marketRate = response?.[0]?.price || 0;
+
+      console.log("Extracted Price:", marketRate);
+
+      return parseFloat(marketRate);
+    } catch (error) {
+      console.error("Error fetching market rate:", error);
+      return 0;
+    }
+  }
+  
+  useEffect(() => {
+    if (selectedCategory && selectedCategory._id) {
+      fetchMarketRate().then((rate) => {
+        setAppliedMarketPrice(rate);
+        console.log("Applied Market Price:", rate);
+      });
+    } else {
+      setAppliedMarketPrice(0);
+      console.log("Applied Market Price Reset to 0");
+    }
+  }, [fetchMarketRate, selectedCategory]);
+  
+    console.log("appliedMarketPrice", appliedMarketPrice);
+  
   const handleSelectLabourType = async (labourType, index) => {
     console.log("Selected Labour Type:", labourType);
 
@@ -375,17 +417,18 @@ export default function CreateBarCodeStock() {
       }
 
       if (matchedLabour) {
+        // Parse the default rate from matched labour data
         matchedRate = parseFloat(matchedLabour.rate) || 0;
         if (field.selectedTypeLabour === "PerGram") {
           labourAmount = matchedRate * netWeight;
         } else if (field.selectedTypeLabour === "Percentage") {
-          labourAmount = (matchedRate / 100) * netWeight;
+          labourAmount = (netWeight * appliedMarketPrice * matchedRate) / 100;
         } else {
           labourAmount = matchedRate;
         }
       }
 
-      console.log('selectedSize', selectedSize)
+      console.log('labourAmount', labourAmount)
 
       return {
         groupId: selectedCarat._id,
@@ -402,7 +445,6 @@ export default function CreateBarCodeStock() {
         design: field.selectedTypeDesign || null,
         pcs: parseInt(field.pcs) || 1,
         size: mongoose.Types.ObjectId.isValid(field.size) ? field.size : null,
-        design: selectedDesign?._id,
         moti: parseFloat(field.moti) || 0,
         stone: parseFloat(field.stone) || 0,
         jadatr: parseFloat(field.jadatr) || 0,
@@ -660,7 +702,7 @@ export default function CreateBarCodeStock() {
                                   <div
                                     key={index}
                                     className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                    onClick={() => handleSelect(type?.name)}
+                                    onClick={() => handleSelect(type)}
                                   >
                                     {type?.name}
                                   </div>

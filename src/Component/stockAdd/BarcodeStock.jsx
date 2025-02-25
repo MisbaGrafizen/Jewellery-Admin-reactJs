@@ -18,10 +18,38 @@ import {
   getCategroyAction,
   getGroupItemAction,
   getMetalAction,
+  getProductsByToWeightAction,
+  getProductsByFineWeightAction,
+  getProductsByNetWeightAction,
+  getProductsByGroupAction,
+  getProductsByGroupItemIdAction,
+  getProductsByWastageAction,
+  getProductsByHsnCodeAction,
+  getProductsBySilverRateAction,
+  getProductsByAccountAction,
+  getProductsByLabourAction,
+  getProductsByExtraRateAction,
+  getProductsByLocationAction,
+  getProductsByPcsAction,
+  getProductsByDesignAction,
+  getProductsBySizeAction,
+  getProductsByMotiAction,
+  getProductsByStoneAction,
+  getProductsByJadatrAction,
+  getProductsByHuidAction,
+  getProductsByHuidRuleAction,
+  getProductsByHuidChargeAction,
+  getProductsByTotalPriceAction,
+  getProductsByMarketRateUsedAction,
+  getProductsByCalculatedMarketRateAction,
+  getProductsByGMEPriceAction,
+  getProductsByGstAction,
+  getProductsByFinalPriceAction,  
   updateCategoryAction,
   updateGroupItemAction,
   updateMetalAction,
   updateStockAction,
+  getProductsByGroupNameAction,
 } from "../../redux/action/landingManagement";
 import { useNavigate } from "react-router-dom";
 export default function BarcodeStock() {
@@ -51,15 +79,28 @@ export default function BarcodeStock() {
   const [selectedTypeMetal, setSelectedTypeMetal] = useState("");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [selectedTypeCategory, setSelectedTypecategory] = useState("");
-  const [items, setItems] = useState([]);
-  // const [itemName, setItemName] = useState("");
-  // const [editingItem, setEditingItem] = useState(null);
-  // const [editItemName, setEditItemName] = useState("");
-  // const [editingItemId, setEditingItemId] = useState(null);
-  // const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  // const [isItemInputVisible, setItemInputVisible] = useState(null);
-  // const [inputItemValue, setInputItemValue] = useState("");
-  // const [apiTrigger, setApiTrigger] = useState(null);
+  const [toWeight, setToWeight] = useState("");
+  const [netWeight, setNetWeight] = useState("");
+  const [fineWeight, setFineWeight] = useState("");
+  const [group, setGroup] = useState("");
+  const [groupId, setGroupId] = useState("");
+  const [groupItemId, setGroupItemId] = useState("");
+  const [account, setAccount] = useState("");
+  const [labour, setLabour] = useState("");
+  const [extraRate, setExtraRate] = useState("");
+  const [location, setLocation] = useState("");
+  const [pcs, setPcs] = useState("");
+  const [design, setDesign] = useState("");
+  const [size, setSize] = useState("");
+  const [moti, setMoti] = useState("");
+  const [stone, setStone] = useState("");
+  const [jadatr, setJadatr] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
+  const [marketRateUsed, setMarketRateUsed] = useState("");
+  const [calculatedMarketRate, setCalculatedMarketRate] = useState("");
+  const [GMEPrice, setGMEPrice] = useState("");
+  const [gst, setGst] = useState("");
+  const [finalPrice, setFinalPrice] = useState("");
 
   const [grossWeight, setGrossWeight] = useState("");
   const [lessWeight, setLessWeight] = useState("");
@@ -71,11 +112,7 @@ export default function BarcodeStock() {
   const metals = useSelector((state) => state.landing.getMetal);
   const item = useSelector((state) => state.landing.getGroupItem);
   const stocks = useSelector((state) => state.landing.getProduct);
-  // useEffect(() => {
-  //   setCarat(categories || []);
-  //   setMetal(metals || []);
-  //   setItems(item || []);
-  // }, [categories, metals, item]);
+
   const navigate = useNavigate()
 
   const handleaddstock = () => {
@@ -85,8 +122,193 @@ export default function BarcodeStock() {
     dispatch(getCategroyAction());
     dispatch(getMetalAction());
     dispatch(getGroupItemAction());
-    dispatch(getAllStockAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      !toWeight &&
+      !groupId &&
+      !netWeight &&
+      !fineWeight &&
+      !group &&
+      !groupItemId &&
+      !account &&
+      !labour &&
+      !extraRate &&
+      !location &&
+      !pcs &&
+      !design &&
+      !size &&
+      !moti &&
+      !stone &&
+      !jadatr &&
+      !totalPrice &&
+      !marketRateUsed &&
+      !calculatedMarketRate &&
+      !GMEPrice &&
+      !gst &&
+      !finalPrice
+    ) {
+      dispatch(getAllStockAction());
+    }
+  }, [
+    toWeight,
+    netWeight,
+    groupId,
+    fineWeight,
+    group,
+    groupItemId,
+    account,
+    labour,
+    extraRate,
+    location,
+    pcs,
+    design,
+    size,
+    moti,
+    stone,
+    jadatr,
+    totalPrice,
+    marketRateUsed,
+    calculatedMarketRate,
+    GMEPrice,
+    gst,
+    finalPrice,
+    dispatch,
+  ]);
+
+  useEffect(() => {
+    if (toWeight.trim()) {
+      dispatch(getProductsByToWeightAction(toWeight));
+    }
+  }, [toWeight, dispatch]);
+
+  useEffect(() => {
+    if (fineWeight.trim()) {
+      dispatch(getProductsByFineWeightAction(fineWeight));
+    }
+  }, [fineWeight, dispatch]);
+
+  useEffect(() => {
+    if (netWeight.trim()) {
+      dispatch(getProductsByNetWeightAction(netWeight));
+    }
+  }, [netWeight, dispatch]);
+
+  useEffect(() => {
+    if (group.trim()) {
+      dispatch(getProductsByGroupNameAction(group));
+    }
+  }, [group, dispatch]);
+
+  useEffect(() => {
+    if(groupId.trim()) {
+      dispatch(getProductsByGroupAction(groupId));
+    }
+  }, [groupId, dispatch]);
+
+  useEffect(() => {
+    if (groupItemId.trim()) {
+      dispatch(getProductsByGroupItemIdAction(groupItemId));
+    }
+  }, [groupItemId, dispatch]);
+
+
+  useEffect(() => {
+    if (account.trim()) {
+      dispatch(getProductsByAccountAction(account));
+    }
+  }, [account, dispatch]);
+
+  useEffect(() => {
+    if (labour.trim()) {
+      dispatch(getProductsByLabourAction(labour));
+    }
+  }, [labour, dispatch]);
+
+  useEffect(() => {
+    if (extraRate.trim()) {
+      dispatch(getProductsByExtraRateAction(extraRate));
+    }
+  }, [extraRate, dispatch]);
+
+  useEffect(() => {
+    if (location.trim()) {
+      dispatch(getProductsByLocationAction(location));
+    }
+  }, [location, dispatch]);
+
+  useEffect(() => {
+    if (pcs.trim()) {
+      dispatch(getProductsByPcsAction(pcs));
+    }
+  }, [pcs, dispatch]);
+
+  useEffect(() => {
+    if (design.trim()) {
+      dispatch(getProductsByDesignAction(design));
+    }
+  }, [design, dispatch]);
+
+  useEffect(() => {
+    if (size.trim()) {
+      dispatch(getProductsBySizeAction(size));
+    }
+  }, [size, dispatch]);
+
+  useEffect(() => {
+    if (moti.trim()) {
+      dispatch(getProductsByMotiAction(moti));
+    }
+  }, [moti, dispatch]);
+
+  useEffect(() => {
+    if (stone.trim()) {
+      dispatch(getProductsByStoneAction(stone));
+    }
+  }, [stone, dispatch]);
+
+  useEffect(() => {
+    if (jadatr.trim()) {
+      dispatch(getProductsByJadatrAction(jadatr));
+    }
+  }, [jadatr, dispatch]);
+
+  useEffect(() => {
+    if (totalPrice.trim()) {
+      dispatch(getProductsByTotalPriceAction(totalPrice));
+    }
+  }, [totalPrice, dispatch]);
+
+  useEffect(() => {
+    if (marketRateUsed.trim()) {
+      dispatch(getProductsByMarketRateUsedAction(marketRateUsed));
+    }
+  }, [marketRateUsed, dispatch]);
+
+  useEffect(() => {
+    if (calculatedMarketRate.trim()) {
+      dispatch(getProductsByCalculatedMarketRateAction(calculatedMarketRate));
+    }
+  }, [calculatedMarketRate, dispatch]);
+
+  useEffect(() => {
+    if (GMEPrice.trim()) {
+      dispatch(getProductsByGMEPriceAction(GMEPrice));
+    }
+  }, [GMEPrice, dispatch]);
+
+  useEffect(() => {
+    if (gst.trim()) {
+      dispatch(getProductsByGstAction(gst));
+    }
+  }, [gst, dispatch]);
+
+  useEffect(() => {
+    if (finalPrice.trim()) {
+      dispatch(getProductsByFinalPriceAction(finalPrice));
+    }
+  }, [finalPrice, dispatch]);
 
   useEffect(() => {
     if (selectedStock) {
@@ -243,7 +465,7 @@ export default function BarcodeStock() {
         }
       }
 
-      setStockModalOpen(false); // Close modal
+      setStockModalOpen(false); 
     } catch (error) {
       console.error("Error saving stock:", error);
       alert("An error occurred while saving stock.");
@@ -323,12 +545,6 @@ export default function BarcodeStock() {
   const handleMouseUp = () => {
     setIsDragging(false);
   };
-
-
-
-
-
-
 
   // const printRef = useRef(null);
 
@@ -549,73 +765,157 @@ export default function BarcodeStock() {
                           <span className="ml-2 font-[500]">Sr.</span> */}
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-             <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
+             <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" 
+              value={groupId}
+              onChange={(e) => setGroupId(e.target.value)}
+             />
                         </th>
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
+                        value={groupItemId}
+                        onChange={(e) => setGroupItemId(e.target.value)}
+                         />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[70px] font-[500]" 
+                        placeholder="Search..." 
+                        value={toWeight}
+                        onChange={(e) => setToWeight(e.target.value)}
+                        type="text" />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[70px] font-[500]" 
+                        placeholder="Search..." 
+                        type="text"
+                        value={netWeight}
+                        onChange={(e) => setNetWeight(e.target.value)}
+                         />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
+                        value={fineWeight}
+                        onChange={(e) => setFineWeight(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[70px] font-[500]" 
+                        placeholder="Search..."
+                         type="text" 
+                         value={marketRateUsed}
+                         onChange={(e) => setMarketRateUsed(e.target.value)}
+                         />
+                        </th>
+                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        <input  className=" flex w-[80px] font-[500]" 
+                        placeholder="Search..." 
+                        type="text" 
+                        value={labour}
+                        onChange={(e) => setLabour(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                         <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[60px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[60px] font-[500]" 
+                        placeholder="Search..." 
+                        type="text" 
+                        value={calculatedMarketRate} 
+                        onChange={(e) => setCalculatedMarketRate(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[85px] font-[500]" placeholder="Search..." type="text" />
+                        <input  className=" flex w-[85px] font-[500]"
+                         placeholder="Search..." 
+                         type="text" 
+                         value={extraRate}
+                         onChange={(e) => setExtraRate(e.target.value)}
+                         />
                         </th>
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[70px] font-[500]" 
+                        placeholder="Serch..." 
+                        type="text" 
+                        value={GMEPrice}
+                        onChange={(e) => setGMEPrice(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[70px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[70px] font-[500]"
+                         placeholder="Serch..."
+                         type="text" 
+                         value={gst}
+                         onChange={(e) => setGst(e.target.value)}
+                          />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]"
+                         placeholder="Serch..." 
+                         type="text" 
+                          value={totalPrice}
+                          onChange={(e) => setTotalPrice(e.target.value)}
+                         />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
+                          value={group}
+                          onChange={(e) => setGroup(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" 
+                        placeholder="Serch..." 
+                        type="text" 
+                        value={account}
+                        onChange={(e) => setAccount(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
+                          value={pcs}
+                          onChange={(e) => setPcs(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" 
+                          value={design}
+                          onChange={(e) => setDesign(e.target.value)}
+                        />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                        value={size}
+                        onChange={(e) => setSize(e.target.value)}
+                         />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                        value={moti}
+                        onChange={(e) => setMoti(e.target.value)}
+                         />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                        value={stone}
+                        onChange={(e) => setStone(e.target.value)}
+                         />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
+                        <input  className=" flex w-[50px] font-[500]"
+                         placeholder="Serch..." type="text"
+                         value={jadatr}
+                         onChange={(e) => setJadatr(e.target.value)}
+                          />
                         </th>
-                        <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                        <input  className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text" />
-                        </th>
+                        
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                           Action

@@ -141,7 +141,6 @@ function App() {
           <Route path="/sales-invoice" element={<SaleInvoice />} />
           <Route path="/inventory" element={<InventoryCreate />} />
           <Route path="/labour" element={<LabourSetting />} />
-
           <Route path="/invoice-bill/:id" element={<InvoicePage />} />
           <Route path="/scan" element={<Scan />}/>
           <Route path="/add-stock" element={<StockAddPage />} />
