@@ -502,7 +502,7 @@ export default function NonbarStock() {
                 <table className="w-full border-collapse  border-gray-300  font-Poppins">
                   <thead>
                     <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
-                      <th className="py-3 px-2 text-left  border-gray-300">
+                      <th className="py-3 px-2 flex text-left  border-gray-300">
                         <input
                           type="checkbox"
                           id="check-all"
@@ -586,6 +586,85 @@ export default function NonbarStock() {
                         Action
                       </th>
                     </tr>
+                    <tr className=" border-b text-gray-700 font-medium text-sm ">
+                      <th className="py-3  px-2 text-left  border-gray-300">
+                      
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[140px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[100px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      </th>
+
+
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                        
+                      </th>
+                    </tr>
                   </thead>
                   <tbody>
                     {products?.map((item, index) => {
@@ -605,78 +684,78 @@ export default function NonbarStock() {
                             <input type="checkbox" className="w-4 h-4 mr-3  ml-[10px]" />
                             <span>{index + 1}</span>
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.groupId?.name}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.groupItemId?.itemName || "-"}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.productName || "-"}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.toWeight}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {netWeight}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {updatedFineWeight}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.marketRateUsed || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.labour || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.labour || 0}
                           </td>   
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.calculatedMarketRate?.toFixed(2) || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item.extraRate || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.GMEPrice?.toFixed(2) || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.gst || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-23px-4 text-center border-l  border-gray-300 text-[15px]  font-Poppins">
                             {item?.finalPrice?.toFixed(2) || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.group || "-"}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.account || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.location || "-"}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.pcs || 1}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.design || "-"}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.size || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.moti || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.stone || 0}
                           </td>
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             {item?.jadatr || 0}
                           </td>
 
 
-                          <td className="py-2 px-4 text-center border-l border-gray-300 text-[14px]  font-Poppins">
+                          <td className="py-3 px-4 text-center border-l border-gray-300 text-[15px]  font-Poppins">
                             <i
                               className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
 
