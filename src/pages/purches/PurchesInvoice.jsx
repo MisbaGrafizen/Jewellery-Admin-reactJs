@@ -727,16 +727,17 @@ export default function PurchesInvoice() {
   };
 
   // ✅ Function to Dynamically Calculate Labour Based on Selected Type
-  const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice) => {
+  const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice, marketRateUsed) => {
     let labourValue = parseFloat(labour) || 0;
     let totalPcs = parseFloat(pcs) || 1;
     let weight = parseFloat(netWeight) || 1;
     let price = parseFloat(totalPrice) || 0;
+    let marketRate = parseFloat(marketRateUsed) || 0;
 
     if (labourType === "PP") {
       return labourValue * totalPcs; // Per Piece
     } else if (labourType === "%") {
-      return (labourValue * weight) / 100; // Percentage on Net Weight
+      return (marketRate * weight * labourValue) / 100; // Percentage on Net Weight
     } else if (labourType === "GM") {
       return labourValue * weight; // Per Gram
     } else if (labourType === "FX") {
