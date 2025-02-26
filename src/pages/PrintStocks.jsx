@@ -1,17 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import Cookies from "js-cookie";
+import { useEffect, useRef } from "react";
 import SideBar from "../Component/sidebar/SideBar";
 import Header from "../Component/header/Header";
 import { useLocation } from "react-router-dom";
-import holmark from "../../public/images.png";
 
 export default function PrintStocks() {
   // const [barcodes, setBarcodes] = useState([])
   const printRef = useRef(null);
-  const token = Cookies.get("token");
   const location = useLocation();
-  const barcodes = location.state?.barcodes || [];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const barcodesData = location.state?.barcodes;
 
+  // Ensure barcodes is always an array
+  const barcodes = Array.isArray(barcodesData) ? barcodesData : (barcodesData ? [barcodesData] : []);
+  
   console.log('barcodes', barcodes)
 
   // useEffect(() => {
@@ -44,11 +45,11 @@ export default function PrintStocks() {
   //   fetchBarcodes()
   // }, [token])
 
-  useEffect(() => {
-    if (!barcodes.length) {
-      alert("No barcodes available for printing.");
-    }
-  }, [barcodes]);
+  // useEffect(() => {
+  //   if (!barcodes.length) {
+  //     alert("No barcodes available for printing.");
+  //   }
+  // }, [barcodes]);
 
   //   const handlePrint = () => {
   //     const printContent = printRef.current

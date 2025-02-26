@@ -52,6 +52,7 @@ import {
   getProductsByGroupNameAction,
 } from "../../redux/action/landingManagement";
 import { useNavigate } from "react-router-dom";
+import { ApiGet } from "../../helper/axios";
 export default function BarcodeStock() {
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
@@ -100,6 +101,7 @@ const navigate=useNavigate()
   const [calculatedMarketRate, setCalculatedMarketRate] = useState("");
   const [GMEPrice, setGMEPrice] = useState("");
   const [gst, setGst] = useState("");
+  const [barcodeImage, setBarcodeImage] = useState(null);
   const [finalPrice, setFinalPrice] = useState("");
 
   const [grossWeight, setGrossWeight] = useState("");
@@ -611,8 +613,23 @@ const handleEdit = ()=>{
   // };
 
 
-  const handleNavigateToPrint = () => {
-    navigate("/print-stocks");
+  const handleNavigateToPrint = async (barcode) => {
+    try {
+      const response = await ApiGet(
+        `/admin/product/barcode/${barcode}`
+      );
+
+      console.log("response", response);
+
+      if (response) {
+        navigate("/print-stocks", { state: { barcodes: response } });
+      } else {
+        alert("Barcode image not found");
+      }
+    } catch (error) {
+      console.error("Error fetching barcode image:", error);
+      alert("Failed to fetch barcode image");
+    }
   };
 
 
@@ -954,7 +971,7 @@ const handleEdit = ()=>{
                               <span>{index + 1}</span>
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              2222
+                              {item?.barCode}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item?.groupId?.name || "-"}
@@ -1024,7 +1041,9 @@ const handleEdit = ()=>{
                             </td>
 
                             <td className="py-3 px-  justify-center gap-[6px] text-center border-l flex  border-gray-300 text-[14px]  font-Poppins">
-                              <i className="fa-solid mr-[2px]  cursor-pointer text-blue-500  fa-print" onClick={handleNavigateToPrint}></i>
+                              <i className="fa-solid mr-[2px]  cursor-pointer text-blue-500  fa-print" 
+                              onClick={() => handleNavigateToPrint(item.barCode)}
+                              ></i>
                               <i
                                 className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
 onClick={handleEdit}

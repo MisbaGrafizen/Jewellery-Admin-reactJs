@@ -7,7 +7,9 @@ import {
 import { GET_CATEGORY, GET_GROUP_ITEM, GET_METAL, ADD_DESIGN,UPDATE_DESIGN, DELETE_SIZE, DELETE_DESIGN, GET_SIZE, ADD_SIZE, UPDATE_SIZE, ADD_NON_BARCODE_PRODUCT, GET_DESIGN,  DELETE_NON_BARCODE_PRODUCT, GET_NON_BARCODE_PRODUCT, UPDATE_NON_BARCODE_CATEGORY, DELETE_NON_BARCODE_CATEGORY, ADD_NON_BARCODE_CATEGORY, GET_NON_BARCODE_CATEGORY, GET_ORDER_BY_ID, DELETE_CATEGORY, GET_PRODUCT, ADD_PRODUCT, DELETE_GROUP_ITEM, ADD_CATEGORY, ADD_METAL, ADD_GROUP_ITEM, UPDATE_METAL, UPDATE_GROUP_ITEM,  UPDATE_CATEGORY, DELETE_PRODUCT, DELETE_METAL,
   GET_PRODUCTS_BY_TOWEIGHT, GET_PRODUCTS_BY_FINEWEIGHT, GET_PRODUCTS_BY_NETWEIGHT, GET_PRODUCTS_BY_GROUP, GET_PRODUCTS_BY_GROUPITEMID, GET_PRODUCTS_BY_WASTAGE, GET_PRODUCTS_BY_HSNCODE, GET_PRODUCTS_BY_SILVERRATE, GET_PRODUCTS_BY_ACCOUNT, GET_PRODUCTS_BY_LABOUR, GET_PRODUCTS_BY_EXTRARATE,
     GET_PRODUCTS_BY_LOCATION, GET_PRODUCTS_BY_PCS, GET_PRODUCTS_BY_DESIGN,GET_PRODUCTS_BY_SIZE, GET_PRODUCTS_BY_MOTI, GET_PRODUCTS_BY_STONE,GET_PRODUCTS_BY_JADATR, GET_PRODUCTS_BY_HUID, GET_PRODUCTS_BY_HUIDRULE, GET_PRODUCTS_BY_GROUPNAME,
-    GET_PRODUCTS_BY_HUIDCHARGE, GET_PRODUCTS_BY_TOTALPRICE, GET_PRODUCTS_BY_MARKETRATEUSED,GET_PRODUCTS_BY_CALCULATEDMARKETRATE, GET_PRODUCTS_BY_GMEPRICE, GET_PRODUCTS_BY_GST,GET_PRODUCTS_BY_FINALPRICE,
+    GET_PRODUCTS_BY_HUIDCHARGE, GET_PRODUCTS_BY_TOTALPRICE, GET_PRODUCTS_BY_MARKETRATEUSED,GET_PRODUCTS_BY_CALCULATEDMARKETRATE, GET_PRODUCTS_BY_GMEPRICE, GET_PRODUCTS_BY_GST,GET_PRODUCTS_BY_FINALPRICE, GET_NON_PRODUCTS_BY_CALCULATEDMARKETRATE, GET_NON_PRODUCTS_BY_GMEPRICE, GET_NON_PRODUCTS_BY_GST, GET_NON_PRODUCTS_BY_FINALPRICE,
+    GET_NON_PRODUCTS_BY_GROUP, GET_NON_PRODUCTS_BY_GROUPITEMID, GET_NON_PRODUCTS_BY_EXTRARATE, GET_NON_PRODUCTS_BY_HSNCODE, GET_NON_PRODUCTS_BY_FINEWEIGHT, GET_NON_PRODUCTS_BY_NETWEIGHT,
+    GET_NON_PRODUCTS_BY_LABOUR, GET_NON_PRODUCTS_BY_LOCATION, GET_NON_PRODUCTS_BY_PCS, GET_NON_PRODUCTS_BY_TOWEIGHT, GET_NON_PRODUCTS_BY_TOTALPRICE, GET_NON_PRODUCTS_BY_MARKETRATEUSED, 
 } from '../type';
 
 
@@ -785,3 +787,20 @@ const fetchNonBarcodeProductByField = (type, endpoint, param) => {
           });
   };
 };
+
+export const getNonProductsByToWeightAction = (toWeight) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_TOWEIGHT, "non-barcode/product-by-weight", `toWeight=${toWeight}`);
+export const getNonProductsByFineWeightAction = (fineWeight) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_FINEWEIGHT, "non-barcode/product-by-fine-weight", `fineWeight=${fineWeight}`);
+export const getNonProductsByNetWeightAction = (netWeight) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_NETWEIGHT, "non-barcode/product-by-net-weight", `netWeight=${netWeight}`);
+export const getNonProductsByGroupAction = (groupId) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GROUP, "non-barcode/product-by-group", `groupId=${groupId}`);
+export const getNomProductsByGroupItemIdAction = (groupItemId) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GROUPITEMID, "non-barcode/product-by-item", `groupItemId=${groupItemId}`);
+export const getNonProductsByHsnCodeAction = (hsnCode) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_HSNCODE, "non-barcode/product-by-hsncode", `hsnCode=${hsnCode}`);
+export const getNonProductsByLabourAction = (labour) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_LABOUR, "non-barcode/product-by-labour", `labour=${labour}`);
+export const getNonProductsByLocationAction = (location) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_LOCATION, "non-barcode/product-by-location", `location=${location}`);
+export const getNonProductsByPcsAction = (pcs) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_PCS, "non-barcode/product-by-pcs", `pcs=${pcs}`);
+export const getNonProductsByGstAction = (gst) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GST, "non-barcode/product-by-gst", `gst=${gst}`);
+export const getNonProductsByGMEPriceAction = (gmePrice) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GMEPRICE, "non-barcode/product-by-gme-price", `GMEPrice=${gmePrice}`);
+export const getNonProductsByMarketRateUsedAction = (marketRate) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_MARKETRATEUSED, "non-barcode/product-by-market-rate-used", `marketRateUsed=${marketRate}`);
+export const getNonProductsByCalculatedMarketRateAction = (calculatedRate) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_CALCULATEDMARKETRATE, "non-barcode/product-by-calculatedRate", `calculatedMarketRate=${calculatedRate}`);
+export const getNonProductsByTotalPriceAction = (totalPrice) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_TOTALPRICE, "non-barcode/product-by-total-price", `totalPrice=${totalPrice}`);
+export const getNonProductsByExtraRateAction = (extraRate) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_EXTRARATE, "non-barcode/product-by-extra-rate", `extraRate=${extraRate}`);
+export const getNonProductsByFinalPriceAction = (finalPrice) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_FINALPRICE, "non-barcode/product-by-final-price", `finalPrice=${finalPrice}`);

@@ -4,6 +4,9 @@ import { RESET_GLOBAL_STATE, GET_CATEGORY, DELETE_SIZE, DELETE_DESIGN, UPDATE_SI
     GET_PRODUCTS_BY_LABOUR, GET_PRODUCTS_BY_LOCATION, GET_PRODUCTS_BY_PCS,GET_PRODUCTS_BY_DESIGN, GET_PRODUCTS_BY_SIZE, GET_PRODUCTS_BY_GST,GET_PRODUCTS_BY_FINALPRICE, GET_PRODUCTS_BY_CALCULATEDMARKETRATE,
     GET_PRODUCTS_BY_EXTRARATE,GET_PRODUCTS_BY_GMEPRICE,GET_PRODUCTS_BY_HUID,GET_PRODUCTS_BY_HUIDCHARGE,GET_PRODUCTS_BY_HUIDRULE,GET_PRODUCTS_BY_JADATR,
     GET_PRODUCTS_BY_MARKETRATEUSED,GET_PRODUCTS_BY_MOTI,GET_PRODUCTS_BY_STONE,GET_PRODUCTS_BY_TOTALPRICE, GET_PRODUCTS_BY_GROUPNAME,
+    GET_NON_PRODUCTS_BY_TOWEIGHT, GET_NON_PRODUCTS_BY_FINEWEIGHT, GET_NON_PRODUCTS_BY_NETWEIGHT, GET_NON_PRODUCTS_BY_GROUP, GET_NON_PRODUCTS_BY_FINALPRICE, GET_NON_PRODUCTS_BY_GROUPITEMID, GET_NON_PRODUCTS_BY_GST,
+    GET_NON_PRODUCTS_BY_HSNCODE, GET_NON_PRODUCTS_BY_LABOUR, GET_NON_PRODUCTS_BY_LOCATION, GET_NON_PRODUCTS_BY_PCS, GET_NON_PRODUCTS_BY_CALCULATEDMARKETRATE, GET_NON_PRODUCTS_BY_EXTRARATE, GET_NON_PRODUCTS_BY_GMEPRICE,
+    GET_NON_PRODUCTS_BY_MARKETRATEUSED, GET_NON_PRODUCTS_BY_TOTALPRICE,
  } from '../type';
 
 const initialState = {
@@ -160,12 +163,11 @@ const landingManagementReducer = (state = initialState, action) => {
                 ...state,
                 deleteNonBarcodeCategory: action.payload,
             };
-        case GET_NON_BARCODE_PRODUCT: 
-        console.log('action.payload', action.payload)
-        return {
-            ...state,
-            getNonBarcodeProduct: action.payload,
-        };
+        // case GET_NON_BARCODE_PRODUCT: 
+        // return {
+        //     ...state,
+        //     getNonBarcodeProduct: action.payload,
+        // };
         case ADD_NON_BARCODE_PRODUCT: 
         return {
             ...state,
@@ -246,6 +248,26 @@ const landingManagementReducer = (state = initialState, action) => {
             case GET_PRODUCTS_BY_TOTALPRICE:
             case GET_PRODUCT: 
                 return { ...state, getProduct: action.payload };
+            
+
+                case GET_NON_PRODUCTS_BY_TOWEIGHT:
+                    case GET_NON_PRODUCTS_BY_FINEWEIGHT:
+                    case GET_NON_PRODUCTS_BY_NETWEIGHT:
+                    case GET_NON_PRODUCTS_BY_GROUP:
+                    case GET_NON_PRODUCTS_BY_FINALPRICE:
+                    case GET_NON_PRODUCTS_BY_GROUPITEMID:
+                    case GET_NON_PRODUCTS_BY_GST:
+                    case GET_NON_PRODUCTS_BY_HSNCODE:
+                    case GET_NON_PRODUCTS_BY_LABOUR:
+                    case GET_NON_PRODUCTS_BY_LOCATION:
+                    case GET_NON_PRODUCTS_BY_PCS:
+                    case GET_NON_PRODUCTS_BY_CALCULATEDMARKETRATE:
+                    case GET_NON_PRODUCTS_BY_EXTRARATE:
+                    case GET_NON_PRODUCTS_BY_GMEPRICE:
+                    case GET_NON_PRODUCTS_BY_MARKETRATEUSED:
+                    case GET_NON_PRODUCTS_BY_TOTALPRICE:
+                    case GET_NON_BARCODE_PRODUCT: 
+                        return { ...state, getNonBarcodeProduct: action.payload };
         case RESET_GLOBAL_STATE:
             return initialState;
         default:
