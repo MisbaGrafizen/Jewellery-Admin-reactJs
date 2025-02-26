@@ -792,7 +792,7 @@ export default function LabourSetting() {
                         <h2 className="  flex justify-center rounded-tr-[2px] rounded-br-[30px] rounded-tl-[2px] rounded-bl-[30px] bs-spj text-[#fff] py-[6px] font-[500] text-[20px] font-Poppins pl-[6px]">
                           Uchak
                         </h2>
-                        <div className=" flex gap-[25px] md:max-h-[73vh]  2xl:max-h-[85vh]  overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
+                        <div className=" flex gap-[25px] md:max-h-[73vh]  2xl:max-h-[80vh]  overflow-y-auto overflow-x-hidden flex-col   relative  px-[19px] w-[100%] ">
                           <div className=" flex  bg-white border-[1px] flex-col gap-[14px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                             <div className=" flex w-[100%] fle  gap-[10px]">
                               <div
@@ -1353,79 +1353,7 @@ export default function LabourSetting() {
                                   </AnimatePresence>
                                 </div>
                                 </div>
-                                {/* <div
-                                  ref={dropdownCategoryRef}
-                                  className="relative w-[100%]  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099]"
-                                >
-                                  <label
-                                    htmlFor="uecate"
-                                    className={`absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${editselectedTypeCategory ||
-                                      editcategoryFocused
-                                      ? "text-[#000] -translate-y-[21px] hidden "
-                                      : "text-[#8f8f8f] flex cursor-text"
-                                      }`}
-                                  >
-                                    Category
-                                  </label>
-                                  <div
-                                    className="relative w-full  rounded-lg  flex items-center space-x-4 text-[#00000099] cursor-pointer"
-                                    onClick={() =>
-                                      setEditDropdownOpenCategory(
-                                        (prev) => !prev
-                                      )
-                                    } // Toggle dropdown on click
-                                  >
-                                    <input
-                                      type="text"
-                                      name="item"
-                                      id="uecate"
-                                      value={editselectedTypeCategory}
-                                      onFocus={() =>
-                                        setEditCategoryFocused(true)
-                                      }
-                                      onBlur={(e) =>
-                                        setEditCategoryFocused(
-                                          e.target.value !== ""
-                                        )
-                                      }
-                                      className="w-full outline-none text-[15px] py-[9px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                      readOnly
-                                    />
-                                    <i
-                                      className={
-                                        editdropdownOpenCategory
-                                          ? "fa-solid fa-chevron-up text-[14px] pr-[5px]"
-                                          : "fa-solid fa-chevron-down text-[14px] pr-[5px]"
-                                      }
-                                    ></i>
-                                  </div>
-                                  <AnimatePresence>
-                                    {editdropdownOpenCategory && (
-                                      <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-[90%] left-[-16px] mt-2 bg-white w-[330px] border border-[#dedede] rounded-lg shadow-md z-10"
-                                      >
-                                        {item.map((type, index) => (
-                                          <div
-                                            key={index}
-                                            className="px-4 py-2 hover:bg-gray-100 font-Poppins  text-left cursor-pointer text-sm text-[#00000099]"
-                                            onClick={() => {
-                                              handleEditSelectCategory(
-                                                type?.itemName
-                                              );
-                                              setDropdownOpenCategory(false);
-                                            }}
-                                          >
-                                            {type?.itemName}
-                                          </div>
-                                        ))}
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div> */}
-
+                              
                                 <div className=" flex gap-[20px] w-[100%]">
                                   <div className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
    bg-[#fff] ">
@@ -2382,7 +2310,7 @@ export default function LabourSetting() {
                         </h2>
                         <div  className=" flex">
                           
-                        <div className=" flex gap-[25px] overflow-y-auto overflow-x-hidden flex-col md:max-h-[73vh]  2xl:max-h-[90vh] relative  px-[19px] w-[100%] ">
+                        <div className=" flex gap-[25px] overflow-y-auto overflow-x-hidden flex-col md:max-h-[73vh]   2xl:max-h-[80vh] relative  px-[19px] w-[100%] ">
                           <div className=" flex border-[1px] flex-col gap-[10px]  bg-white w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
                             <div className=" flex w-[100%] fle  gap-[10px]">
                               <div

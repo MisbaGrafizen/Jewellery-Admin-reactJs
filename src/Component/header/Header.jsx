@@ -324,8 +324,8 @@ export default function Header({ pageName = "" }) {
 
                               <label
                                 htmlFor=""
-                                className={`bg-white px-1 absolute left-[15px] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-sm sm:text-base capitalize transition-all duration-200 ${nameFocused
-                                  ? "-translate-y-[50%] text-black text-xs"
+                                className={`bg-white px-1 absolute left-[15px] top-0 transform -translate-y-1/2 font-Poppins font-[400]  text-sm sm:text-base capitalize transition-all duration-200 ${categoryRates[item._id]||nameFocused
+                                  ? "-translate-y-[50%] text-black text-xs hidden "
                                   : "  -translate-y-[-30%] cursor-text  text-[#9f9e9e] text-xs"
                                   }`}
                               >

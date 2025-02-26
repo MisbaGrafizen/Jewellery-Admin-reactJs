@@ -2233,8 +2233,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="partyName"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNameFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.name||partyNameFocused
+                          ? "text-[#000] hidden "
                           : "text-[#8f8f8f]"
                           }`}
                       >
@@ -2254,8 +2254,8 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyAddressFocused
-                          ? "text-[#000] -translate-y-[48px] font-[]"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.address||partyAddressFocused
+                          ? "text-[#000] -translate-y-[48px] hidden font-[]"
                           : "  -translate-y-[27px] "
                           }`}
                       >
@@ -2278,8 +2278,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="gstNumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyGstFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.GST||partyGstFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f]"
                           }`}
                       >
@@ -2300,8 +2300,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="PanParty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPanFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.panNo||partyPanFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2388,8 +2388,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyState"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyStateFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.state||partyStateFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2410,8 +2410,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partycity"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyCityFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.city||partyCityFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2432,8 +2432,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyPin"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPinFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.pinCode||partyPinFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2454,8 +2454,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partynumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNumberFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.mobileNumber||partyNumberFocused
+                          ? "text-[#000] -translate-y-[21px]  hidden"
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2476,8 +2476,8 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="emailparty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyEmailFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.email||partyEmailFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >

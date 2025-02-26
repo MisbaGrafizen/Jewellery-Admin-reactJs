@@ -548,10 +548,10 @@ position:relative;
                                       src={
                                         barcode.barcodeImage || "/placeholder.svg"
                                       }
-                                      alt={`Barcode ${barcode.barCode}`}
+                                      alt={`Barcode ${barcode.barcode}`}
                                     />
                                     <p className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px]  left-[16px] font-[500] bg-white w-fit text-black">
-                                      {barcode.barCode}
+                                      {barcode.barcode}
                                     </p>
                                   </div>
                                   {/* <img
