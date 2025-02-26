@@ -341,12 +341,49 @@ export default function PurchesInvoice() {
     }));
   };
 
+
+  const handlePartyInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  
+
   const handleInputChange = (e, index, field) => {
     const value = e.target.value;
     const updatedProducts = [...products];
     updatedProducts[index][field] = value;
     setProducts(updatedProducts);
   };
+
+  // const handleInputChange = (e, index, field) => {
+  //   const value = e.target.value;
+  
+  //   // Ensure products is initialized
+  //   if (!Array.isArray(products)) {
+  //     console.error("❌ Error: Products is not an array.");
+  //     return;
+  //   }
+  
+  //   // Ensure the index exists in products
+  //   if (index < 0 || index >= products.length) {
+  //     console.error(`Error: Invalid index ${index} for products array.`);
+  //     return;
+  //   }
+  
+  //   // Ensure the field exists in the product object
+  //   const updatedProducts = [...products];
+  //   if (!updatedProducts[index]) {
+  //     console.error(`Error: Product at index ${index} is undefined.`);
+  //     return;
+  //   }
+  
+  //   updatedProducts[index][field] = value;
+  //   setProducts(updatedProducts);
+  // };
+  
 
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
@@ -455,7 +492,7 @@ export default function PurchesInvoice() {
     }
   };
 
-  const calculateInvoiceTotals = (products = [], discountPercentage = 0) => {
+  const calculateInvoiceTotals = (products = [], discountPercentage = 0, isTaxApplied = false) => {
     if (!products.length) return null;
 
     console.log("📌 Calculating Invoice Totals...");
@@ -468,27 +505,35 @@ export default function PurchesInvoice() {
     const discountPrice = totalPrice - discountAmount;
     console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
 
-    // ✅ Step 2: Calculate GST (CGST & SGST) at 1.5% each
-    const calculatedCgst = (discountPrice * 1.5) / 100;
-    const calculatedSgst = (discountPrice * 1.5) / 100;
-    const totalTax = calculatedCgst + calculatedSgst;
-    console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
+    let calculatedCgst = 0;
+    let calculatedSgst = 0;
+    let totalTax = 0;
+    let finalPrice = discountPrice;
 
-    // ✅ Step 3: Calculate Final Invoice Amount
-    const finalPrice = discountPrice + totalTax;
+    // ✅ Step 2: Apply GST ONLY if Tax is selected
+    if (isTaxApplied) {
+        calculatedCgst = (discountPrice * 1.5) / 100;
+        calculatedSgst = (discountPrice * 1.5) / 100;
+        totalTax = calculatedCgst + calculatedSgst;
+
+        // ✅ Step 3: Add GST to the final price
+        finalPrice = discountPrice + totalTax;
+    }
+
+    console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
     console.log("✅ Final Invoice Amount:", finalPrice);
 
     return {
-      totalPrice,
-      discountPercentage,
-      discountAmount,
-      discountPrice,
-      cgst: calculatedCgst,
-      sgst: calculatedSgst,
-      totalTax,
-      finalPrice,
+        totalPrice,
+        discountPercentage,
+        discountAmount,
+        discountPrice,
+        cgst: calculatedCgst,
+        sgst: calculatedSgst,
+        totalTax,
+        finalPrice,
     };
-  };
+};
 
 
   // ✅ Function to Update State with Calculated Values
@@ -2200,7 +2245,7 @@ export default function PurchesInvoice() {
                         name="name"
                         id="partyName"
                         value={formData.name}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyNameFocused(true)}
                         onBlur={() => setPartyNameFocused(false)}
                         autocomplete="nasme"
@@ -2221,7 +2266,7 @@ export default function PurchesInvoice() {
                         name="address"
                         id="address"
                         value={formData.address}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyAddressFocused(true)}
                         onBlur={(e) =>
                           setPartyAddressFocused(e.target.value !== "")
@@ -2245,7 +2290,7 @@ export default function PurchesInvoice() {
                         name="GST"
                         id="gstNumber"
                         value={formData.GST}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyGstFocused(true)}
                         onBlur={() => setPartyGstFocused(false)}
                         autocomplete="nasme"
@@ -2267,7 +2312,7 @@ export default function PurchesInvoice() {
                         name="panNo"
                         id="PanParty"
                         value={formData.panNo}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyPanFocused(true)}
                         onBlur={() => setPartyPanFocused(false)}
                         autocomplete="nasme"
@@ -2355,7 +2400,7 @@ export default function PurchesInvoice() {
                         name="state"
                         id="partyState"
                         value={formData.state}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyStateNameFocused(true)}
                         onBlur={() => setPartyStateNameFocused(false)}
                         autocomplete="nasme"
@@ -2377,7 +2422,7 @@ export default function PurchesInvoice() {
                         name="city"
                         id="partycity"
                         value={formData.city}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyCityFocused(true)}
                         onBlur={() => setPartyCityFocused(false)}
                         autocomplete="nasme"
@@ -2399,7 +2444,7 @@ export default function PurchesInvoice() {
                         name="pinCode"
                         id="partyPin"
                         value={formData.pinCode}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyPinFocused(true)}
                         onBlur={() => setPartyPinFocused(false)}
                         autocomplete="nasme"
@@ -2421,7 +2466,7 @@ export default function PurchesInvoice() {
                         name="mobileNumber"
                         id="partynumber"
                         value={formData.mobileNumber}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyNumberFocused(true)}
                         onBlur={() => setPartyNumberFocused(false)}
                         autocomplete="nasme"
@@ -2443,7 +2488,7 @@ export default function PurchesInvoice() {
                         name="email"
                         id="emailparty"
                         value={formData.email}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyEmailFocused(true)}
                         onBlur={() => setPartyEmailFocused(false)}
                         autocomplete="nasme"

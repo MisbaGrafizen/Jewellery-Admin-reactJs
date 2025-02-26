@@ -792,7 +792,7 @@ export const getNonProductsByToWeightAction = (toWeight) => fetchNonBarcodeProdu
 export const getNonProductsByFineWeightAction = (fineWeight) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_FINEWEIGHT, "non-barcode/product-by-fine-weight", `fineWeight=${fineWeight}`);
 export const getNonProductsByNetWeightAction = (netWeight) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_NETWEIGHT, "non-barcode/product-by-net-weight", `netWeight=${netWeight}`);
 export const getNonProductsByGroupAction = (groupId) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GROUP, "non-barcode/product-by-group", `groupId=${groupId}`);
-export const getNomProductsByGroupItemIdAction = (groupItemId) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GROUPITEMID, "non-barcode/product-by-item", `groupItemId=${groupItemId}`);
+export const getNonProductsByGroupItemIdAction = (groupItemId) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_GROUPITEMID, "non-barcode/product-by-item", `groupItemId=${groupItemId}`);
 export const getNonProductsByHsnCodeAction = (hsnCode) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_HSNCODE, "non-barcode/product-by-hsncode", `hsnCode=${hsnCode}`);
 export const getNonProductsByLabourAction = (labour) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_LABOUR, "non-barcode/product-by-labour", `labour=${labour}`);
 export const getNonProductsByLocationAction = (location) => fetchNonBarcodeProductByField(GET_NON_PRODUCTS_BY_LOCATION, "non-barcode/product-by-location", `location=${location}`);

@@ -952,7 +952,8 @@ const handleEdit = ()=>{
                       </tr>
                     </thead>
                     <tbody>
-                      {stocks?.map((item, index) => {
+                    {Array.isArray(stocks) && stocks.length > 0 ? (
+                      stocks.map((item, index) => {                        
                         const netWeight = (
                           Number(item?.toWeight || 0) -
                           Number(item?.lessWeight || 0)
@@ -1045,8 +1046,7 @@ const handleEdit = ()=>{
                               onClick={() => handleNavigateToPrint(item.barCode)}
                               ></i>
                               <i
-                                className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
-onClick={handleEdit}
+                                className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer" onClick={handleEdit}
                               ></i>
                               <i
                                 className="fa-solid fa-trash text-red-500 cursor-pointer "
@@ -1057,13 +1057,16 @@ onClick={handleEdit}
                             </td>
                           </tr>
                         );
-                      })}
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan="10" className="text-center py-4">
+                              No stocks available.
+                            </td>
+                          </tr>
+                        )}
                     </tbody>
                   </table>
-
-
-
-
                 </div>
               </div>
             </div>
@@ -1143,8 +1146,7 @@ onClick={handleEdit}
                           <div className=" flex w-[100%]  gap-[30px]">
                             <div
                               ref={dropdownRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-   bg-[#fff] "
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstock"
@@ -1200,8 +1202,7 @@ onClick={handleEdit}
                             </div>
                             <div
                               ref={dropdownCategoryRef}
-                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] 
-   bg-[#fff] "
+                              className="relative w-full  border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] bg-[#fff] "
                             >
                               <label
                                 htmlFor="addstockCategory"

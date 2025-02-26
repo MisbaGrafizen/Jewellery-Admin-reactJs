@@ -13,6 +13,21 @@ import {
   deleteNonBarcodeProductAction,
   getAllNonBarcodeProductAction,
   getnonBarcodeCategroyAction,
+  getNonProductsByCalculatedMarketRateAction,
+  getNonProductsByExtraRateAction,
+  getNonProductsByFinalPriceAction,
+  getNonProductsByFineWeightAction,
+  getNonProductsByGMEPriceAction,
+  getNonProductsByGroupAction,
+  getNonProductsByGroupItemIdAction,
+  getNonProductsByGstAction,
+  getNonProductsByLabourAction,
+  getNonProductsByLocationAction,
+  getNonProductsByMarketRateUsedAction,
+  getNonProductsByNetWeightAction,
+  getNonProductsByPcsAction,
+  getNonProductsByTotalPriceAction,
+  getNonProductsByToWeightAction,
 } from "../../redux/action/landingManagement";
 import { useNavigate } from "react-router-dom";
 import { getMarketRateAction } from "../../redux/action/generalManagement";
@@ -46,6 +61,18 @@ export default function NonbarStock() {
   const [selectedmodalopen, setModalOpen] = useState(false);
   const [carat, setCarat] = useState([]);
   const [items, setItems] = useState([]);
+  const [fineWeight, setFineWeight] = useState("");
+  const [groupId, setGroupId] = useState("");
+  const [groupItemId, setGroupItemId] = useState("");
+  const [labour, setLabour] = useState("");
+  const [extraRate, setExtraRate] = useState("");
+  const [location, setLocation] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
+  const [marketRateUsed, setMarketRateUsed] = useState("");
+  const [calculatedMarketRate, setCalculatedMarketRate] = useState("");
+  const [GMEPrice, setGMEPrice] = useState("");
+  const [gst, setGst] = useState("");
+  const [finalPrice, setFinalPrice] = useState("");
 
 
   const scrollContainerRef = useRef(null);
@@ -61,8 +88,136 @@ export default function NonbarStock() {
   console.log('productssdf', products)
 
   useEffect(() => {
-    dispatch(getAllNonBarcodeProductAction());
-  }, [dispatch]);
+    if (
+      !toWeight &&
+      !groupId &&
+      !netWeight &&
+      !fineWeight &&
+      !groupItemId &&
+      !labour &&
+      !extraRate &&
+      !location &&
+      !pcs &&
+      !totalPrice &&
+      !marketRateUsed &&
+      !calculatedMarketRate &&
+      !GMEPrice &&
+      !gst &&
+      !finalPrice
+    ) {
+      dispatch(getAllNonBarcodeProductAction());
+    }
+  }, [
+    toWeight,
+    netWeight,
+    groupId,
+    fineWeight,
+    groupItemId,
+    labour,
+    extraRate,
+    location,
+    pcs,
+    totalPrice,
+    marketRateUsed,
+    calculatedMarketRate,
+    GMEPrice,
+    gst,
+    finalPrice,
+    dispatch,
+  ]);
+
+  useEffect(() => {
+    if (toWeight.trim()) {
+      dispatch(getNonProductsByToWeightAction(toWeight));
+    }
+  }, [toWeight, dispatch]);
+
+  useEffect(() => {
+    if (fineWeight.trim()) {
+      dispatch(getNonProductsByFineWeightAction(fineWeight));
+    }
+  }, [fineWeight, dispatch]);
+
+  useEffect(() => {
+    if (netWeight.trim()) {
+      dispatch(getNonProductsByNetWeightAction(netWeight));
+    }
+  }, [netWeight, dispatch]);
+
+
+  useEffect(() => {
+    if (groupId.trim()) {
+      dispatch(getNonProductsByGroupAction(groupId));
+    }
+  }, [groupId, dispatch]);
+
+  useEffect(() => {
+    if (groupItemId.trim()) {
+      dispatch(getNonProductsByGroupItemIdAction(groupItemId));
+    }
+  }, [groupItemId, dispatch]);
+
+
+  useEffect(() => {
+    if (labour.trim()) {
+      dispatch(getNonProductsByLabourAction(labour));
+    }
+  }, [labour, dispatch]);
+
+  useEffect(() => {
+    if (extraRate.trim()) {
+      dispatch(getNonProductsByExtraRateAction(extraRate));
+    }
+  }, [extraRate, dispatch]);
+
+  useEffect(() => {
+    if (location.trim()) {
+      dispatch(getNonProductsByLocationAction(location));
+    }
+  }, [location, dispatch]);
+
+  useEffect(() => {
+    if (pcs.trim()) {
+      dispatch(getNonProductsByPcsAction(pcs));
+    }
+  }, [pcs, dispatch]);
+
+
+  useEffect(() => {
+    if (totalPrice.trim()) {
+      dispatch(getNonProductsByTotalPriceAction(totalPrice));
+    }
+  }, [totalPrice, dispatch]);
+
+  useEffect(() => {
+    if (marketRateUsed.trim()) {
+      dispatch(getNonProductsByMarketRateUsedAction(marketRateUsed));
+    }
+  }, [marketRateUsed, dispatch]);
+
+  useEffect(() => {
+    if (calculatedMarketRate.trim()) {
+      dispatch(getNonProductsByCalculatedMarketRateAction(calculatedMarketRate));
+    }
+  }, [calculatedMarketRate, dispatch]);
+
+  useEffect(() => {
+    if (GMEPrice.trim()) {
+      dispatch(getNonProductsByGMEPriceAction(GMEPrice));
+    }
+  }, [GMEPrice, dispatch]);
+
+  useEffect(() => {
+    if (gst.trim()) {
+      dispatch(getNonProductsByGstAction(gst));
+    }
+  }, [gst, dispatch]);
+
+  useEffect(() => {
+    if (finalPrice.trim()) {
+      dispatch(getNonProductsByFinalPriceAction(finalPrice));
+    }
+  }, [finalPrice, dispatch]);
 
   const navigate = useNavigate()
 
@@ -591,38 +746,86 @@ export default function NonbarStock() {
                       
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={groupId}
+                        onChange={(e) => setGroupId(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={groupItemId}
+                        onChange={(e) => setGroupItemId(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                       <input  className=" flex w-[140px] font-[500]" placeholder="Search..." type="text" />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
+                      value={toWeight}
+                      onChange={(e) => setToWeight(e.target.value)}
+                       />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={netWeight}
+                        onChange={(e) => setNetWeight(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[100px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[100px] font-[500]" placeholder="Search..." type="text"
+                      value={fineWeight}
+                      onChange={(e) => setFineWeight(e.target.value)}
+                       />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={marketRateUsed}
+                        onChange={(e) => setMarketRateUsed(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                      value={labour}
+                      onChange={(e) => setLabour(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={labour}
+                        onChange={(e) => setLabour(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
+                      value={calculatedMarketRate}
+                      onChange={(e) => setCalculatedMarketRate(e.target.value)}
+                       />
                       </th>
 
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={extraRate}
+                        onChange={(e) => setExtraRate(e.target.value)}
+                      />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={GMEPrice}
+                        onChange={(e) => setGMEPrice(e.target.value)}
+                      />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={gst}
+                        onChange={(e) => setGst(e.target.value)}
+                      />
+                      </th>
+                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={totalPrice}
+                        onChange={(e) => setTotalPrice(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                       <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
@@ -631,19 +834,16 @@ export default function NonbarStock() {
                       <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                       />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
-                      </th>
-                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
-                      </th>
-                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
-                      </th>
-                      <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
+                      <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" 
+                        value={pcs}
+                        onChange={(e) => setPcs(e.target.value)}
+                      />
                       </th>
                       <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
                       <input  className=" flex w-[80px] font-[500]" placeholder="Search..." type="text" />
@@ -667,8 +867,8 @@ export default function NonbarStock() {
                     </tr>
                   </thead>
                   <tbody>
-                    {products?.map((item, index) => {
-                      const netWeight = (
+                  {Array.isArray(products) && products.length > 0 ? (
+                    products.map((item, index) => {                      const netWeight = (
                         Number(item?.toWeight || 0) -
                         Number(item?.lessWeight || 0)
                       ).toFixed(3);
@@ -768,8 +968,15 @@ export default function NonbarStock() {
                             ></i>
                           </td>
                         </tr>
-                      );
-                    })}
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="10" className="text-center py-4">
+                          No products found.
+                        </td>
+                    </tr>
+                  )}
                   </tbody>
                 </table>
               </div>
