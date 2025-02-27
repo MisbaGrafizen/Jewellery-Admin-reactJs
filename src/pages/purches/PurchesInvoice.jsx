@@ -866,7 +866,7 @@ export default function PurchesInvoice() {
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
         <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
-          <Header pageName="Invoice" />
+          <Header pageName=" Purchese Invoice" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
             <div className="flex w-[100%] max-h-[90%] pb-[50px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
@@ -880,15 +880,15 @@ export default function PurchesInvoice() {
                       </p>
                     </div>
                     <div className=" flex  w-[200px]  items-center gap-[10px]">
-                      <p className=" flex font-Poppins w-[50px]">Date :</p>
-                      <div className=" flex  items-center">
+                      {/* <p className=" flex font-Poppins w-[50px]">Date :</p> */}
+                      {/* <div className=" flex  items-center">
                         <DatePicker
                           selected={selectedDate}
                           onChange={(date) => setSelectedDate(date)}
                           className=" flex  w-[100px] border"
                         />
                         <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
@@ -960,7 +960,7 @@ export default function PurchesInvoice() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                         <label
                           htmlFor="address"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${address||addressFocused
                             ? "text-[#000] -translate-y-[45px] hidden font-[]"
                             : "  -translate-y-[27px] flex cursor-text "
                             }`}

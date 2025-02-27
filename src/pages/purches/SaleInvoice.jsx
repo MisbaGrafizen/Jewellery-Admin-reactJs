@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 import { X, CheckCircle } from "lucide-react"
 
-export default function SaleInvoice() {
+export default function PurchesInvoice() {
   const [nameFocused, setNameFocused] = useState(false);
   const dropdownRef = useRef(null);
   const [selectedType, setSelectedType] = useState("");
@@ -50,6 +50,7 @@ export default function SaleInvoice() {
   const [dropdownTypeOpen, setDropdownTypeOpen] = useState(false);
   const [selectedLabourType, setSelectedLabourType] = useState("");
   const [labourFocused, setLabourFocused] = useState(false);
+  const [customTotalPrice, setCustomTotalPrice] = useState(null);
 
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
@@ -268,14 +269,6 @@ export default function SaleInvoice() {
   };
 
 
-  const assignProductId = (productId, index) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product, i) =>
-        i === index ? { ...product, productId } : product
-      )
-    );
-  };
-
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
@@ -348,6 +341,16 @@ export default function SaleInvoice() {
     }));
   };
 
+
+  const handlePartyInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  
+
   const handleInputChange = (e, index, field) => {
     const value = e.target.value;
     const updatedProducts = [...products];
@@ -355,35 +358,32 @@ export default function SaleInvoice() {
     setProducts(updatedProducts);
   };
 
-  // const handleKeyDown = async (e, index) => {
-  //   if (e.key === "Enter" && e.target.value.trim()) {
-  //     const inputValue = e.target.value.trim();
-
-  //     if (/^\d{5,}$/.test(inputValue)) {
-  //       // ✅ Fetch by Barcode
-  //       await fetchProductByBarcode(inputValue, index);
-  //     } else {
-  //       // ✅ Fetch by Product Name
-  //       fetchProductDetails(inputValue, index)
-  //         .then((productDetails) => {
-  //           if (productDetails) {
-  //             setProducts((prevProducts) => {
-  //               const updatedProducts = [...prevProducts];
-  //               updatedProducts[index] = {
-  //                 ...updatedProducts[index],
-  //                 productName: inputValue,
-  //                 // productId: productDetails?._id || updatedProducts[index].productId || "",
-  //                 productId: productDetails?.groupItemId || updatedProducts[index].groupItemId || "",
-  //               };
-  //               return updatedProducts;
-  //             });
-  //           }
-  //         })
-  //         .catch((error) => console.error("Error fetching product details:", error));
-  //     }
+  // const handleInputChange = (e, index, field) => {
+  //   const value = e.target.value;
+  
+  //   // Ensure products is initialized
+  //   if (!Array.isArray(products)) {
+  //     console.error("❌ Error: Products is not an array.");
+  //     return;
   //   }
+  
+  //   // Ensure the index exists in products
+  //   if (index < 0 || index >= products.length) {
+  //     console.error(`Error: Invalid index ${index} for products array.`);
+  //     return;
+  //   }
+  
+  //   // Ensure the field exists in the product object
+  //   const updatedProducts = [...products];
+  //   if (!updatedProducts[index]) {
+  //     console.error(`Error: Product at index ${index} is undefined.`);
+  //     return;
+  //   }
+  
+  //   updatedProducts[index][field] = value;
+  //   setProducts(updatedProducts);
   // };
-
+  
 
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
@@ -467,8 +467,8 @@ export default function SaleInvoice() {
   const handleAddProduct = () => {
     const newProduct = {
       id: products?.length + 1,
-      barcodeVisible: true, // Show input for barcode
-      groupItemId: { itemName: "" }, // Placeholder for product name
+      barcodeVisible: true,
+      groupItemId: { itemName: "" },
       toWeight: "",
       netWeight: "",
       marketRateUsed: "",
@@ -492,7 +492,7 @@ export default function SaleInvoice() {
     }
   };
 
-  const calculateInvoiceTotals = (products = [], discountPercentage = 0) => {
+  const calculateInvoiceTotals = (products = [], discountPercentage = 0, isTaxApplied = false) => {
     if (!products.length) return null;
 
     console.log("📌 Calculating Invoice Totals...");
@@ -505,52 +505,89 @@ export default function SaleInvoice() {
     const discountPrice = totalPrice - discountAmount;
     console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
 
-    // ✅ Step 2: Calculate GST (CGST & SGST) at 1.5% each
-    const calculatedCgst = (discountPrice * 1.5) / 100;
-    const calculatedSgst = (discountPrice * 1.5) / 100;
-    const totalTax = calculatedCgst + calculatedSgst;
-    console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
+    let calculatedCgst = 0;
+    let calculatedSgst = 0;
+    let totalTax = 0;
+    let finalPrice = discountPrice;
 
-    // ✅ Step 3: Calculate Final Invoice Amount
-    const finalPrice = discountPrice + totalTax;
+    // ✅ Step 2: Apply GST ONLY if Tax is selected
+    if (isTaxApplied) {
+        calculatedCgst = (discountPrice * 1.5) / 100;
+        calculatedSgst = (discountPrice * 1.5) / 100;
+        totalTax = calculatedCgst + calculatedSgst;
+
+        // ✅ Step 3: Add GST to the final price
+        finalPrice = discountPrice + totalTax;
+    }
+
+    console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
     console.log("✅ Final Invoice Amount:", finalPrice);
 
     return {
-      totalPrice,
-      discountPercentage,
-      discountAmount,
-      discountPrice,
-      cgst: calculatedCgst,
-      sgst: calculatedSgst,
-      totalTax,
-      finalPrice,
+        totalPrice,
+        discountPercentage,
+        discountAmount,
+        discountPrice,
+        cgst: calculatedCgst,
+        sgst: calculatedSgst,
+        totalTax,
+        finalPrice,
     };
-  };
+};
+
 
   // ✅ Function to Update State with Calculated Values
-  const updateTotalsAndApplyDiscount = () => {
-    const invoiceData = calculateInvoiceTotals(products, discountPercentage);
+  const updateTotalsAndApplyDiscount = (isTaxApplied) => {
+    setProducts((prevProducts) => {
+        let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
 
-    if (!invoiceData) {
-      console.error("❌ Error: Invoice Data is undefined!");
-      return;
-    }
+        // ✅ Step 1: Apply Discount
+        const discountAmount = (totalPrice * discountPercentage) / 100;
+        const discountedPrice = totalPrice - discountAmount;
 
-    setDiscountAmount(invoiceData.discountAmount);
-    setDiscountPrice(invoiceData.discountPrice);
-    setCgst(invoiceData.cgst);
-    setSgst(invoiceData.sgst);
-    setTotalTaxAmount(invoiceData.totalTax);
-    setFinalTotal(invoiceData.finalPrice);
+        let calculatedCgst = 0;
+        let calculatedSgst = 0;
+        let totalTax = 0;
+        let finalPrice = discountedPrice;
 
-    console.log("✅ Updated Invoice Totals in State:", invoiceData);
-  };
+        // ✅ Step 2: Apply GST ONLY if Tax is selected
+        if (isTaxApplied) {
+            calculatedCgst = (discountedPrice * 1.5) / 100;
+            calculatedSgst = (discountedPrice * 1.5) / 100;
+            totalTax = calculatedCgst + calculatedSgst;
+
+            // ✅ Step 3: Add GST to the final price
+            finalPrice = discountedPrice + totalTax;
+        }
+
+        // ✅ Update invoice state
+        setDiscountAmount(discountAmount);
+        setDiscountPrice(discountedPrice);
+        setCgst(calculatedCgst);
+        setSgst(calculatedSgst);
+        setTotalTaxAmount(totalTax);
+        setFinalTotal(finalPrice);
+
+        console.log("✅ Updated Invoice Totals:", {
+            totalPrice,
+            discountAmount,
+            discountedPrice,
+            cgst: calculatedCgst,
+            sgst: calculatedSgst,
+            totalTax,
+            finalPrice,
+            isTaxApplied,
+        });
+
+        return prevProducts;
+    });
+};
+
 
 
 
   const handleSaveInvoice = async () => {
     try {
-      // ✅ Get calculated invoice totals
       const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
       if (!invoiceData) {
@@ -558,7 +595,16 @@ export default function SaleInvoice() {
         return;
       }
 
-      // ✅ Prepare Payload with Calculated Values
+      const isTaxApplied = formData1.taxType === "tax";
+
+      const cgstAmount = isTaxApplied ? invoiceData.cgst : 0;
+      const sgstAmount = isTaxApplied ? invoiceData.sgst : 0;
+      const totalGstAmount = isTaxApplied ? invoiceData.totalTax : 0;
+      const finalPrice = isTaxApplied ? invoiceData.finalPrice : invoiceData.discountPrice;
+
+      console.log('invoiceData.cgst', invoiceData.cgst)
+
+
       const payload = {
         customerId,
         products: products.map((product) => ({
@@ -573,29 +619,29 @@ export default function SaleInvoice() {
           totalPrice: product?.finalPrice || 0,
           pcs: Number(product?.pcs) || 0,
         })),
-        billType: "estimate",
+        billType: isTaxApplied ? "tax" : "estimate",
         billNo: Date.now(),
         date: selectedDate,
         discount: discountPercentage || 0,
         discountAmount: invoiceData.discountAmount,
         discountPrice: invoiceData.discountPrice,
-        cgstAmount: invoiceData.cgst,
-        sgstAmount: invoiceData.sgst,
-        gstAmount: invoiceData.totalTax,
-        totalPrice: invoiceData.finalPrice,
+        cgstAmount: cgstAmount,
+        sgstAmount: sgstAmount,
+        gstAmount: totalGstAmount,
+        totalPrice: finalPrice,
         companyId: companyInfo?.[0]?._id,
         paymentType: "cash",
       };
 
       console.log("📌 Invoice Payload:", payload);
 
-      const response = await ApiPost("/admin/bill", payload);
+      const response = await ApiPost("/admin/purchase-bill", payload);
       console.log("✅ Response:", response);
 
       if (response.data.bill) {
         setCreatedInvoiceId(response.data.bill._id);
         alert("Invoice created successfully!");
-        navigate(`/invoice-bill/${response.data.bill._id}?type=sale`);
+        navigate(`/invoice-bill/${response.data.bill._id}?type=purchase`);
       } else {
         alert("Failed to create invoice!");
       }
@@ -604,7 +650,6 @@ export default function SaleInvoice() {
       alert("An error occurred while creating the invoice.");
     }
   };
-
 
 
   const handleSubmit = async () => {
@@ -642,189 +687,146 @@ export default function SaleInvoice() {
     setIsOpen(false); // Close the modal
   };
 
-  // const handleProductInputChange = (e, index, field) => {
-  //   const value = e.target.value;
-  //   setProducts((prevProducts) => {
-  //     return prevProducts.map((product, i) => {
-  //       if (i === index) {
-  //         let updatedProduct = { ...product, [field]: value };
+  const handleProductInputChange = (e, index, field) => {
+    const value = e.target.value;
 
-  //         updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+    setProducts((prevProducts) => {
+      return prevProducts.map((product, i) => {
+        if (i === index) {
+          let updatedProduct = { ...product, [field]: value };
 
-  //         if (field === "productName") {
-  //           fetchProductDetails(value, index);
-  //         }
+          updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
 
-  //         if (field === "grossWeight") {
-  //           updatedProduct.grossWeight = parseFloat(value) || 0;
-  //           updatedProduct.availableStock = updatedProduct.grossWeight; // Update available stock dynamically
-  //           updatedProduct.netWeight = updatedProduct.grossWeight; // Ensure net weight updates dynamically
-  //         }
+          if (field === "productName") {
+            fetchProductDetails(value, index);
+          }
 
-  //         if (field === "marketRateUsed" || field === "netWeight") {
-  //           const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-  //           const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-  //           updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
-  //         }
+          if (field === "grossWeight") {
+            updatedProduct.grossWeight = parseFloat(value) || 0;
+            updatedProduct.availableStock = updatedProduct.grossWeight;
+            updatedProduct.netWeight = updatedProduct.grossWeight;
+          }
 
-  //         //Calculate Labour Rate (Labour * Net Weight)
-  //         if (field === "labour" || field === "pcs" || field === "netWeight" || field === "totalPrice") {
-  //           let labourValue = parseFloat(updatedProduct.labour) || 0;
-  //           let pcs = parseFloat(updatedProduct.pcs) || 1;
-  //           let netWeight = parseFloat(updatedProduct.netWeight) || 1;
-  //           let totalPrice = parseFloat(updatedProduct.totalPrice) || 0;
-  
-  //           if (selectedLabourType === "PP") {
-  //             updatedProduct.labourRate = labourValue * pcs; // Per Piece
-  //           } else if (selectedLabourType === "%") {
-  //             updatedProduct.labourRate = (netWeight * labourValue) / 100; // ✅ Apply % on netWeight
-  //           } else if (selectedLabourType === "GM") {
-  //             updatedProduct.labourRate = labourValue * netWeight; // Per Gram
-  //           } else if (selectedLabourType === "FX") {
-  //             updatedProduct.labourRate = labourValue; // Fixed amount, no calculation
-  //           }
-  //         }
-  
-  //         //Calculate GME Price (calculatedMarketRate + Labour Rate + Extra Rate)
-  //         if (field === "extraRate") {
-  //           const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
-  //           const labourRate = parseFloat(updatedProduct.labourRate) || 0;
-  //           const extraRate = parseFloat(updatedProduct.extraRate) || 0;
-  //           updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
-  //         }
+          if (field === "marketRateUsed" || field === "netWeight") {
+            const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
+            const netWeight = parseFloat(updatedProduct.netWeight) || 0;
+            updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
+          }
 
-  //         //Add GST Directly (Not Percentage)
-  //         if (field === "gst") {
-  //           const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
-  //           const gstAmount = parseFloat(updatedProduct.gst) || 0;
-  //           updatedProduct.finalPrice = GMEPrice + gstAmount;
-  //         }
+          // ✅ Move Labour Calculation to a Function
+          updatedProduct.labourRate = calculateLabourRate(
+            selectedLabourType,
+            updatedProduct.labour,
+            updatedProduct.pcs,
+            updatedProduct.netWeight,
+            updatedProduct.totalPrice
+          );
 
-  //         //Remove Sold Pcs from Remaining Stock
-  //         // if (field === "pcs") {
-  //         //     const totalPcs = product?.totalPcs || 0; // Get the total available stock
-  //         //     const enteredPcs = parseInt(value) || 0; // Get sold pcs
-  //         //     updatedProduct.remainingPcs = totalPcs - enteredPcs; // Update remaining Pcs
-  //         // }
+          if (field === "totalPrice") {
+            updatedProduct.totalPrice = value;
 
-  //         if (field === "pcs") {
-  //           updatedProduct.pcs = parseFloat(value) || 0;
-  //           updatedProduct.availablePcs = updatedProduct.pcs; // Update available stock dynamically
-  //         }
-  //         console.log("📌 Updated product:", updatedProduct);
-  //         return updatedProduct;
-  //       }
-  //       console.log('product', product)
-  //       return product;
-  //     });
-  //   });
-  //   updateTotalsAndApplyDiscount();
-  // };
+            // ✅ Step 1: Apply Discount
+            const discountAmount = (value * discountPercentage) / 100;
+            const discountedPrice = value - discountAmount;
 
-const handleProductInputChange = (e, index, field) => {
-  const value = e.target.value;
+            // ✅ Step 2: Calculate GST (CGST & SGST at 1.5% each)
+            const cgst = (discountedPrice * 1.5) / 100;
+            const sgst = (discountedPrice * 1.5) / 100;
+            const totalTax = cgst + sgst;
 
-  setProducts((prevProducts) => {
-    return prevProducts.map((product, i) => {
-      if (i === index) {
-        let updatedProduct = { ...product, [field]: value };
+            // ✅ Step 3: Calculate Final Invoice Amount
+            const finalPrice = discountedPrice + totalTax;
 
-        updatedProduct.productId = product?.productId || product?.groupItemId?._id || "";
+            // ✅ Assign Calculated Values
+            updatedProduct.discountAmount = discountAmount;
+            updatedProduct.discountedPrice = discountedPrice;
+            updatedProduct.cgst = cgst;
+            updatedProduct.sgst = sgst;
+            updatedProduct.totalTax = totalTax;
+            updatedProduct.finalPrice = finalPrice;
 
-        if (field === "productName") {
-          fetchProductDetails(value, index);
+            // ✅ Labour Calculation
+            const goldRs = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+            updatedProduct.labour = value - goldRs;
+
+            if (updatedProduct.labour !== 0) {
+              updatedProduct.labourType = "FX";
+            }
+          }
+
+          // ✅ Update GME Price
+          const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
+          const labourRate = parseFloat(updatedProduct.labourRate) || 0;
+          const extraRate = parseFloat(updatedProduct.extraRate) || 0;
+          updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
+
+          // ✅ Add GST Directly (Not as Percentage)
+          const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
+          const gstAmount = parseFloat(updatedProduct.gst) || 0;
+          updatedProduct.finalPrice = GMEPrice + gstAmount;
+
+          if (field === "pcs") {
+            updatedProduct.pcs = parseFloat(value) || 0;
+            updatedProduct.availablePcs = updatedProduct.pcs;
+          }
+
+          console.log("📌 Updated product:", updatedProduct);
+          return updatedProduct;
         }
-
-        if (field === "grossWeight") {
-          updatedProduct.grossWeight = parseFloat(value) || 0;
-          updatedProduct.availableStock = updatedProduct.grossWeight;
-          updatedProduct.netWeight = updatedProduct.grossWeight;
-        }
-
-        if (field === "marketRateUsed" || field === "netWeight") {
-          const marketRateUsed = parseFloat(updatedProduct.marketRateUsed) || 0;
-          const netWeight = parseFloat(updatedProduct.netWeight) || 0;
-          updatedProduct.calculatedMarketRate = marketRateUsed * netWeight;
-        }
-
-        updatedProduct.labourRate = calculateLabourRate(
-          selectedLabourType,
-          updatedProduct.labour,
-          updatedProduct.pcs,
-          updatedProduct.netWeight,
-          updatedProduct.totalPrice
-        );
-
-        const calculatedMarketRate = parseFloat(updatedProduct.calculatedMarketRate) || 0;
-        const labourRate = parseFloat(updatedProduct.labourRate) || 0;
-        const extraRate = parseFloat(updatedProduct.extraRate) || 0;
-        updatedProduct.GMEPrice = calculatedMarketRate + labourRate + extraRate;
-
-        const GMEPrice = parseFloat(updatedProduct.GMEPrice) || 0;
-        const gstAmount = parseFloat(updatedProduct.gst) || 0;
-        updatedProduct.finalPrice = GMEPrice + gstAmount;
-
-        if (field === "pcs") {
-          updatedProduct.pcs = parseFloat(value) || 0;
-          updatedProduct.availablePcs = updatedProduct.pcs;
-        }
-
-        console.log("📌 Updated product:", updatedProduct);
-        return updatedProduct;
-      }
-      return product;
+        return product;
+      });
     });
-  });
 
-  updateTotalsAndApplyDiscount();
-};
+    updateTotalsAndApplyDiscount();
+  };
 
-const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice) => {
-  let labourValue = parseFloat(labour) || 0;
-  let totalPcs = parseFloat(pcs) || 1;
-  let weight = parseFloat(netWeight) || 1;
-  let price = parseFloat(totalPrice) || 0;
+  // ✅ Function to Dynamically Calculate Labour Based on Selected Type
+  const calculateLabourRate = (labourType, labour, pcs, netWeight, totalPrice, marketRateUsed) => {
+    let labourValue = parseFloat(labour) || 0;
+    let totalPcs = parseFloat(pcs) || 1;
+    let weight = parseFloat(netWeight) || 1;
+    let marketRate = parseFloat(marketRateUsed) || 0;
 
-  if (labourType === "PP") {
-    return labourValue * totalPcs;
-  } else if (labourType === "%") {
-    return (labourValue * weight) / 100;
-  } else if (labourType === "GM") {
-    return labourValue * weight; 
-  } else if (labourType === "FX") {
-    return labourValue; 
-  }
-  return 0;
-};
+    if (labourType === "PP") {
+      return labourValue * totalPcs; // Per Piece
+    } else if (labourType === "%") {
+      return (marketRate * weight * labourValue) / 100; // Percentage on Net Weight
+    } else if (labourType === "GM") {
+      return labourValue * weight; // Per Gram
+    } else if (labourType === "FX") {
+      return labourValue; // Fixed amount
+    }
+    return 0;
+  };
 
-// ✅ UseEffect to Instantly Apply New Labour Type Calculation
-useEffect(() => {
-  setProducts((prevProducts) =>
-    prevProducts.map((product) => ({
-      ...product,
-      labourRate: calculateLabourRate(
-        selectedLabourType,
-        product.labour,
-        product.pcs,
-        product.netWeight,
-        product.totalPrice
-      ),
-      GMEPrice:
-        (parseFloat(product.calculatedMarketRate) || 0) +
-        (parseFloat(calculateLabourRate(
+  // ✅ UseEffect to Instantly Apply New Labour Type Calculation
+  useEffect(() => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => ({
+        ...product,
+        labourRate: calculateLabourRate(
           selectedLabourType,
           product.labour,
           product.pcs,
           product.netWeight,
           product.totalPrice
-        )) || 0) +
-        (parseFloat(product.extraRate) || 0),
-      finalPrice:
-        (parseFloat(product.GMEPrice) || 0) +
-        (parseFloat(product.gst) || 0),
-    }))
-  );
-}, [selectedLabourType]); // ✅ Runs whenever Labour Type changes
+        ),
+        GMEPrice:
+          (parseFloat(product.calculatedMarketRate) || 0) +
+          (parseFloat(calculateLabourRate(
+            selectedLabourType,
+            product.labour,
+            product.pcs,
+            product.netWeight,
+            product.totalPrice
+          )) || 0) +
+          (parseFloat(product.extraRate) || 0),
+        finalPrice:
+          (parseFloat(product.GMEPrice) || 0) +
+          (parseFloat(product.gst) || 0),
+      }))
+    );
+  }, [selectedLabourType]); // ✅ Runs whenever Labour Type changes
 
   const labourDropdownRef = useRef(null);
 
@@ -833,7 +835,7 @@ useEffect(() => {
     { type: "PP" },
     { type: "GM" },
     { type: "%" },
-    { type: "FX"}
+    { type: "FX" }
   ];
 
   // Function to handle selection
@@ -843,11 +845,28 @@ useEffect(() => {
   };
 
 
+
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setDropdownTypeOpen(false); // Close dropdown when scrolling
+    };
+
+    window.addEventListener("scroll", handleScroll); // Attach listener
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll); // Cleanup
+    };
+  }, []);
+
+  const [formData1, setFormData1] = useState({ taxType: '' });
+
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
         <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
-          <Header pageName="Invoice" />
+          <Header pageName="Sales Invoice" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
             <div className="flex w-[100%] max-h-[90%] pb-[50px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
@@ -1039,9 +1058,93 @@ useEffect(() => {
                       </div>
                     </div>
                   </div>
-                  <div className=" p-1">
+
+                  <div className="flex justify-between w-[100%]">
+                    <label className="flex cursor-pointer flex-col justify-start">
+                      <div className="flex justify-between w-full gap-[20px]">
+
+
+                        <label className="flex items-center gap-[5px] cursor-pointer group">
+                          <div className="relative flex items-center justify-center w-7 h-7">
+                            <input
+                              type="radio"
+                              name="taxType"
+                              value="tax"
+                              checked={formData1.taxType === "tax"}
+                              onChange={(e) => {
+                                setFormData1((prev) => ({
+                                  ...prev,
+                                  taxType: prev.taxType === "tax" ? "" : "tax",
+                                }));
+                              }}
+                              className="sr-only peer"
+                            />
+                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                          </div>
+                          <span className="text-[12px] text-gray-700 font-Poppins group-hover:text-gray-900">
+                            Tax
+                          </span>
+                        </label>
+                      </div>
+                    </label>
+                    <div className=" pr-[80px]">
+                      <div className="flex justify-between w-full gap-[20px]">
+
+                        <label className="flex items-center gap-[5px] cursor-pointer group">
+                          <div className="relative flex items-center justify-center w-7 h-7">
+                            <input
+                              type="radio"
+                              name="paymentType"
+                              value="cash"
+                              checked={formData1.paymentType === "cash"}
+                              onChange={(e) =>
+                                setFormData1((prev) => ({
+                                  ...prev,
+                                  paymentType: prev.paymentType === "cash" ? "" : "cash",
+                                }))
+                              }
+                              className="sr-only peer"
+                            />
+                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                          </div>
+                          <span className="text-[15px] text-gray-700 font-Poppins group-hover:text-gray-900">
+                            Cash
+                          </span>
+                        </label>
+
+
+                        <label className="flex items-center gap-[5px] cursor-pointer group">
+                          <div className="relative flex items-center justify-center w-7 h-7">
+                            <input
+                              type="radio"
+                              name="paymentType"
+                              value="online"
+                              checked={formData1.paymentType === "online"}
+                              onChange={(e) =>
+                                setFormData1((prev) => ({
+                                  ...prev,
+                                  paymentType: prev.paymentType === "online" ? "" : "online",
+                                }))
+                              }
+                              className="sr-only peer"
+                            />
+                            <div className="absolute w-[18px] h-[18px] rounded-full border-[1.5px] border-gray-300" />
+                            <div className="absolute w-[10px] h-[10px] rounded-full bg-[#ff8000] transform scale-0 peer-checked:scale-100 transition-transform duration-200" />
+                          </div>
+                          <span className="text-[15px] text-gray-700 font-Poppins group-hover:text-gray-900">
+                            Online
+                          </span>
+                        </label>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* <div className=" p-1">
                     <div className="flex flex-wrap items-center gap-6">
-                      {/* Gross Qty Checkbox */}
+            
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1064,7 +1167,7 @@ useEffect(() => {
                         </span>
                       </label>
 
-                      {/* Net Qty Checkbox */}
+       
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1087,7 +1190,7 @@ useEffect(() => {
                         </span>
                       </label>
 
-                      {/* Discount Checkbox */}
+    
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1110,7 +1213,7 @@ useEffect(() => {
                         </span>
                       </label>
 
-                      {/* Rate Checkbox */}
+
                       <label className="flex items-center gap-2 cursor-pointer">
                         <div className="relative flex items-center justify-center">
                           <input
@@ -1133,8 +1236,8 @@ useEffect(() => {
                         </span>
                       </label>
                     </div>
-                  </div>
-                  <div className="bg-white w-[100%]  rounded-lg shadow1-blue ">
+                  </div> */}
+                  <div className="bg-white w-[100%] relative  rounded-lg shadow1-blue ">
                     {/* Table Header */}
                     <div
                       ref={scrollContainerRef}
@@ -1160,9 +1263,7 @@ useEffect(() => {
                             </th>
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[108px] border-r border-gray-200">
                               Less Weight                            </th>
-                            {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
-                              To Weight
-                            </th> */}
+
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[103px] border-r border-gray-200">
                               Net Weight
                             </th>
@@ -1188,9 +1289,11 @@ useEffect(() => {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px]   border-r border-gray-200">
                               GME Amt
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600  w-[80px] border-r border-gray-200">
-                              GST
-                            </th>
+                            {formData1.taxType === "tax" && (
+                              <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[80px] border-r border-gray-200">
+                                GST
+                              </th>
+                            )}
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[150px] border-r border-gray-200">
                               Amount
                             </th>
@@ -1204,12 +1307,21 @@ useEffect(() => {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Location
                             </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              Design
-                            </th>
-                            <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
-                              Size
-                            </th>
+                            {products.every((product) => product.barcodeVisible) && (
+                              <>
+
+
+                                <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                                  Design
+                                </th>
+                                <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
+                                  Size
+                                </th>
+                              </>
+
+                            )}
+
+
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[100px]  border-r border-gray-200">
                               Moti
                             </th>
@@ -1228,7 +1340,7 @@ useEffect(() => {
                           {products?.map((product, index) => (
                             <tr
                               key={product.id || index}
-                              className="border-t border-gray-200"
+                              className="border-t relative border-gray-200"
                             >
                               <td className="py-2 px-4 text-sm text-gray-600 font-Poppins border-r border-gray-200">
                                 {index + 1}
@@ -1314,79 +1426,139 @@ useEffect(() => {
                                 {product?.calculatedMarketRate}
                               </td>
                               <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
+                              {!product.barcodeVisible ? (
+                                <>
                                 <input
                                   type="number"
                                   value={product.labour}
                                   onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className="w-[50%] border-0 pl-[4px] outline-none font-Poppins focus:ring-0 text-sm"
+                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
                                   placeholder="0.00"
                                 />
-                                <div
-                                  ref={labourDropdownRef}
-                                  className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
-                                  onClick={() => setDropdownTypeOpen((prev) => !prev)}
-                                >
-                                  <label
-                                    htmlFor="labourType"
-                                    className={`absolute left-[13px] font-Poppins pl-[10px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
-                                      ? "text-[#000] -translate-y-[21px] hidden "
-                                      : "text-[#8f8f8f] cursor-text flex"
-                                      }`}
-                                  >
-                                    Type
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="labourType"
-                                    id="labourType"
-                                    value={selectedLabourType}
-                                    className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                    readOnly
-                                    onFocus={() => setLabourFocused(true)}
-                                    onBlur={() => setLabourFocused(false)}
-                                  />
-                                  <i
-                                    className={
-                                      dropdownTypeOpen
-                                        ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                        : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                    }
-                                  ></i>
-                                </div>
 
-                                {/* Dropdown Menu */}
-                                <AnimatePresence>
-                                  {dropdownTypeOpen && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -10 }}
-                                      className="absolute  mt-5 ml-[30px] bg-white w-[100px] border border-[#dedede] rounded-lg shadow-md z-50"
+                          {/* <div
+                                      ref={labourDropdownRef}
+                                      className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
+                                      onClick={() => setDropdownTypeOpen((prev) => !prev)}
                                     >
-                                      {labourTypes.map((labour, index) => (
-                                        <div
-                                          key={index}
-                                          className="px-4 py-2 hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
-                                          onClick={() => handleSelectLabourType(labour)}
+                                      <label
+                                        htmlFor="labourType"
+                                        className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
+                                            ? "text-[#000] -translate-y-[21px] hidden"
+                                            : "text-[#8f8f8f] cursor-text flex"
+                                          }`}
+                                      >
+                                        Type
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name="labourType"
+                                        id="labourType"
+                                        value={selectedLabourType}
+                                        className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                        onFocus={() => setLabourFocused(true)}
+                                        onBlur={() => setLabourFocused(false)}
+                                      />
+                                      <i
+                                        className={
+                                          dropdownTypeOpen
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                        }
+                                      ></i>
+                                    </div>
+
+                      
+                                    <AnimatePresence>
+                                      {dropdownTypeOpen && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
                                         >
-                                          {labour.type}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
+                                          {labourTypes.map((labour, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => handleSelectLabourType(labour)}
+                                            >
+                                              {labour.type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence> */}
+                    
+                                  </>
+                                ) : (
+                                  <>
+                                <input
+                                  type="number"
+                                  value={product.labour}
+                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
+                                  placeholder="0.00"
+                                />
 
+                   
+                              <div
+                                      ref={labourDropdownRef}
+                                      className={`relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow  items-center text-[#00000099] cursor-pointer ${product.barcodeVisible ? "hidden" : "flex"}`}
+                                      onClick={() => setDropdownTypeOpen((prev) => !prev)}
+                                    >
+                                      <label
+                                        htmlFor="labourType"
+                                        className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
+                                            ? "text-[#000] -translate-y-[21px] hidden"
+                                            : "text-[#8f8f8f] cursor-text flex"
+                                          }`}
+                                      >
+                                        Type
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name="labourType"
+                                        id="labourType"
+                                        value={selectedLabourType}
+                                        className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                        readOnly
+                                        onFocus={() => setLabourFocused(true)}
+                                        onBlur={() => setLabourFocused(false)}
+                                      />
+                                      <i
+                                        className={
+                                          dropdownTypeOpen
+                                            ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
+                                            : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
+                                        }
+                                      ></i>
+                                    </div>
 
-
-
-
-
-
-
-
-
-
-
+                      
+                                    <AnimatePresence>
+                                      {dropdownTypeOpen && (
+                                        <motion.div
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -10 }}
+                                          className="absolute mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                        >
+                                          {labourTypes.map((labour, index) => (
+                                            <div
+                                              key={index}
+                                              className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                              onClick={() => handleSelectLabourType(labour)}
+                                            >
+                                              {labour.type}
+                                            </div>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </>
+                                )}
 
 
                               </td>
@@ -1425,31 +1597,26 @@ useEffect(() => {
                                 /> */}
                                 {product?.GMEPrice}
                               </td>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                <input
-                                  type="number"
-                                  value={product.gst}
-                                  onChange={(e) => handleProductInputChange(e, index, "gst")}
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                />
-                                {/* {product?.gst} */}
-                              </td>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                {/* <input
-                                  type="number"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                /> */}
-                                {product?.finalPrice}
-                              </td>
+                              {formData1.taxType === "tax" && (
+                                <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                  <input
+                                    type="number"
+                                    value={product.gst}
+                                    onChange={(e) => handleProductInputChange(e, index, "gst")}
+                                    className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                    placeholder="0.00"
+                                  />
+                                  {/* {product?.gst} */}
+                                </td>
+                              )}
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
                                   className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
                                   placeholder="0.00"
+                                  value={product.totalPrice}
+                                  onChange={(e) => handleProductInputChange(e, index, "totalPrice")}
                                 />
-
                               </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
@@ -1467,7 +1634,6 @@ useEffect(() => {
                                 />
 
                               </td>
-
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
@@ -1476,14 +1642,26 @@ useEffect(() => {
                                 />
 
                               </td>
-                              <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
-                                <input
-                                  type="number"
-                                  className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
-                                  placeholder="0.00"
-                                />
+                              {products.every((p) => p.barcodeVisible) && (
+                                <>
+                                  <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                    <input
+                                      type="number"
+                                      className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                      placeholder="0.00"
+                                    />
 
-                              </td>
+                                  </td>
+                                  <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
+                                    <input
+                                      type="number"
+                                      className="w-full border-0  outline-none font-Poppins focus:ring-0 text-sm"
+                                      placeholder="0.00"
+                                    />
+
+                                  </td>
+                                </>
+                              )}
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 <input
                                   type="number"
@@ -1533,12 +1711,12 @@ useEffect(() => {
                         >
                           ADD PRODUCT
                         </button>
-
-                        <button className="flex items-center gap-2 px-4 py-2 text-[#60A5FA] bg-blue-50 rounded-[4px] transition-colors">
-                          <Scan className="w-5 h-5" />
-                          <span className=" font-Poppins">Scan Barcode</span>
-                          <Plus className="w-4 h-4" />
-                        </button>
+                        {/* 
+                          <button className="flex items-center gap-2 px-4 py-2 text-[#60A5FA] bg-blue-50 rounded-[4px] transition-colors">
+                            <Scan className="w-5 h-5" />
+                            <span className=" font-Poppins">Scan Barcode</span>
+                            <Plus className="w-4 h-4" />
+                          </button> */}
                       </div>
 
                       {/* Total Row */}
@@ -1558,9 +1736,7 @@ useEffect(() => {
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[110px] border-r border-gray-200">
 
                             </th>
-                            {/* <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-30 border-r border-gray-200">
-                              To Weight
-                            </th> */}
+
                             <th className="py-4 px-2 text-center text-[13px] font-medium font-Poppins text-gray-600 w-[104px] border-r border-gray-200">
 
                             </th>
@@ -1865,8 +2041,9 @@ useEffect(() => {
                               CGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full font-Poppins px-[15px] h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{cgst.toFixed(2)}</p>
+                              <div className={`relative w-full font-Poppins px-[15px] h-10 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 
+      ${formData1.taxType === "estimate" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "text-[#00000099]"}`}>
+                                <p>{formData1.taxType === "tax" ? cgst.toFixed(2) : "-"}</p>
                               </div>
                             </div>
                           </div>
@@ -1877,14 +2054,15 @@ useEffect(() => {
                               SGST
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]   font-Poppins px-[15px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{sgst.toFixed(2)}</p>
+                              <div className={`relative w-full font-Poppins px-[15px] h-10 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 
+      ${formData1.taxType === "estimate" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "text-[#00000099]"}`}>
+                                <p>{formData1.taxType === "tax" ? sgst.toFixed(2) : "-"}</p>
                               </div>
                             </div>
                           </div>
 
                           {/* IGST */}
-                          <div className="flex items-center justify-between gap-4">
+                          {/* <div className="flex items-center justify-between gap-4">
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
                               IGST
                             </label>
@@ -1893,7 +2071,7 @@ useEffect(() => {
                                 <p></p>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
 
                           {/* Total Tax Amount */}
                           <div className="flex items-center justify-between gap-4">
@@ -1901,8 +2079,9 @@ useEffect(() => {
                               Total Tax Amount
                             </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p>{totalTaxAmount.toFixed(2)}</p>
+                              <div className={`relative w-full font-Poppins px-[15px] h-10 border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 
+      ${formData1.taxType === "estimate" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "text-[#00000099]"}`}>
+                                <p>{formData1.taxType === "tax" ? totalTaxAmount.toFixed(2) : "-"}</p>
                               </div>
                             </div>
                           </div>
@@ -1980,7 +2159,7 @@ useEffect(() => {
       </section>
 
       <NextUIModal isOpen={partyModalopen}>
-        <ModalContent className="md:max-w-[760px] max-w-[740px] shadow-none relative  bg-transparent rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[510px]  ">
+        <ModalContent className="md:max-w-[760px] max-w-[740px] shadow-none relative  bg-transparent rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[450px]  ">
           <>
             <div className="relative w-[100%] max-w-[730px] mt-[10px]   bg-white  rounded-2xl z-[100] flex justify-center !py-0 mx-auto  h-[96%]">
               <div
@@ -1997,7 +2176,7 @@ useEffect(() => {
                 </div>
                 <div className="  flex w-[100%] gap-[15px]">
                   <div className=" flex w-[50%] flex-col gap-[16px]">
-                    <div
+                    {/* <div
                       ref={createdropdownRef}
                       className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                       onClick={() => setCreateDropdownOpen((prev) => !prev)} // Toggle dropdown on click
@@ -2027,7 +2206,7 @@ useEffect(() => {
                             : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
                         }
                       ></i>
-                    </div>
+                    </div> */}
 
                     <AnimatePresence>
                       {createdropdownOpen && (
@@ -2062,8 +2241,8 @@ useEffect(() => {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="partyName"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNameFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.name||partyNameFocused
+                          ? "text-[#000] hidden "
                           : "text-[#8f8f8f]"
                           }`}
                       >
@@ -2074,7 +2253,7 @@ useEffect(() => {
                         name="name"
                         id="partyName"
                         value={formData.name}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyNameFocused(true)}
                         onBlur={() => setPartyNameFocused(false)}
                         autocomplete="nasme"
@@ -2083,8 +2262,8 @@ useEffect(() => {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyAddressFocused
-                          ? "text-[#000] -translate-y-[48px] font-[]"
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.address||partyAddressFocused
+                          ? "text-[#000] -translate-y-[48px] hidden font-[]"
                           : "  -translate-y-[27px] "
                           }`}
                       >
@@ -2095,7 +2274,7 @@ useEffect(() => {
                         name="address"
                         id="address"
                         value={formData.address}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyAddressFocused(true)}
                         onBlur={(e) =>
                           setPartyAddressFocused(e.target.value !== "")
@@ -2107,8 +2286,8 @@ useEffect(() => {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="gstNumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyGstFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.GST||partyGstFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f]"
                           }`}
                       >
@@ -2119,7 +2298,7 @@ useEffect(() => {
                         name="GST"
                         id="gstNumber"
                         value={formData.GST}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyGstFocused(true)}
                         onBlur={() => setPartyGstFocused(false)}
                         autocomplete="nasme"
@@ -2129,8 +2308,8 @@ useEffect(() => {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="PanParty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPanFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.panNo||partyPanFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2141,7 +2320,7 @@ useEffect(() => {
                         name="panNo"
                         id="PanParty"
                         value={formData.panNo}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyPanFocused(true)}
                         onBlur={() => setPartyPanFocused(false)}
                         autocomplete="nasme"
@@ -2151,7 +2330,7 @@ useEffect(() => {
                   </div>
 
                   <div className=" flex w-[50%] gap-[16px] flex-col ">
-                    <div
+                    {/* <div
                       ref={firmdropdownRef}
                       className="relative w-full border-[1px] border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer"
                       onClick={() => setFirmDropdownOpen((prev) => !prev)} // Toggle dropdown on click
@@ -2213,12 +2392,12 @@ useEffect(() => {
                           ))}
                         </motion.div>
                       )}
-                    </AnimatePresence>
+                    </AnimatePresence> */}
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyState"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyStateFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.state||partyStateFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2229,7 +2408,7 @@ useEffect(() => {
                         name="state"
                         id="partyState"
                         value={formData.state}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyStateNameFocused(true)}
                         onBlur={() => setPartyStateNameFocused(false)}
                         autocomplete="nasme"
@@ -2239,8 +2418,8 @@ useEffect(() => {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partycity"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyCityFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.city||partyCityFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2251,7 +2430,7 @@ useEffect(() => {
                         name="city"
                         id="partycity"
                         value={formData.city}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyCityFocused(true)}
                         onBlur={() => setPartyCityFocused(false)}
                         autocomplete="nasme"
@@ -2261,8 +2440,8 @@ useEffect(() => {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyPin"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyPinFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.pinCode||partyPinFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2273,7 +2452,7 @@ useEffect(() => {
                         name="pinCode"
                         id="partyPin"
                         value={formData.pinCode}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyPinFocused(true)}
                         onBlur={() => setPartyPinFocused(false)}
                         autocomplete="nasme"
@@ -2283,8 +2462,8 @@ useEffect(() => {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partynumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyNumberFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.mobileNumber||partyNumberFocused
+                          ? "text-[#000] -translate-y-[21px]  hidden"
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2295,7 +2474,7 @@ useEffect(() => {
                         name="mobileNumber"
                         id="partynumber"
                         value={formData.mobileNumber}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyNumberFocused(true)}
                         onBlur={() => setPartyNumberFocused(false)}
                         autocomplete="nasme"
@@ -2305,8 +2484,8 @@ useEffect(() => {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="emailparty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${partyEmailFocused
-                          ? "text-[#000] -translate-y-[21px] "
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.email||partyEmailFocused
+                          ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
                       >
@@ -2317,7 +2496,7 @@ useEffect(() => {
                         name="email"
                         id="emailparty"
                         value={formData.email}
-                        onChange={handleInputChange}
+                        onChange={handlePartyInputChange}
                         onFocus={() => setPartyEmailFocused(true)}
                         onBlur={() => setPartyEmailFocused(false)}
                         autocomplete="nasme"
@@ -2374,7 +2553,7 @@ useEffect(() => {
                   className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
                   id="modal-title"
                 >
-                  Stock {selectedStock ? "Update" : " Added"} successfully!
+                  Stock Added successfully!
                 </motion.h3>
                 <motion.p
                   initial={{ opacity: 0 }}
