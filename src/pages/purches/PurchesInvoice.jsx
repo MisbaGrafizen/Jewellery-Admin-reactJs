@@ -537,43 +537,52 @@ export default function PurchesInvoice() {
 
 
   // ✅ Function to Update State with Calculated Values
-  const updateTotalsAndApplyDiscount = () => {
+  const updateTotalsAndApplyDiscount = (isTaxApplied) => {
     setProducts((prevProducts) => {
-      let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+        let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
 
-      // ✅ Step 1: Apply Discount
-      const discountAmount = (totalPrice * discountPercentage) / 100;
-      const discountedPrice = totalPrice - discountAmount;
+        // ✅ Step 1: Apply Discount
+        const discountAmount = (totalPrice * discountPercentage) / 100;
+        const discountedPrice = totalPrice - discountAmount;
 
-      // ✅ Step 2: Apply GST (CGST & SGST at 1.5% each)
-      const cgst = (discountedPrice * 1.5) / 100;
-      const sgst = (discountedPrice * 1.5) / 100;
-      const totalTax = cgst + sgst;
+        let calculatedCgst = 0;
+        let calculatedSgst = 0;
+        let totalTax = 0;
+        let finalPrice = discountedPrice;
 
-      // ✅ Step 3: Calculate Final Price
-      const finalPrice = discountedPrice + totalTax;
+        // ✅ Step 2: Apply GST ONLY if Tax is selected
+        if (isTaxApplied) {
+            calculatedCgst = (discountedPrice * 1.5) / 100;
+            calculatedSgst = (discountedPrice * 1.5) / 100;
+            totalTax = calculatedCgst + calculatedSgst;
 
-      // ✅ Update invoice state
-      setDiscountAmount(discountAmount);
-      setDiscountPrice(discountedPrice);
-      setCgst(cgst);
-      setSgst(sgst);
-      setTotalTaxAmount(totalTax);
-      setFinalTotal(finalPrice);
+            // ✅ Step 3: Add GST to the final price
+            finalPrice = discountedPrice + totalTax;
+        }
 
-      console.log("✅ Updated Invoice Totals:", {
-        totalPrice,
-        discountAmount,
-        discountedPrice,
-        cgst,
-        sgst,
-        totalTax,
-        finalPrice,
-      });
+        // ✅ Update invoice state
+        setDiscountAmount(discountAmount);
+        setDiscountPrice(discountedPrice);
+        setCgst(calculatedCgst);
+        setSgst(calculatedSgst);
+        setTotalTaxAmount(totalTax);
+        setFinalTotal(finalPrice);
 
-      return prevProducts;
+        console.log("✅ Updated Invoice Totals:", {
+            totalPrice,
+            discountAmount,
+            discountedPrice,
+            cgst: calculatedCgst,
+            sgst: calculatedSgst,
+            totalTax,
+            finalPrice,
+            isTaxApplied,
+        });
+
+        return prevProducts;
     });
-  };
+};
+
 
 
 
@@ -776,7 +785,6 @@ export default function PurchesInvoice() {
     let labourValue = parseFloat(labour) || 0;
     let totalPcs = parseFloat(pcs) || 1;
     let weight = parseFloat(netWeight) || 1;
-    let price = parseFloat(totalPrice) || 0;
     let marketRate = parseFloat(marketRateUsed) || 0;
 
     if (labourType === "PP") {
@@ -2545,7 +2553,7 @@ export default function PurchesInvoice() {
                   className="text-2xl font-[500]  font-Poppins  leading-6 text-center text-[#122f97] mb-2"
                   id="modal-title"
                 >
-                  Stock {selectedStock ? "Update" : " Added"} successfully!
+                  Stock Added successfully!
                 </motion.h3>
                 <motion.p
                   initial={{ opacity: 0 }}

@@ -509,10 +509,11 @@ const navigate=useNavigate()
 
 
 
-const handleEdit = ()=>{
-  navigate("/barcode-stock")
-
-}
+  const handleEdit = (stockData) => {
+    console.log("stockData", stockData)
+    navigate("/barcode-stock", { state: { stock: stockData } });
+  };
+  
 
   const onClose = () => {
     setIsOpen(false); // Close the modal
@@ -631,11 +632,6 @@ const handleEdit = ()=>{
       alert("Failed to fetch barcode image");
     }
   };
-
-
-
-
-
 
   return (
     <>
@@ -1046,7 +1042,7 @@ const handleEdit = ()=>{
                               onClick={() => handleNavigateToPrint(item.barCode)}
                               ></i>
                               <i
-                                className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer" onClick={handleEdit}
+                                className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer" onClick={() => handleEdit(item)}
                               ></i>
                               <i
                                 className="fa-solid fa-trash text-red-500 cursor-pointer "

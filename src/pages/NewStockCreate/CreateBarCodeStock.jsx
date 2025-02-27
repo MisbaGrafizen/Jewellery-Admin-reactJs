@@ -26,7 +26,7 @@ import {
 } from "../../redux/action/landingManagement";
 import Header from "../../Component/header/Header";
 import SideBar from "../../Component/sidebar/SideBar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getAllUchakAction, getPercentageAction, getPerGramAction } from "../../redux/action/generalManagement";
 import { ApiGet } from "../../helper/axios";
 
@@ -41,16 +41,10 @@ export default function CreateBarCodeStock() {
       moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
       huidCharge: "", selectedTypeDesign: "", selectedTypeHuidRule: "",
       dropdownOpenDesign: false, dropdownOpenHuid: false,
-      dropdownOpenSize: false, selectedTypeDesign: "",
+      dropdownOpenSize: false, selectedTypeSize: "",
       selectedTypeLabour: "", dropdownOpenLabour: false,
     }
   ]);
-
-  const labourOptions = [
-    { type: "Uchak", key: "uchakRate" },
-    { type: "PerGram", key: "pergramRate" },
-    { type: "Percentage", key: "percentageRate" }
-  ];
   const [isSaved, setIsSaved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
@@ -64,6 +58,8 @@ export default function CreateBarCodeStock() {
   const [selectedType, setSelectedType] = useState("");
   const [percentages, setPercentages] = useState({});
   const [isEditing, setIsEditing] = useState(null);
+  const location = useLocation();
+  const stock = location.state?.stock || "";
 
   const [caratFocused, setCaratFocused] = useState(false);
   const [metalFocused, setMetalFocused] = useState(false);
@@ -241,6 +237,115 @@ export default function CreateBarCodeStock() {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (stock) {
+  //     setIsEditing(true);
+  
+  //     setSelectedType(stock.groupId?.name || "");
+  //     setSelectedTypecategory(stock.groupItemId?.itemName || ""); 
+  
+  //     const updatedFields =  ({
+  //       hsn: stock.hsnCode || "",
+  //       grossWeight: stock.toWeight || "",
+  //       lessWeight: stock.lessWeight || "",
+  //       wastage: stock.wastage || "",
+  //       group: stock.group || "",
+  //       account: stock.account || "",
+  //       labour: stock.labour || "",
+  //       location: stock.location || "",
+  //       pcs: stock.pcs || "",
+  //       size: stock.size || "",
+  //       moti: stock.moti || "",
+  //       stone: stock.stone || "",
+  //       jadatr: stock.jadatr || "",
+  //       huid: stock.huid || "",
+  //       huidRule: stock.huidRule || "",
+  //       huidCharge: stock.huidCharge || "",
+  //       selectedTypeDesign: stock.design || "",
+  //       selectedTypeLabour: stock.selectedTypeLabour || "",
+  //       dropdownOpenDesign: false,
+  //       dropdownOpenLabour: false,
+  //       dropdownOpenSize: false,
+  //     });
+  
+  //     setFieldSets(updatedFields);
+  //   }
+  // }, [stock]);
+  
+
+  useEffect(() => {
+    if (stock) {
+      setIsEditing(true); // ✅ Editing mode enabled
+  
+      // ✅ Pre-fill fieldSets with existing stock data
+      setFieldSets(stock.products?.map(product => ({
+        hsn: product.hsnCode || "",
+        grossWeight: product.toWeight || "",
+        lessWeight: product.lessWeight || "",
+        wastage: product.wastage || "",
+        group: product.group || "",
+        account: product.account || "",
+        labour: product.labour || "",
+        location: product.location || "",
+        pcs: product.pcs || 1,
+        size: product.size || "",
+        moti: product.moti || "",
+        stone: product.stone || "",
+        jadatr: product.jadatr || "",
+        huid: product.huid || "",
+        huidRule: product.huidRule || "",
+        huidCharge: product.huidCharge || "",
+        selectedTypeDesign: product.design || "",
+        selectedTypeSize: product.size || "",
+        selectedTypeLabour: product.selectedTypeLabour || "",
+        dropdownOpenDesign: false,
+        dropdownOpenSize: false,
+        dropdownOpenLabour: false,
+      })));
+    } else {
+      setIsEditing(false); // ✅ Adding a new stock
+      setFieldSets([ // Reset fields when creating new stock
+        {
+          hsn: "", grossWeight: "", lessWeight: "", wastage: "", group: "",
+          account: "", labour: "", location: "", pcs: "", size: "",
+          moti: "", stone: "", jadatr: "", huid: "", huidRule: "",
+          huidCharge: "", selectedTypeDesign: "", selectedTypeSize: "",
+          selectedTypeLabour: "", dropdownOpenDesign: false,
+          dropdownOpenSize: false, dropdownOpenLabour: false
+        }
+      ]);
+    }
+  }, [stock]);
+  
+  
+
+  useEffect(() => {
+    if (isEditing && stock) {
+      console.log("Stock Data for Editing:", stock);
+  
+      setSelectedType(stock.groupId?.name || ""); // ✅ Prefill Carat Dropdown
+      setSelectedTypecategory(stock.groupItemId?.itemName || ""); // ✅ Prefill Category Dropdown
+  
+      setFieldSets(stock.products?.map((product) => ({
+        hsn: product.hsnCode || "",
+        grossWeight: product.toWeight?.toString() || "", // ✅ Convert to string for input
+        lessWeight: product.lessWeight?.toString() || "",
+        wastage: product.wastage?.toString() || "",
+        labour: product.labour || "",
+        extra: product.extraRate?.toString() || "",
+        location: product.location || "",
+        design: product.design || "",
+        pcs: product.pcs?.toString() || "",
+        size: mongoose.Types.ObjectId.isValid(product.size) ? product.size : null, // ✅ Ensure valid ID
+        huid: product.huid || "",
+        huidCharge: product.huidCharge?.toString() || "",
+        selectedTypeDesign: product.design || "",
+        selectedTypeSize: sizes.find(size => size._id === product.size)?.sizeName || "",
+        selectedTypeLabour: product.labour ? (["Uchak", "PerGram", "Percentage"].includes(product.labour) ? product.labour : "") : "",
+      })));
+    }
+  }, [isEditing, stock, sizes]);
+  
 
   const handleFieldChange = (index, field, value) => {
     setFieldSets(prevFieldSets => {
@@ -280,6 +385,7 @@ export default function CreateBarCodeStock() {
 
   const handleStockModalEdit = (item) => {
     setSelectedStock(item || null);
+    setIsEditing(true);
     setStockModalOpen(true);
   };
   const handleStockModalClose = () => {
@@ -357,7 +463,7 @@ export default function CreateBarCodeStock() {
 
 
   useEffect(() => {
-    if (fieldSets.grossWeight && fieldSets.lessWeight && selectedType) {
+    if (fieldSets?.grossWeight && fieldSets?.lessWeight && selectedType) {
       const selectedCarat = categories.find(
         (carat) => carat.name === selectedType
       );
@@ -370,7 +476,7 @@ export default function CreateBarCodeStock() {
         console.log("Calculated Fine Weight:", fineWeight);
       }
     }
-  }, [fieldSets.grossWeight, fieldSets.lessWeight, selectedType, categories]);
+  }, [fieldSets?.grossWeight, fieldSets?.lessWeight, selectedType, categories]);
 
   const handleAddStock = async () => {
     console.log("Fetching labour data...");
@@ -387,8 +493,6 @@ export default function CreateBarCodeStock() {
     // ✅ Find Selected Category (From Dropdown)
     const selectedCarat = categories.find((carat) => carat.name === selectedType);
     const selectedCategory = item.find((data) => data.itemName === selectedTypeCategory);
-    const selectedSize = sizes.find((item) => item.sizeName === selectedTypeSize);
-    const selectedDesign = designs.find((item) => item.designName === selectedTypeDesign);
 
     if (!selectedCarat || !selectedCategory) {
       alert("Please select a valid Carat and Category.");
@@ -396,16 +500,33 @@ export default function CreateBarCodeStock() {
     }
 
     let matchedRate = 0;
-    const productsArray = fieldSets.map((field, index) => {
+    const productsArray = fieldSets.map((field) => {
       let labourAmount = 0;
+      const grossWeight = parseFloat(field.grossWeight) || 0;
       const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
 
-      const matchLabour = (labourArray) =>
-        labourArray.find(
-          (labour) =>
+      const matchLabour = (labourArray) => {
+        // ✅ Get all matching labour items
+        const matchingLabour = labourArray.filter((labour) => 
             String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
-            String(labour.item?._id).trim() === String(selectedCategory?._id).trim()
+            String(labour.item?._id).trim() === String(selectedCategory?._id).trim() &&
+            (labour.minWeight && labour.maxWeight 
+                ? grossWeight >= parseFloat(labour.minWeight) && grossWeight <= parseFloat(labour.maxWeight) 
+                : true // ✅ If no weight range, consider as a general match
+            )
         );
+    
+        console.log("Matching Labour:", matchingLabour);
+    
+        // ✅ Sort by minWeight (Convert to numbers before sorting)
+        const sortedLabour = matchingLabour.sort((a, b) => 
+            (parseFloat(a.minWeight) || 0) - (parseFloat(b.minWeight) || 0)
+        );
+    
+        // ✅ Get the last (best-matching) labour item
+        return sortedLabour.pop() || null; // If no match, return null
+    };
+    
 
       let matchedLabour = null;
       if (field.selectedTypeLabour === "Uchak") {
@@ -457,25 +578,41 @@ export default function CreateBarCodeStock() {
     console.log('productsArray', productsArray)
 
     try {
-      const response = await dispatch(
-        addStockAction({
-          groupId: selectedCarat._id,
-          groupItemId: selectedCategory._id,
-          products: productsArray,
-        })
-      );
+      let response;
+
+      if (isEditing && stock) {
+        // ✅ Update Existing Stock
+        response = await dispatch(updateStockAction(stock._id, { 
+          groupId: selectedCarat._id, 
+          groupItemId: selectedCategory._id, 
+          products: productsArray 
+        }));
+      } else {
+        // ✅ Add New Stock
+        response = await dispatch(addStockAction({ 
+          groupId: selectedCarat._id, 
+          groupItemId: selectedCategory._id, 
+          products: productsArray 
+        }));
+      }
       console.log('response', response)
 
       if (response) {
-        alert("Stock added successfully!");
+        alert(isEditing ? "Stock updated successfully!" : "Stock added successfully!");
         setIsSaved(true);
         setRecentlySavedStock(response);  // ✅ Store barcode data here
         dispatch(getAllStockAction());
 
         // ✅ Navigate to Print Page
-        navigate("/print-stocks", { state: { barcodes: response } });
+        if (isEditing) {
+          // ✅ Navigate back to stock page if editing
+          navigate("/add-stock");
+        } else {
+          // ✅ Navigate to Print Page if adding new stock
+          navigate("/print-stocks", { state: { barcodes: response } });
+        }
       } else {
-        alert("Failed to add stock.");
+        alert("Failed to add/update stock.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -780,7 +917,7 @@ export default function CreateBarCodeStock() {
                         </AnimatePresence>
                       </div>
                     </div>
-                    {fieldSets.map((_, index) => (
+                    {Array.isArray(fieldSets) && fieldSets.map((_, index) => (
 
                       <div key={index} className=" flex flex-col gap-[15px] w-[100%]">
                         <div className=" flex w-[100%]  gap-[20px]">
