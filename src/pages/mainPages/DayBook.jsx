@@ -710,14 +710,14 @@ export default function DayBook() {
                                 <div className=" flex  w-[300px]  items-center  justify-center mx-auto border-[1.4px] border-[#122f97] rounded-[8px] mt-[20px] p-[8px] gap-[10px]">
                                     <p className=" flex font-Poppins text-[20px]  w-[80px]">Date :</p>
                                     <div className=" flex  items-center">
-                                    <DatePicker
-    value={selectedDate ? dayjs(selectedDate) : null} // Ensures correct moment format
-    onChange={(date) => setSelectedDate(date ? date.toDate() : null)} // Correctly sets Date object
-    format="DD-MM-YYYY"
-    className="border p-2 rounded-lg"
-    allowClear={false} // Prevents clearing selection
-    disabledDate={() => false} // Ensures all dates are selectable
-/>
+                                        <DatePicker
+                                            value={selectedDate ? dayjs(selectedDate) : null} // Ensures correct moment format
+                                            onChange={(date) => setSelectedDate(date ? date.toDate() : null)} // Correctly sets Date object
+                                            format="DD-MM-YYYY"
+                                            className="border p-2 rounded-lg"
+                                            allowClear={false} // Prevents clearing selection
+                                            disabledDate={() => false} // Ensures all dates are selectable
+                                        />
                                         <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
                                     </div>
                                 </div>

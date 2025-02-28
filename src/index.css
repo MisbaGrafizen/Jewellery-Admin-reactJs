@@ -1897,13 +1897,38 @@ background-color: #175a2d;
 
 
 
+:where(.css-1x0dypw).ant-picker .ant-picker-input >input {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  color: #122f97!important;
+  font-size: 20px;
+  line-height: 1.5714285714285714;
+  transition: all 0.2s;
+  flex: auto;
+  min-width: 1px;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+
+
+}
 
 
 
 
+:where(.css-1x0dypw).ant-picker-outlined {
 
 
+    background: #ffffff !important;
+    border-width: none !important;
+    border-style: none !important;
+border-color: #fff;
 
+
+}
 
 
 
