@@ -444,31 +444,31 @@ export default function LabourSetting() {
 
   const handleEditPercentage = (percentage) => {
     console.log("Editing Percentage:", percentage);
-  
+
     const carat = categories.find((carat) => String(carat._id) === String(percentage.group._id));
     const category = item.find((data) => String(data._id) === String(percentage.item._id));
-  
+
     if (!carat || !category) {
       alert("Error: Carat or Category not found for editing.");
       return;
     }
-  
+
     // ✅ Set selected values properly
     setSelectedTypePercentage(carat.name);
     setSelectedTypecategoryPercentage(category.itemName);
     setSelectedPercentage(percentage);
-  
+
     // ✅ Populate Form Data with Correct Values
     setFormDataPercentage({
       minWeight: percentage.minWeight,
       maxWeight: percentage.maxWeight,
       rate: percentage.rate,
     });
-  
+
     // ✅ Enable Editing Mode
     setIsEditingPercentage(true);
   };
-  
+
 
 
 
@@ -631,8 +631,8 @@ export default function LabourSetting() {
       selectedCarat = categories.find((carat) => carat.name === selectedTypePercentage);
       selectedCategory = item.find((data) => data.itemName === selectedTypeCategoryPercentage);
     }
-        console.log("Selected Carat:", selectedCarat);
-        console.log("Selected Category:", selectedCategory);
+    console.log("Selected Carat:", selectedCarat);
+    console.log("Selected Category:", selectedCategory);
 
 
     // if (!selectedCarat || !selectedCategory) {
@@ -654,7 +654,7 @@ export default function LabourSetting() {
     console.log(percentageData);
 
     try {
-    if (isEditingPercentage && selectedPercentage?._id) {
+      if (isEditingPercentage && selectedPercentage?._id) {
         const response = await dispatch(
           updatePercentageAction(selectedPercentage?._id, percentageData)
         );
@@ -1152,7 +1152,7 @@ export default function LabourSetting() {
                                 Save
                               </button>
                             </div>
-                            {isEditing ? (
+                            {selectedType === item._id && isEditing ? (
                               // Editable Fields
                               <>
                                 <div className=" flex relative overflow-hidden border-[1px] bg-white flex-col gap-[18px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
@@ -1876,7 +1876,7 @@ export default function LabourSetting() {
                                 {isEditingWeight ? "Edit" : "Save"}
                               </button>
                             </div>
-                            {isEditingWeight ? (
+                            {selectedTypeWeight === item._id && isEditingWeight ? (
                               // Editable Fields
                               <>
                                 <div className=" bg-white flex relative overflow-hidden border-[1px] flex-col gap-[10px] w-[100%] py-[19px] px-[15px] rounded-[8px] border-[#122f97]">
