@@ -5,9 +5,13 @@ import { ApiGet } from '../../helper/axios';
 import { DatePicker } from "antd";
 import { Modal as NextUIModal, ModalContent } from "@nextui-org/react";
 import 'react-datepicker/dist/react-datepicker.css';
+import dayjs from 'dayjs';
 
 export default function DayBook() {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(() => {
+        const today = new Date();
+        return today;
+    });
     const [datemodalopen, setDateModalOpen] = useState(true)
     const [isDayVisible, setIsDayVisible] = useState(true);
     const [isPurchese, setIsPurchese] = useState(true);
@@ -71,18 +75,36 @@ export default function DayBook() {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        // const fetchData = async () => {
+        //     try {
+        //         const previousDate = getPreviousDate(selectedDate); // Get previous day's data
+        //         console.log(`Selected Date: ${formatDate(selectedDate)} (Showing)`);
+        //         console.log(`Fetching Data for Previous Date: ${previousDate} (Backend Query)`);
+
+
+        //         // ✅ API request with selected date as startDate & endDate
+        //         const response = await ApiGet(`/admin/day-book?startDate=${previousDate}&endDate=${previousDate}`);
+        //         console.log('API Response:', response);
+
+        //         // ✅ Merge sales & purchases data
+        //         const mergedData = [
+        //             ...(response.data.sales || []).map((item) => ({ ...item, type: "sale" })),
+        //             ...(response.data.purchases || []).map((item) => ({ ...item, type: "purchase" })),
+        //         ];
+
+        //         setData(mergedData);
+        //     } catch (error) {
+        //         console.error("Error fetching day book data:", error);
+        //     }
+        // };
+        const fetchData = async (date) => {
             try {
-                const previousDate = getPreviousDate(selectedDate); // Get previous day's data
-                console.log(`Selected Date: ${formatDate(selectedDate)} (Showing)`);
-                console.log(`Fetching Data for Previous Date: ${previousDate} (Backend Query)`);
+                const formattedDate = formatDate(date);
+                console.log(`Fetching Data for Date: ${formattedDate}`);
 
-
-                // ✅ API request with selected date as startDate & endDate
-                const response = await ApiGet(`/admin/day-book?startDate=${previousDate}&endDate=${previousDate}`);
+                const response = await ApiGet(`/admin/day-book?startDate=${formattedDate}&endDate=${formattedDate}`);
                 console.log('API Response:', response);
 
-                // ✅ Merge sales & purchases data
                 const mergedData = [
                     ...(response.data.sales || []).map((item) => ({ ...item, type: "sale" })),
                     ...(response.data.purchases || []).map((item) => ({ ...item, type: "purchase" })),
@@ -522,7 +544,7 @@ export default function DayBook() {
                                                         Dr Rs
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
-                                      Bank
+                                                        Bank
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
                                                         Cash
@@ -613,7 +635,7 @@ export default function DayBook() {
                                                     </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
 
-</th>
+                                                    </th>
                                                     <th className="py-2 px-4 text-center border-l  border-gray-300  font-[600] font-Poppins">
 
                                                     </th>
@@ -688,12 +710,14 @@ export default function DayBook() {
                                 <div className=" flex  w-[300px]  items-center  justify-center mx-auto border-[1.4px] border-[#122f97] rounded-[8px] mt-[20px] p-[8px] gap-[10px]">
                                     <p className=" flex font-Poppins text-[20px]  w-[80px]">Date :</p>
                                     <div className=" flex  items-center">
-                                        <DatePicker
-                                            selected={selectedDate}
-                                            onChange={(date) => setSelectedDate(date)}
-                                            dateFormat="dd/MM/yyyy"
-                                            className=" flex  w-[100px]  text-[20px] border"
-                                        />
+                                    <DatePicker
+    value={selectedDate ? dayjs(selectedDate) : null} // Ensures correct moment format
+    onChange={(date) => setSelectedDate(date ? date.toDate() : null)} // Correctly sets Date object
+    format="DD-MM-YYYY"
+    className="border p-2 rounded-lg"
+    allowClear={false} // Prevents clearing selection
+    disabledDate={() => false} // Ensures all dates are selectable
+/>
                                         <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
                                     </div>
                                 </div>

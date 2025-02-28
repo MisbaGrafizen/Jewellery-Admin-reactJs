@@ -818,11 +818,11 @@ export default function LabourSetting() {
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
-        <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
+        <div className="flex w-[100%] flex-col gap-[14px]  overflow-x-auto h-[96vh]">
           <Header pageName="Labour Setting" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
-            <div className="flex w-[100%] md:max-h-[90%] pb-[20px] pr-[15px]  gap-[30px] rounded-[10px]">
+            <div className="flex w-[100%]  md:max-h-[90%] pb-[20px] pr-[15px]  gap-[30px] rounded-[10px]">
               <div className="flex flex-col gap-[15px] w-[100%]">
                 <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
                   <div
@@ -848,7 +848,7 @@ export default function LabourSetting() {
 
 
                 {isBercodeVisible ? (
-                  <div className="  flex  flex-col gap-[20px]  w-[100%] ">
+                  <div className="  flex    flex-col gap-[20px]  w-[100%] ">
                     <div className=" flex  gap-[15px]  relative px-[15px] j rounded-[10px] py-[0px]  w-[100%]">
                       <div className=" flex  gap-[20px] ">
                         <div className=" flex flex-col gap-[10px] overflow-hidden w-[400px]">

@@ -26,7 +26,7 @@ export default function SideBar() {
 
   return (
     <>
-      <div className="flex w-[120px] rounded-[10px] py-[10px] overflow-hidden  profile-box1 h-[86vh]">
+      <div className="flex min-w-[110px] max-w-[120px] rounded-[10px] py-[10px] overflow-hidden  profile-box1 h-[86vh]">
         <div className="flex flex-col gap-[10px] w-[100%]">
           {menuItems.map((item, index) => (
             <div
