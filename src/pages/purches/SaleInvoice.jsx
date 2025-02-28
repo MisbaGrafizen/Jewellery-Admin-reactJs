@@ -591,7 +591,7 @@ export default function PurchesInvoice() {
       const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
       if (!invoiceData) {
-        console.error("❌ Error: Invoice Data calculation failed!");
+        console.error("Error: Invoice Data calculation failed!");
         return;
       }
 
@@ -633,10 +633,10 @@ export default function PurchesInvoice() {
         paymentType: "cash",
       };
 
-      console.log("📌 Invoice Payload:", payload);
+      console.log("Invoice Payload:", payload);
 
-      const response = await ApiPost("/admin/purchase-bill", payload);
-      console.log("✅ Response:", response);
+      const response = await ApiPost("/admin/bill", payload);
+      console.log("Response:", response);
 
       if (response.data.bill) {
         setCreatedInvoiceId(response.data.bill._id);
@@ -646,7 +646,7 @@ export default function PurchesInvoice() {
         alert("Failed to create invoice!");
       }
     } catch (error) {
-      console.error("❌ Error creating invoice:", error);
+      console.error("Error creating invoice:", error);
       alert("An error occurred while creating the invoice.");
     }
   };

@@ -442,10 +442,33 @@ export default function LabourSetting() {
     setIsEditingWeight(true); // Enable editing mode
   };
 
-  const handleEditPercentage = (id) => {
-    setSelectedPercentage(id);
-    setIsEditingPercentage(true); // Enable editing mode
+  const handleEditPercentage = (percentage) => {
+    console.log("Editing Percentage:", percentage);
+  
+    const carat = categories.find((carat) => String(carat._id) === String(percentage.group._id));
+    const category = item.find((data) => String(data._id) === String(percentage.item._id));
+  
+    if (!carat || !category) {
+      alert("Error: Carat or Category not found for editing.");
+      return;
+    }
+  
+    // ✅ Set selected values properly
+    setSelectedTypePercentage(carat.name);
+    setSelectedTypecategoryPercentage(category.itemName);
+    setSelectedPercentage(percentage);
+  
+    // ✅ Populate Form Data with Correct Values
+    setFormDataPercentage({
+      minWeight: percentage.minWeight,
+      maxWeight: percentage.maxWeight,
+      rate: percentage.rate,
+    });
+  
+    // ✅ Enable Editing Mode
+    setIsEditingPercentage(true);
   };
+  
 
 
 
@@ -479,10 +502,6 @@ export default function LabourSetting() {
       ? categories.find((carat) => carat.name === editselectedType)
       : categories.find((carat) => carat.name === selectedType);
 
-    const selectedMetal = isEditing
-      ? metals.find((metal) => metal.metalName === editselectedTypeMetal)
-      : metals.find((metal) => metal.metalName === selectedTypeMetal);
-
     const selectedCategory = isEditing
       ? item.find((data) => data.itemName === editselectedTypeCategory)
       : item.find((data) => data.itemName === selectedTypeCategory);
@@ -490,7 +509,7 @@ export default function LabourSetting() {
 
     if (!selectedCarat || !selectedCategory) {
       alert(
-        "Invalid selection. Please select valid Carat, Metal, and Category."
+        "Invalid selection. Please select valid Carat and Category."
       );
       return;
     }
@@ -544,9 +563,6 @@ export default function LabourSetting() {
       ? categories.find((carat) => carat.name === editselectedTypeWeight)
       : categories.find((carat) => carat.name === selectedTypeWeight);
 
-    const selectedMetal = isEditingWeight
-      ? metals.find((metal) => metal.metalName === editselectedTypeMetalWeight)
-      : metals.find((metal) => metal.metalName === selectedTypeMetalWeight);
 
     const selectedCategory = isEditingWeight
       ? item.find((data) => data.itemName === editselectedTypeCategoryWeight)
@@ -555,7 +571,7 @@ export default function LabourSetting() {
 
     if (!selectedCarat || !selectedCategory) {
       alert(
-        "Invalid selection. Please select valid Carat, Metal, and Category."
+        "Invalid selection. Please select valid Carat and Category."
       );
       return;
     }
@@ -606,26 +622,26 @@ export default function LabourSetting() {
 
   const handleAddPercentage = async () => {
 
+    let selectedCarat, selectedCategory;
 
-    const selectedCarat = isEditingPercentage
-      ? categories.find((carat) => carat.name === editselectedTypePercentage)
-      : categories.find((carat) => carat.name === selectedTypePercentage);
-
-    const selectedMetal = isEditingPercentage
-      ? metals.find((metal) => metal.metalName === editselectedTypeMetalPercentage)
-      : metals.find((metal) => metal.metalName === selectedTypeMetalPercentage);
-
-    const selectedCategory = isEditingPercentage
-      ? item.find((data) => data.itemName === editselectedTypeCategoryPercentage)
-      : item.find((data) => data.itemName === selectedTypeCategoryPercentage);
-
-
-    if (!selectedCarat || !selectedCategory) {
-      alert(
-        "Invalid selection. Please select valid Carat, Metal, and Category."
-      );
-      return;
+    if (isEditingPercentage) {
+      selectedCarat = categories.find((carat) => carat.name === editselectedTypePercentage);
+      selectedCategory = item.find((data) => data.itemName === editselectedTypeCategoryPercentage);
+    } else {
+      selectedCarat = categories.find((carat) => carat.name === selectedTypePercentage);
+      selectedCategory = item.find((data) => data.itemName === selectedTypeCategoryPercentage);
     }
+        console.log("Selected Carat:", selectedCarat);
+        console.log("Selected Category:", selectedCategory);
+
+
+    // if (!selectedCarat || !selectedCategory) {
+    //   alert(
+    //     "Invalid selection. Please select valid Carat and Category."
+    //   );
+    //   return;
+    // }
+    console.log("isEditingPercentage")
 
     const percentageData = {
       group: selectedCarat?._id,
@@ -635,8 +651,10 @@ export default function LabourSetting() {
       rate: parseFloat(formDataPercentage.rate) || 0,
     };
 
+    console.log(percentageData);
+
     try {
-      if (isEditingPercentage) {
+    if (isEditingPercentage && selectedPercentage?._id) {
         const response = await dispatch(
           updatePercentageAction(selectedPercentage?._id, percentageData)
         );
@@ -2951,17 +2969,7 @@ export default function LabourSetting() {
                                       <div className=" flex  text-[19px] absolute border-l-[1.5px] border-b-[1.5px] border-[#122f97]  rounded-bl-[5px] py-[6px] px-[10px] gap-[6px] top-[0px] z-[5] right-0 bg-[#fff]">
                                         <i
                                           className="fa-solid cursor-pointer fa-pen-to-square"
-                                          onClick={() => {
-                                            setSelectedPercentage(item._id); // Set this item to be edited
-                                            setIsEditingPercentage(true);
-                                            setFormDataPercentage({
-                                              carat: item?.group?.name,
-                                              category: item?.item?.itemName,
-                                              minWeight: item?.minWeight,
-                                              maxWeight: item?.maxWeight,
-                                              rate: item?.rate,
-                                            });
-                                          }}
+                                          onClick={() => handleEditPercentage(item)}
                                         ></i>
                                         <i className="fa-solid cursor-pointer text-[#f00] fa-trash" onClick={() => handleDeletePercentage(item._id)}
                                         ></i>
