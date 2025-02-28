@@ -432,16 +432,61 @@ export default function LabourSetting() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleEdit = (id) => {
-    setSelectedUchak(id);
-    setIsEditing(true); // Enable editing mode
+  const handleEdit = (uchak) => {
+    console.log("Editing Uchak:", uchak);
+  
+    const carat = categories.find((carat) => String(carat._id) === String(uchak.group._id));
+    const category = item.find((data) => String(data._id) === String(uchak.item._id));
+  
+    if (!carat || !category) {
+      alert("Error: Carat or Category not found for editing.");
+      return;
+    }
+  
+    // ✅ Set selected values properly
+    setSelectedType(carat.name);
+    setSelectedTypecategory(category.itemName);
+    setSelectedUchak(uchak);
+  
+    // ✅ Populate Form Data with Correct Values
+    setFormData({
+      minWeight: uchak.minWeight,
+      maxWeight: uchak.maxWeight,
+      rate: uchak.rate,
+    });
+  
+    // ✅ Enable Editing Mode
+    setIsEditing(true);
   };
+  
 
-  const handleEditWeight = (id) => {
-    setSelectedWeight(id);
-    setIsEditingWeight(true); // Enable editing mode
+  const handleEditWeight = (perGram) => {
+    console.log("Editing PerGram:", perGram);
+  
+    const carat = categories.find((carat) => String(carat._id) === String(perGram.group._id));
+    const category = item.find((data) => String(data._id) === String(perGram.item._id));
+  
+    if (!carat || !category) {
+      alert("Error: Carat or Category not found for editing.");
+      return;
+    }
+  
+    // ✅ Set selected values properly
+    setSelectedTypeWeight(carat.name);
+    setSelectedTypecategoryWeight(category.itemName);
+    setSelectedWeight(perGram);
+  
+    // ✅ Populate Form Data with Correct Values
+    setFormDataWeight({
+      minWeight: perGram.minWeight,
+      maxWeight: perGram.maxWeight,
+      rate: perGram.rate,
+    });
+  
+    // ✅ Enable Editing Mode
+    setIsEditingPerGram(true);
   };
-
+  
   const handleEditPercentage = (percentage) => {
     console.log("Editing Percentage:", percentage);
 
