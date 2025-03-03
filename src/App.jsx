@@ -125,6 +125,7 @@ import CreateNonbarStock from "./pages/NewStockCreate/CreateNonbarStock";
 import PrintStocks from "./pages/PrintStocks";
 import SaleInvoice from "./pages/purches/SaleInvoice";
 import DayBook from "./pages/mainPages/DayBook";
+import Orders from "./pages/orders/Orders";
 
 function App() {
 
@@ -139,6 +140,7 @@ function App() {
           {/* purches screen */}
           <Route path="/purches-invoice" element={<PurchesInvoice />} />
           <Route path="/sales-invoice" element={<SaleInvoice />} />
+          <Route path="/orders" element={<Orders />} />
           <Route path="/inventory" element={<InventoryCreate />} />
           <Route path="/labour" element={<LabourSetting />} />
           <Route path="/invoice-bill/:id" element={<InvoicePage />} />

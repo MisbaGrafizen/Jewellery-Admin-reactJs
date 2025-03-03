@@ -879,17 +879,7 @@ export default function PurchesInvoice() {
                         Q/20024-25/1
                       </p>
                     </div>
-                    <div className=" flex  w-[200px]  items-center gap-[10px]">
-                      <p className=" flex font-Poppins w-[50px]">Date :</p>
-                      <div className=" flex  items-center">
-                        <DatePicker
-                          selected={selectedDate}
-                          onChange={(date) => setSelectedDate(date)}
-                          className=" flex  w-[100px] border"
-                        />
-                        <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
-                      </div>
-                    </div>
+              
                   </div>
 
                   <div className=" w-[38%] flex   gap-[15px] border-[1px] relative bg-white shadow1-blue py-[15px]  px-[15px] rounded-[10px] h-fit">
@@ -1088,7 +1078,7 @@ export default function PurchesInvoice() {
                         </label>
                       </div>
                     </label>
-                    <div className=" pr-[80px]">
+                    {/* <div className=" pr-[80px]">
                       <div className="flex justify-between w-full gap-[20px]">
 
                         <label className="flex items-center gap-[5px] cursor-pointer group">
@@ -1139,7 +1129,7 @@ export default function PurchesInvoice() {
                         </label>
                       </div>
 
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* <div className=" p-1">
@@ -1425,7 +1415,7 @@ export default function PurchesInvoice() {
                                 /> */}
                                 {product?.calculatedMarketRate}
                               </td>
-                              <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
+                              {/* <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
                               {!product.barcodeVisible ? (
                                 <>
                                 <input
@@ -1436,61 +1426,7 @@ export default function PurchesInvoice() {
                                   placeholder="0.00"
                                 />
 
-                          {/* <div
-                                      ref={labourDropdownRef}
-                                      className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
-                                      onClick={() => setDropdownTypeOpen((prev) => !prev)}
-                                    >
-                                      <label
-                                        htmlFor="labourType"
-                                        className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
-                                            ? "text-[#000] -translate-y-[21px] hidden"
-                                            : "text-[#8f8f8f] cursor-text flex"
-                                          }`}
-                                      >
-                                        Type
-                                      </label>
-                                      <input
-                                        type="text"
-                                        name="labourType"
-                                        id="labourType"
-                                        value={selectedLabourType}
-                                        className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                        readOnly
-                                        onFocus={() => setLabourFocused(true)}
-                                        onBlur={() => setLabourFocused(false)}
-                                      />
-                                      <i
-                                        className={
-                                          dropdownTypeOpen
-                                            ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                            : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                        }
-                                      ></i>
-                                    </div>
-
-                      
-                                    <AnimatePresence>
-                                      {dropdownTypeOpen && (
-                                        <motion.div
-                                          initial={{ opacity: 0, y: -10 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          exit={{ opacity: 0, y: -10 }}
-                                          className="absolute mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
-                                        >
-                                          {labourTypes.map((labour, index) => (
-                                            <div
-                                              key={index}
-                                              className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => handleSelectLabourType(labour)}
-                                            >
-                                              {labour.type}
-                                            </div>
-                                          ))}
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence> */}
-                    
+                         
                                   </>
                                 ) : (
                                   <>
@@ -1561,8 +1497,66 @@ export default function PurchesInvoice() {
                                 )}
 
 
-                              </td>
+                              </td> */}
 
+                              <td className="py-1 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
+                                <input
+                                  type="number"
+                                  value={product.labour}
+                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                  className="border-0 outline-none font-Poppins focus:ring-0 text-sm w-[40%]"
+                                  placeholder="0.00"
+                                />
+
+                                {/* Show dropdown ONLY if the product was entered manually */}
+                                {product.barcodeVisible && (
+                                  <div
+                                    ref={labourDropdownRef}
+                                    className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow items-center text-[#00000099] cursor-pointer flex"
+                                    onClick={() => setDropdownTypeOpen((prev) => !prev)}
+                                  >
+                                    <label
+                                      htmlFor="labourType"
+                                      className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused ? "text-[#000] -translate-y-[21px] hidden" : "text-[#8f8f8f] cursor-text flex"
+                                        }`}
+                                    >
+                                      Type
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name="labourType"
+                                      id="labourType"
+                                      value={selectedLabourType}
+                                      className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                      onFocus={() => setLabourFocused(true)}
+                                      onBlur={() => setLabourFocused(false)}
+                                    />
+                                    <i className={dropdownTypeOpen ? "fa-solid fa-chevron-up text-[14px] pr-[10px]" : "fa-solid fa-chevron-down text-[14px] pr-[10px]"}></i>
+                                  </div>
+                                )}
+
+                                <AnimatePresence>
+                                  {dropdownTypeOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                    >
+                                      {labourTypes.map((labour, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => handleSelectLabourType(labour)}
+                                        >
+                                          {labour.type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </td>
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
@@ -2086,46 +2080,39 @@ export default function PurchesInvoice() {
                             </div>
                           </div>
 
-                          {/* TCS Checkbox */}
+                       
                           <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-2">
-                              <label className="flex items-center gap-2 cursor-pointer">
-                                <div className="relative flex items-center justify-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={checkedItems.tcs}
-                                    onChange={() => handleChange("tcs")}
-                                    className="sr-only peer"
-                                  />
-                                  <div className="w-[18px] h-[18px] border-[1px] border-gray-300 peer-checked:border-[#e77848] rounded transition-colors">
-                                    {checkedItems.tcs && (
-                                      <Check
-                                        className="w-[15px] h-[15px] text-[#e77848]"
-                                        strokeWidth={2}
-                                      />
-                                    )}
-                                  </div>
-                                </div>
-                                <span className="text-gray-600 font-Poppins text-lg font-medium">
-                                  TCS 206C(1H) @0.1%
-                                </span>
-                              </label>
-                            </div>
+                            <label className="text-gray-600 font-Poppins text-lg font-medium">
+                              Cash Payment
+                            </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                <input
+                                  type="text"
+                                  name="cash"
+
+                                  className="w-full outline-none text-[15px] py-[9px] px-[10px] font-Poppins font-[400] bg-transparent cursor-pointer"
+
+
+                                />
                               </div>
                             </div>
                           </div>
 
-                          {/* Round Off */}
                           <div className="flex items-center justify-between gap-4">
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
-                              Round Off
+                              Online Payment
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                                <input
+                                  type="text"
+                                  name="cash"
+
+                                  className="w-full outline-none text-[15px] py-[9px] px-[10px] font-Poppins font-[400] bg-transparent cursor-pointer"
+
+
+                                />
                               </div>
                             </div>
                           </div>

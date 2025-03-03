@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Header from '../../Component/header/Header'
 import SideBar from '../../Component/sidebar/SideBar'
 import { ApiGet } from '../../helper/axios';
@@ -13,8 +13,12 @@ export default function DayBook() {
         return today;
     });
     const [datemodalopen, setDateModalOpen] = useState(true)
-    const [isDayVisible, setIsDayVisible] = useState(true);
+    const [activeTab, setActiveTab] = useState("day");
     const [isPurchese, setIsPurchese] = useState(true);
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
+
     const [data, setData] = useState([]);
 
     // const getTodayDate = () => {
@@ -43,6 +47,81 @@ export default function DayBook() {
     }
 
 
+  const scrollContainerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // Adjust the multiplier for speed
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+
+
+  const dummyData = [
+    {
+      barCode: "ABC123456",
+      groupId: { name: "Gold" },
+      groupItemId: { itemName: "Ring" },
+      toWeight: 5.2,
+      netWeight: 4.8,
+      updatedFineWeight: 4.5,
+      marketRateUsed: 5500,
+      labour: 200,
+      calculatedMarketRate: 26000,
+      extraRate: 100,
+      GMEPrice: 150,
+      gst: 500,
+      totalPrice: 30000,
+      group: "Luxury",
+      account: "A12345",
+      location: "Mumbai",
+      pcs: 1,
+      design: "Floral",
+      size: { sizeName: "Medium" },
+      moti: 2,
+      stone: 3,
+      jadatr: 1,
+    },
+    {
+      barCode: "XYZ987654",
+      groupId: { name: "Silver" },
+      groupItemId: { itemName: "Bracelet" },
+      toWeight: 6.0,
+      netWeight: 5.5,
+      updatedFineWeight: 5.2,
+      marketRateUsed: 3500,
+      labour: 150,
+      calculatedMarketRate: 18000,
+      extraRate: 50,
+      GMEPrice: 120,
+      gst: 300,
+      totalPrice: 20000,
+      group: "Standard",
+      account: "B56789",
+      location: "Delhi",
+      pcs: 2,
+      design: "Classic",
+      size: { sizeName: "Large" },
+      moti: 1,
+      stone: 2,
+      jadatr: 0,
+    },
+  ];
     // useEffect(() => {
     //     const fetchData = async () => {
     //         try {
@@ -120,13 +199,7 @@ export default function DayBook() {
     }, [selectedDate]);
 
 
-    const handleDayClick = () => {
-        setIsDayVisible(true);
-    };
-
-    const handleTodaySaleClick = () => {
-        setIsDayVisible(false);
-    };
+   
     const handlePurcheseClick = () => {
         setIsPurchese(true);
     };
@@ -146,26 +219,224 @@ export default function DayBook() {
                         <div className="flex flex-col w-[100%] max-h-[90%] pb-[50px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
                             <div className="relative flex shadow1-blue rounded-[10px] border-[#122f97] w-fit p-1 bg-gray-200">
                                 <div
-                                    className={`absolute top-0 left-0 h-full w-[130px] bs-spj rounded-[8px] transition-transform duration-300 ${isDayVisible ? "translate-x-0" : "translate-x-[130px]"
+                                    className={`absolute top-0 left-0 h-full w-[130px] bs-spj rounded-[8px] transition-transform duration-300 ${activeTab === "day" ? "translate-x-0" : activeTab === "sale" ? "translate-x-[130px]" : "translate-x-[255px]"
                                         }`}
                                 ></div>
                                 <button
-                                    onClick={handleDayClick}
-                                    className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${isDayVisible ? "[#fff]" : "[#000]"
+                                    onClick={() => setActiveTab("day")}
+
+                                    className={`flex w-[130px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${activeTab === "day" ? "[#fff]" : "[#000]"
                                         }`}
                                 >
                                     Day book
 
                                 </button>
                                 <button
-                                    onClick={handleTodaySaleClick}
-                                    className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${isDayVisible ? "[#000]" : "[#fff]"
+                                    onClick={() => setActiveTab("sale")}
+                                    className={`flex w-[125px] pl-[] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${activeTab === "sale" ? "[#fff]" : "[#000]"
                                         }`}
                                 >
                                     Today Sale
                                 </button>
+                                <button
+                                    onClick={() => setActiveTab("barcode")}
+                                    className={`flex w-[125px] py-[10px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${activeTab === "barcode" ? "[#fff]" : "[#000]"
+                                        }`}
+                                >
+                                    Today Barcode
+                                </button>
                             </div>
-                            {isDayVisible ? (
+                            {activeTab === "barcode" ? (
+                                <>
+                                    <div className=" flex">
+                                        <div className="w-full h-full  mx-auto rounded-[10px]  mt-[10px]  relative">
+
+                                            <div className="bg-white   w-[100%] rounded-[10px] overflow-hidden shadow1-blue ">
+                                                {/* Table Header */}
+                                                <div
+                                                    ref={scrollContainerRef}
+                                                    onMouseDown={handleMouseDown}
+                                                    onMouseMove={handleMouseMove}
+                                                    onMouseUp={handleMouseUp}
+                                                    onMouseLeave={handleMouseUp}
+                                                    className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
+                                                    <table className="min-w-[2420px] w-full border-collapse  border-gray-300  font-Poppins">
+                                                        <thead>
+                                                            <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
+                                                                <th className="py-3 px-2 text-left  border-gray-300">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id="check-all"
+                                                                        className="w-4 ml-2 mb-[-4px] h-4"
+                                                                    />
+                                                                    <span className="ml-2 font-[500]">Sr.</span>
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Barcode
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Carat
+                                                                </th>
+
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Category
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    To Weight
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Net Weight
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Fine Weight
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    G Rate
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    M Rate
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    M Rs
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    G Rs
+                                                                </th>
+
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Extra Rate
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    GME Amt
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    GST
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Amount
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Group
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Account
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Location
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Pcs
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    design
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    size
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Moti
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Stone
+                                                                </th>
+                                                                <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
+                                                                    Jadatr
+                                                                </th>
+
+                                                        
+                                                            </tr>
+
+                                                        </thead>
+                                                        <tbody>
+                                                        {dummyData.map((item, index) => (
+                                                            <tr key={index} className="">
+
+                                                                <td className="py-2 px-2 flex items-center  border-gray-300">
+                                                                    <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
+                                                                    <span>{index + 1}</span>
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.barCode}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.groupId?.name || "-"}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.groupItemId?.itemName || "-"}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.toWeight || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.netWeight}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.updatedFineWeight}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.marketRateUsed || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.labour || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.labour || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.calculatedMarketRate?.toFixed(2) || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item.extraRate || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.GMEPrice?.toFixed(2) || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.gst || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.totalPrice?.toFixed(2) || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item.group || "-"}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item.account || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.location || "-"}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.pcs || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.design || "-"}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.size?.sizeName || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.moti || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item?.stone || 0}
+                                                                </td>
+                                                                <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                                                    {item.jadatr || 0}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+                                                      
+               
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : activeTab === "day" ? (
                                 <>
 
 
@@ -188,7 +459,7 @@ export default function DayBook() {
                                             className={`flex w-[110px] pl-[] py-[8px] justify-center items-center rounded-[8px] z-10 font-Poppins font-[600] text-${isPurchese ? "[#000]" : "[#fff]"
                                                 }`}
                                         >
-                                            Sell
+                                            Sale
                                         </button>
                                     </div>
                                     {isPurchese ? (
@@ -645,9 +916,9 @@ export default function DayBook() {
                                             </tfoot>
                                         </table>
                                     </div>
+
                                 </>
                             )}
-
                         </div>
 
                     </div>

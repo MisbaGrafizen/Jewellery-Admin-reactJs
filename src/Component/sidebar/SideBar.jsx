@@ -7,7 +7,8 @@ import purches from "../../../public/imges/sidebar/purches.png";
 import reports from "../../../public/imges/sidebar/reports.png";
 import expan from "../../../public/imges/sidebar/expan.png";
 import dashboard from "../../../public/imges/sidebar/dashBoard.png";
-
+import newsales from "../../../public/imges/sidebar/newsales.png"
+import order from "../../../public/imges/sidebar/order.png"
 export default function SideBar() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,16 +19,16 @@ export default function SideBar() {
     { name: "Inventory", icon: inventory, path: "/inventory" },
     { name: "Stock", icon: sales,path: "/add-stock"  },
     { name: "Purchases", icon: purches, path: "/purches-invoice" },
-    { name: "Sales", icon: purches, path: "/sales-invoice" },
+    { name: "Sales", icon: newsales, path: "/sales-invoice" },
     { name: "Settings", icon: settings, path: "/create-account" },
     { name: "Labour", icon: reports, path: "/labour" },
-
+    { name: "Orders", icon: order, path: "/orders" },
   ];
 
   return (
     <>
-      <div className="flex min-w-[110px] max-w-[120px] rounded-[10px] py-[10px] overflow-hidden  profile-box1 h-[86vh]">
-        <div className="flex flex-col gap-[10px] w-[100%]">
+      <div className="flex min-w-[110px] max-w-[120px] overflow-y-auto rounded-[10px] py-[10px]  profile-box1 h-[86vh]">
+        <div className="flex flex-col gap-[7px] w-[100%]">
           {menuItems.map((item, index) => (
             <div
               key={index}
@@ -39,7 +40,7 @@ export default function SideBar() {
               onClick={() => navigate(item.path)}
             >
               <img className="w-[27px] h-[27px]" src={item.icon} alt={item.name} />
-              <p className=" flex text-[14px]">{item.name}</p>
+              <p className=" flex text-[12px]">{item.name}</p>
             </div>
           ))}
         </div>

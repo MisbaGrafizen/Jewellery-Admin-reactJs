@@ -349,7 +349,7 @@ export default function PurchesInvoice() {
       [name]: value,
     }));
   };
-  
+
 
   const handleInputChange = (e, index, field) => {
     const value = e.target.value;
@@ -360,30 +360,30 @@ export default function PurchesInvoice() {
 
   // const handleInputChange = (e, index, field) => {
   //   const value = e.target.value;
-  
+
   //   // Ensure products is initialized
   //   if (!Array.isArray(products)) {
   //     console.error("❌ Error: Products is not an array.");
   //     return;
   //   }
-  
+
   //   // Ensure the index exists in products
   //   if (index < 0 || index >= products.length) {
   //     console.error(`Error: Invalid index ${index} for products array.`);
   //     return;
   //   }
-  
+
   //   // Ensure the field exists in the product object
   //   const updatedProducts = [...products];
   //   if (!updatedProducts[index]) {
   //     console.error(`Error: Product at index ${index} is undefined.`);
   //     return;
   //   }
-  
+
   //   updatedProducts[index][field] = value;
   //   setProducts(updatedProducts);
   // };
-  
+
 
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
@@ -512,76 +512,76 @@ export default function PurchesInvoice() {
 
     // ✅ Step 2: Apply GST ONLY if Tax is selected
     if (isTaxApplied) {
-        calculatedCgst = (discountPrice * 1.5) / 100;
-        calculatedSgst = (discountPrice * 1.5) / 100;
-        totalTax = calculatedCgst + calculatedSgst;
+      calculatedCgst = (discountPrice * 1.5) / 100;
+      calculatedSgst = (discountPrice * 1.5) / 100;
+      totalTax = calculatedCgst + calculatedSgst;
 
-        // ✅ Step 3: Add GST to the final price
-        finalPrice = discountPrice + totalTax;
+      // ✅ Step 3: Add GST to the final price
+      finalPrice = discountPrice + totalTax;
     }
 
     console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
     console.log("✅ Final Invoice Amount:", finalPrice);
 
     return {
-        totalPrice,
-        discountPercentage,
-        discountAmount,
-        discountPrice,
-        cgst: calculatedCgst,
-        sgst: calculatedSgst,
-        totalTax,
-        finalPrice,
+      totalPrice,
+      discountPercentage,
+      discountAmount,
+      discountPrice,
+      cgst: calculatedCgst,
+      sgst: calculatedSgst,
+      totalTax,
+      finalPrice,
     };
-};
+  };
 
 
   // ✅ Function to Update State with Calculated Values
   const updateTotalsAndApplyDiscount = (isTaxApplied) => {
     setProducts((prevProducts) => {
-        let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+      let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
 
-        // ✅ Step 1: Apply Discount
-        const discountAmount = (totalPrice * discountPercentage) / 100;
-        const discountedPrice = totalPrice - discountAmount;
+      // ✅ Step 1: Apply Discount
+      const discountAmount = (totalPrice * discountPercentage) / 100;
+      const discountedPrice = totalPrice - discountAmount;
 
-        let calculatedCgst = 0;
-        let calculatedSgst = 0;
-        let totalTax = 0;
-        let finalPrice = discountedPrice;
+      let calculatedCgst = 0;
+      let calculatedSgst = 0;
+      let totalTax = 0;
+      let finalPrice = discountedPrice;
 
-        // ✅ Step 2: Apply GST ONLY if Tax is selected
-        if (isTaxApplied) {
-            calculatedCgst = (discountedPrice * 1.5) / 100;
-            calculatedSgst = (discountedPrice * 1.5) / 100;
-            totalTax = calculatedCgst + calculatedSgst;
+      // ✅ Step 2: Apply GST ONLY if Tax is selected
+      if (isTaxApplied) {
+        calculatedCgst = (discountedPrice * 1.5) / 100;
+        calculatedSgst = (discountedPrice * 1.5) / 100;
+        totalTax = calculatedCgst + calculatedSgst;
 
-            // ✅ Step 3: Add GST to the final price
-            finalPrice = discountedPrice + totalTax;
-        }
+        // ✅ Step 3: Add GST to the final price
+        finalPrice = discountedPrice + totalTax;
+      }
 
-        // ✅ Update invoice state
-        setDiscountAmount(discountAmount);
-        setDiscountPrice(discountedPrice);
-        setCgst(calculatedCgst);
-        setSgst(calculatedSgst);
-        setTotalTaxAmount(totalTax);
-        setFinalTotal(finalPrice);
+      // ✅ Update invoice state
+      setDiscountAmount(discountAmount);
+      setDiscountPrice(discountedPrice);
+      setCgst(calculatedCgst);
+      setSgst(calculatedSgst);
+      setTotalTaxAmount(totalTax);
+      setFinalTotal(finalPrice);
 
-        console.log("✅ Updated Invoice Totals:", {
-            totalPrice,
-            discountAmount,
-            discountedPrice,
-            cgst: calculatedCgst,
-            sgst: calculatedSgst,
-            totalTax,
-            finalPrice,
-            isTaxApplied,
-        });
+      console.log("✅ Updated Invoice Totals:", {
+        totalPrice,
+        discountAmount,
+        discountedPrice,
+        cgst: calculatedCgst,
+        sgst: calculatedSgst,
+        totalTax,
+        finalPrice,
+        isTaxApplied,
+      });
 
-        return prevProducts;
+      return prevProducts;
     });
-};
+  };
 
 
 
@@ -960,7 +960,7 @@ export default function PurchesInvoice() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                         <label
                           htmlFor="address"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${address||addressFocused
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${address || addressFocused
                             ? "text-[#000] -translate-y-[45px] hidden font-[]"
                             : "  -translate-y-[27px] flex cursor-text "
                             }`}
@@ -1088,7 +1088,7 @@ export default function PurchesInvoice() {
                         </label>
                       </div>
                     </label>
-                    <div className=" pr-[80px]">
+                    {/* <div className=" pr-[80px]">
                       <div className="flex justify-between w-full gap-[20px]">
 
                         <label className="flex items-center gap-[5px] cursor-pointer group">
@@ -1139,7 +1139,7 @@ export default function PurchesInvoice() {
                         </label>
                       </div>
 
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* <div className=" p-1">
@@ -1425,85 +1425,32 @@ export default function PurchesInvoice() {
                                 /> */}
                                 {product?.calculatedMarketRate}
                               </td>
-                              <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
-                              {!product.barcodeVisible ? (
-                                <>
-                                <input
-                                  type="number"
-                                  value={product.labour}
-                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
-                                  placeholder="0.00"
-                                />
+                              {/* <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
+                                {!product.barcodeVisible ? (
+                                  <>
+                                    <input
+                                      type="number"
+                                      value={product.labour}
+                                      onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                      className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
+                                      placeholder="0.00"
+                                    />
 
-                          {/* <div
-                                      ref={labourDropdownRef}
-                                      className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow flex items-center text-[#00000099] cursor-pointer"
-                                      onClick={() => setDropdownTypeOpen((prev) => !prev)}
-                                    >
-                                      <label
-                                        htmlFor="labourType"
-                                        className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
-                                            ? "text-[#000] -translate-y-[21px] hidden"
-                                            : "text-[#8f8f8f] cursor-text flex"
-                                          }`}
-                                      >
-                                        Type
-                                      </label>
-                                      <input
-                                        type="text"
-                                        name="labourType"
-                                        id="labourType"
-                                        value={selectedLabourType}
-                                        className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
-                                        readOnly
-                                        onFocus={() => setLabourFocused(true)}
-                                        onBlur={() => setLabourFocused(false)}
-                                      />
-                                      <i
-                                        className={
-                                          dropdownTypeOpen
-                                            ? "fa-solid fa-chevron-up text-[14px] pr-[10px]"
-                                            : "fa-solid fa-chevron-down text-[14px] pr-[10px]"
-                                        }
-                                      ></i>
-                                    </div>
+                                   
 
-                      
-                                    <AnimatePresence>
-                                      {dropdownTypeOpen && (
-                                        <motion.div
-                                          initial={{ opacity: 0, y: -10 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          exit={{ opacity: 0, y: -10 }}
-                                          className="absolute mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
-                                        >
-                                          {labourTypes.map((labour, index) => (
-                                            <div
-                                              key={index}
-                                              className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
-                                              onClick={() => handleSelectLabourType(labour)}
-                                            >
-                                              {labour.type}
-                                            </div>
-                                          ))}
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence> */}
-                    
                                   </>
                                 ) : (
                                   <>
-                                <input
-                                  type="number"
-                                  value={product.labour}
-                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
-                                  placeholder="0.00"
-                                />
+                                    <input
+                                      type="number"
+                                      value={product.labour}
+                                      onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                      className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
+                                      placeholder="0.00"
+                                    />
 
-                   
-                              <div
+
+                                    <div
                                       ref={labourDropdownRef}
                                       className={`relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow  items-center text-[#00000099] cursor-pointer ${product.barcodeVisible ? "hidden" : "flex"}`}
                                       onClick={() => setDropdownTypeOpen((prev) => !prev)}
@@ -1511,8 +1458,8 @@ export default function PurchesInvoice() {
                                       <label
                                         htmlFor="labourType"
                                         className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
-                                            ? "text-[#000] -translate-y-[21px] hidden"
-                                            : "text-[#8f8f8f] cursor-text flex"
+                                          ? "text-[#000] -translate-y-[21px] hidden"
+                                          : "text-[#8f8f8f] cursor-text flex"
                                           }`}
                                       >
                                         Type
@@ -1536,7 +1483,7 @@ export default function PurchesInvoice() {
                                       ></i>
                                     </div>
 
-                      
+
                                     <AnimatePresence>
                                       {dropdownTypeOpen && (
                                         <motion.div
@@ -1561,7 +1508,68 @@ export default function PurchesInvoice() {
                                 )}
 
 
+                              </td> */}
+
+
+                              <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
+                                <input
+                                  type="number"
+                                  value={product.labour}
+                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                  className="border-0 outline-none font-Poppins focus:ring-0 text-sm w-[40%]"
+                                  placeholder="0.00"
+                                />
+
+                                {/* Show dropdown ONLY if the product was entered manually */}
+                                {product.barcodeVisible && (
+                                  <div
+                                    ref={labourDropdownRef}
+                                    className="relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow items-center text-[#00000099] cursor-pointer flex"
+                                    onClick={() => setDropdownTypeOpen((prev) => !prev)}
+                                  >
+                                    <label
+                                      htmlFor="labourType"
+                                      className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused ? "text-[#000] -translate-y-[21px] hidden" : "text-[#8f8f8f] cursor-text flex"
+                                        }`}
+                                    >
+                                      Type
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name="labourType"
+                                      id="labourType"
+                                      value={selectedLabourType}
+                                      className="w-full outline-none text-[15px] py-[9px] pl-[5px] font-Poppins font-[400] bg-transparent cursor-pointer"
+                                      readOnly
+                                      onFocus={() => setLabourFocused(true)}
+                                      onBlur={() => setLabourFocused(false)}
+                                    />
+                                    <i className={dropdownTypeOpen ? "fa-solid fa-chevron-up text-[14px] pr-[10px]" : "fa-solid fa-chevron-down text-[14px] pr-[10px]"}></i>
+                                  </div>
+                                )}
+
+                                <AnimatePresence>
+                                  {dropdownTypeOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="absolute mt-5 ml-[40px] bg-white w-[90px] border border-[#dedede] rounded-lg shadow-md z-50"
+                                    >
+                                      {labourTypes.map((labour, index) => (
+                                        <div
+                                          key={index}
+                                          className="px-4 py-[4px] hover:bg-gray-100 font-Poppins cursor-pointer text-sm text-[#00000099]"
+                                          onClick={() => handleSelectLabourType(labour)}
+                                        >
+                                          {labour.type}
+                                        </div>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </td>
+
 
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
@@ -2086,46 +2094,39 @@ export default function PurchesInvoice() {
                             </div>
                           </div>
 
-                          {/* TCS Checkbox */}
+
                           <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-2">
-                              <label className="flex items-center gap-2 cursor-pointer">
-                                <div className="relative flex items-center justify-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={checkedItems.tcs}
-                                    onChange={() => handleChange("tcs")}
-                                    className="sr-only peer"
-                                  />
-                                  <div className="w-[18px] h-[18px] border-[1px] border-gray-300 peer-checked:border-[#e77848] rounded transition-colors">
-                                    {checkedItems.tcs && (
-                                      <Check
-                                        className="w-[15px] h-[15px] text-[#e77848]"
-                                        strokeWidth={2}
-                                      />
-                                    )}
-                                  </div>
-                                </div>
-                                <span className="text-gray-600 font-Poppins text-lg font-medium">
-                                  TCS 206C(1H) @0.1%
-                                </span>
-                              </label>
-                            </div>
+                            <label className="text-gray-600 font-Poppins text-lg font-medium">
+                              Cash Payment
+                            </label>
                             <div className="flex-1 max-w-[320px]">
-                              <div className=" relative w-full h-10 border-[1px]  font-Poppins px-[15px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                              <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
+                                <input
+                                  type="text"
+                                  name="cash"
+
+                                  className="w-full outline-none text-[15px] py-[9px] px-[10px] font-Poppins font-[400] bg-transparent cursor-pointer"
+
+
+                                />
                               </div>
                             </div>
                           </div>
 
-                          {/* Round Off */}
                           <div className="flex items-center justify-between gap-4">
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
-                              Round Off
+                              Online Payment
                             </label>
                             <div className="flex-1 max-w-[320px]">
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
-                                <p></p>
+                                <input
+                                  type="text"
+                                  name="cash"
+
+                                  className="w-full outline-none text-[15px] py-[9px] px-[10px] font-Poppins font-[400] bg-transparent cursor-pointer"
+
+
+                                />
                               </div>
                             </div>
                           </div>
@@ -2241,7 +2242,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="partyName"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.name||partyNameFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.name || partyNameFocused
                           ? "text-[#000] hidden "
                           : "text-[#8f8f8f]"
                           }`}
@@ -2262,7 +2263,7 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.address||partyAddressFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.address || partyAddressFocused
                           ? "text-[#000] -translate-y-[48px] hidden font-[]"
                           : "  -translate-y-[27px] "
                           }`}
@@ -2286,7 +2287,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="gstNumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.GST||partyGstFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.GST || partyGstFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f]"
                           }`}
@@ -2308,7 +2309,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="PanParty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.panNo||partyPanFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.panNo || partyPanFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2396,7 +2397,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyState"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.state||partyStateFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.state || partyStateFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2418,7 +2419,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partycity"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.city||partyCityFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.city || partyCityFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2440,7 +2441,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyPin"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.pinCode||partyPinFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.pinCode || partyPinFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2462,7 +2463,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partynumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.mobileNumber||partyNumberFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.mobileNumber || partyNumberFocused
                           ? "text-[#000] -translate-y-[21px]  hidden"
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2484,7 +2485,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="emailparty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.email||partyEmailFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.email || partyEmailFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
