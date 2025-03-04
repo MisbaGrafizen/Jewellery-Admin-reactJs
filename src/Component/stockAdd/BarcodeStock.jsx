@@ -1022,7 +1022,7 @@ const navigate=useNavigate()
                               {item?.pcs || 0}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.design || "-"}
+                              {item?.design?.designName || "-"}
                             </td>
                             <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
                               {item?.size?.sizeName || 0}

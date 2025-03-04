@@ -408,6 +408,11 @@ export default function CreateBarCodeStock() {
             updatedSet.size = mongoose.Types.ObjectId.isValid(value) ? value : null;
           }
 
+          if (field === "design") {
+            updatedSet.design = mongoose.Types.ObjectId.isValid(value) ? value : null;
+          }
+
+
           return updatedSet;
         }
         return set;
@@ -425,13 +430,6 @@ export default function CreateBarCodeStock() {
         if (success) {
           setCarat((prev) =>
             prev.filter((category) => category._id !== caratIdToDelete)
-          );
-        }
-      } else if (deleteContext === "metal") {
-        success = await dispatch(deleteMetalAction(caratIdToDelete));
-        if (success) {
-          setMetal((prev) =>
-            prev.filter((metal) => metal._id !== caratIdToDelete)
           );
         }
       } else if (deleteContext === "item") {
@@ -1374,21 +1372,26 @@ bg-[#fff] ">
                                   exit={{ opacity: 0, y: -10 }}
                                   className="absolute top-[90%] mt-2 bg-white left-[-16px] w-[300px] border border-[#dedede] rounded-lg shadow-md z-10"
                                 >
-                                  {designs.map((type, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
-                                      onClick={() => {
-                                        let updatedFieldSets = [...fieldSets];
-                                        updatedFieldSets[index].selectedTypeDesign = type?.designName;
-                                        updatedFieldSets[index].design = type?._id || null; 
-                                        updatedFieldSets[index].dropdownOpenDesign = false;
-                                        setFieldSets(updatedFieldSets);
-                                      }}
-                                    >
-                                      {type?.designName}
-                                    </div>
-                                  ))}
+                                  {designs.length > 0 ? (
+                                    designs.map((type, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="px-4 py-2 hover:bg-gray-100 font-Poppins text-left cursor-pointer text-sm text-[#00000099]"
+                                        onClick={() => {
+                                          let updatedFieldSets = [...fieldSets];
+                                          updatedFieldSets[index].selectedTypeDesign = type?.designName; 
+                                          updatedFieldSets[index].design = type?._id || null; 
+                                          updatedFieldSets[index].dropdownOpenDesign = false;
+                                          setFieldSets(updatedFieldSets);
+                                        }}
+                                      
+                                      >
+                                        {type?.designName}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="px-4 py-2 text-center text-[#8f8f8f]"></div>
+                                  )}
                                 </motion.div>
                               )}
                             </AnimatePresence>
