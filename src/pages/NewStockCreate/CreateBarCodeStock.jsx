@@ -523,7 +523,8 @@ export default function CreateBarCodeStock() {
     
         // ✅ Get the last (best-matching) labour item
         return sortedLabour.pop() || null; // If no match, return null
-    };
+  
+      };
     
 
       let matchedLabour = null;
@@ -570,6 +571,7 @@ export default function CreateBarCodeStock() {
         huid: field.huid ? field.huid.toString() : "",
         huidRule: field.huidRule ? field.huidRule.toString() : "",
         huidCharge: parseFloat(field.huidCharge) || 0,
+      
       };
     });
 
@@ -591,6 +593,7 @@ export default function CreateBarCodeStock() {
           groupId: selectedCarat._id, 
           groupItemId: selectedCategory._id, 
           products: productsArray 
+          
         }));
       }
       console.log('response', response)
@@ -672,107 +675,121 @@ export default function CreateBarCodeStock() {
 
 
 
-  const handlePrint = () => {
-    if (!recentlySavedStock.length) {
-      alert("No stock data available for printing.");
-      return;
-    }
+  // const handlePrint = () => {
+  //   if (!recentlySavedStock.length) {
+  //     alert("No stock data available for printing.");
+  //     return;
+  //   }
 
-    const printWindow = window.open("", "/print-stocks");
-    printWindow.document.write(`
-    <html>
-      <head>
-        <title>Print Stocks</title>
-     <style>
-            @page {
-              size: auto;
-              margin: 0mm;
-            }
-            body {
-              margin: 0;
-              padding: 10mm;
-            }
-            .labels-container {
-              display: flex;
-              flex-direction: column;
-              gap: 0mm;
-            }
-            .label {
-              width: 81mm;
-              height: 12mm;
-              display: flex;
-              padding: 2mm 4mm;
-              background: white;
-              position: relative;
-               justify-content: center;
+  //   const printWindow = window.open("", "/print-stocks");
+  // //   printWindow.document.write(`
+  // //   <html>
+  // //     <head>
+  // //       <title>Print Stocks</title>
+  // //    <style>
+  // //           @page {
+  // //             size: auto;
+  // //             margin: 0mm;
+  // //           }
+  // //           body {
+  // //             margin: 0;
+  // //             padding: 10mm;
+  // //           }
+  // //           .labels-container {
+  // //             display: flex;
+  // //             flex-direction: column;
+  // //             gap: 0mm;
+  // //           }
+  // //           .label {
+  // //             width: 81mm;
+  // //             height: 12mm;
+  // //             display: flex;
+  // //             padding: 2mm 4mm;
+  // //             background: white;
+  // //             position: relative;
+  // //              justify-content: center;
 
            
-            }
-            .label-content {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              width: 100%;
-            }
-            .text-content {
-              display: flex;
-              flex-direction: column;
-              gap: 1mm;
-            }
-            .store-name {
-              font-family: Arial, sans-serif;
-              font-size: 12px;
-              font-weight: bold;
-            }
-            .price {
-              font-family: Arial, sans-serif;
-              font-size: 14px;
-              font-weight: bold;
-            }
-            .barcode {
-              height: 12mm;
-              width: auto;
-            }
-            .barcode-number {
-              font-family: Arial, sans-serif;
-              font-size: 10px;
-              text-align: center;
-              margin-top: 1mm;
-            }
-          </style>
-      </head>
-      <body>
-        <div class="label-container">
-          ${recentlySavedStock
-        .map(
-          (stock) => `
-            <div class="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
-                          <div class="label-content">
+  // //           }
+  // //           .label-content {
+  // //             display: flex;
+  // //             justify-content: space-between;
+  // //             align-items: center;
+  // //             width: 100%;
+  // //           }
+  // //           .text-content {
+  // //             display: flex;
+  // //             flex-direction: column;
+  // //             gap: 1mm;
+  // //           }
+  // //           .store-name {
+  // //             font-family: Arial, sans-serif;
+  // //             font-size: 12px;
+  // //             font-weight: bold;
+  // //           }
+  // //           .price {
+  // //             font-family: Arial, sans-serif;
+  // //             font-size: 14px;
+  // //             font-weight: bold;
+  // //           }
+  // //           .barcode {
+  // //             height: 12mm;
+  // //             width: auto;
+  // //           }
+  // //           .barcode-number {
+  // //             font-family: Arial, sans-serif;
+  // //             font-size: 10px;
+  // //             text-align: center;
+  // //             margin-top: 1mm;
+  // //           }
+  // //         </style>
+  // //     </head>
+  // //     <body>
+  // //       <div class="label-container">
+  // //         ${recentlySavedStock
+  // //       .map(
+  // //         (stock) => `
+  // //           <div class="label bg-white border w-[200px] mb-[10px] rounded-[5px] flex-wrap  justify-center flex py-[10px] border-gray-200">
+  // //                         <div class="label-content">
 
-                            <div class="barcode-container">
-                              <img
-                                class="barcode w-[100px]"
-                                src="https://barcode.tec-it.com/barcode.ashx?data=${stock.hsnCode}" alt="Barcode"
+  // //                           <div class="barcode-container">
+  // //                             <img
+  // //                               class="barcode w-[100px]"
+  // //                               src="https://barcode.tec-it.com/barcode.ashx?data=${stock.hsnCode}" alt="Barcode"
                            
-                              />
+  // //                             />
 
-                            </div>
-                          </div>
-                        </div>
-            `
-        )
-        .join("")}
-        </div>
-      </body>
-    </html>
-  `);
+  // //                           </div>
+  // //                         </div>
+  // //                       </div>
+  // //           `
+  // //       )
+  // //       .join("")}
+  // //       </div>
+  // //     </body>
+  // //   </html>
+  // // `);
 
-    printWindow.document.close();
-    printWindow.onload = () => {
-      printWindow.print();
-      printWindow.close();
-    };
-  };
+  //   printWindow.document.close();
+  //   printWindow.onload = () => {
+  //     printWindow.print();
+  //     printWindow.close();
+  //   };
+  // };
+
+
+
+
+
+const handlePrint = () => {
+  if (!recentlySavedStock.length) {
+    alert("No stock data available for printing.");
+    return;
+  }
+  navigate("/print-stocks", { state: { barcodes: recentlySavedStock } });
+
+  
+};
 
   return (
     <>

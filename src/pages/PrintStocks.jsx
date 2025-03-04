@@ -8,8 +8,8 @@ export default function PrintStocks() {
   const printRef = useRef(null);
   const location = useLocation();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const barcodesData = location.state?.barcodes;
-
+  // const barcodesData = location.state?.barcodes;
+  const barcodesData = location.state?.barcodes || [];
   // Ensure barcodes is always an array
   const barcodes = Array.isArray(barcodesData) ? barcodesData : (barcodesData ? [barcodesData] : []);
   
@@ -329,6 +329,7 @@ export default function PrintStocks() {
           height: 10mm;
           // padding: 2mm;
           font-family: Open Sans, serif;
+          position:relative;
         }
 .label:nth-child(4n) {
   page-break-after: always;
@@ -457,7 +458,7 @@ export default function PrintStocks() {
               .imagenumber{
                    display: flex;
           flex-direction: column ;
-position:relative;
+position:relative !important;
 
               }
         .size{
@@ -514,6 +515,7 @@ position:relative;
 
                                   <p className="  text-black text-content1    leading-[10px]   font-[500] text-[10px] flex  ">
                                     G.W: {item?.toWeight} GM
+                                    
                                   </p>
 
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[10px] flex ">
@@ -553,12 +555,13 @@ position:relative;
                                       }
                                       alt={`Barcode ${item.barcode}`}
                                     />
-                                    <p className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px]  left-[16px] font-[500] bg-white w-fit text-black">
+                                    <a className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px]  left-[16px] font-[500] bg-white w-fit text-black">
                                       {item.barcode}
-                                    </p>
+                                    </a>
+                                  
                                   </div>
                                   {/* <img
-                                    className=" flex  h-[20px] holmark w-[30px]"
+                                    className=" flex  h-[20px] holmark w-[30px]"  
                                     src={holmark}
                                   /> */}
                                 </div>
