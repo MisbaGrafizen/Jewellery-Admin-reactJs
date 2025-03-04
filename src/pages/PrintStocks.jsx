@@ -12,8 +12,8 @@ export default function PrintStocks() {
   const barcodesData = location.state?.barcodes || [];
   // Ensure barcodes is always an array
   const barcodes = Array.isArray(barcodesData) ? barcodesData : (barcodesData ? [barcodesData] : []);
-  
-  console.log('barcodes', barcodes)
+
+
 
   // useEffect(() => {
   //   const fetchBarcodes = async () => {
@@ -482,6 +482,15 @@ position:relative !important;
     };
   };
 
+  useEffect(() => {
+    if (!barcodes.length) {
+      alert("No barcodes available for printing.");
+    } else {
+      console.log("Barcodes ready for printing:", barcodes);
+    }
+  }, [barcodes]);
+
+
   return (
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
@@ -515,7 +524,7 @@ position:relative !important;
 
                                   <p className="  text-black text-content1    leading-[10px]   font-[500] text-[10px] flex  ">
                                     G.W: {item?.toWeight} GM
-                                    
+
                                   </p>
 
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[10px] flex ">
@@ -555,10 +564,15 @@ position:relative !important;
                                       }
                                       alt={`Barcode ${item.barcode}`}
                                     />
-                                    <a className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px]  left-[16px] font-[500] bg-white w-fit text-black">
-                                      {item.barcode}
-                                    </a>
-                                  
+                                    {item.barcode || item.barCode ? (
+                                      <p className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px] left-[16px] font-[500] bg-white w-fit text-black">
+                                        {item.barcode || item.barCode}
+                                      </p>
+                                    ) : (
+                                      <p className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px] left-[16px] font-[500] bg-white w-fit text-gray-500">
+                                      
+                                      </p>
+                                    )}
                                   </div>
                                   {/* <img
                                     className=" flex  h-[20px] holmark w-[30px]"  
