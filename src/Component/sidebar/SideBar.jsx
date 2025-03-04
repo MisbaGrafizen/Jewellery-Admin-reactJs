@@ -22,7 +22,7 @@ export default function SideBar() {
     { name: "Sales", icon: newsales, path: "/sales-invoice" },
     { name: "Settings", icon: settings, path: "/create-account" },
     { name: "Labour", icon: reports, path: "/labour" },
-    { name: "Orders", icon: order, path: "/orders" },
+
   ];
 
   return (
@@ -39,7 +39,7 @@ export default function SideBar() {
               }`}
               onClick={() => navigate(item.path)}
             >
-              <img className="w-[27px] h-[27px]" src={item.icon} alt={item.name} />
+              <img className="w-[29px] h-[29px]" src={item.icon} alt={item.name} />
               <p className=" flex text-[12px]">{item.name}</p>
             </div>
           ))}
