@@ -323,28 +323,28 @@ export default function CreateBarCodeStock() {
     if (isEditing && stock) {
       console.log("Stock Data for Editing:", stock);
   
-      setSelectedType(stock.groupId?.name || ""); // ✅ Prefill Carat Dropdown
-      setSelectedTypecategory(stock.groupItemId?.itemName || ""); // ✅ Prefill Category Dropdown
+      setSelectedType(stock.groupId?.name || ""); 
+      setSelectedTypecategory(stock.groupItemId?.itemName || ""); 
   
       setFieldSets(stock.products?.map((product) => ({
         hsn: product.hsnCode || "",
-        grossWeight: product.toWeight?.toString() || "", // ✅ Convert to string for input
+        grossWeight: product.toWeight?.toString() || "", //Convert to string for input
         lessWeight: product.lessWeight?.toString() || "",
         wastage: product.wastage?.toString() || "",
         labour: product.labour || "",
         extra: product.extraRate?.toString() || "",
         location: product.location || "",
-        design: product.design || "",
+        design: mongoose.Types.ObjectId.isValid(product.design) ? product.design : null, 
         pcs: product.pcs?.toString() || "",
-        size: mongoose.Types.ObjectId.isValid(product.size) ? product.size : null, // ✅ Ensure valid ID
+        size: mongoose.Types.ObjectId.isValid(product.size) ? product.size : null, 
         huid: product.huid || "",
         huidCharge: product.huidCharge?.toString() || "",
-        selectedTypeDesign: product.design || "",
+        selectedTypeDesign: designs.find(design => design._id === product.design)?.designName || "",
         selectedTypeSize: sizes.find(size => size._id === product.size)?.sizeName || "",
         selectedTypeLabour: product.labour ? (["Uchak", "PerGram", "Percentage"].includes(product.labour) ? product.labour : "") : "",
       })));
     }
-  }, [isEditing, stock, sizes]);
+  }, [isEditing, stock, sizes, designs]);
   
 
   const handleFieldChange = (index, field, value) => {
@@ -563,7 +563,7 @@ export default function CreateBarCodeStock() {
         group: field.group ? field.group.toString() : "",
         account: field.account ? field.account.toString() : "",
         location: field.location ? field.location.toString() : "",
-        design: field.selectedTypeDesign || null,
+        design: mongoose.Types.ObjectId.isValid(field.design) ? field.design : null,
         pcs: parseInt(field.pcs) || 1,
         size: mongoose.Types.ObjectId.isValid(field.size) ? field.size : null,
         moti: parseFloat(field.moti) || 0,
@@ -1381,6 +1381,7 @@ bg-[#fff] ">
                                       onClick={() => {
                                         let updatedFieldSets = [...fieldSets];
                                         updatedFieldSets[index].selectedTypeDesign = type?.designName;
+                                        updatedFieldSets[index].design = type?._id || null; 
                                         updatedFieldSets[index].dropdownOpenDesign = false;
                                         setFieldSets(updatedFieldSets);
                                       }}
