@@ -320,7 +320,7 @@ export default function PrintStocks() {
 
  @page {
           size: 81mm 12mm; /* Exact label size */
-          margin: 0; /* No extra margin */
+          margin: 0 !important; /* No extra margin */
         }
         
         body {
@@ -330,6 +330,9 @@ export default function PrintStocks() {
           // padding: 2mm;
           font-family: Open Sans, serif;
         }
+.label:nth-child(4n) {
+  page-break-after: always;
+}
 
         .labels-container {
           display: flex;
@@ -496,7 +499,7 @@ position:relative;
                   </button>
                   <div ref={printRef} className="labels-container">
                     {barcodes.length > 0 ? (
-                      barcodes.map((barcode, index) => (
+                      barcodes.map((item, index) => (
                         <div
                           key={index}
                           className="label bg-white border w-[230px] mb-[10px] rounded-[5px] flex-wrap  h-[60px] justify-between px-[10px] flex py-[4px] border-gray-200"
@@ -510,14 +513,14 @@ position:relative;
                                   </p> */}
 
                                   <p className="  text-black text-content1    leading-[10px]   font-[500] text-[10px] flex  ">
-                                    G.W: {barcode?.toWeight} GM
+                                    G.W: {item?.toWeight} GM
                                   </p>
 
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[10px] flex ">
-                                    L.W: {((barcode?.toWeight || 0) - (barcode?.netWeight || 0)).toFixed(2)} GM
+                                    L.W: {((item?.toWeight || 0) - (item?.netWeight || 0)).toFixed(2)} GM
                                   </p>
                                   <p className="  text-black text-content1   leading-[10px]   font-[500] text-[10px] flex  ">
-                                    N.W: {barcode?.netWeight} GM
+                                    N.W: {item?.netWeight} GM
                                   </p>
                                 </div>
                                 <div className=" flex flex-col size">
@@ -546,12 +549,12 @@ position:relative;
                                     <img
                                       className="barcode w-[69px] h-[34px]"
                                       src={
-                                        barcode.barcodeImage || "/placeholder.svg"
+                                        item.barcodeImage || "/placeholder.svg"
                                       }
-                                      alt={`Barcode ${barcode.barcode}`}
+                                      alt={`Barcode ${item.barcode}`}
                                     />
                                     <p className="barcode-number h-fit absolute font-Poppins text-[10px] top-[27px]  left-[16px] font-[500] bg-white w-fit text-black">
-                                      {barcode.barcode}
+                                      {item.barcode}
                                     </p>
                                   </div>
                                   {/* <img
