@@ -745,8 +745,8 @@ export const deleteNonBarcodeCategoryAction = (nonBarcodeCategoryId) => {
 export const getProductsByToWeightAction = (toWeight) => fetchProductByField(GET_PRODUCTS_BY_TOWEIGHT, "product-by-weight", `toWeight=${toWeight}`);
 export const getProductsByFineWeightAction = (fineWeight) => fetchProductByField(GET_PRODUCTS_BY_FINEWEIGHT, "product-by-fine-weight", `fineWeight=${fineWeight}`);
 export const getProductsByNetWeightAction = (netWeight) => fetchProductByField(GET_PRODUCTS_BY_NETWEIGHT, "product-by-net-weight", `netWeight=${netWeight}`);
-export const getProductsByGroupAction = (groupId) => fetchProductByField(GET_PRODUCTS_BY_GROUP, "product-by-group", `groupId=${groupId}`);
-export const getProductsByGroupItemIdAction = (groupItemId) => fetchProductByField(GET_PRODUCTS_BY_GROUPITEMID, "product-by-item", `groupItemId=${groupItemId}`);
+export const getProductsByGroupAction = (groupName) => fetchProductByField(GET_PRODUCTS_BY_GROUP, "product-by-group", `groupName=${encodeURIComponent(groupName)}`);
+export const getProductsByGroupItemIdAction = (itemName) => fetchProductByField(GET_PRODUCTS_BY_GROUPITEMID, "product-by-item", `itemName=${encodeURIComponent(itemName)}`);
 export const getProductsByWastageAction = (wastage) => fetchProductByField(GET_PRODUCTS_BY_WASTAGE, "product-by-wastage", `wastage=${wastage}`);
 export const getProductsByHsnCodeAction = (hsnCode) => fetchProductByField(GET_PRODUCTS_BY_HSNCODE, "product-by-hsncode", `hsnCode=${hsnCode}`);
 export const getProductsBySilverRateAction = (silverRate) => fetchProductByField(GET_PRODUCTS_BY_SILVERRATE, "product-by-silver-rate", `silverRate=${silverRate}`);

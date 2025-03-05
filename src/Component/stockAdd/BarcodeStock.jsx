@@ -204,10 +204,11 @@ const navigate=useNavigate()
   }, [group, dispatch]);
 
   useEffect(() => {
-    if (groupId.trim()) {
+    if (groupId?.trim()) {
       dispatch(getProductsByGroupAction(groupId));
-    }
+    };
   }, [groupId, dispatch]);
+  
 
   useEffect(() => {
     if (groupItemId.trim()) {
