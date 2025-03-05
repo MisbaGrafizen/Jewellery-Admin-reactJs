@@ -310,7 +310,7 @@ export default function Header({ pageName = "" }) {
                       </div>
                     </div>
                   </div>
-                  <div className=" flex flex-col gap-[20px]">
+                  <div className=" flex flex-col max-h-[330px] overflow-y-auto gap-[20px]">
                     <div className="  px-[30px]  mt-[30px]  items-center gap-[20px]  flex-col  font-Poppins flex  w-[100%] ">
                       {categories?.map((item, index) => (
                         <>
