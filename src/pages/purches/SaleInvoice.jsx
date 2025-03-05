@@ -50,7 +50,19 @@ export default function PurchesInvoice() {
   const [dropdownTypeOpen, setDropdownTypeOpen] = useState(false);
   const [selectedLabourType, setSelectedLabourType] = useState("");
   const [labourFocused, setLabourFocused] = useState(false);
-  const [customTotalPrice, setCustomTotalPrice] = useState(null);
+  const [cgst, setCgst] = useState(0);
+  const [sgst, setSgst] = useState(0);
+  const [totalTaxAmount, setTotalTaxAmount] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [discountPrice, setDiscountPrice] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [customerId, setCustomerId] = useState(null);
+  const [lastEditedField, setLastEditedField] = useState(null);
+
+  const [cashPayment, setCashPayment] = useState(0);
+  const [onlinePayment, setOnlinePayment] = useState(finalTotal);
 
   const [address, setAddress] = useState("");
   const [gstNumber, setGstNumber] = useState("");
@@ -110,15 +122,6 @@ export default function PurchesInvoice() {
 
   const navigate = useNavigate();
 
-  const [cgst, setCgst] = useState(0);
-  const [sgst, setSgst] = useState(0);
-  const [totalTaxAmount, setTotalTaxAmount] = useState(0);
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [discountPrice, setDiscountPrice] = useState(0);
-  const [finalTotal, setFinalTotal] = useState(0);
-  const [discountPercentage, setDiscountPercentage] = useState(0);
-  const [customerId, setCustomerId] = useState(null);
-
   const [formData, setFormData] = useState({
     partyGroup: "",
     name: "",
@@ -142,89 +145,8 @@ export default function PurchesInvoice() {
   useEffect(() => {
     dispatch(getAllCustomerAction());
     dispatch(getCompanyInfoAction());
-    // fetchInitialProducts();
-  }, [dispatch]);
+    }, [dispatch]);
 
-  // const fetchInitialProducts = async () => {
-  //   try {
-  //     const response = await dispatch(getAllNonBarcodeProductAction());
-
-  //     if (Array.isArray(response)) {
-  //       setProducts(response);
-  //     } else {
-  //       setProducts([]); // ✅ Fallback to Empty Array if API returns Undefined or Null
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching initial products:", error);
-  //     setProducts([]); // ✅ Ensure `products` stays an array even on error
-  //   }
-  // };
-
-
-  // const fetchProductDetails = async (productName, toWeight, index) => {
-  //   try {
-  //     const response = await ApiGet(
-  //       `/admin/productDetails?productName=${productName}`
-  //     );
-
-  //     console.log("Fetched Product Details:", response);
-
-  //     if (response) {
-  //       setProducts((prevProducts) => {
-  //         const updatedProducts = [...prevProducts];
-
-  //         const existingProduct = updatedProducts[index] || {};
-
-  //         updatedProducts[index] = {
-  //           ...existingProduct,
-  //           ...response,
-  //           barcodeVisible:  existingProduct.barcodeVisible ?? false,
-  //           // productId: productIdValue,
-  //           autoRef: "SPJNonBarcodeProduct",
-  //           productId: response._id,
-  //           availableStock: response.toWeight,
-  //           remainingStock: response.toWeight,
-  //           availablePcs: response.pcs,
-  //           remainingPcs: response.pcs,
-  //           grossWeight: response.toWeight || 0, // Preserve manual input or set default
-  //           netWeight: response.toWeight || 0, // Initialize net weight
-  //         };
-
-  //         console.log("Updated Products:", updatedProducts);
-  //         return updatedProducts;
-  //       });
-
-  //       // Update totals correctly
-  //       setTotals((prevTotals) => {
-  //         const updatedTotals = { ...prevTotals };
-
-  //         const prevProduct = products[index] || {};
-  //         const prevToWeight = parseFloat(prevProduct.toWeight || 0);
-  //         const prevNetWeight = parseFloat(prevProduct.netWeight || 0);
-  //         const prevTotalPrice = parseFloat(prevProduct.totalPrice || 0);
-
-  //         updatedTotals.grossQty =
-  //           prevTotals.grossQty - prevToWeight + parseFloat(response.toWeight || 0);
-  //         updatedTotals.netQty =
-  //           prevTotals.netQty - prevNetWeight + parseFloat(response.netWeight || 0);
-  //         updatedTotals.amount =
-  //           prevTotals.amount - prevTotalPrice + parseFloat(response.totalPrice || 0);
-
-  //         return updatedTotals;
-  //       });
-  //     }
-  //     // if (response && response._id) {
-  //     //   console.log("✅ Product Found:", response);
-  //     //   assignProductId(response.groupItemId, index);
-  //     // }
-  //      else {
-  //       // ❌ If product does not exist, create a new one
-  //       createNewProduct(productName, toWeight, index);
-  //   }
-  //   } catch (error) {
-  //     console.error("Error fetching product details:", error);
-  //   }
-  // };
 
   const fetchProductDetails = async (productName, index) => {
     try {
@@ -267,6 +189,37 @@ export default function PurchesInvoice() {
       console.error("Error fetching product details:", error);
     }
   };
+
+  useEffect(() => {
+    // Calculate total price whenever products change
+    let total = products.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+    setTotalPrice(total);
+
+    // Apply discount if available
+    const discountAmt = (total * discountPercentage) / 100;
+    setDiscountAmount(discountAmt);
+
+    const finalAmount = total - discountAmt;
+    setFinalTotal(finalAmount);
+  }, [products, discountPercentage]);
+
+  useEffect(() => {
+    // Determine applicable total (finalTotal if discount is applied, otherwise totalPrice)
+    const applicableTotal = discountPercentage > 0 ? finalTotal : totalPrice;
+
+    // Ensure cashPayment does not exceed applicable total
+    const validCashPayment = Math.min(parseFloat(cashPayment) || 0, applicableTotal);
+    const calculatedOnlinePayment = applicableTotal - validCashPayment;
+
+    setCashPayment(validCashPayment);
+    setOnlinePayment(calculatedOnlinePayment);
+  }, [cashPayment, finalTotal, totalPrice, discountPercentage]);
+
+  useEffect(() => {
+    // Reset payments when total updates
+    setCashPayment(0);
+    setOnlinePayment(discountPercentage > 0 ? finalTotal : totalPrice);
+  }, [finalTotal, totalPrice, discountPercentage]);
 
 
   const handleMouseDown = (e) => {
@@ -349,7 +302,7 @@ export default function PurchesInvoice() {
       [name]: value,
     }));
   };
-  
+
 
   const handleInputChange = (e, index, field) => {
     const value = e.target.value;
@@ -357,33 +310,6 @@ export default function PurchesInvoice() {
     updatedProducts[index][field] = value;
     setProducts(updatedProducts);
   };
-
-  // const handleInputChange = (e, index, field) => {
-  //   const value = e.target.value;
-  
-  //   // Ensure products is initialized
-  //   if (!Array.isArray(products)) {
-  //     console.error("❌ Error: Products is not an array.");
-  //     return;
-  //   }
-  
-  //   // Ensure the index exists in products
-  //   if (index < 0 || index >= products.length) {
-  //     console.error(`Error: Invalid index ${index} for products array.`);
-  //     return;
-  //   }
-  
-  //   // Ensure the field exists in the product object
-  //   const updatedProducts = [...products];
-  //   if (!updatedProducts[index]) {
-  //     console.error(`Error: Product at index ${index} is undefined.`);
-  //     return;
-  //   }
-  
-  //   updatedProducts[index][field] = value;
-  //   setProducts(updatedProducts);
-  // };
-  
 
   const handleKeyDown = async (e, index) => {
     if (e.key === "Enter" && e.target.value.trim()) {
@@ -492,106 +418,275 @@ export default function PurchesInvoice() {
     }
   };
 
-  const calculateInvoiceTotals = (products = [], discountPercentage = 0, isTaxApplied = false) => {
+  const handleDiscountPercentageChange = (e) => {
+    const percentage = parseFloat(e.target.value) || 0;
+    setDiscountPercentage(percentage.toFixed(2));
+    setLastEditedField("percentage"); // ✅ Track last edited field
+  };
+  
+  const handleDiscountAmountChange = (e) => {
+    const amount = Number(e.target.value);
+    setDiscountAmount(amount);
+    setDiscountPercentage(""); // Reset percentage when amount is entered
+    setLastEditedField("amount"); // Track last edited field
+  };
+
+  // const calculateInvoiceTotals = (products = [], discountPercentage = 0, isTaxApplied = false) => {
+  //   if (!products.length) return null;
+
+  //   console.log("📌 Calculating Invoice Totals...");
+
+  //   let totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
+  //   console.log('✅ Total Price Before Discount:', totalPrice);
+
+  //   // ✅ Step 1: Apply Discount (if any)
+  //   const discountAmount = discountPercentage ? (totalPrice * discountPercentage) / 100 : 0;
+  //   const discountPrice = totalPrice - discountAmount;
+  //   console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
+
+  //   let calculatedCgst = 0;
+  //   let calculatedSgst = 0;
+  //   let totalTax = 0;
+  //   let finalPrice = discountPrice;
+
+  //   // ✅ Step 2: Apply GST ONLY if Tax is selected
+  //   if (isTaxApplied) {
+  //     calculatedCgst = (discountPrice * 1.5) / 100;
+  //     calculatedSgst = (discountPrice * 1.5) / 100;
+  //     totalTax = calculatedCgst + calculatedSgst;
+
+  //     // ✅ Step 3: Add GST to the final price
+  //     finalPrice = discountPrice + totalTax;
+  //   }
+
+  //   console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
+  //   console.log("✅ Final Invoice Amount:", finalPrice);
+
+  //   return {
+  //     totalPrice,
+  //     discountPercentage,
+  //     discountAmount,
+  //     discountPrice,
+  //     cgst: calculatedCgst,
+  //     sgst: calculatedSgst,
+  //     totalTax,
+  //     finalPrice,
+  //   };
+  // };
+
+  const calculateInvoiceTotals = (products = [], discountPercentage = 0, discountAmount = 0, isTaxApplied = false) => {
     if (!products.length) return null;
-
+  
     console.log("📌 Calculating Invoice Totals...");
-
+  
     let totalPrice = products.reduce((sum, p) => sum + (parseFloat(p.finalPrice) || 0), 0);
     console.log('✅ Total Price Before Discount:', totalPrice);
-
-    // ✅ Step 1: Apply Discount (if any)
-    const discountAmount = discountPercentage ? (totalPrice * discountPercentage) / 100 : 0;
-    const discountPrice = totalPrice - discountAmount;
-    console.log("✅ Discounted Price:", discountPrice, "Discount Amount:", discountAmount);
-
+  
+    // If discount amount is provided, recalculate discountPercentage
+    if (discountAmount > 0) {
+      discountPercentage = (discountAmount / totalPrice) * 100;
+    } else {
+      discountAmount = (totalPrice * discountPercentage) / 100;
+    }
+  
+    const discountedPrice = totalPrice - discountAmount;
+    console.log("✅ Discounted Price:", discountedPrice, "Discount Amount:", discountAmount, "Discount %:", discountPercentage);
+  
     let calculatedCgst = 0;
     let calculatedSgst = 0;
     let totalTax = 0;
-    let finalPrice = discountPrice;
-
+    let finalPrice = discountedPrice;
+  
     // ✅ Step 2: Apply GST ONLY if Tax is selected
     if (isTaxApplied) {
-        calculatedCgst = (discountPrice * 1.5) / 100;
-        calculatedSgst = (discountPrice * 1.5) / 100;
-        totalTax = calculatedCgst + calculatedSgst;
-
-        // ✅ Step 3: Add GST to the final price
-        finalPrice = discountPrice + totalTax;
+      calculatedCgst = (discountedPrice * 1.5) / 100;
+      calculatedSgst = (discountedPrice * 1.5) / 100;
+      totalTax = calculatedCgst + calculatedSgst;
+  
+      // ✅ Step 3: Add GST to the final price
+      finalPrice = discountedPrice + totalTax;
     }
-
+  
+    finalPrice = Math.max(finalPrice, 0); // Prevent negative total
+  
     console.log("✅ CGST:", calculatedCgst, "SGST:", calculatedSgst, "Total Tax:", totalTax);
     console.log("✅ Final Invoice Amount:", finalPrice);
-
+  
     return {
+      totalPrice,
+      discountPercentage,
+      discountAmount,
+      discountPrice: discountedPrice,
+      cgst: calculatedCgst,
+      sgst: calculatedSgst,
+      totalTax,
+      finalPrice,
+    };
+  };
+  
+
+  // ✅ Function to Update State with Calculated Values
+  // const updateTotalsAndApplyDiscount = (isTaxApplied) => {
+  //   setProducts((prevProducts) => {
+  //     let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+
+  //     // ✅ Step 1: Apply Discount
+  //     const discountAmount = (totalPrice * discountPercentage) / 100;
+  //     const discountedPrice = totalPrice - discountAmount;
+
+  //     let calculatedCgst = 0;
+  //     let calculatedSgst = 0;
+  //     let totalTax = 0;
+  //     let finalPrice = discountedPrice;
+
+  //     // ✅ Step 2: Apply GST ONLY if Tax is selected
+  //     if (isTaxApplied) {
+  //       calculatedCgst = (discountedPrice * 1.5) / 100;
+  //       calculatedSgst = (discountedPrice * 1.5) / 100;
+  //       totalTax = calculatedCgst + calculatedSgst;
+
+  //       // ✅ Step 3: Add GST to the final price
+  //       finalPrice = discountedPrice + totalTax;
+  //     }
+
+  //     // ✅ Update invoice state
+  //     setDiscountAmount(discountAmount);
+  //     setDiscountPrice(discountedPrice);
+  //     setCgst(calculatedCgst);
+  //     setSgst(calculatedSgst);
+  //     setTotalTaxAmount(totalTax);
+  //     setFinalTotal(finalPrice);
+
+  //     console.log("✅ Updated Invoice Totals:", {
+  //       totalPrice,
+  //       discountAmount,
+  //       discountedPrice,
+  //       cgst: calculatedCgst,
+  //       sgst: calculatedSgst,
+  //       totalTax,
+  //       finalPrice,
+  //       isTaxApplied,
+  //     });
+
+  //     return prevProducts;
+  //   });
+  // };
+
+  // const updateTotalsAndApplyDiscount = (isTaxApplied) => {
+  //   setProducts((prevProducts) => {
+  //     let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+  
+  //     // ✅ Step 1: Ensure discountAmount is updated dynamically
+  //     let discountAmt = discountAmount > 0 ? discountAmount : (totalPrice * discountPercentage) / 100;
+  //     let discountPer = discountAmount > 0 ? (discountAmount / totalPrice) * 100 : discountPercentage;
+  
+  //     const discountedPrice = totalPrice - discountAmt;
+  
+  //     let calculatedCgst = 0;
+  //     let calculatedSgst = 0;
+  //     let totalTax = 0;
+  //     let finalPrice = discountedPrice;
+  
+  //     // ✅ Step 2: Apply GST ONLY if Tax is selected
+  //     if (isTaxApplied) {
+  //       calculatedCgst = (discountedPrice * 1.5) / 100;
+  //       calculatedSgst = (discountedPrice * 1.5) / 100;
+  //       totalTax = calculatedCgst + calculatedSgst;
+  
+  //       // ✅ Step 3: Add GST to the final price
+  //       finalPrice = discountedPrice + totalTax;
+  //     }
+  
+  //     finalPrice = Math.max(finalPrice, 0); // Prevent negative total
+  
+  //     // ✅ Update invoice state
+  //     setDiscountAmount(Number(discountAmt).toFixed(2));
+  //     setDiscountPercentage(Number(discountPer).toFixed(2));
+  //     setDiscountPrice(Number(discountedPrice).toFixed(2));
+  //     setCgst(Number(calculatedCgst).toFixed(2));
+  //     setSgst(Number(calculatedSgst).toFixed(2));
+  //     setTotalTaxAmount(Number(totalTax).toFixed(2));
+  //     setFinalTotal(finalPrice);
+  
+  //     console.log("✅ Updated Invoice Totals:", {
+  //       totalPrice,
+  //       discountAmt,
+  //       discountPer,
+  //       discountedPrice,
+  //       cgst: calculatedCgst,
+  //       sgst: calculatedSgst,
+  //       totalTax,
+  //       finalPrice,
+  //       isTaxApplied,
+  //     });
+  
+  //     return prevProducts;
+  //   });
+  // };
+
+  const updateTotalsAndApplyDiscount = (isTaxApplied) => {
+    setProducts((prevProducts) => {
+      let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+  
+      let discountAmt = parseFloat(discountAmount) || 0;
+      let discountPer = parseFloat(discountPercentage) || 0;
+  
+      // ✅ Ensure only one value is recalculated based on the last edited field
+      if (lastEditedField === "amount") {
+        discountPer = totalPrice > 0 ? ((discountAmt / totalPrice) * 100) : 0;
+      } else if (lastEditedField === "percentage") {
+        discountAmt = totalPrice > 0 ? ((totalPrice * discountPer) / 100) : 0;
+      }
+  
+      // ✅ Do NOT recalculate discountAmt if lastEditedField is "amount"
+      const discountedPrice = totalPrice - discountAmt;
+  
+      let calculatedCgst = 0;
+      let calculatedSgst = 0;
+      let totalTax = 0;
+      let finalPrice = discountedPrice;
+  
+      if (isTaxApplied) {
+        calculatedCgst = (discountedPrice * 1.5) / 100;
+        calculatedSgst = (discountedPrice * 1.5) / 100;
+        totalTax = calculatedCgst + calculatedSgst;
+        finalPrice = discountedPrice + totalTax;
+      }
+  
+      finalPrice = Math.max(finalPrice, 0); // Prevent negative totals
+  
+      // ✅ Preserve exact values entered by the user
+      setDiscountAmount(lastEditedField === "amount" ? discountAmt.toFixed(2) : discountAmt);
+      setDiscountPercentage(lastEditedField === "percentage" ? discountPer.toFixed(2) : discountPer);
+      setDiscountPrice(discountedPrice.toFixed(2));
+      setCgst(calculatedCgst.toFixed(2));
+      setSgst(calculatedSgst.toFixed(2));
+      setTotalTaxAmount(totalTax.toFixed(2));
+      setFinalTotal(finalPrice);
+  
+      console.log("✅ Updated Invoice Totals:", {
         totalPrice,
-        discountPercentage,
-        discountAmount,
-        discountPrice,
+        discountAmt,
+        discountPer,
+        discountedPrice,
         cgst: calculatedCgst,
         sgst: calculatedSgst,
         totalTax,
         finalPrice,
-    };
-};
-
-
-  // ✅ Function to Update State with Calculated Values
-  const updateTotalsAndApplyDiscount = (isTaxApplied) => {
-    setProducts((prevProducts) => {
-        let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
-
-        // ✅ Step 1: Apply Discount
-        const discountAmount = (totalPrice * discountPercentage) / 100;
-        const discountedPrice = totalPrice - discountAmount;
-
-        let calculatedCgst = 0;
-        let calculatedSgst = 0;
-        let totalTax = 0;
-        let finalPrice = discountedPrice;
-
-        // ✅ Step 2: Apply GST ONLY if Tax is selected
-        if (isTaxApplied) {
-            calculatedCgst = (discountedPrice * 1.5) / 100;
-            calculatedSgst = (discountedPrice * 1.5) / 100;
-            totalTax = calculatedCgst + calculatedSgst;
-
-            // ✅ Step 3: Add GST to the final price
-            finalPrice = discountedPrice + totalTax;
-        }
-
-        // ✅ Update invoice state
-        setDiscountAmount(discountAmount);
-        setDiscountPrice(discountedPrice);
-        setCgst(calculatedCgst);
-        setSgst(calculatedSgst);
-        setTotalTaxAmount(totalTax);
-        setFinalTotal(finalPrice);
-
-        console.log("✅ Updated Invoice Totals:", {
-            totalPrice,
-            discountAmount,
-            discountedPrice,
-            cgst: calculatedCgst,
-            sgst: calculatedSgst,
-            totalTax,
-            finalPrice,
-            isTaxApplied,
-        });
-
-        return prevProducts;
+        isTaxApplied,
+      });
+  
+      return prevProducts;
     });
-};
-
-
-
-
+  };
+  
+  
   const handleSaveInvoice = async () => {
     try {
       const invoiceData = calculateInvoiceTotals(products, discountPercentage);
 
       if (!invoiceData) {
-        console.error("Error: Invoice Data calculation failed!");
+        console.error("❌ Error: Invoice Data calculation failed!");
         return;
       }
 
@@ -628,15 +723,17 @@ export default function PurchesInvoice() {
         cgstAmount: cgstAmount,
         sgstAmount: sgstAmount,
         gstAmount: totalGstAmount,
+        cashPayment: cashPayment,
+        bankPayment: onlinePayment,
         totalPrice: finalPrice,
         companyId: companyInfo?.[0]?._id,
         paymentType: "cash",
       };
 
-      console.log("Invoice Payload:", payload);
+      console.log("📌 Invoice Payload:", payload);
 
       const response = await ApiPost("/admin/bill", payload);
-      console.log("Response:", response);
+      console.log("✅ Response:", response);
 
       if (response.data.bill) {
         setCreatedInvoiceId(response.data.bill._id);
@@ -646,7 +743,7 @@ export default function PurchesInvoice() {
         alert("Failed to create invoice!");
       }
     } catch (error) {
-      console.error("Error creating invoice:", error);
+      console.error("❌ Error creating invoice:", error);
       alert("An error occurred while creating the invoice.");
     }
   };
@@ -866,7 +963,7 @@ export default function PurchesInvoice() {
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
         <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
-          <Header pageName="Sales Invoice" />
+          <Header pageName=" Purchese Invoice" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
             <div className="flex w-[100%] max-h-[90%] pb-[50px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">
@@ -879,7 +976,17 @@ export default function PurchesInvoice() {
                         Q/20024-25/1
                       </p>
                     </div>
-              
+                    <div className=" flex  w-[200px]  items-center gap-[10px]">
+                      {/* <p className=" flex font-Poppins w-[50px]">Date :</p> */}
+                      {/* <div className=" flex  items-center">
+                        <DatePicker
+                          selected={selectedDate}
+                          onChange={(date) => setSelectedDate(date)}
+                          className=" flex  w-[100px] border"
+                        />
+                        <i className="fa-regular text-[#9c9c9c] fa-calendar-days"></i>
+                      </div> */}
+                    </div>
                   </div>
 
                   <div className=" w-[38%] flex   gap-[15px] border-[1px] relative bg-white shadow1-blue py-[15px]  px-[15px] rounded-[10px] h-fit">
@@ -950,7 +1057,7 @@ export default function PurchesInvoice() {
                       <div className="relative w-full  border-[1px] border-[#dedede]  h-[90px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                         <label
                           htmlFor="address"
-                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${addressFocused
+                          className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${address || addressFocused
                             ? "text-[#000] -translate-y-[45px] hidden font-[]"
                             : "  -translate-y-[27px] flex cursor-text "
                             }`}
@@ -1416,30 +1523,31 @@ export default function PurchesInvoice() {
                                 {product?.calculatedMarketRate}
                               </td>
                               {/* <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
-                              {!product.barcodeVisible ? (
-                                <>
-                                <input
-                                  type="number"
-                                  value={product.labour}
-                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
-                                  placeholder="0.00"
-                                />
+                                {!product.barcodeVisible ? (
+                                  <>
+                                    <input
+                                      type="number"
+                                      value={product.labour}
+                                      onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                      className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
+                                      placeholder="0.00"
+                                    />
 
-                         
+                                   
+
                                   </>
                                 ) : (
                                   <>
-                                <input
-                                  type="number"
-                                  value={product.labour}
-                                  onChange={(e) => handleProductInputChange(e, index, "labour")}
-                                  className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
-                                  placeholder="0.00"
-                                />
+                                    <input
+                                      type="number"
+                                      value={product.labour}
+                                      onChange={(e) => handleProductInputChange(e, index, "labour")}
+                                      className={` border-0  outline-none font-Poppins focus:ring-0 text-sm ${product.barcodeVisible ? "w-[100%] pl-[5px]" : "w-[40%]"}`}
+                                      placeholder="0.00"
+                                    />
 
-                   
-                              <div
+
+                                    <div
                                       ref={labourDropdownRef}
                                       className={`relative w-[80px] border-[1px] border-[#dedede] rounded-[5px] shadow  items-center text-[#00000099] cursor-pointer ${product.barcodeVisible ? "hidden" : "flex"}`}
                                       onClick={() => setDropdownTypeOpen((prev) => !prev)}
@@ -1447,8 +1555,8 @@ export default function PurchesInvoice() {
                                       <label
                                         htmlFor="labourType"
                                         className={`absolute left-[13px] font-Poppins pl-[4px] bg-[#fff] text-[14px] transition-all duration-200 ${selectedLabourType || labourFocused
-                                            ? "text-[#000] -translate-y-[21px] hidden"
-                                            : "text-[#8f8f8f] cursor-text flex"
+                                          ? "text-[#000] -translate-y-[21px] hidden"
+                                          : "text-[#8f8f8f] cursor-text flex"
                                           }`}
                                       >
                                         Type
@@ -1472,7 +1580,7 @@ export default function PurchesInvoice() {
                                       ></i>
                                     </div>
 
-                      
+
                                     <AnimatePresence>
                                       {dropdownTypeOpen && (
                                         <motion.div
@@ -1499,7 +1607,8 @@ export default function PurchesInvoice() {
 
                               </td> */}
 
-                              <td className="py-1 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
+
+                              <td className="py-2 px-2 border-r overflow-x-auto font-Poppins  w-[100%] flex border-gray-200">
                                 <input
                                   type="number"
                                   value={product.labour}
@@ -1557,6 +1666,8 @@ export default function PurchesInvoice() {
                                   )}
                                 </AnimatePresence>
                               </td>
+
+
                               <td className="py-2 px-4 border-r font-Poppins  border-gray-200">
                                 {/* <input
                                   type="number"
@@ -1993,9 +2104,11 @@ export default function PurchesInvoice() {
                                   name="discount"
                                   id="indis"
                                   value={discountPercentage}
-                                  onChange={(e) =>
-                                    setDiscountPercentage(e.target.value)
-                                  }
+                                  // onChange={(e) => {
+                                  //   setDiscountPercentage(Number(e.target.value).toFixed(2));
+                                  //   setDiscountAmount(0); 
+                                  // }}
+                                  onChange={handleDiscountPercentageChange}
                                   onKeyDown={handleDiscountKeyPress}
                                   onFocus={() => setDiscountInFocused(true)}
                                   onBlur={() => setDiscountInFocused(false)}
@@ -2012,21 +2125,27 @@ export default function PurchesInvoice() {
                                 >
                                   Discount- Out ₹
                                 </span>
-                                {/* <input
+                                <input
                                   type="number"
-                                  name="gstNumber"
+                                  name="discount"
                                   id="number"
-                                  onFocus={() => setGstFocused(true)}
-                                  onBlur={() => setGstFocused(false)}
+                                  value={discountAmount}
+                                  // onChange={(e) => {
+                                  // setDiscountAmount(e.target.value);
+                                  // setDiscountPercentage(0); // Reset percentage when manual discount is entered
+                                  // }}  
+                                  onChange={handleDiscountAmountChange}                             
+                                  onKeyDown={handleDiscountKeyPress}   
+                                  onFocus={() => setDiscountInFocused(true)}
+                                  onBlur={() => setDiscountInFocused(false)}
                                   autocomplete="nasme"
                                   className="w-full outline-none text-[14px] h-full  py-[9px] font-Poppins font-[400] bg-transparent"
-                                /> */}
-                                <p
+                                />
+                                {/* <p
                                   onFocus={() => setOutocused(true)}
                                   onBlur={() => setOutocused(false)}
                                 >
-                                  {discountAmount.toFixed(2)}
-                                </p>
+                              </p> */}
                               </div>
                             </div>
                           </div>
@@ -2080,7 +2199,7 @@ export default function PurchesInvoice() {
                             </div>
                           </div>
 
-                       
+
                           <div className="flex items-center justify-between gap-4">
                             <label className="text-gray-600 font-Poppins text-lg font-medium">
                               Cash Payment
@@ -2089,8 +2208,9 @@ export default function PurchesInvoice() {
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <input
                                   type="text"
-                                  name="cash"
-
+                                  name="cashPayment"
+                                  value={cashPayment}
+                                  onChange={(e) => setCashPayment(e.target.value)}
                                   className="w-full outline-none text-[15px] py-[9px] px-[10px] font-Poppins font-[400] bg-transparent cursor-pointer"
 
 
@@ -2107,8 +2227,9 @@ export default function PurchesInvoice() {
                               <div className=" relative w-full h-10 border-[1px]  border-[#dedede] rounded-lg shadow flex items-center space-x-4 text-[#00000099] cursor-pointer">
                                 <input
                                   type="text"
-                                  name="cash"
-
+                                  name="bankPayment"
+                                  value={onlinePayment}
+                                  onChange={(e) => setOnlinePayment(e.target.value)}
                                   className="w-full outline-none text-[15px] py-[9px] px-[10px] font-Poppins font-[400] bg-transparent cursor-pointer"
 
 
@@ -2228,7 +2349,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="partyName"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.name||partyNameFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.name || partyNameFocused
                           ? "text-[#000] hidden "
                           : "text-[#8f8f8f]"
                           }`}
@@ -2249,7 +2370,7 @@ export default function PurchesInvoice() {
                     </div>
                     <div className="relative w-full  border-[1px] border-[#dedede]  h-[97px]  shadow rounded-lg flex items-center space-x-4 text-[#43414199]">
                       <span
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.address||partyAddressFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.address || partyAddressFocused
                           ? "text-[#000] -translate-y-[48px] hidden font-[]"
                           : "  -translate-y-[27px] "
                           }`}
@@ -2273,7 +2394,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <lavel
                         htmlFor="gstNumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.GST||partyGstFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.GST || partyGstFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f]"
                           }`}
@@ -2295,7 +2416,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="PanParty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.panNo||partyPanFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.panNo || partyPanFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2383,7 +2504,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyState"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.state||partyStateFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.state || partyStateFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2405,7 +2526,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partycity"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.city||partyCityFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.city || partyCityFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2427,7 +2548,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partyPin"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.pinCode||partyPinFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.pinCode || partyPinFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2449,7 +2570,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="partynumber"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.mobileNumber||partyNumberFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.mobileNumber || partyNumberFocused
                           ? "text-[#000] -translate-y-[21px]  hidden"
                           : "text-[#8f8f8f] cursor-text"
                           }`}
@@ -2471,7 +2592,7 @@ export default function PurchesInvoice() {
                     <div className="relative w-full  border-[1px] border-[#dedede]  shadow rounded-lg flex items-center space-x-4 text-[#00000099]">
                       <label
                         htmlFor="emailparty"
-                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.email||partyEmailFocused
+                        className={` absolute left-[13px] font-Poppins   px-[5px]  bg-[#fff] text-[14px]   transition-all duration-200 ${formData.email || partyEmailFocused
                           ? "text-[#000] -translate-y-[21px] hidden "
                           : "text-[#8f8f8f] cursor-text"
                           }`}

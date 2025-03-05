@@ -59,6 +59,7 @@ export default function PurchesInvoice() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [customerId, setCustomerId] = useState(null);
+  const [lastEditedField, setLastEditedField] = useState(null);
 
   const [cashPayment, setCashPayment] = useState(0);
   const [onlinePayment, setOnlinePayment] = useState(finalTotal);
@@ -417,6 +418,19 @@ export default function PurchesInvoice() {
     }
   };
 
+  const handleDiscountPercentageChange = (e) => {
+    const percentage = parseFloat(e.target.value) || 0;
+    setDiscountPercentage(percentage.toFixed(2));
+    setLastEditedField("percentage"); // ✅ Track last edited field
+  };
+  
+  const handleDiscountAmountChange = (e) => {
+    const amount = Number(e.target.value);
+    setDiscountAmount(amount);
+    setDiscountPercentage(""); // Reset percentage when amount is entered
+    setLastEditedField("amount"); // Track last edited field
+  };
+
   // const calculateInvoiceTotals = (products = [], discountPercentage = 0, isTaxApplied = false) => {
   //   if (!products.length) return null;
 
@@ -558,14 +572,73 @@ export default function PurchesInvoice() {
   //   });
   // };
 
+  // const updateTotalsAndApplyDiscount = (isTaxApplied) => {
+  //   setProducts((prevProducts) => {
+  //     let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
+  
+  //     // ✅ Step 1: Ensure discountAmount is updated dynamically
+  //     let discountAmt = discountAmount > 0 ? discountAmount : (totalPrice * discountPercentage) / 100;
+  //     let discountPer = discountAmount > 0 ? (discountAmount / totalPrice) * 100 : discountPercentage;
+  
+  //     const discountedPrice = totalPrice - discountAmt;
+  
+  //     let calculatedCgst = 0;
+  //     let calculatedSgst = 0;
+  //     let totalTax = 0;
+  //     let finalPrice = discountedPrice;
+  
+  //     // ✅ Step 2: Apply GST ONLY if Tax is selected
+  //     if (isTaxApplied) {
+  //       calculatedCgst = (discountedPrice * 1.5) / 100;
+  //       calculatedSgst = (discountedPrice * 1.5) / 100;
+  //       totalTax = calculatedCgst + calculatedSgst;
+  
+  //       // ✅ Step 3: Add GST to the final price
+  //       finalPrice = discountedPrice + totalTax;
+  //     }
+  
+  //     finalPrice = Math.max(finalPrice, 0); // Prevent negative total
+  
+  //     // ✅ Update invoice state
+  //     setDiscountAmount(Number(discountAmt).toFixed(2));
+  //     setDiscountPercentage(Number(discountPer).toFixed(2));
+  //     setDiscountPrice(Number(discountedPrice).toFixed(2));
+  //     setCgst(Number(calculatedCgst).toFixed(2));
+  //     setSgst(Number(calculatedSgst).toFixed(2));
+  //     setTotalTaxAmount(Number(totalTax).toFixed(2));
+  //     setFinalTotal(finalPrice);
+  
+  //     console.log("✅ Updated Invoice Totals:", {
+  //       totalPrice,
+  //       discountAmt,
+  //       discountPer,
+  //       discountedPrice,
+  //       cgst: calculatedCgst,
+  //       sgst: calculatedSgst,
+  //       totalTax,
+  //       finalPrice,
+  //       isTaxApplied,
+  //     });
+  
+  //     return prevProducts;
+  //   });
+  // };
+
   const updateTotalsAndApplyDiscount = (isTaxApplied) => {
     setProducts((prevProducts) => {
       let totalPrice = prevProducts.reduce((sum, p) => sum + (parseFloat(p.totalPrice) || 0), 0);
   
-      // ✅ Step 1: Ensure discountAmount is updated dynamically
-      let discountAmt = discountAmount > 0 ? discountAmount : (totalPrice * discountPercentage) / 100;
-      let discountPer = discountAmount > 0 ? (discountAmount / totalPrice) * 100 : discountPercentage;
+      let discountAmt = parseFloat(discountAmount) || 0;
+      let discountPer = parseFloat(discountPercentage) || 0;
   
+      // ✅ Ensure only one value is recalculated based on the last edited field
+      if (lastEditedField === "amount") {
+        discountPer = totalPrice > 0 ? ((discountAmt / totalPrice) * 100) : 0;
+      } else if (lastEditedField === "percentage") {
+        discountAmt = totalPrice > 0 ? ((totalPrice * discountPer) / 100) : 0;
+      }
+  
+      // ✅ Do NOT recalculate discountAmt if lastEditedField is "amount"
       const discountedPrice = totalPrice - discountAmt;
   
       let calculatedCgst = 0;
@@ -573,25 +646,22 @@ export default function PurchesInvoice() {
       let totalTax = 0;
       let finalPrice = discountedPrice;
   
-      // ✅ Step 2: Apply GST ONLY if Tax is selected
       if (isTaxApplied) {
         calculatedCgst = (discountedPrice * 1.5) / 100;
         calculatedSgst = (discountedPrice * 1.5) / 100;
         totalTax = calculatedCgst + calculatedSgst;
-  
-        // ✅ Step 3: Add GST to the final price
         finalPrice = discountedPrice + totalTax;
       }
   
-      finalPrice = Math.max(finalPrice, 0); // Prevent negative total
+      finalPrice = Math.max(finalPrice, 0); // Prevent negative totals
   
-      // ✅ Update invoice state
-      setDiscountAmount(Number(discountAmt).toFixed(2));
-      setDiscountPercentage(Number(discountPer).toFixed(2));
-      setDiscountPrice(Number(discountedPrice).toFixed(2));
-      setCgst(Number(calculatedCgst).toFixed(2));
-      setSgst(Number(calculatedSgst).toFixed(2));
-      setTotalTaxAmount(Number(totalTax).toFixed(2));
+      // ✅ Preserve exact values entered by the user
+      setDiscountAmount(lastEditedField === "amount" ? discountAmt.toFixed(2) : discountAmt);
+      setDiscountPercentage(lastEditedField === "percentage" ? discountPer.toFixed(2) : discountPer);
+      setDiscountPrice(discountedPrice.toFixed(2));
+      setCgst(calculatedCgst.toFixed(2));
+      setSgst(calculatedSgst.toFixed(2));
+      setTotalTaxAmount(totalTax.toFixed(2));
       setFinalTotal(finalPrice);
   
       console.log("✅ Updated Invoice Totals:", {
@@ -610,7 +680,7 @@ export default function PurchesInvoice() {
     });
   };
   
-
+  
   const handleSaveInvoice = async () => {
     try {
       const invoiceData = calculateInvoiceTotals(products, discountPercentage);
@@ -2034,10 +2104,11 @@ export default function PurchesInvoice() {
                                   name="discount"
                                   id="indis"
                                   value={discountPercentage}
-                                  onChange={(e) => {
-                                    setDiscountPercentage(Number(e.target.value).toFixed(2));
-                                    setDiscountAmount(0); 
-                                  }}
+                                  // onChange={(e) => {
+                                  //   setDiscountPercentage(Number(e.target.value).toFixed(2));
+                                  //   setDiscountAmount(0); 
+                                  // }}
+                                  onChange={handleDiscountPercentageChange}
                                   onKeyDown={handleDiscountKeyPress}
                                   onFocus={() => setDiscountInFocused(true)}
                                   onBlur={() => setDiscountInFocused(false)}
@@ -2059,11 +2130,12 @@ export default function PurchesInvoice() {
                                   name="discount"
                                   id="number"
                                   value={discountAmount}
-                                  onChange={(e) => {
-                                  setDiscountAmount(e.target.value);
-                                  setDiscountPercentage(0); // Reset percentage when manual discount is entered
-                                  }}  
-                                  onKeyDown={handleDiscountKeyPress}                                
+                                  // onChange={(e) => {
+                                  // setDiscountAmount(e.target.value);
+                                  // setDiscountPercentage(0); // Reset percentage when manual discount is entered
+                                  // }}  
+                                  onChange={handleDiscountAmountChange}                             
+                                  onKeyDown={handleDiscountKeyPress}   
                                   onFocus={() => setDiscountInFocused(true)}
                                   onBlur={() => setDiscountInFocused(false)}
                                   autocomplete="nasme"

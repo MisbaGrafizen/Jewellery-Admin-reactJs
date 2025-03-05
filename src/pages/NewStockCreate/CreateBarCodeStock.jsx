@@ -497,35 +497,56 @@ export default function CreateBarCodeStock() {
       return;
     }
 
-    let matchedRate = 0;
-    const productsArray = fieldSets.map((field) => {
-      let labourAmount = 0;
-      const grossWeight = parseFloat(field.grossWeight) || 0;
-      const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
+    // let matchedRate = 0;
+    // const productsArray = fieldSets.map((field) => {
+    //   let labourAmount = 0;
+    //   const grossWeight = parseFloat(field.grossWeight) || 0;
+    //   const netWeight = (parseFloat(field.grossWeight) || 0) - (parseFloat(field.lessWeight) || 0);
 
-      const matchLabour = (labourArray) => {
-        // ✅ Get all matching labour items
-        const matchingLabour = labourArray.filter((labour) => 
-            String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
-            String(labour.item?._id).trim() === String(selectedCategory?._id).trim() &&
-            (labour.minWeight && labour.maxWeight 
-                ? grossWeight >= parseFloat(labour.minWeight) && grossWeight <= parseFloat(labour.maxWeight) 
-                : true // ✅ If no weight range, consider as a general match
-            )
-        );
+    //   const matchLabour = (labourArray) => {
+    //     // ✅ Get all matching labour items
+    //     const matchingLabour = labourArray.filter((labour) => 
+    //         String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
+    //         String(labour.item?._id).trim() === String(selectedCategory?._id).trim() &&
+    //         (labour.minWeight && labour.maxWeight 
+    //             ? grossWeight >= parseFloat(labour.minWeight) && grossWeight <= parseFloat(labour.maxWeight) 
+    //             : true // ✅ If no weight range, consider as a general match
+    //         )
+    //     );
     
-        console.log("Matching Labour:", matchingLabour);
+    //     console.log("Matching Labour:", matchingLabour);
     
-        // ✅ Sort by minWeight (Convert to numbers before sorting)
-        const sortedLabour = matchingLabour.sort((a, b) => 
-            (parseFloat(a.minWeight) || 0) - (parseFloat(b.minWeight) || 0)
-        );
+    //     // ✅ Sort by minWeight (Convert to numbers before sorting)
+    //     const sortedLabour = matchingLabour.sort((a, b) => 
+    //         (parseFloat(a.minWeight) || 0) - (parseFloat(b.minWeight) || 0)
+    //     );
     
-        // ✅ Get the last (best-matching) labour item
-        return sortedLabour.pop() || null; // If no match, return null
+    //     // ✅ Get the last (best-matching) labour item
+    //     return sortedLabour.pop() || null; // If no match, return null
   
-      };
-    
+    //   };
+
+    let matchedRate = 0;
+  const productsArray = fieldSets.map(field => {
+    let labourAmount = 0;
+    const grossWeight = parseFloat(field.grossWeight) || 0;
+    const netWeight = grossWeight - (parseFloat(field.lessWeight) || 0);
+
+    const matchLabour = (labourArray) => {
+      const matchingLabour = labourArray.filter(labour =>
+        String(labour.group?._id).trim() === String(selectedCarat?._id).trim() &&
+        String(labour.item?._id).trim() === String(selectedCategory?._id).trim() &&
+        (labour.minWeight && labour.maxWeight
+          ? grossWeight >= parseFloat(labour.minWeight) && grossWeight <= parseFloat(labour.maxWeight)
+          : true
+        )
+      );
+
+      console.log("Matching Labour:", matchingLabour);
+
+      // ✅ Pick the last (latest) matching labour entry
+      return matchingLabour.length ? matchingLabour[matchingLabour.length - 1] : null;
+    };
 
       let matchedLabour = null;
       if (field.selectedTypeLabour === "Uchak") {
