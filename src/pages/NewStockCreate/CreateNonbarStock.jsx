@@ -764,7 +764,7 @@ export default function CreateNonbarStock() {
                             </label>
                             <input
                               type="string"
-                              id={`group-${index}`}
+                              id={`group-${index}`}handlePrint
                               name="group"
                               value={fieldSets.group}
                               // onChange={(e) => setGroup(e.target.value)}

@@ -72,7 +72,7 @@ export default function BarcodeStock() {
   const [grossFocused, setGrossFocused] = useState(false);
   const [lossFocused, setLossFocused] = useState(false);
   const [wastageFocused, setWastegeFocused] = useState(false);
-const navigate=useNavigate()
+  const navigate = useNavigate()
   const [selectedCaratIndex, setSelectedCaratIndex] = useState(null);
   const [selectedmodalopen, setModalOpen] = useState(false);
   const [deleteContext, setDeleteContext] = useState(null);
@@ -103,7 +103,8 @@ const navigate=useNavigate()
   const [gst, setGst] = useState("");
   const [barcodeImage, setBarcodeImage] = useState(null);
   const [finalPrice, setFinalPrice] = useState("");
-
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const [grossWeight, setGrossWeight] = useState("");
   const [lessWeight, setLessWeight] = useState("");
   const [westage, setWestage] = useState("");
@@ -208,7 +209,7 @@ const navigate=useNavigate()
       dispatch(getProductsByGroupAction(groupId));
     };
   }, [groupId, dispatch]);
-  
+
 
   useEffect(() => {
     if (groupItemId.trim()) {
@@ -512,9 +513,9 @@ const navigate=useNavigate()
 
   const handleEdit = (stockData) => {
     console.log("stockData", stockData)
-    navigate("/barcode-stock", { state: { stock: stockData } });
+    navigate("/edit-stock");
   };
-  
+
 
   const onClose = () => {
     setIsOpen(false); // Close the modal
@@ -634,6 +635,26 @@ const navigate=useNavigate()
     }
   };
 
+  const handleSelectItem = (id) => {
+    let updatedSelection = [...selectedItems];
+    if (updatedSelection.includes(id)) {
+      updatedSelection = updatedSelection.filter((item) => item !== id);
+    } else {
+      updatedSelection.push(id);
+    }
+    setSelectedItems(updatedSelection);
+    setSelectAll(updatedSelection.length === stocks.length);
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(stocks.map((stock) => stock._id));
+    }
+    setSelectAll(!selectAll);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
@@ -675,6 +696,29 @@ const navigate=useNavigate()
               <i className="fa-solid fa-plus"></i>
               Add Stock
             </button>
+            <div className="flex gap-[20px] pr-[30px]">
+          <button
+            className={`flex w-[80px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bs-spj ${
+              selectedItems.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={selectedItems.length === 0}
+            onClick={() => console.log("Print selected items:", selectedItems)}
+          >
+            <i className="fa-regular fa-print"></i>
+            Print
+          </button>
+
+          <button
+            className={`flex w-[50px] font-Poppins items-center justify-center gap-[6px] py-[8px] rounded-[8px] text-[#fff] bg-[#ff1a1a] ${
+              selectedItems.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={selectedItems.length === 0}
+            onClick={() => console.log("Delete selected items:", selectedItems)}
+          >
+            <i className="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
           </div>
           <div className=" flex">
             <div className="w-full h-full  mx-auto rounded-[10px]  mt-[10px]  relative">
@@ -687,14 +731,16 @@ const navigate=useNavigate()
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
-                  className="  overflow-x-auto  bg-white  !max-w-[3500px] flex-shrink-0">
-                  <table className="min-w-[2420px] w-full border-collapse  border-gray-300  font-Poppins">
+                  className="  overflow-x-auto  bg-white  !max-w-[3670px] flex-shrink-0">
+                  <table className="min-w-[2430px] w-full border-collapse  border-gray-300  font-Poppins">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 font-medium text-sm ">
-                        <th className="py-3 px-2 text-left  border-gray-300">
+                        <th className="py-3 px-2 text-left  flex border-gray-300">
                           <input
                             type="checkbox"
                             id="check-all"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
                             className="w-4 ml-2 mb-[-4px] h-4"
                           />
                           <span className="ml-2 font-[500]">Sr.</span>
@@ -791,27 +837,27 @@ const navigate=useNavigate()
                           />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          <input className=" flex w-[60px] font-[500]" placeholder="Search..." type="text"
+                          <input className=" flex w-[100px] font-[500]" placeholder="Search..." type="text"
                             value={groupId}
                             onChange={(e) => setGroupId(e.target.value)}
                           />
                         </th>
 
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          <input className=" flex w-[80px] font-[500]" placeholder="Search..." type="text"
+                          <input className=" flex w-[100px] font-[500]" placeholder="Search..." type="text"
                             value={groupItemId}
                             onChange={(e) => setGroupItemId(e.target.value)}
                           />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          <input className=" flex w-[70px] font-[500]"
+                          <input className=" flex w-[100px] font-[500]"
                             placeholder="Search..."
                             value={toWeight}
                             onChange={(e) => setToWeight(e.target.value)}
                             type="text" />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          <input className=" flex w-[70px] font-[500]"
+                          <input className=" flex w-[100px] font-[500]"
                             placeholder="Search..."
                             type="text"
                             value={netWeight}
@@ -819,7 +865,7 @@ const navigate=useNavigate()
                           />
                         </th>
                         <th className="py-3 px-4 text-center border-l  border-gray-300  font-[500] font-Poppins">
-                          <input className=" flex w-[50px] font-[500]" placeholder="Serch..." type="text"
+                          <input className=" flex w-[100px] font-[500]" placeholder="Serch..." type="text"
                             value={fineWeight}
                             onChange={(e) => setFineWeight(e.target.value)}
                           />
@@ -949,119 +995,120 @@ const navigate=useNavigate()
                       </tr>
                     </thead>
                     <tbody>
-                    {Array.isArray(stocks) && stocks.length > 0 ? (
-                      stocks.map((item, index) => {                        
-                        const netWeight = (
-                          Number(item?.toWeight || 0) -
-                          Number(item?.lessWeight || 0)
-                        ).toFixed(3);
-                        const percentage = item?.groupId?.percentage || 0;
-                        const updatedFineWeight = (
-                          netWeight *
-                          (percentage / 100)
-                        ).toFixed(3);
+                      {Array.isArray(stocks) && stocks.length > 0 ? (
+                        stocks.map((item, index) => {
+                          const netWeight = (
+                            Number(item?.toWeight || 0) -
+                            Number(item?.lessWeight || 0)
+                          ).toFixed(3);
+                          const percentage = item?.groupId?.percentage || 0;
+                          const updatedFineWeight = (
+                            netWeight *
+                            (percentage / 100)
+                          ).toFixed(3);
 
-                        return (
-                          <tr key={index} className="">
+                          return (
+                            <tr key={index} className="">
 
-                            <td className="py-2 px-2 flex items-center  border-gray-300">
-                              <input type="checkbox" className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
-                              <span>{index + 1}</span>
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.barCode}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.groupId?.name || "-"}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.groupItemId?.itemName || "-"}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.toWeight || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {netWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {updatedFineWeight}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.marketRateUsed || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.labour || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.labour || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.calculatedMarketRate?.toFixed(2) || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item.extraRate || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.GMEPrice?.toFixed(2) || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.gst || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.totalPrice?.toFixed(2) || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item.group || "-"}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item.account || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.location || "-"}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.pcs || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.design?.designName || "-"}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.size?.sizeName || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.moti || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item?.stone || 0}
-                            </td>
-                            <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
-                              {item.jadatr || 0}
-                            </td>
+                              <td className="py-2 px-2 flex items-center  border-gray-300">
+                                <input type="checkbox"     checked={selectedItems.includes(item._id)}
+                          onChange={() => handleSelectItem(item._id)} className="w-4 h-4 ml-2 mb-[-1px]  mr-2" />
+                                <span>{index + 1}</span>
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.barCode}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.groupId?.name || "-"}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.groupItemId?.itemName || "-"}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.toWeight || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {netWeight}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {updatedFineWeight}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.marketRateUsed || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.labour || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.labour || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.calculatedMarketRate?.toFixed(2) || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item.extraRate || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.GMEPrice?.toFixed(2) || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.gst || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.totalPrice?.toFixed(2) || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item.group || "-"}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item.account || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.location || "-"}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.pcs || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.design?.designName || "-"}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.size?.sizeName || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.moti || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item?.stone || 0}
+                              </td>
+                              <td className="py-2 px-4 text-center border-l  border-gray-300 text-[14px]  font-Poppins">
+                                {item.jadatr || 0}
+                              </td>
 
-                            <td className="py-3 px-  justify-center gap-[6px] text-center border-l flex  border-gray-300 text-[14px]  font-Poppins">
-                              <i className="fa-solid mr-[2px]  cursor-pointer text-blue-500  fa-print" 
-                              onClick={() => handleNavigateToPrint(item.barCode)}
-                              ></i>
-                              <i
-                                className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer" onClick={() => handleEdit(item)}
-                              ></i>
-                              <i
-                                className="fa-solid fa-trash text-red-500 cursor-pointer "
-                                onClick={() =>
-                                  handleOpenDeleteModal("stock", item?._id)
-                                }
-                              ></i>
-                            </td>
-                          </tr>
-                        );
-                          })
-                        ) : (
-                          <tr>
-                            <td colSpan="10" className="text-center py-4">
-                              No stocks available.
-                            </td>
-                          </tr>
-                        )}
+                              <td className="py-3 px-  justify-center gap-[6px] text-center border-l flex  border-gray-300 text-[14px]  font-Poppins">
+                                <i className="fa-solid mr-[2px]  cursor-pointer text-blue-500  fa-print"
+                                  onClick={() => handleNavigateToPrint(item.barCode)}
+                                ></i>
+                                <i
+                                  className="fa-solid fa-pen-to-square text-blue-500 cursor-pointer" onClick={() => handleEdit(item)}
+                                ></i>
+                                <i
+                                  className="fa-solid fa-trash text-red-500 cursor-pointer "
+                                  onClick={() =>
+                                    handleOpenDeleteModal("stock", item?._id)
+                                  }
+                                ></i>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="10" className="text-center py-4">
+                            No stocks available.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -1069,7 +1116,7 @@ const navigate=useNavigate()
             </div>
           </div>
         </div>
-      </div>
+    
       <NextUIModal isOpen={selectedmodalopen} onOpenChange={handleModalclose}>
         <ModalContent className="md:max-w-[350px] max-w-[333px] relative  rounded-2xl z-[700] flex justify-center !py-0 mx-auto  h-[300px]  ">
           {(handleModalclose) => (

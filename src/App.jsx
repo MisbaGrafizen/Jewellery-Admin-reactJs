@@ -125,6 +125,7 @@ import CreateNonbarStock from "./pages/NewStockCreate/CreateNonbarStock";
 import PrintStocks from "./pages/PrintStocks";
 import SaleInvoice from "./pages/purches/SaleInvoice";
 import DayBook from "./pages/mainPages/DayBook";
+import UpdatedBarcode from "./pages/NewStockCreate/UpdatedBarcode";
 
 
 function App() {
@@ -151,6 +152,7 @@ function App() {
           <Route path="/print-stocks" element={<PrintStocks />} />
           {/* New Page Of stock create */}
           <Route path="/barcode-stock" element={<CreateBarCodeStock />} />
+          <Route path="/edit-stock" element={<UpdatedBarcode />} />
           <Route path="/nonbarcode-stock" element={<CreateNonbarStock />} />
 
         </Routes>

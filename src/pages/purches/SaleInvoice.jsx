@@ -738,7 +738,7 @@ export default function PurchesInvoice() {
       if (response.data.bill) {
         setCreatedInvoiceId(response.data.bill._id);
         alert("Invoice created successfully!");
-        navigate(`/invoice-bill/${response.data.bill._id}?type=purchase`);
+        navigate(`/invoice-bill/${response.data.bill._id}?type=sale`);
       } else {
         alert("Failed to create invoice!");
       }
@@ -963,7 +963,7 @@ export default function PurchesInvoice() {
     <>
       <section className="flex w-[100%] h-[100%] select-none p-[15px] overflow-hidden">
         <div className="flex w-[100%] flex-col gap-[14px] h-[96vh]">
-          <Header pageName=" Purchese Invoice" />
+          <Header pageName=" Sale Invoice" />
           <div className="flex gap-[10px] w-[100%] h-[100%]">
             <SideBar />
             <div className="flex w-[100%] max-h-[90%] pb-[50px] pr-[15px] overflow-y-auto gap-[30px] rounded-[10px]">

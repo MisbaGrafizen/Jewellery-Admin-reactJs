@@ -3,12 +3,12 @@ import SideBar from "../../Component/sidebar/SideBar";
 import Header from "../../Component/header/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { getInvoiceByIdAction, getSaleInvoiceByIdAction } from "../../redux/action/generalManagement";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 export default function InvoicePage() {
-
+    const location = useLocation();
     const { id } = useParams();
     const dispatch = useDispatch();
     const invoiceRef = useRef(null);
