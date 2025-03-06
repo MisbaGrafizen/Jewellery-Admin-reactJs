@@ -476,6 +476,10 @@ export default function BarcodeStock() {
     }
   };
 
+  const handlestock=()=>{
+    setIsOpen(true)
+  }
+
   const handleOpenDeleteModal = (context, id) => {
     setDeleteContext(context);
     setCaratIdToDelete(id);
@@ -697,6 +701,13 @@ export default function BarcodeStock() {
     }
   };
 
+
+const handleAllprint =()=>{
+
+  navigate("/print-stocks")
+}
+
+
   return (
     <>
       <div className="flex flex-col gap-[25px] w-[100%]">
@@ -744,7 +755,7 @@ export default function BarcodeStock() {
               selectedItems.length === 0 ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={selectedItems.length === 0}
-            onClick={() => console.log("Print selected items:", selectedItems)}
+            onClick={handleAllprint}
           >
             <i className="fa-regular fa-print"></i>
             Print
@@ -755,7 +766,7 @@ export default function BarcodeStock() {
               selectedItems.length === 0 ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={selectedItems.length === 0}
-            onClick={() => console.log("Delete selected items:", selectedItems)}
+            onClick={handleOpenDeleteModal}
           >
             <i className="fa-solid fa-trash"></i>
           </button>
@@ -1584,7 +1595,7 @@ export default function BarcodeStock() {
                 >
                   <button
                     onClick={onClose}
-                    className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                    className="inline-flex font-Poppins justify-center px-4 py-2 text-sm font-medium rounded-md text-white bg-gradient-to-r from-[#122f97] to-[#0c288c] border border-transparent rounded-mdfocus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
                   >
                     Close
                   </button>
