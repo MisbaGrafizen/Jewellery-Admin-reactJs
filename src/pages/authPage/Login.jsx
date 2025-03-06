@@ -471,7 +471,7 @@ export default function Login() {
                     <label
                       htmlFor="name"
                       className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                        nameFocused
+                   userName ||  nameFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
                       }`}
@@ -495,7 +495,7 @@ export default function Login() {
                     <label
                       htmlFor="password"
                       className={`bg-white px-1 absolute left-[20px] top-0 transform -translate-y-1/2 font-Poppins font-[300] text-primary text-sm sm:text-base capitalize transition-all duration-200 ${
-                        passwordFocused
+                     password ||  passwordFocused
                           ? "-translate-y-[50%] text-primary text-xs"
                           : "  -translate-y-[-55%] cursor-text  text-[#9f9e9e] text-xs"
                       }`}

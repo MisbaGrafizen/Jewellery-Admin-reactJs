@@ -52,7 +52,7 @@ import {
   getProductsByGroupNameAction,
 } from "../../redux/action/landingManagement";
 import { useNavigate } from "react-router-dom";
-import { ApiGet } from "../../helper/axios";
+import { ApiGet, ApiPost } from "../../helper/axios";
 export default function BarcodeStock() {
   const [isOpen, setIsOpen] = useState(false);
   const [carat, setCarat] = useState([]);
@@ -509,21 +509,17 @@ export default function BarcodeStock() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
-
   const handleEdit = (stockData) => {
     console.log("stockData", stockData)
-    navigate("/edit-stock");
+    navigate("/edit-stock",  { state: { stockData: { ...stockData } } });
   };
-
 
   const onClose = () => {
-    setIsOpen(false); // Close the modal
+    setIsOpen(false);
   };
 
-
   const onAdd = () => {
-    setIsOpen(true); // Close the modal
+    setIsOpen(true); 
   };
   useEffect(() => {
     setIsMounted(true)
@@ -653,6 +649,52 @@ export default function BarcodeStock() {
       setSelectedItems(stocks.map((stock) => stock._id));
     }
     setSelectAll(!selectAll);
+  };
+
+  const handleDeleteSelectedItems = async () => {
+    if (selectedItems.length === 0) {
+      alert("Please select items to delete.");
+      return;
+    }
+
+    try {
+      const response = await ApiPost("/admin/products/bulk-delete", {
+        productIds: selectedItems,
+      });
+
+      if (response.success) {
+        alert(`${selectedItems.length} products deleted successfully!`);
+        setSelectedItems([]); // Clear selection
+        dispatch(getAllStockAction()); // Refresh stock list
+      } else {
+        alert("Failed to delete selected items.");
+      }
+    } catch (error) {
+      console.error("Error deleting selected items:", error);
+      alert("An error occurred while deleting items.");
+    }
+  };
+
+  const handlePrintSelectedItems = async () => {
+    if (selectedItems.length === 0) {
+      alert("Please select items to print.");
+      return;
+    }
+
+    try {
+      const response = await ApiPost("/admin/products/bulk-print", {
+        productIds: selectedItems,
+      });
+
+      if (response.products && response.products.length > 0) {
+        navigate("/print-stocks", { state: { barcodes: response.products } });
+      } else {
+        alert("No products found for printing.");
+      }
+    } catch (error) {
+      console.error("Error fetching products for print:", error);
+      alert("Failed to fetch products for printing.");
+    }
   };
 
   return (

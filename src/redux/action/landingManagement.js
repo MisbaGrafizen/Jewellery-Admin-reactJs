@@ -526,7 +526,7 @@ export const updateNonBarcodeCategoryAction = (nonBarcodeCategoryId, formData) =
 export const updateStockAction = (productId, formData) => async () => {
 try {
   const response = await ApiPut(`/admin/product/${productId}`, formData); 
-  console.log("Product updated successfully:", response);
+  console.log("Product updated :", response);
   return response;
 } catch (error) {
   console.error("Error updating product:", error);
